@@ -1,0 +1,208 @@
+/* ============================================================
+   Koomzo POS — Apps & Modules marketplace kit (layered on padmin.css)
+   Reuses the presenter chrome (.present / .stage / .device), the nav
+   rail (.pa-rail), top bar (.pa-topbar), page head (.pa-pagehead),
+   toolbar (.pa-toolbar) and detail drawer (.pa-drawer / .pd).
+   Adds the "choose your apps" board: category sections, selectable
+   app cards, the running selection bar, and the phone surface.
+   ============================================================ */
+
+/* board scroll region (sits where the table normally is) */
+.am-board { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 24px 24px; }
+.am-board::-webkit-scrollbar { width: 10px; }
+.am-board::-webkit-scrollbar-thumb { background: var(--kz-border-strong); border-radius: 999px; border: 3px solid var(--kz-bg); }
+
+/* ---------------- category section ---------------- */
+.am-cat { margin-top: 26px; }
+.am-cat:first-child { margin-top: 6px; }
+.am-cat__head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.am-cat__ico { width: 34px; height: 34px; border-radius: 10px; background: var(--kz-surface); border: 1px solid var(--kz-border); display: flex; align-items: center; justify-content: center; color: var(--kz-primary); flex-shrink: 0; }
+.am-cat__ico ion-icon { font-size: 19px; }
+.am-cat__t { display: flex; flex-direction: column; gap: 1px; }
+.am-cat__t h2 { font: 700 16.5px var(--kz-font-sans); letter-spacing: -.01em; margin: 0; display: flex; align-items: center; gap: 9px; }
+.am-cat__t h2 .n { font: 700 11px var(--kz-font-num); font-variant-numeric: tabular-nums; color: var(--kz-muted); background: var(--kz-surface-2); border: 1px solid var(--kz-border); padding: 1px 8px; border-radius: 999px; }
+.am-cat__t .blurb { font: 500 12.5px var(--kz-font-sans); color: var(--kz-muted-2); }
+.am-cat__line { flex: 1; height: 1px; background: var(--kz-border); }
+.am-cat__all { border: none; background: transparent; font: 600 12.5px var(--kz-font-sans); color: var(--kz-muted); display: flex; align-items: center; gap: 5px; padding: 4px 6px; border-radius: 8px; }
+.am-cat__all:hover { color: var(--kz-primary); }
+
+/* ---------------- app grid ---------------- */
+.am-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+/* ---------------- app card ---------------- */
+.am-card {
+  position: relative; display: flex; align-items: flex-start; gap: 14px; text-align: left;
+  padding: 16px; background: #fff; border: 1px solid var(--kz-border); border-radius: var(--kz-radius);
+  transition: transform .16s cubic-bezier(.4,0,.2,1), box-shadow .16s, border-color .16s, background .16s;
+}
+.am-card:hover { transform: translateY(-2px); border-color: var(--kz-primary-tint); box-shadow: var(--kz-shadow); }
+.am-card.on { border-color: var(--kz-primary); background: var(--kz-primary-wash); box-shadow: inset 0 0 0 1.5px var(--kz-primary); }
+.am-card.on:hover { box-shadow: inset 0 0 0 1.5px var(--kz-primary), var(--kz-shadow); }
+
+.am-card__ico { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(20,24,38,.04); }
+.am-card__ico ion-icon { font-size: 25px; }
+
+.am-card__body { flex: 1; min-width: 0; padding-right: 26px; }
+.am-card__name { font: 700 15px var(--kz-font-sans); color: var(--kz-ink); letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.am-card__desc { font: 500 12.5px var(--kz-font-sans); color: var(--kz-muted-2); line-height: 1.4; margin-top: 4px; }
+.am-card__meta { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+/* price / included pill */
+.am-price { font: 700 11.5px var(--kz-font-num); font-variant-numeric: tabular-nums; color: var(--kz-ink-2); }
+.am-price small { font: 600 10px var(--kz-font-sans); color: var(--kz-muted-2); letter-spacing: .01em; }
+.am-incl { display: inline-flex; align-items: center; gap: 4px; font: 600 11px var(--kz-font-sans); color: var(--kz-success); }
+.am-incl ion-icon { font-size: 13px; }
+.am-dot { width: 3px; height: 3px; border-radius: 999px; background: var(--kz-muted-3); flex-shrink: 0; }
+
+/* flags + installed tags */
+.am-flag { display: inline-flex; align-items: center; height: 18px; padding: 0 7px; border-radius: 5px; font: 700 9.5px var(--kz-font-sans); letter-spacing: .05em; text-transform: uppercase; }
+.am-flag.popular { background: var(--kz-warning-wash); color: #a9781b; }
+.am-flag.new { background: var(--kz-info-wash); color: var(--kz-info); }
+.am-flag.core { background: var(--kz-surface-2); color: var(--kz-muted); border: 1px solid var(--kz-border); }
+.am-installed { display: inline-flex; align-items: center; gap: 4px; font: 700 10.5px var(--kz-font-sans); letter-spacing: .02em; text-transform: uppercase; color: var(--kz-success); }
+.am-installed ion-icon { font-size: 13px; }
+
+/* select checkbox (top-right corner) */
+.am-check {
+  position: absolute; top: 14px; right: 14px; width: 24px; height: 24px; border-radius: 999px;
+  border: 2px solid var(--kz-border-strong); background: #fff; display: flex; align-items: center;
+  justify-content: center; color: #fff; transition: all .14s; flex-shrink: 0;
+}
+.am-check ion-icon { font-size: 15px; opacity: 0; transform: scale(.6); transition: all .14s; }
+.am-card:hover .am-check { border-color: var(--kz-primary-tint); }
+.am-card.on .am-check { background: var(--kz-primary); border-color: var(--kz-primary); }
+.am-card.on .am-check ion-icon { opacity: 1; transform: scale(1); }
+
+/* info button (bottom-right, secondary) */
+.am-info {
+  position: absolute; bottom: 12px; right: 12px; width: 28px; height: 28px; border-radius: 8px;
+  border: 1px solid var(--kz-border); background: #fff; display: flex; align-items: center; justify-content: center;
+  color: var(--kz-muted); opacity: 0; transition: all .14s;
+}
+.am-card:hover .am-info { opacity: 1; }
+.am-info:hover { border-color: var(--kz-primary-tint); color: var(--kz-primary); background: var(--kz-primary-wash); }
+.am-info ion-icon { font-size: 16px; }
+.am-card.on .am-info { background: #fff; }
+
+/* style B: minimal (no tinted tile, just outlined glyph) — tweak */
+.am-min .am-card__ico { background: transparent !important; box-shadow: none; border: 1px solid var(--kz-border); }
+.am-min .am-card.on .am-card__ico { border-color: var(--kz-primary-tint); }
+
+/* ============================================================
+   SELECTION BAR (sticky footer of the main column)
+   ============================================================ */
+.am-bar {
+  flex-shrink: 0; margin: 0 24px 18px; display: flex; align-items: center; gap: 16px; min-height: 60px;
+  padding: 10px 12px 10px 20px; background: #fff; border: 1px solid var(--kz-border);
+  border-radius: var(--kz-radius-lg); box-shadow: var(--kz-shadow);
+}
+.am-bar.pending { background: var(--kz-ink); border-color: var(--kz-ink); box-shadow: var(--kz-shadow-lg); }
+@media (prefers-reduced-motion: no-preference) { .am-bar.pending { animation: am-rise .2s cubic-bezier(.4,0,.2,1); } }
+@keyframes am-rise { from { transform: translateY(8px); opacity: .6; } to { transform: translateY(0); opacity: 1; } }
+.am-bar__sum { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.am-bar__count { display: flex; flex-direction: column; line-height: 1.15; }
+.am-bar__count b { font: 800 19px var(--kz-font-num); font-variant-numeric: tabular-nums; letter-spacing: -.02em; color: var(--kz-ink); }
+.am-bar__count span { font: 500 12px var(--kz-font-sans); color: var(--kz-muted-2); }
+.am-bar.pending .am-bar__count b { color: #fff; }
+.am-bar.pending .am-bar__count span { color: rgba(255,255,255,.6); }
+.am-bar__chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.am-delta { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: 999px; font: 700 12.5px var(--kz-font-sans); }
+.am-delta ion-icon { font-size: 15px; }
+.am-delta.add { background: rgba(46,158,91,.16); color: #6ee7a0; }
+.am-delta.rem { background: rgba(236,96,58,.16); color: #ffa88f; }
+.am-bar__actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.am-bar__reset { height: 44px; padding: 0 16px; border-radius: 11px; border: 1px solid rgba(255,255,255,.2); background: transparent; color: rgba(255,255,255,.85); font: 600 13.5px var(--kz-font-sans); display: flex; align-items: center; gap: 7px; }
+.am-bar__reset:hover { background: rgba(255,255,255,.1); }
+.am-bar__reset ion-icon { font-size: 16px; }
+.am-bar__apply { height: 44px; padding: 0 22px; border-radius: 11px; border: none; background: var(--kz-success); color: #fff; font: 700 14.5px var(--kz-font-sans); display: flex; align-items: center; gap: 8px; box-shadow: 0 6px 14px rgba(46,158,91,.3); }
+.am-bar__apply:active { transform: scale(.98); }
+.am-bar__apply ion-icon { font-size: 18px; }
+.am-bar__saved { display: flex; align-items: center; gap: 7px; font: 600 13.5px var(--kz-font-sans); color: var(--kz-success); }
+.am-bar__saved ion-icon { font-size: 18px; }
+.am-bar__manage { height: 42px; padding: 0 16px; border-radius: 11px; border: 1px solid var(--kz-border-strong); background: #fff; color: var(--kz-ink-2); font: 600 13.5px var(--kz-font-sans); display: flex; align-items: center; gap: 7px; }
+.am-bar__manage:hover { border-color: var(--kz-primary-tint); }
+.am-bar__manage ion-icon { font-size: 17px; }
+
+/* ============================================================
+   DETAIL DRAWER — app specifics (reuses .pd shell)
+   ============================================================ */
+.amd-hero { display: flex; align-items: center; gap: 16px; }
+.amd-hero__ico { width: 72px; height: 72px; border-radius: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(20,24,38,.04); }
+.amd-hero__ico ion-icon { font-size: 38px; }
+.amd-hero__t h3 { font: 700 21px var(--kz-font-sans); margin: 0; letter-spacing: -.02em; }
+.amd-hero__meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.amd-long { font: 500 14.5px var(--kz-font-sans); color: var(--kz-ink-2); line-height: 1.55; margin: 20px 0 0; }
+.amd-feat { display: flex; align-items: flex-start; gap: 11px; padding: 11px 0; border-bottom: 1px solid var(--kz-border); }
+.amd-feat:last-child { border-bottom: none; }
+.amd-feat__ck { width: 22px; height: 22px; border-radius: 999px; background: var(--kz-success-wash); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.amd-feat__ck ion-icon { font-size: 14px; color: var(--kz-success); }
+.amd-feat span { font: 500 14px var(--kz-font-sans); color: var(--kz-ink-2); line-height: 1.4; }
+.amd-pricerow { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--kz-surface-2); border: 1px solid var(--kz-border); border-radius: var(--kz-radius); margin-top: 20px; }
+.amd-pricerow .k { font: 600 13px var(--kz-font-sans); color: var(--kz-muted); }
+.amd-pricerow .v { font: 800 19px var(--kz-font-num); font-variant-numeric: tabular-nums; color: var(--kz-ink); }
+.amd-pricerow .v small { font: 600 11.5px var(--kz-font-sans); color: var(--kz-muted-2); }
+.amd-pricerow .v.free { color: var(--kz-success); }
+.pd__toggle { flex: 1; height: 50px; border-radius: 12px; border: 1px solid var(--kz-border-strong); background: #fff; color: var(--kz-ink); font: 700 15px var(--kz-font-sans); display: flex; align-items: center; justify-content: center; gap: 8px; }
+.pd__toggle ion-icon { font-size: 20px; }
+.pd__toggle.on { background: var(--kz-primary); border: none; color: #fff; box-shadow: var(--kz-shadow-key); }
+.pd__toggle:active { transform: scale(.985); }
+
+/* ============================================================
+   PHONE SURFACE
+   ============================================================ */
+.amm { display: flex; flex-direction: column; height: 100%; width: 100%; background: var(--kz-bg); overflow: hidden; }
+.amm__head { flex-shrink: 0; display: flex; align-items: center; gap: 12px; height: 58px; padding: 0 16px; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--kz-border); }
+.amm__head .mk { width: 32px; height: 32px; border-radius: 9px; background: var(--kz-primary); display: flex; align-items: center; justify-content: center; box-shadow: var(--kz-shadow-key); flex-shrink: 0; }
+.amm__head .mk ion-icon { color: #fff; font-size: 18px; }
+.amm__head .ht { display: flex; flex-direction: column; line-height: 1.15; }
+.amm__head h1 { font: 700 18px var(--kz-font-sans); margin: 0; letter-spacing: -.01em; }
+.amm__head .sub { font: 500 11.5px var(--kz-font-sans); color: var(--kz-muted-2); }
+
+.amm__search { flex-shrink: 0; display: flex; align-items: center; gap: 9px; height: 44px; margin: 12px 16px 0; padding: 0 13px; background: #fff; border: 1px solid var(--kz-border-strong); border-radius: 12px; color: var(--kz-muted-2); }
+.amm__search ion-icon { font-size: 18px; }
+.amm__search input { border: none; background: transparent; outline: none; flex: 1; min-width: 0; font: 400 15px var(--kz-font-sans); color: var(--kz-ink); }
+
+.amm__cats { flex-shrink: 0; display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; scrollbar-width: none; }
+.amm__cats::-webkit-scrollbar { display: none; }
+.amm__chip { flex-shrink: 0; display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border: 1px solid var(--kz-border); background: #fff; border-radius: 999px; font: 600 13px var(--kz-font-sans); color: var(--kz-muted); white-space: nowrap; transition: all .14s; }
+.amm__chip ion-icon { font-size: 16px; }
+.amm__chip.active { background: var(--kz-primary); border-color: var(--kz-primary); color: #fff; }
+
+.amm__list { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 16px 96px; }
+.amm__sec { margin-top: 18px; }
+.amm__sec:first-child { margin-top: 6px; }
+.amm__sec-h { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.amm__sec-h ion-icon { font-size: 16px; color: var(--kz-primary); }
+.amm__sec-h b { font: 700 13px var(--kz-font-sans); letter-spacing: .02em; color: var(--kz-ink); }
+.amm__sec-h .n { font: 700 10.5px var(--kz-font-num); color: var(--kz-muted); background: var(--kz-surface-2); border: 1px solid var(--kz-border); padding: 1px 7px; border-radius: 999px; }
+
+.amm__card { position: relative; display: flex; align-items: center; gap: 13px; padding: 13px; background: #fff; border: 1px solid var(--kz-border); border-radius: var(--kz-radius); text-align: left; width: 100%; margin-bottom: 10px; transition: all .14s; }
+.amm__card:active { transform: scale(.99); }
+.amm__card.on { border-color: var(--kz-primary); background: var(--kz-primary-wash); box-shadow: inset 0 0 0 1.5px var(--kz-primary); }
+.amm__card-ico { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(20,24,38,.04); }
+.amm__card-ico ion-icon { font-size: 25px; }
+.amm__card-body { flex: 1; min-width: 0; }
+.amm__card-body .nm { font: 700 15px var(--kz-font-sans); color: var(--kz-ink); display: flex; align-items: center; gap: 7px; }
+.amm__card-body .ds { font: 500 12px var(--kz-font-sans); color: var(--kz-muted-2); line-height: 1.35; margin-top: 2px; }
+.amm__card-body .mt { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+.amm__card-check { width: 24px; height: 24px; border-radius: 999px; border: 2px solid var(--kz-border-strong); background: #fff; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; transition: all .14s; }
+.amm__card-check ion-icon { font-size: 15px; opacity: 0; }
+.amm__card.on .amm__card-check { background: var(--kz-primary); border-color: var(--kz-primary); }
+.amm__card.on .amm__card-check ion-icon { opacity: 1; }
+
+/* phone bottom bar */
+.amm__bar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 12; display: flex; align-items: center; gap: 12px; padding: 14px 16px calc(14px + env(safe-area-inset-bottom)); background: rgba(255,255,255,.94); backdrop-filter: blur(14px); border-top: 1px solid var(--kz-border); }
+.amm__bar-sum { display: flex; flex-direction: column; line-height: 1.15; }
+.amm__bar-sum b { font: 800 17px var(--kz-font-num); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.amm__bar-sum span { font: 500 11.5px var(--kz-font-sans); color: var(--kz-muted-2); }
+.amm__bar-btn { margin-left: auto; height: 48px; padding: 0 22px; border-radius: 13px; border: none; background: var(--kz-success); color: #fff; font: 700 15px var(--kz-font-sans); display: flex; align-items: center; gap: 8px; box-shadow: 0 6px 14px rgba(46,158,91,.3); }
+.amm__bar-btn ion-icon { font-size: 19px; }
+.amm__bar-btn:disabled { background: var(--kz-surface-2); color: var(--kz-muted-3); box-shadow: none; }
+.amm__bar-btn:active:not(:disabled) { transform: scale(.98); }
+
+/* phone detail = full-screen overlay (reuses .pam__detail animation) */
+.amm__detail { position: absolute; inset: 0; z-index: 30; background: #fff; }
+@media (prefers-reduced-motion: no-preference) { .amm__detail { animation: pa-slidein .26s cubic-bezier(.4,0,.2,1); } }
+
+/* ---------------- TABLET overrides ---------------- */
+.pa-app.is-tablet .am-grid { grid-template-columns: repeat(2, 1fr); }

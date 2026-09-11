@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>koomzo — How it works</title>
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+:root{--kz-primary:#6a61bf;--kz-primary-shade:#574fa6;--kz-primary-tint:#837bd0;--kz-primary-wash:#eeecf8;--kz-success:#2e9e5b;--kz-success-wash:#e4f4ea;--kz-warning:#e0a32e;--kz-warning-wash:#fbf1dc;--kz-discount:#ec603a;--kz-bg:#f4f6f9;--kz-surface:#fff;--kz-surface-2:#f9fafb;--kz-ink:#141826;--kz-ink-2:#303b57;--kz-muted:#676f88;--kz-muted-2:#858a9b;--kz-muted-3:#a0a5ae;--kz-border:#e9ecee;--kz-border-strong:#d8dce2;--kz-radius:10px;--kz-radius-lg:16px;--kz-radius-pill:999px;--kz-font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--kz-font-sans);background:var(--kz-bg);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none;font-weight:600}a:hover{color:var(--kz-primary-shade)}
+.app{min-height:100%;display:flex;flex-direction:column}
+/* ---- top bar ---- */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;background:var(--kz-surface);border-bottom:1px solid var(--kz-border);position:sticky;top:0;z-index:5}
+@media(min-width:700px){.bar{padding:18px 32px}}
+.lock{display:flex;align-items:center;gap:11px}
+.lock svg{width:28px;height:28px;flex-shrink:0}
+.lock .wm{font:700 21px/1 var(--kz-font-sans);letter-spacing:-.02em;color:var(--kz-ink-2);white-space:nowrap}
+.lock .wm .oo{color:var(--kz-primary)}
+.lock .desc{display:none;font:500 8.5px/1.3 var(--kz-font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--kz-muted-2);margin-top:4px}
+@media(min-width:1024px){.lock svg{width:32px;height:32px}.lock .wm{font-size:23px}.lock .desc{display:block}}
+.barright{display:flex;align-items:center;gap:10px}
+.lang{display:inline-flex;background:var(--kz-bg);border:1px solid var(--kz-border-strong);border-radius:var(--kz-radius-pill);padding:3px}
+.lang button{border:0;background:none;font:600 12.5px/1 var(--kz-font-sans);color:var(--kz-muted);padding:8px 13px;border-radius:var(--kz-radius-pill);cursor:pointer;min-height:34px}
+.lang button[aria-pressed=true]{background:var(--kz-primary);color:#fff}
+.skip{background:none;border:0;font:600 13.5px/1 var(--kz-font-sans);color:var(--kz-muted);cursor:pointer;padding:10px 4px;min-height:40px}
+.skip:hover{color:var(--kz-ink-2)}
+/* ---- progress ---- */
+.dots{display:flex;gap:6px;padding:14px 18px 0;justify-content:center}
+@media(min-width:700px){.dots{padding-top:20px}}
+.dot{width:26px;height:4px;border-radius:999px;background:var(--kz-border-strong);border:0;padding:0;cursor:pointer}
+.dot[aria-current=true]{background:var(--kz-primary);width:38px}
+/* ---- stage ---- */
+.stage{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:18px 16px 0}
+@media(min-width:700px){.stage{padding:24px 32px 0;align-items:center}}
+.slide{display:none;width:100%;max-width:1020px;background:var(--kz-surface);border-radius:var(--kz-radius-lg);box-shadow:0 4px 16px rgba(20,24,38,.08);overflow:hidden}
+.slide.on{display:grid;grid-template-columns:1fr}
+@media(min-width:860px){.slide.on{grid-template-columns:1fr 1fr}}
+.copy{padding:24px 22px 6px;display:flex;flex-direction:column;gap:12px}
+@media(min-width:700px){.copy{padding:34px 34px 14px;gap:14px}}
+@media(min-width:860px){.copy{padding:40px 38px;justify-content:center}}
+.eyebrow{font:600 11px/1.2 var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-primary)}
+.copy h2{font:700 25px/1.2 var(--kz-font-sans);letter-spacing:-.02em;margin:0;text-wrap:pretty}
+@media(min-width:700px){.copy h2{font-size:30px}}
+.copy p{font:400 15.5px/1.6 var(--kz-font-sans);color:var(--kz-muted);margin:0;text-wrap:pretty}
+.copy .key{background:var(--kz-primary-wash);color:var(--kz-primary-shade);border-radius:6px;padding:1px 5px;font-weight:600}
+.bul{display:flex;flex-direction:column;gap:9px;margin:2px 0 0}
+.bul div{display:flex;gap:9px;align-items:flex-start;font:400 14.5px/1.5 var(--kz-font-sans);color:var(--kz-muted)}
+.bul ion-icon{font-size:18px;color:var(--kz-success);flex-shrink:0;margin-top:2px}
+.bul div.hi{color:var(--kz-ink);font-weight:600}
+.bul div.hi ion-icon{color:var(--kz-primary)}
+/* peer / local-first viz */
+.vhub{display:flex;align-items:center;gap:9px;background:var(--kz-primary);color:#fff;border-radius:8px;padding:11px 13px;font:600 12.5px/1.3 var(--kz-font-sans)}
+.vhub ion-icon{font-size:17px}
+.vlink{display:flex;align-items:center;gap:8px;font:600 10px/1.2 var(--kz-font-sans);letter-spacing:.04em;text-transform:uppercase;color:var(--kz-primary-shade);padding-left:4px}
+.vlink::before{content:"";width:1px;height:14px;background:var(--kz-primary-tint);margin-left:17px}
+.vdevs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.vdev{background:#fff;border:1px solid var(--kz-border);border-radius:8px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;font:500 10.5px/1.25 var(--kz-font-sans);color:var(--kz-ink-2);text-align:center}
+.vdev ion-icon{font-size:17px;color:var(--kz-primary)}
+.vsep{height:1px;background:var(--kz-border);margin:3px 0}
+.vq{display:flex;align-items:center;gap:7px}
+.vqc{display:flex;flex-direction:column;gap:3px}
+.vqc span{background:#fff;border:1px solid var(--kz-border);border-radius:6px;padding:4px 8px;font:500 10px/1.2 var(--kz-font-sans);color:var(--kz-muted)}
+.vq ion-icon{font-size:13px;color:var(--kz-muted-3);flex-shrink:0}
+.vqb{background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:6px;padding:7px 9px;font:600 10.5px/1.2 var(--kz-font-sans);color:var(--kz-primary-shade)}
+.vfoot{font:500 10px/1.4 var(--kz-font-sans);color:var(--kz-muted-3);text-align:center}
+/* today / later */
+.vtl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vtl__c{display:flex;flex-direction:column;gap:6px}
+.vtl__h{font:600 9.5px/1.2 var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);padding-left:2px}
+.vtl__i{background:#fff;border:1px solid var(--kz-border);border-radius:7px;padding:9px 10px;font:500 11.5px/1.25 var(--kz-font-sans);color:var(--kz-ink-2);display:flex;align-items:center;gap:7px}
+.vtl__i ion-icon{font-size:14px;color:var(--kz-success);flex-shrink:0}
+.vtl__c.later .vtl__i{border-style:dashed;color:var(--kz-muted-3);background:var(--kz-surface-2)}
+.vtl__c.later .vtl__i ion-icon{color:var(--kz-muted-3)}
+.viz{background:var(--kz-surface-2);border-top:1px solid var(--kz-border);padding:22px;display:flex;align-items:center;justify-content:center}
+@media(min-width:860px){.viz{border-top:0;border-left:1px solid var(--kz-border);padding:34px}}
+.vinner{width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px}
+/* viz atoms */
+.vfield{background:#fff;border:1px solid var(--kz-border);border-radius:8px;padding:9px 11px;display:flex;align-items:center;gap:9px;font:500 12.5px/1.3 var(--kz-font-sans);color:var(--kz-ink-2)}
+.vfield ion-icon{font-size:15px;color:var(--kz-muted-2);flex-shrink:0}
+.vfield.sel{border:1.5px solid var(--kz-primary);box-shadow:0 0 0 3px var(--kz-primary-wash)}
+.vfield .grab{margin-left:auto;color:var(--kz-muted-3);font-size:15px}
+.vnode{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--kz-border);border-radius:8px;padding:9px 11px;font:500 12.5px/1.3 var(--kz-font-sans);color:var(--kz-ink-2)}
+.vnode .b{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.vconn{height:12px;width:1px;background:var(--kz-border-strong);margin-left:21px}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vmod{background:#fff;border:1px solid var(--kz-border);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:7px;font:500 12px/1.3 var(--kz-font-sans);color:var(--kz-ink-2)}
+.vmod ion-icon{font-size:17px;color:var(--kz-primary)}
+.vphone{width:150px;border:6px solid var(--kz-ink);border-radius:22px;overflow:hidden;background:#fff;margin:0 auto}
+.vtop{background:var(--kz-primary);height:26px;display:flex;align-items:center;justify-content:space-between;padding:0 9px;font:600 8px/1 var(--kz-font-sans);color:#fff}
+.vbody{padding:10px;display:flex;flex-direction:column;gap:7px}
+.vrow{height:9px;border-radius:3px;background:var(--kz-border)}
+.voff{display:inline-flex;align-items:center;gap:5px;background:var(--kz-warning-wash);color:#8a6412;border-radius:999px;padding:4px 8px;font:600 9px/1 var(--kz-font-sans)}
+.vsync{display:inline-flex;align-items:center;gap:5px;background:var(--kz-success-wash);color:#227a46;border-radius:999px;padding:4px 8px;font:600 9px/1 var(--kz-font-sans)}
+.vstep{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--kz-border);border-radius:8px;padding:10px 11px;font:500 12.5px/1.3 var(--kz-font-sans);color:var(--kz-ink-2)}
+.vstep.off{color:var(--kz-muted-3);background:var(--kz-surface-2);border-style:dashed}
+.vprompt{background:#fff;border:1px solid var(--kz-border);border-radius:8px;padding:11px;font:400 12.5px/1.5 var(--kz-font-sans);color:var(--kz-ink-2)}
+.vprompt b{color:var(--kz-primary-shade)}
+/* ---- platform overview slide ---- */
+.slide.pitchslide.on{display:block;background:var(--kz-primary);color:#fff}
+.po{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px}
+@media(min-width:700px){.po{padding:34px 34px 38px;gap:18px}}
+.po__eb{color:rgba(255,255,255,.72)}
+.po h2{font:700 24px/1.2 var(--kz-font-sans);letter-spacing:-.02em;margin:8px 0 8px;text-wrap:pretty;max-width:30ch}
+@media(min-width:700px){.po h2{font-size:30px}}
+.po p{margin:0;font:400 14.5px/1.6 var(--kz-font-sans);color:rgba(255,255,255,.82);max-width:70ch;text-wrap:pretty}
+.po__eng{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:620px){.po__eng{grid-template-columns:1fr 1fr}}
+.po__e{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);border-radius:var(--kz-radius);padding:13px 15px;display:flex;flex-direction:column;gap:6px}
+.po__et{display:flex;align-items:center;gap:9px;font:600 15px/1.25 var(--kz-font-sans)}
+.po__et ion-icon{font-size:19px;flex-shrink:0}
+.po__ed{font:400 13px/1.5 var(--kz-font-sans);color:rgba(255,255,255,.82)}
+.po__lbl{font:600 11px/1.2 var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.66);margin-top:2px}
+.po__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px}
+.po__m{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:var(--kz-radius);padding:9px 11px;font:500 12.5px/1.25 var(--kz-font-sans)}
+.po__m ion-icon{font-size:18px;flex-shrink:0;opacity:.9}
+.po__foot{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px;padding-top:16px;border-top:1px solid rgba(255,255,255,.2)}
+.po__p{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);border-radius:var(--kz-radius-pill);padding:7px 12px;font:500 12.5px/1 var(--kz-font-sans)}
+.po__p ion-icon{font-size:15px}
+.po__pd{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:var(--kz-radius);padding:12px 14px;display:flex;flex-direction:column;gap:9px}
+.po__pdt{display:flex;align-items:center;gap:9px;font:600 14px/1.35 var(--kz-font-sans);text-wrap:pretty}
+.po__pdt ion-icon{font-size:18px;flex-shrink:0}
+.po__pdr{display:grid;grid-template-columns:1fr;gap:7px}
+@media(min-width:760px){.po__pdr{grid-template-columns:repeat(3,1fr)}}
+.po__pdi{display:flex;align-items:flex-start;gap:7px;font:400 12.5px/1.45 var(--kz-font-sans);color:rgba(255,255,255,.84)}
+.po__pdi ion-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.vdial{background:#fff;border:1px solid var(--kz-border);border-radius:8px;padding:11px}
+.vdial__t{display:flex;align-items:center;gap:8px;font:600 12px/1.3 var(--kz-font-sans);color:var(--kz-ink-2);margin-bottom:9px}
+.vdial__t ion-icon{font-size:15px;color:var(--kz-primary)}
+.vseg{display:flex;gap:3px;padding:3px;background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:8px}
+.vseg span{flex:1;text-align:center;padding:6px 4px;border-radius:5px;font:600 10.5px/1.2 var(--kz-font-sans);color:var(--kz-muted-2)}
+.vseg span.on{background:var(--kz-primary);color:#fff}
+.vdial__n{margin-top:8px;font:400 11px/1.45 var(--kz-font-sans);color:var(--kz-muted-2)}
+.vapp{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--kz-border);border-radius:8px;padding:9px 11px;font:500 12.5px/1.3 var(--kz-font-sans);color:var(--kz-ink-2)}
+.vapp ion-icon{font-size:16px;color:var(--kz-primary);flex-shrink:0}
+.vapp .tick{margin-left:auto;color:var(--kz-success);font-size:16px}
+.vapp.off{border-style:dashed;color:var(--kz-muted-3);background:var(--kz-surface-2)}
+.vapp.off ion-icon{color:var(--kz-muted-3)}
+.vhidden{font:400 11.5px/1.45 var(--kz-font-sans);color:var(--kz-muted-3);text-align:center;padding:2px 0}
+/* ---- footer nav ---- */
+.nav{position:sticky;bottom:0;background:var(--kz-surface);border-top:1px solid var(--kz-border);padding:12px 16px 18px;display:flex;align-items:center;gap:10px;margin-top:18px}
+@media(min-width:700px){.nav{padding:14px 32px 20px;justify-content:center}}
+.btn{height:48px;border-radius:var(--kz-radius);font:600 15px/1 var(--kz-font-sans);display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:1px solid var(--kz-border-strong);background:#fff;color:var(--kz-ink-2);padding:0 18px;min-width:48px}
+.btn:hover{background:var(--kz-surface-2)}
+.btn.pri{background:var(--kz-primary);border:0;color:#fff;box-shadow:0 6px 14px rgba(106,97,191,.28);flex:1}
+@media(min-width:700px){.btn.pri{flex:0 0 auto;min-width:230px}}
+.btn.pri:hover{background:var(--kz-primary-shade)}
+.btn ion-icon{font-size:18px}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.count{font:500 13px/1 var(--kz-font-sans);color:var(--kz-muted-2);margin-left:auto}
+@media(min-width:700px){.count{margin-left:0;order:-1;min-width:70px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="bar">
+  <a class="lock" href="Koomzo - Signup &amp; Platform Pitch.html">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="5" width="10.5" height="10.5" rx="3" fill="#6a61bf"/><rect x="19" y="7" width="10.5" height="10.5" rx="3" fill="#837bd0"/><rect x="5" y="19" width="10.5" height="10.5" rx="3" fill="#837bd0"/><rect x="19" y="20.5" width="10.5" height="10.5" rx="3" fill="#6a61bf"/></svg>
+    <div><div class="wm">k<span class="oo">oo</span>mzo</div><div class="desc" data-i="desc">One business platform</div></div>
+  </a>
+  <div class="barright">
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="fr" aria-pressed="false">FR</button>
+    </div>
+    <a class="skip" href="Koomzo - Signup &amp; Platform Pitch.html" data-i="skip">Skip</a>
+  </div>
+</header>
+
+<div class="dots" id="dots"></div>
+
+<div class="stage">
+  <!-- 0 · platform overview (full purple) -->
+  <section class="slide on pitchslide">
+    <div class="po">
+      <div class="po__hd">
+        <div class="eyebrow po__eb" data-i="e0">The whole platform, one page</div>
+        <h2 data-i="h0">Everything your business runs on — built on two no-code tools.</h2>
+        <p data-i="b0">Design the forms your team needs, automate the workflows that move work between them, then switch on the ready-made modules you need. Koomzo keeps your teams and devices working together — even when Internet connectivity isn't available. Shops, hotels, workshops, clinics, banks and insurers, across West Africa.</p>
+      </div>
+      <div class="po__eng">
+        <div class="po__e">
+          <div class="po__et"><ion-icon name="clipboard-outline"></ion-icon><span data-i="pe1">Form Builder</span></div>
+          <div class="po__ed" data-i="pe1d">Build complete form applications with their workflow in a drag-and-drop canvas, then publish them as a mobile app. Every form in the pre-built ERP modules is configured here too.</div>
+        </div>
+        <div class="po__e">
+          <div class="po__et"><ion-icon name="git-network-outline"></ion-icon><span data-i="pe2">Process Orchestrator</span></div>
+          <div class="po__ed" data-i="pe2d">Configure business processes that run across applications — approvals, checks, alerts, hand-offs — in a drag-and-drop orchestrator.</div>
+        </div>
+      </div>
+      <div class="po__lbl" data-i="pmods">Modules · switch on what you need</div>
+      <div class="po__grid">
+        <div class="po__m"><ion-icon name="card-outline"></ion-icon><span data-i="pm1">Sales &amp; payments</span></div>
+        <div class="po__m"><ion-icon name="cube-outline"></ion-icon><span data-i="pm2">Stock &amp; supplies</span></div>
+        <div class="po__m"><ion-icon name="receipt-outline"></ion-icon><span data-i="pm3">Invoices &amp; debts</span></div>
+        <div class="po__m"><ion-icon name="document-text-outline"></ion-icon><span data-i="pm4">Claims &amp; files</span></div>
+        <div class="po__m"><ion-icon name="checkmark-done-outline"></ion-icon><span data-i="pm5">Approvals</span></div>
+        <div class="po__m"><ion-icon name="people-outline"></ion-icon><span data-i="pm6">Customers</span></div>
+        <div class="po__m"><ion-icon name="bed-outline"></ion-icon><span data-i="pm7">Hotel &amp; rooms</span></div>
+        <div class="po__m"><ion-icon name="restaurant-outline"></ion-icon><span data-i="pm8">Restaurant &amp; bar</span></div>
+        <div class="po__m"><ion-icon name="cut-outline"></ion-icon><span data-i="pm9">Salon &amp; bookings</span></div>
+        <div class="po__m"><ion-icon name="construct-outline"></ion-icon><span data-i="pm10">Production</span></div>
+        <div class="po__m"><ion-icon name="time-outline"></ion-icon><span data-i="pm11">Queue &amp; tickets</span></div>
+        <div class="po__m"><ion-icon name="id-card-outline"></ion-icon><span data-i="pm12">Team &amp; roles</span></div>
+        <div class="po__m"><ion-icon name="tv-outline"></ion-icon><span data-i="pm13">Screens &amp; boards</span></div>
+        <div class="po__m"><ion-icon name="flash-outline"></ion-icon><span data-i="pm14">Automations</span></div>
+      </div>
+      <div class="po__pd">
+        <div class="po__pdt"><ion-icon name="funnel-outline"></ion-icon><span data-i="ppd">No ERP bloat: you only ever see the apps you switched on</span></div>
+        <div class="po__pdr">
+          <span class="po__pdi"><ion-icon name="apps-outline"></ion-icon><span data-i="ppd1">Install two apps, your staff meet two apps</span></span>
+          <span class="po__pdi"><ion-icon name="options-outline"></ion-icon><span data-i="ppd2">Every app has a simplicity dial — Starter, Standard, Full</span></span>
+          <span class="po__pdi"><ion-icon name="lock-open-outline"></ion-icon><span data-i="ppd3">Advanced screens stay hidden until you ask for them</span></span>
+        </div>
+      </div>
+      <div class="po__foot">
+        <span class="po__p"><ion-icon name="phone-portrait-outline"></ion-icon><span data-i="pf1">Phone first</span></span>
+        <span class="po__p"><ion-icon name="cloud-offline-outline"></ion-icon><span data-i="pf2">Offline by design</span></span>
+        <span class="po__p"><ion-icon name="swap-horizontal-outline"></ion-icon><span data-i="pf3">Devices stay connected locally</span></span>
+        <span class="po__p"><ion-icon name="sparkles-outline"></ion-icon><span data-i="pf4">AI assistance, coming next</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1 -->
+  <section class="slide">
+    <div class="copy">
+      <div class="eyebrow" data-i="e1">What Koomzo is</div>
+      <h2 data-i="h1">One platform. Your rules.</h2>
+      <p data-i="b1">Most business software asks you to work its way. Koomzo works the other way round: you describe how your business already runs, and the platform takes that shape — the same day, without a developer.</p>
+      <div class="bul">
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l1a">Shops, hotels, workshops, clinics, banks, insurers</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l1b">One login for every part of the business</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l1c">Built and tested for West African operations</span></div>
+      </div>
+    </div>
+    <div class="viz"><div class="vinner">
+      <div class="vgrid">
+        <div class="vmod"><ion-icon name="card-outline"></ion-icon><span data-i="v1a">Sales</span></div>
+        <div class="vmod"><ion-icon name="cube-outline"></ion-icon><span data-i="v1b">Stock</span></div>
+        <div class="vmod"><ion-icon name="document-text-outline"></ion-icon><span data-i="v1c">Applications</span></div>
+        <div class="vmod"><ion-icon name="bed-outline"></ion-icon><span data-i="v1d">Rooms</span></div>
+      </div>
+      <div class="vnode" style="border:1.5px solid var(--kz-primary);background:var(--kz-primary-wash)"><span class="b" style="background:var(--kz-primary);color:#fff"><ion-icon name="layers-outline"></ion-icon></span><span data-i="v1e">One platform underneath</span></div>
+    </div></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <div class="copy">
+      <div class="eyebrow" data-i="e2">The engine · 1 of 2</div>
+      <h2 data-i="h2">Build a form application, publish it as an app.</h2>
+      <p><span data-i="b2a">Drag the fields you want, attach the workflow behind them, and publish to your team’s phones — without waiting for a developer or an app release cycle. Every form in the pre-built ERP modules is configured through the same</span> <span class="key" data-i="k2">Form Builder</span><span data-i="b2b">, so you change those exactly the way you build your own.</span></p>
+      <div class="bul">
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l2a">Publishes as a mobile app your team installs</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l2b">Same form in English and French</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l2c">Photos, signatures and ID capture built in</span></div>
+      </div>
+    </div>
+    <div class="viz"><div class="vinner">
+      <div class="vfield"><ion-icon name="person-outline"></ion-icon><span data-i="v2a">Applicant name</span><ion-icon class="grab" name="reorder-two-outline"></ion-icon></div>
+      <div class="vfield"><ion-icon name="call-outline"></ion-icon><span data-i="v2b">Phone number</span><ion-icon class="grab" name="reorder-two-outline"></ion-icon></div>
+      <div class="vfield sel"><ion-icon name="cash-outline"></ion-icon><span data-i="v2c">Amount requested</span><ion-icon class="grab" name="reorder-two-outline"></ion-icon></div>
+      <div class="vfield"><ion-icon name="camera-outline"></ion-icon><span data-i="v2d">Photo of ID</span><ion-icon class="grab" name="reorder-two-outline"></ion-icon></div>
+      <div class="vfield" style="border-style:dashed;color:var(--kz-muted-3)"><ion-icon name="add-outline"></ion-icon><span data-i="v2e">Drag a field here</span></div>
+    </div></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <div class="copy">
+      <div class="eyebrow" data-i="e3">The engine · 2 of 2</div>
+      <h2 data-i="h3">Then draw the process across applications.</h2>
+      <p><span data-i="b3a">The </span><span class="key" data-i="k3">Process Orchestrator</span><span data-i="b3b"> is a drag-and-drop canvas for business processes that span applications: who approves, what gets checked, which SMS goes out, which module picks it up. Work moves by itself and you can see exactly where every file is sitting.</span></p>
+      <div class="bul">
+        <div class="hi"><ion-icon name="checkmark-circle"></ion-icon><span data-i="l3b">One event can touch several modules at once</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l3a">Approvals, limits and escalation by role</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l3c">Full history of who did what, and when</span></div>
+      </div>
+    </div>
+    <div class="viz"><div class="vinner">
+      <div class="vnode"><span class="b" style="background:var(--kz-primary-wash);color:var(--kz-primary-shade)"><ion-icon name="create-outline"></ion-icon></span><span data-i="v3a">Form submitted</span></div>
+      <div class="vconn"></div>
+      <div class="vnode"><span class="b" style="background:var(--kz-warning-wash);color:#8a6412"><ion-icon name="person-circle-outline"></ion-icon></span><span data-i="v3b">Branch manager approves</span></div>
+      <div class="vconn"></div>
+      <div class="vnode"><span class="b" style="background:var(--kz-success-wash);color:#227a46"><ion-icon name="chatbubble-ellipses-outline"></ion-icon></span><span data-i="v3c">SMS to the customer</span></div>
+      <div class="vconn"></div>
+      <div class="vnode"><span class="b" style="background:var(--kz-primary);color:#fff"><ion-icon name="git-network-outline"></ion-icon></span><span data-i="v3d">Accounts &amp; stock updated</span></div>
+    </div></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <div class="copy">
+      <div class="eyebrow" data-i="e4">Modules</div>
+      <h2 data-i="h4">Ready-made pieces, on the same engine.</h2>
+      <p data-i="b4">You don't start from an empty page. Switch on the modules you need — each one arrives with forms and flows already built, and you can change any of them the same way you'd change your own.</p>
+      <div class="bul">
+        <div class="hi"><ion-icon name="checkmark-circle"></ion-icon><span data-i="l4a">Same engine, same data — different capabilities</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l4b">Nothing hard-coded — every module bends to your rules</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l4c">Pay for what you switch on</span></div>
+      </div>
+    </div>
+    <div class="viz"><div class="vinner">
+      <div class="vgrid">
+        <div class="vmod"><ion-icon name="card-outline"></ion-icon><span data-i="m1">Sales &amp; payments</span></div>
+        <div class="vmod"><ion-icon name="cube-outline"></ion-icon><span data-i="m2">Stock &amp; supplies</span></div>
+        <div class="vmod"><ion-icon name="receipt-outline"></ion-icon><span data-i="m3">Invoices &amp; debts</span></div>
+        <div class="vmod"><ion-icon name="document-text-outline"></ion-icon><span data-i="m4">Claims &amp; files</span></div>
+        <div class="vmod"><ion-icon name="bed-outline"></ion-icon><span data-i="m5">Hotel &amp; bookings</span></div>
+        <div class="vmod"><ion-icon name="restaurant-outline"></ion-icon><span data-i="m6">Restaurant &amp; bar</span></div>
+        <div class="vmod"><ion-icon name="time-outline"></ion-icon><span data-i="m7">Queue &amp; tickets</span></div>
+        <div class="vmod"><ion-icon name="id-card-outline"></ion-icon><span data-i="m8">Team &amp; roles</span></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- 5 · progressive disclosure / great UX -->
+  <section class="slide">
+    <div class="copy">
+      <div class="eyebrow" data-i="e7">Simplicity by design</div>
+      <h2 data-i="h7">You only meet the apps you asked for.</h2>
+      <p data-i="b7">Big business software drowns people in menus they will never use. Koomzo shows one thing at a time: the apps you switched on, nothing else. And each app has a simplicity dial — start at Starter, where a sale is three taps, and move up only when the business asks for more.</p>
+      <div class="bul">
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l7a">Two apps installed means two apps on the screen — no empty menus, no modules you never bought</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l7b">Starter, Standard or Full per app — change it any evening, nothing is lost</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l7c">Big buttons, plain words, one thumb — designed for fast onboarding</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l7d">Every screen in English or French, and it never asks twice for what it already knows</span></div>
+      </div>
+    </div>
+    <div class="viz"><div class="vinner">
+      <div class="vapp"><ion-icon name="card-outline"></ion-icon><span data-i="v7a">Sales &amp; payments</span><ion-icon class="tick" name="checkmark-circle"></ion-icon></div>
+      <div class="vapp"><ion-icon name="cube-outline"></ion-icon><span data-i="v7b">Stock &amp; supplies</span><ion-icon class="tick" name="checkmark-circle"></ion-icon></div>
+      <div class="vapp off"><ion-icon name="close-outline"></ion-icon><span data-i="v7c">Payroll · not installed</span></div>
+      <div class="vapp off"><ion-icon name="close-outline"></ion-icon><span data-i="v7d">Manufacturing · not installed</span></div>
+      <div class="vhidden" data-i="v7e">— and 12 more apps you never see —</div>
+      <div class="vdial">
+        <div class="vdial__t"><ion-icon name="options-outline"></ion-icon><span data-i="v7f">Sales &amp; payments · how much do you need?</span></div>
+        <div class="vseg"><span class="on" data-i="v7g">Starter</span><span data-i="v7h">Standard</span><span data-i="v7i">Full</span></div>
+        <div class="vdial__n" data-i="v7j">Starter: take a sale, print a receipt. That’s the whole screen.</div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <div class="copy">
+      <div class="eyebrow" data-i="e5">Local-first operation</div>
+      <h2 data-i="h5">Offline doesn’t mean disconnected.</h2>
+      <p data-i="b5">Koomzo keeps your business running locally — even when the Internet isn’t available. Your register, waiter tablets, kitchen display and customer screens keep talking to each other, and everything reconciles with the cloud when data returns.</p>
+      <div class="bul">
+        <div class="hi"><ion-icon name="checkmark-circle"></ion-icon><span data-i="l5a">Orders, tickets and queue updates keep moving between devices</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l5b">Nothing is lost when the line cuts, and it is light on data</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l5c">Mobile money and cash side by side</span></div>
+      </div>
+    </div>
+    <div class="viz"><div class="vinner">
+      <div class="vhub"><ion-icon name="desktop-outline"></ion-icon><span data-i="v5a">Koomzo register</span></div>
+      <div class="vlink"><span data-i="v5b">Local peer connection</span></div>
+      <div class="vdevs">
+        <div class="vdev"><ion-icon name="tablet-portrait-outline"></ion-icon><span data-i="v5d">Waiter tablet</span></div>
+        <div class="vdev"><ion-icon name="restaurant-outline"></ion-icon><span data-i="v5e">Kitchen</span></div>
+        <div class="vdev"><ion-icon name="tv-outline"></ion-icon><span data-i="v5f">Kiosk</span></div>
+      </div>
+      <div class="vsep"></div>
+      <div class="vq">
+        <div class="vqc"><span data-i="v5g">Clerk 1</span><span data-i="v5h">Clerk 2</span><span data-i="v5i">Clerk 3</span></div>
+        <ion-icon name="arrow-forward"></ion-icon>
+        <div class="vqb" data-i="v5j">Queue</div>
+        <ion-icon name="arrow-forward"></ion-icon>
+        <div class="vqb" data-i="v5k">Display</div>
+      </div>
+      <div class="vsync" style="align-self:center"><ion-icon name="cloud-done-outline"></ion-icon><span data-i="v5c">Synced when data returns</span></div>
+      <div class="vfoot" data-i="v5l">Koomzo uses the best available local link</div>
+    </div></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <div class="copy">
+      <div class="eyebrow" data-i="e6">Growing with you</div>
+      <h2 data-i="h6">Simple today. Deeper when you ask.</h2>
+      <p data-i="b6">Koomzo starts with one screen and hides the rest. Extra steps, branches and controls appear only when your business needs them — so the person at the counter never meets a screen built for head office.</p>
+      <div class="bul">
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l6a">Nothing to configure before you start</span></div>
+        <div><ion-icon name="checkmark-circle"></ion-icon><span data-i="l6b">Turn capabilities on the day the business asks for them</span></div>
+        <div><ion-icon name="sparkles" style="color:var(--kz-primary)"></ion-icon><span data-i="l6c">Coming next: describe a form or a process in your own words and let Koomzo draft it for you to approve.</span></div>
+      </div>
+    </div>
+    <div class="viz"><div class="vinner">
+      <div class="vtl">
+        <div class="vtl__c">
+          <div class="vtl__h" data-i="v6t">Today</div>
+          <div class="vtl__i"><ion-icon name="checkmark-circle"></ion-icon><span data-i="v6a">Take a sale</span></div>
+          <div class="vtl__i"><ion-icon name="checkmark-circle"></ion-icon><span data-i="v6b">Record a customer</span></div>
+          <div class="vtl__i"><ion-icon name="checkmark-circle"></ion-icon><span data-i="v6g">Track stock</span></div>
+          <div class="vtl__i"><ion-icon name="checkmark-circle"></ion-icon><span data-i="v6h">Run a queue</span></div>
+        </div>
+        <div class="vtl__c later">
+          <div class="vtl__h" data-i="v6l">Later</div>
+          <div class="vtl__i"><ion-icon name="lock-closed-outline"></ion-icon><span data-i="v6c">Add approvals</span></div>
+          <div class="vtl__i"><ion-icon name="lock-closed-outline"></ion-icon><span data-i="v6d">Add branches</span></div>
+          <div class="vtl__i"><ion-icon name="lock-closed-outline"></ion-icon><span data-i="v6i">Add production</span></div>
+          <div class="vtl__i"><ion-icon name="lock-closed-outline"></ion-icon><span data-i="v6j">Add another location</span></div>
+        </div>
+      </div>
+      <div class="vprompt"><b data-i="v6e">AI, coming next:</b> <span data-i="v6f">“Make a claim form with a photo and a manager approval above 50,000.”</span></div>
+    </div></div>
+  </section>
+</div>
+
+<nav class="nav">
+  <span class="count" id="count">1 / 6</span>
+  <button class="btn" id="prev" type="button" aria-label="Previous"><ion-icon name="arrow-back-outline"></ion-icon></button>
+  <button class="btn pri" id="next" type="button"><span data-i="next" id="nextlbl">Next</span><ion-icon name="arrow-forward-outline"></ion-icon></button>
+</nav>
+</div>
+
+<script>
+const FR={
+ e0:"Toute la plateforme, en une page",
+ h0:"Tout ce qui fait tourner votre activité — sur deux outils sans code.",
+ b0:"Créez les formulaires dont vos équipes ont besoin, automatisez les circuits qui font avancer le travail, puis activez les modules qu'il vous faut. Koomzo garde vos équipes et vos appareils connectés entre eux — même sans connexion Internet. Commerces, hôtels, ateliers, cliniques, banques et assureurs, en Afrique de l'Ouest.",
+ pe1:"Générateur de formulaires",pe1d:"Créez des applications de formulaires complètes avec leur circuit dans un canevas glisser-déposer, puis publiez-les comme appli mobile. Tous les formulaires des modules ERP prêts à l'emploi sont configurés ici aussi.",
+ pe2:"Orchestrateur de processus",pe2d:"Configurez des processus métier qui traversent les applications — validations, contrôles, alertes, relais — dans un orchestrateur glisser-déposer.",
+ pmods:"Modules · activez ce qu'il vous faut",
+ pm1:"Ventes et paiements",pm2:"Stock et achats",pm3:"Factures et créances",pm4:"Dossiers et sinistres",pm5:"Validations",pm6:"Clients",pm7:"Hôtel et chambres",pm8:"Restaurant et bar",pm9:"Salon et rendez-vous",pm10:"Production",pm11:"File d'attente",pm12:"Équipe et rôles",pm13:"Écrans et affichage",pm14:"Automatisations",
+ ppd:"Sans surcharge ERP : vous ne voyez que les applis que vous avez activées",
+ ppd1:"Deux applis installées, vos équipes voient deux applis",
+ ppd2:"Chaque appli a son curseur de simplicité — Essentiel, Standard, Complet",
+ ppd3:"Les écrans avancés restent cachés jusqu'à ce que vous les demandiez",
+ e7:"La simplicité par choix",h7:"Vous ne rencontrez que les applis demandées.",
+ b7:"Les grands logiciels noient les gens dans des menus qu'ils n'ouvriront jamais. Koomzo montre une chose à la fois : les applis que vous avez activées, rien d'autre. Et chaque appli a un curseur de simplicité — commencez en Essentiel, où une vente tient en trois gestes, et montez seulement quand l'activité le demande.",
+ l7a:"Deux applis installées, deux applis à l'écran — pas de menus vides, pas de modules jamais achetés",
+ l7b:"Essentiel, Standard ou Complet par appli — changez un soir, rien n'est perdu",
+ l7c:"Grands boutons, mots simples, un seul pouce — pensé pour une prise en main rapide",
+ l7d:"Chaque écran en français ou en anglais, et jamais deux fois la même question",
+ v7a:"Ventes et paiements",v7b:"Stock et achats",v7c:"Paie · non installé",v7d:"Production · non installé",
+ v7e:"— et 12 autres applis que vous ne voyez jamais —",
+ v7f:"Ventes et paiements · combien vous en faut-il ?",v7g:"Essentiel",v7h:"Standard",v7i:"Complet",
+ v7j:"Essentiel : encaisser, imprimer le ticket. C'est tout l'écran.",
+ pf1:"Téléphone d'abord",pf2:"Hors ligne par conception",pf3:"Les appareils restent connectés localement",pf4:"L'IA, bientôt",
+ desc:"Une seule plateforme",skip:"Passer",next:"Suivant",done:"Créer mon espace",
+ e1:"Ce qu'est Koomzo",h1:"Une plateforme. Vos règles.",
+ b1:"La plupart des logiciels vous demandent de travailler à leur façon. Koomzo fait l'inverse : vous décrivez comment votre activité fonctionne déjà, et la plateforme prend cette forme — le jour même, sans développeur.",
+ l1a:"Commerces, hôtels, ateliers, cliniques, banques, assureurs",l1b:"Un seul identifiant pour toute l'entreprise",l1c:"Conçu et testé pour l'Afrique de l'Ouest",
+ v1a:"Ventes",v1b:"Stock",v1c:"Dossiers",v1d:"Chambres",v1e:"Une seule plateforme en dessous",
+ e2:"Le moteur · 1 sur 2",h2:"Créez une application de formulaires, publiez-la comme appli.",
+ b2a:"Glissez les champs voulus, associez le circuit qui les fait avancer, et publiez sur les téléphones de vos équipes — sans attendre un développeur ni un cycle de publication d'application. Tous les formulaires des modules ERP prêts à l'emploi passent par le même",k2:"Générateur de formulaires",b2b:" : vous les modifiez exactement comme vous créez les vôtres.",
+ l2a:"Publié comme une appli mobile que vos équipes installent",l2b:"Le même formulaire en français et en anglais",l2c:"Photos, signatures et pièces d'identité intégrées",
+ v2a:"Nom du demandeur",v2b:"Numéro de téléphone",v2c:"Montant demandé",v2d:"Photo de la pièce",v2e:"Glissez un champ ici",
+ e3:"Le moteur · 2 sur 2",h3:"Puis dessinez le processus entre les applications.",
+ b3a:"L'",k3:"Orchestrateur de processus",b3b:" est un canevas glisser-déposer pour les processus métier qui traversent les applications : qui valide, quels contrôles, quel SMS partent, quel module prend le relais. Le travail avance seul et vous voyez où chaque dossier se trouve.",
+ l3a:"Validations, plafonds et escalade par rôle",l3b:"Un seul événement peut toucher plusieurs modules",l3c:"Historique complet : qui a fait quoi, et quand",
+ v3a:"Formulaire soumis",v3b:"Le chef d'agence valide",v3c:"SMS au client",v3d:"Comptes et stock mis à jour",
+ e4:"Modules",h4:"Des briques prêtes, sur le même moteur.",
+ b4:"Vous ne partez pas d'une page blanche. Activez les modules qu'il vous faut — chacun arrive avec ses formulaires et ses circuits déjà prêts, et vous pouvez les modifier comme les vôtres.",
+ l4a:"Même moteur, mêmes données — des capacités différentes",l4b:"Rien de figé — chaque module s'adapte à vos règles",l4c:"Vous payez ce que vous activez",
+ m1:"Ventes et paiements",m2:"Stock et achats",m3:"Factures et créances",m4:"Dossiers et sinistres",m5:"Hôtel et réservations",m6:"Restaurant et bar",m7:"File d'attente",m8:"Équipe et rôles",
+ e5:"Fonctionnement local d'abord",h5:"Hors ligne ne veut pas dire déconnecté.",
+ b5:"Koomzo fait tourner votre activité en local — même sans connexion Internet. Votre caisse, les tablettes des serveurs, l'écran cuisine et les écrans clients continuent de se parler, et tout se réconcilie avec le cloud au retour du réseau.",
+ l5a:"Commandes, tickets et files d'attente continuent de circuler entre les appareils",l5b:"Rien n'est perdu quand la ligne coupe, et c'est léger en données",l5c:"Mobile money et espèces côte à côte",
+ v5a:"Caisse Koomzo",v5b:"Connexion locale directe",v5c:"Synchronisé au retour du réseau",
+ v5d:"Tablette serveur",v5e:"Écran cuisine",v5f:"Borne",v5g:"Guichet 1",v5h:"Guichet 2",v5i:"Guichet 3",v5j:"File",v5k:"Affichage",
+ v5l:"Koomzo utilise le meilleur lien local disponible",
+ e6:"Ça grandit avec vous",h6:"Simple aujourd'hui. Plus complet quand vous le demandez.",
+ b6:"Koomzo démarre avec un seul écran et cache le reste. Les étapes, agences et contrôles supplémentaires n'apparaissent que quand votre activité en a besoin — la personne au comptoir ne tombe jamais sur un écran fait pour le siège.",
+ l6a:"Rien à configurer avant de commencer",l6b:"Activez les capacités le jour où l'activité le demande",l6c:"Bientôt : décrivez un formulaire ou un processus avec vos mots et Koomzo vous en prépare une version à valider.",
+ v6t:"Aujourd'hui",v6l:"Plus tard",
+ v6a:"Encaisser une vente",v6b:"Enregistrer un client",v6g:"Suivre le stock",v6h:"Gérer une file",
+ v6c:"Ajouter les validations",v6d:"Ajouter les agences",v6i:"Ajouter la production",v6j:"Ajouter un site",
+ v6e:"L'IA, bientôt :",v6f:"« Fais un formulaire de sinistre avec photo et validation du chef au-delà de 50 000. »"
+};
+const EN={};
+document.querySelectorAll('[data-i]').forEach(el=>EN[el.dataset.i]=el.textContent);
+let lang='en';
+function setLang(l){
+ lang=l;const d=l==='fr'?FR:EN;
+ document.querySelectorAll('[data-i]').forEach(el=>{if(d[el.dataset.i])el.textContent=d[el.dataset.i]});
+ document.documentElement.lang=l;
+ document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===l)));
+ paint();
+ try{localStorage.setItem('kz-lang',l)}catch(e){}
+}
+const slides=[...document.querySelectorAll('.slide')],dots=document.getElementById('dots');
+let i=0;
+slides.forEach((s,n)=>{const b=document.createElement('button');b.className='dot';b.type='button';b.setAttribute('aria-label','Screen '+(n+1));b.addEventListener('click',()=>go(n));dots.appendChild(b)});
+function paint(){
+ slides.forEach((s,n)=>s.classList.toggle('on',n===i));
+ [...dots.children].forEach((d,n)=>d.setAttribute('aria-current',String(n===i)));
+ document.getElementById('count').textContent=(i+1)+' / '+slides.length;
+ document.getElementById('prev').disabled=i===0;
+ const last=i===slides.length-1,dict=lang==='fr'?FR:EN;
+ document.getElementById('nextlbl').textContent=last?(dict.done||'Create my workspace'):(dict.next||'Next');
+}
+function go(n){i=Math.max(0,Math.min(slides.length-1,n));paint();window.scrollTo({top:0})}
+document.getElementById('prev').addEventListener('click',()=>go(i-1));
+document.getElementById('next').addEventListener('click',()=>{
+ if(i===slides.length-1){location.href='Koomzo - Signup & Platform Pitch.html'}else go(i+1);
+});
+document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(i+1);if(e.key==='ArrowLeft')go(i-1)});
+EN.done='Create my workspace';EN.next='Next';
+const q=new URLSearchParams(location.search).get('lang');
+let saved=null;try{saved=localStorage.getItem('kz-lang')}catch(e){}
+setLang(q||saved||'en');
+</script>
+</body>
+</html>

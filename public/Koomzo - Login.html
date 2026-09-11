@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>koomzo — Log in</title>
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+:root{--kz-primary:#6a61bf;--kz-primary-shade:#574fa6;--kz-primary-tint:#837bd0;--kz-primary-wash:#eeecf8;--kz-success:#2e9e5b;--kz-discount:#ec603a;--kz-bg:#f4f6f9;--kz-surface:#fff;--kz-surface-2:#f9fafb;--kz-ink:#141826;--kz-ink-2:#303b57;--kz-muted:#676f88;--kz-muted-2:#858a9b;--kz-muted-3:#a0a5ae;--kz-border:#e9ecee;--kz-border-strong:#d8dce2;--kz-radius:10px;--kz-radius-pill:999px;--kz-font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--kz-font-sans);background:var(--kz-bg);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none;font-weight:600}a:hover{color:var(--kz-primary-shade)}
+.shell{min-height:100%;display:flex;flex-direction:column}
+/* ---- logo ---- */
+.lock{display:flex;align-items:center;gap:10px}
+.lock svg{width:26px;height:26px;flex-shrink:0}
+.lock .wm{font:700 20px/1 var(--kz-font-sans);letter-spacing:-.02em;color:var(--kz-ink-2);white-space:nowrap}
+.lock .wm .oo{color:var(--kz-primary)}
+.lock .desc{display:none;font:500 8.5px/1.3 var(--kz-font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--kz-muted-2);margin-top:4px}
+@media(min-width:1024px){.lock .desc{display:block}}
+.onp .wm{color:#fff}.onp .wm .oo{color:#d9d5f2}.onp .desc{color:rgba(255,255,255,.66)}
+/* ---- app header ---- */
+.appbar{background:var(--kz-surface);border-bottom:1px solid var(--kz-border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:6}
+.lang{display:inline-flex;background:var(--kz-bg);border:1px solid var(--kz-border-strong);border-radius:var(--kz-radius-pill);padding:3px}
+.lang button{border:0;background:none;font:600 12.5px/1 var(--kz-font-sans);color:var(--kz-muted);padding:8px 13px;border-radius:var(--kz-radius-pill);cursor:pointer;min-height:34px}
+.lang button[aria-pressed=true]{background:var(--kz-primary);color:#fff}
+/* ---- pane ---- */
+.pane{flex:1;display:flex;flex-direction:column}
+.body{flex:1;padding:26px 16px 12px;display:flex;flex-direction:column;gap:22px}
+@media(min-width:640px){.body{padding:40px 24px 16px;width:100%;max-width:520px;margin:0 auto}}
+h1{font:700 26px/1.2 var(--kz-font-sans);letter-spacing:-.02em;margin:0}
+.lede{font:400 15px/1.55 var(--kz-font-sans);color:var(--kz-muted);margin:8px 0 0}
+.fields{display:flex;flex-direction:column;gap:16px}
+.f{display:flex;flex-direction:column;gap:6px}
+.f label{font:600 13px/1.2 var(--kz-font-sans);color:var(--kz-ink-2)}
+.f label .req{color:var(--kz-discount)}
+input{height:50px;background:#fff;border:1px solid var(--kz-border-strong);border-radius:var(--kz-radius);padding:0 14px;font:400 16px/1 var(--kz-font-sans);color:var(--kz-ink);width:100%;font-family:var(--kz-font-sans)}
+input::placeholder{color:var(--kz-muted-3)}
+input:focus{outline:0;border:1.5px solid var(--kz-primary);box-shadow:0 0 0 3px var(--kz-primary-wash)}
+select{height:50px;border:0;background:#fff;font:500 16px/1 var(--kz-font-sans);color:var(--kz-ink-2);padding:0 8px 0 14px;font-family:var(--kz-font-sans)}
+select:focus{outline:0}
+.hint{font:400 12.5px/1.45 var(--kz-font-sans);color:var(--kz-muted-2)}
+.combo{display:flex;align-items:center;background:#fff;border:1px solid var(--kz-border-strong);border-radius:var(--kz-radius);overflow:hidden}
+.combo:focus-within{border:1.5px solid var(--kz-primary);box-shadow:0 0 0 3px var(--kz-primary-wash)}
+.combo select{border-right:1px solid var(--kz-border);flex-shrink:0}
+.combo input{border:0;box-shadow:none}.combo input:focus{border:0;box-shadow:none}
+.reveal{background:none;border:0;color:var(--kz-muted-2);padding:0 14px;height:48px;display:flex;align-items:center;cursor:pointer;font-size:20px;flex-shrink:0}
+.reveal:hover{color:var(--kz-ink-2)}
+.rowend{display:flex;justify-content:flex-end}
+.link{font:600 13.5px/1 var(--kz-font-sans);color:var(--kz-primary);background:none;border:0;cursor:pointer;padding:8px 0;min-height:36px}
+.link:hover{color:var(--kz-primary-shade)}
+.reassure{display:flex;gap:10px;align-items:flex-start;background:var(--kz-surface-2);border-radius:var(--kz-radius);padding:14px 15px;font:400 13px/1.45 var(--kz-font-sans);color:var(--kz-muted)}
+.reassure ion-icon{font-size:17px;color:var(--kz-primary);flex-shrink:0;margin-top:1px}
+.reassure b{color:var(--kz-ink-2);font-weight:600}
+/* ---- dock ---- */
+.dock{position:sticky;bottom:0;background:var(--kz-surface);border-top:1px solid var(--kz-border);padding:12px 16px calc(14px + env(safe-area-inset-bottom));z-index:6}
+.dockin{display:flex;flex-direction:column;gap:12px}
+@media(min-width:640px){.dock{padding:14px 24px 20px}.dockin{max-width:520px;margin:0 auto;width:100%}}
+.cta{height:52px;border:0;border-radius:var(--kz-radius);background:var(--kz-primary);box-shadow:0 6px 14px rgba(106,97,191,.28);color:#fff;font:600 16.5px/1 var(--kz-font-sans);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;width:100%;transition:transform .16s cubic-bezier(.4,0,.2,1),background .16s}
+.cta:hover{background:var(--kz-primary-shade)}.cta:active{transform:scale(.985)}
+.cta ion-icon{font-size:19px}
+.docklinks{display:flex;align-items:center;justify-content:space-between;gap:12px;font:400 13px/1.4 var(--kz-font-sans);color:var(--kz-muted)}
+.tour{color:var(--kz-muted-2);font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.tour:hover{color:var(--kz-ink-2)}
+.tour ion-icon{font-size:14px}
+/* ---- desktop split ---- */
+.pitch{display:none}
+@media(min-width:1000px){
+ .shell{display:grid;grid-template-columns:minmax(380px,36%) 1fr;min-height:100vh}
+ .appbar{display:none}
+ .pitch{display:flex;flex-direction:column;justify-content:space-between;gap:28px;background:var(--kz-primary);color:#fff;padding:40px}
+ .pitch h2{font:700 30px/1.2 var(--kz-font-sans);letter-spacing:-.02em;margin:0;max-width:20ch;text-wrap:pretty}
+ .pitch p{font:400 15px/1.6 var(--kz-font-sans);color:rgba(255,255,255,.82);margin:12px 0 0;max-width:38ch}
+ .pills{display:flex;flex-wrap:wrap;gap:7px}
+ .pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.16);border-radius:var(--kz-radius-pill);padding:7px 12px;font:500 12.5px/1 var(--kz-font-sans)}
+ .pill ion-icon{font-size:15px}
+ .ptour{align-self:flex-start;color:rgba(255,255,255,.8);font:600 13px/1 var(--kz-font-sans);display:inline-flex;align-items:center;gap:7px;border-bottom:1px solid rgba(255,255,255,.32);padding:8px 0;min-height:38px}
+ .ptour:hover{color:#fff;border-bottom-color:#fff}
+ .pitchtop{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+ .lang.onp{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2)}
+ .lang.onp button{color:rgba(255,255,255,.76)}
+ .lang.onp button[aria-pressed=true]{background:#fff;color:var(--kz-primary-shade)}
+ .pane{justify-content:center}
+ .body{max-width:520px;padding:0 44px 0;margin:0;flex:0 0 auto}
+ .dock{position:static;border-top:0;background:none;padding:24px 44px 0}
+ .dockin{max-width:520px;margin:0}
+ .reassure{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<aside class="pitch">
+  <div class="pitchtop">
+  <div class="lock onp">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="5" width="10.5" height="10.5" rx="3" fill="#fff"/><rect x="19" y="7" width="10.5" height="10.5" rx="3" fill="#c9c3ec"/><rect x="5" y="19" width="10.5" height="10.5" rx="3" fill="#c9c3ec"/><rect x="19" y="20.5" width="10.5" height="10.5" rx="3" fill="#fff"/></svg>
+    <div><div class="wm">k<span class="oo">oo</span>mzo</div><div class="desc" data-i="desc">One business platform</div></div>
+  </div>
+  <div class="lang onp" role="group" aria-label="Language">
+    <button type="button" data-lang="en" aria-pressed="true">EN</button>
+    <button type="button" data-lang="fr" aria-pressed="false">FR</button>
+  </div>
+  </div>
+  <div>
+    <h2 data-i="ph">Your workspace is where you left it.</h2>
+    <p data-i="pl">Everything recorded on this device while you were away has already synced. Sign in and carry on.</p>
+  </div>
+  <div class="pills">
+    <span class="pill"><ion-icon name="swap-horizontal-outline"></ion-icon><span data-i="p1">Devices stay in step</span></span>
+  </div>
+  <a class="ptour" href="Koomzo - Introduction Walkthrough.html"><ion-icon name="play-circle-outline"></ion-icon><span data-i="tour">See how it works</span></a>
+</aside>
+
+<div class="pane">
+  <header class="appbar">
+    <div class="lock">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="5" width="10.5" height="10.5" rx="3" fill="#6a61bf"/><rect x="19" y="7" width="10.5" height="10.5" rx="3" fill="#837bd0"/><rect x="5" y="19" width="10.5" height="10.5" rx="3" fill="#837bd0"/><rect x="19" y="20.5" width="10.5" height="10.5" rx="3" fill="#6a61bf"/></svg>
+      <div><div class="wm">k<span class="oo">oo</span>mzo</div><div class="desc" data-i="desc2">One business platform</div></div>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="fr" aria-pressed="false">FR</button>
+    </div>
+  </header>
+
+  <form class="body" onsubmit="return false">
+    <div>
+      <h1 data-i="h1">Welcome back</h1>
+      <p class="lede" data-i="l1">Sign in to your workspace.</p>
+    </div>
+
+    <div class="fields">
+      <div class="f">
+        <label for="tel"><span data-i="ltel">Phone number</span> <span class="req">*</span></label>
+        <div class="combo">
+          <select aria-label="Country code">
+            <option>+237</option><option>+225</option><option>+221</option><option>+233</option><option>+234</option><option>+229</option><option>+228</option><option>+226</option><option>+223</option>
+          </select>
+          <input id="tel" inputmode="tel" autocomplete="tel" data-ph="phtel" placeholder="6 55 19 79 85" required>
+        </div>
+      </div>
+      <div class="f">
+        <label for="pw"><span data-i="lpw">Password</span> <span class="req">*</span></label>
+        <div class="combo">
+          <input id="pw" type="password" autocomplete="current-password" value="Bakoko2026" data-ph="phpw" placeholder="Your password" required>
+          <button class="reveal" type="button" id="reveal" aria-label="Show password"><ion-icon name="eye-outline"></ion-icon></button>
+        </div>
+        <div class="rowend"><a class="link" href="#forgot" data-i="forgot">Forgot password?</a></div>
+      </div>
+    </div>
+
+    <div class="reassure"><ion-icon name="cloud-offline-outline"></ion-icon><div><b data-i="r1t">Signed in once, works offline.</b> <span data-i="r1b">Keep working when the network drops — everything syncs when it returns.</span></div></div>
+  </form>
+
+  <div class="dock">
+    <div class="dockin">
+      <button class="cta" type="button"><span data-i="cta">Log in</span><ion-icon name="arrow-forward-outline"></ion-icon></button>
+      <div class="docklinks">
+        <a class="tour" href="Koomzo - Introduction Walkthrough.html"><ion-icon name="play-circle-outline"></ion-icon><span data-i="tour2">How it works</span></a>
+        <span><span data-i="noacct">New to Koomzo?</span> <a href="Koomzo - Signup &amp; Platform Pitch.html" data-i="register">Create an account</a></span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const FR={
+ desc:"Une seule plateforme",desc2:"Une seule plateforme",
+ ph:"Votre espace de travail est resté comme vous l'avez laissé.",
+ pl:"Tout ce qui a été enregistré sur cet appareil pendant votre absence est déjà synchronisé. Connectez-vous et reprenez.",
+ p1:"Les appareils restent synchronisés",tour:"Voir comment ça marche",tour2:"Comment ça marche",
+ h1:"Bon retour",l1:"Connectez-vous à votre espace de travail.",
+ ltel:"Numéro de téléphone",phtel:"6 55 19 79 85",
+ lpw:"Mot de passe",phpw:"Votre mot de passe",forgot:"Mot de passe oublié ?",
+ r1t:"Une fois connecté, ça marche hors ligne.",r1b:"Continuez à travailler quand le réseau coupe — tout se synchronise au retour.",
+ cta:"Se connecter",noacct:"Nouveau sur Koomzo ?",register:"Créer un compte"
+};
+const EN={};
+document.querySelectorAll('[data-i]').forEach(el=>EN[el.dataset.i]=el.textContent);
+document.querySelectorAll('[data-ph]').forEach(el=>EN[el.dataset.ph]=el.placeholder);
+function setLang(l){
+ const d=l==='fr'?FR:EN;
+ document.querySelectorAll('[data-i]').forEach(el=>{if(d[el.dataset.i])el.textContent=d[el.dataset.i]});
+ document.querySelectorAll('[data-ph]').forEach(el=>{if(d[el.dataset.ph])el.placeholder=d[el.dataset.ph]});
+ document.documentElement.lang=l;
+ document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===l)));
+ document.querySelectorAll('a[href^="Koomzo - Introduction"]').forEach(a=>a.href='Koomzo - Introduction Walkthrough.html'+(l==='fr'?'?lang=fr':''));
+ try{localStorage.setItem('kz-lang',l)}catch(e){}
+}
+document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+const pw=document.getElementById('pw'),rv=document.getElementById('reveal');
+rv.addEventListener('click',()=>{const s=pw.type==='password';pw.type=s?'text':'password';rv.innerHTML='<ion-icon name="'+(s?'eye-off-outline':'eye-outline')+'"></ion-icon>';rv.setAttribute('aria-label',s?'Hide password':'Show password')});
+let saved=null;try{saved=localStorage.getItem('kz-lang')}catch(e){}
+if(saved)setLang(saved);
+</script>
+</body>
+</html>

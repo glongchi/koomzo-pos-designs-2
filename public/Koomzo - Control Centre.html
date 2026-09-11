@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Koomzo — Control Centre</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="kz/kz.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.cc{max-width:1080px;margin:0 auto;padding:32px 22px 72px}
+.cchd{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.ccmark{width:38px;height:38px;border-radius:11px;background:var(--kz-primary);display:grid;place-items:center;box-shadow:var(--kz-shadow-key);flex:none}
+.ccmark ion-icon{color:#fff;font-size:20px}
+.cchd h1{margin:0;font:700 24px var(--kz-font-sans);letter-spacing:-.02em}
+.ccsub{margin:0 0 22px 50px;font:400 13.5px/1.6 var(--kz-font-sans);color:var(--kz-muted);max-width:62ch;text-wrap:pretty}
+.cctabs{display:flex;gap:3px;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-pill);padding:4px;margin:18px 0;overflow-x:auto;scrollbar-width:none}
+.cctabs::-webkit-scrollbar{display:none}
+.cctabs button{flex:none;height:36px;padding:0 16px;border:none;background:none;border-radius:var(--kz-radius-pill);font:600 13px var(--kz-font-sans);color:var(--kz-muted-2);display:inline-flex;align-items:center;gap:7px}
+.cctabs button ion-icon{font-size:16px}
+.cctabs button.on{background:var(--kz-primary);color:#fff}
+.ccgrid{display:grid;gap:14px}
+.ccsec{font:700 11px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--kz-muted-3);margin:24px 0 10px}
+.ccrail{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:11px}
+.ccnav{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:14px 16px}
+.ccnav.off{background:var(--kz-surface-2)}
+.ccnav.off .ccnav__h .ic{opacity:.5}
+.ccnav.off .ccnav__h b{color:var(--kz-muted)}
+.ccnav.off .ccnav__h .tg{background:#fff;color:var(--kz-muted-2)}
+.ccnav__h{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.ccnav__h .ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:15px;flex:none}
+.ccnav__h b{font:700 13.5px var(--kz-font-sans)}
+.ccnav__h .tg{margin-left:auto;font:700 9.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;background:var(--kz-surface-2);color:var(--kz-muted-3);border-radius:var(--kz-radius-pill);padding:3px 8px}
+.ccnav__h .tg.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.ccitems{display:flex;flex-wrap:wrap;gap:5px}
+.ccitem{display:inline-flex;align-items:center;gap:5px;font:600 11.5px var(--kz-font-sans);border-radius:6px;padding:5px 9px;background:var(--kz-surface-2);color:var(--kz-ink-2)}
+.ccitem ion-icon{font-size:13px}
+.ccitem.core{background:var(--kz-success-wash);color:#1f7a45}
+.ccitem.wind{background:var(--kz-warning-wash);color:#8a6414}
+.ccitem.gone{background:var(--kz-surface-2);color:var(--kz-muted-2)}
+.ccpanel{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);padding:18px}
+.ccpanel h3{margin:0 0 4px;font:700 15px var(--kz-font-sans)}
+.ccpanel p.s{margin:0 0 14px;font:400 12.5px/1.6 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+.cc2{display:grid;grid-template-columns:1fr 340px;gap:14px;align-items:start}
+@media (max-width:900px){.cc2{grid-template-columns:1fr}}
+.ccnote{display:flex;gap:10px;padding:13px 15px;border-radius:var(--kz-radius);background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.ccnote ion-icon{font-size:18px;color:var(--kz-primary);flex:none;margin-top:2px}
+.ccnote b{font-weight:700}
+.cclinks{display:flex;flex-wrap:wrap;gap:8px}
+.cclinks a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.cclinks a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="kz/kz-locale.js"></script>
+<script src="kz/kz-caps.js"></script>
+<script type="text/babel" src="kz/kz-setup.jsx"></script>
+<script type="text/babel" src="kz/kz-profile.jsx"></script>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+function NavPreview() {
+  const s = KZ.state();
+  return (
+    <div className="ccrail">
+      {KZ.MODULES.map((m) => {
+        const ms = s.modules[m.id], off = ms.tier === 'off';
+        return (
+          <div className={'ccnav' + (off ? ' off' : '')} key={m.id}>
+            <div className="ccnav__h">
+              <div className="ic" style={{ background: m.tint + '1a', color: m.tint }}><ion-icon name={m.icon}></ion-icon></div>
+              <b>{m.name}</b>
+              <span className={'tg' + (off ? '' : ' on')}>{ms.tier}</span>
+            </div>
+            {off ? <div className="ccitem gone"><ion-icon name="eye-off-outline"></ion-icon>Hidden from navigation</div> : (
+              <div className="ccitems">
+                <span className="ccitem core"><ion-icon name="shield-checkmark-outline"></ion-icon>{m.core}</span>
+                {m.caps.map((c) => {
+                  const r = KZ.resolve(m.id, c.key);
+                  if (r === 'off' || r === 'locked') return null;
+                  return <span className={'ccitem' + (r === 'winding' ? ' wind' : '')} key={c.key}>
+                    <ion-icon name={r === 'winding' ? 'hourglass-outline' : c.icon}></ion-icon>{c.name}</span>;
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function App() {
+  const [tab, setTab] = useState('modules');
+  const [, bump] = useState(0);
+  const refresh = () => bump((n) => n + 1);
+  useEffect(() => KZ.subscribe(refresh), []);
+  const s = KZ.state();
+  const live = KZ.MODULES.filter((m) => s.modules[m.id].tier !== 'off').length;
+
+  return (
+    <div className="cc">
+      <div className="cchd"><div className="ccmark"><ion-icon name="options-outline"></ion-icon></div>
+        <h1>Control Centre</h1></div>
+      <p className="ccsub">One capability service across the whole suite. Plan sets the ceiling, configuration sets the surface — and every module reads the same resolver, so a screen switched off here is gone everywhere. Hotel and Grocery reuse Retail and Restaurant rather than shipping their own register or kitchen; Forms and Automations, the oldest modules here, now answer to the same switches as the newest.</p>
+
+      <PlanBar onChange={refresh} />
+
+      <div className="cctabs">
+        <button className={tab === 'modules' ? 'on' : ''} onClick={() => setTab('modules')}><ion-icon name="apps-outline"></ion-icon>Modules<span style={{opacity:.7}}>· {live}/{KZ.MODULES.length}</span></button>
+        <button className={tab === 'profile' ? 'on' : ''} onClick={() => setTab('profile')}><ion-icon name="clipboard-outline"></ion-icon>Business profile</button>
+        <button className={tab === 'preview' ? 'on' : ''} onClick={() => setTab('preview')}><ion-icon name="eye-outline"></ion-icon>Navigation preview</button>
+        <button className={tab === 'log' ? 'on' : ''} onClick={() => setTab('log')}><ion-icon name="time-outline"></ion-icon>Change log</button>
+      </div>
+
+      {tab === 'modules' && <>
+        <PreviewAs onChange={refresh} />
+        <div className="ccsec">{KZ.MODULES.length} modules, one mechanism</div>
+        <div className="ccgrid">
+          {KZ.MODULES.map((m) => <CapabilityPanel key={m.id} mid={m.id} onChange={refresh} />)}
+        </div>
+        <div className="ccnote" style={{ marginTop: 16 }}><ion-icon name="information-circle-outline"></ion-icon>
+          <span>Switching a capability that holds open work opens a <b>pre-flight</b> instead of hiding it silently: documents wind down and retire themselves, money is a hard block until it is reconciled, reference data hides at once. Try <b>Inventory → Purchase orders</b> or <b>Retail POS → Shift &amp; drawer</b>.</span></div>
+      </>}
+
+      {tab === 'profile' && <>
+        <div className="ccnote" style={{ marginBottom: 14 }}><ion-icon name="clipboard-outline"></ion-icon>
+          <span>The same instrument the merchant, sales and support all use. It asks about the <b>business</b>, never the software, and produces a reviewable diff — nothing changes until it is applied.</span></div>
+        <BusinessProfile onApplied={refresh} />
+      </>}
+
+      {tab === 'preview' && <>
+        <PreviewAs onChange={refresh} />
+        <div className="ccsec">What the operator will actually see</div>
+        <NavPreview />
+        <div className="ccnote" style={{ marginTop: 16 }}><ion-icon name="eye-outline"></ion-icon>
+          <span>Change the role or the device above and this preview reflows. A capability may be on for the business but irrelevant on this device — the kitchen display never appears on a phone, and Setup itself is read-only there.</span></div>
+      </>}
+
+      {tab === 'log' && (
+        <div className="cc2">
+          <div className="ccpanel">
+            <h3>Configuration changes</h3>
+            <p className="s">Who turned what on or off, and when. This is the answer to "why does last month's report have a column this month's doesn't".</p>
+            <ChangeLog />
+          </div>
+          <div className="ccpanel">
+            <h3>Reporting continuity</h3>
+            <p className="s">Every capability carries an <b>enabled_from</b> timestamp. Reports annotate the date a dimension became available and start the series there — never backfilled, never invented.</p>
+            <div className="cclinks">
+              <a href="Koomzo - Progressive Disclosure Approach.html"><ion-icon name="layers-outline"></ion-icon>Approach</a>
+              <a href="Koomzo - Progressive Disclosure Decisions.html"><ion-icon name="git-merge-outline"></ion-icon>Decisions</a>
+            </div>
+            <div style={{ marginTop: 16 }}>
+              <button className="kzbtn" onClick={() => { KZ.reset(); refresh(); }}>
+                <ion-icon name="refresh-outline"></ion-icon>Reset to defaults</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

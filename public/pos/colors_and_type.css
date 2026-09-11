@@ -1,0 +1,125 @@
+/* ============================================================
+   KOOMZO POS — Design Tokens
+   Colors + Type for the Koomzo Point of Sale design system.
+   Derived from the koomzo-designsystem Ionic 7 / Angular 17 repo
+   (calendar components reveal the real palette). System font
+   stack + Ionicons, matching Ionic's iOS mode.
+   ============================================================ */
+
+:root {
+  /* ---------- BRAND / PRIMARY ---------- */
+  --kz-primary:        #6a61bf;   /* Koomzo purple — brand, primary actions */
+  --kz-primary-shade:  #574fa6;   /* pressed / darker */
+  --kz-primary-tint:   #837bd0;   /* hover / lighter */
+  --kz-primary-wash:   #eeecf8;   /* selected row bg, soft fills */
+
+  --kz-indigo:         #4b4ad9;   /* alt accent (Official calendar) */
+  --kz-indigo-wash:    #ececfb;
+
+  /* ---------- SEMANTIC ACCENTS ---------- */
+  --kz-success:        #2e9e5b;   /* payment confirm, in-stock */
+  --kz-success-wash:   #e4f4ea;
+  --kz-discount:       #ec603a;   /* coral — discounts, markdowns, void */
+  --kz-discount-wash:  #fdeae4;
+  --kz-warning:        #e0a32e;   /* low stock, holds (from #f8cc76) */
+  --kz-warning-wash:   #fbf2dd;
+  --kz-info:           #528cef;   /* informational chips */
+  --kz-info-wash:      #e8f0fd;
+
+  /* ---------- INK / TEXT ---------- */
+  --kz-ink:            #141826;   /* primary text, totals */
+  --kz-ink-2:          #303b57;   /* headings, strong labels */
+  --kz-muted:          #676f88;   /* secondary text */
+  --kz-muted-2:        #858a9b;   /* tertiary, captions */
+  --kz-muted-3:        #a0a5ae;   /* placeholder, disabled */
+
+  /* ---------- SURFACES ---------- */
+  --kz-bg:             #f4f6f9;   /* app background (blue-gray) */
+  --kz-surface:        #ffffff;   /* cards, panels */
+  --kz-surface-2:      #f9fafb;   /* nested rows, inset wells */
+  --kz-border:         #e9ecee;   /* hairlines, card borders */
+  --kz-border-strong:  #d8dce2;
+
+  /* ---------- DARK SURFACES (Dark theme / kiosk) ---------- */
+  --kz-dark-bg:        #272b34;
+  --kz-dark-surface:   #373d41;
+  --kz-dark-ink:       #ececec;
+  --kz-dark-muted:     #babcc2;
+
+  /* ---------- RADII ---------- */
+  --kz-radius-sm:      6px;    /* chips, badges */
+  --kz-radius:         10px;   /* cards (Modern calendar) */
+  --kz-radius-lg:      16px;   /* panels, sheets */
+  --kz-radius-pill:    999px;  /* segment, avatars, pill buttons */
+
+  /* ---------- ELEVATION ---------- */
+  --kz-shadow-sm:  0 1px 2px rgba(20, 24, 38, 0.06);
+  --kz-shadow:     0 4px 16px rgba(20, 24, 38, 0.08);
+  --kz-shadow-lg:  0 12px 32px rgba(20, 24, 38, 0.12);
+  --kz-shadow-key: 0 6px 14px rgba(106, 97, 191, 0.28); /* primary button glow */
+
+  /* ---------- SPACING (8pt base, 4pt half-steps) ---------- */
+  --kz-space-1: 4px;
+  --kz-space-2: 8px;
+  --kz-space-3: 12px;
+  --kz-space-4: 16px;
+  --kz-space-5: 20px;
+  --kz-space-6: 24px;
+  --kz-space-8: 32px;
+  --kz-space-10: 40px;
+  --kz-touch:    44px;   /* minimum hit target (Ionic) */
+
+  /* ---------- TYPE FAMILIES ---------- */
+  /* Ionic default = system stack. No custom webfonts in the repo. */
+  --kz-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                  "Helvetica Neue", Arial, sans-serif;
+  --kz-font-num:  "SF Pro Display", -apple-system, BlinkMacSystemFont, Roboto,
+                  "Helvetica Neue", sans-serif; /* prices: tabular figures */
+
+  /* ---------- TYPE SCALE (rem-ish, px for clarity) ---------- */
+  --kz-display:   34px;  /* order total hero */
+  --kz-h1:        28px;
+  --kz-h2:        22px;
+  --kz-h3:        18px;
+  --kz-body:      16px;
+  --kz-body-sm:   14px;
+  --kz-caption:   13px;
+  --kz-micro:     11px;
+
+  --kz-weight-regular: 400;
+  --kz-weight-medium:  500;
+  --kz-weight-semi:    600;
+  --kz-weight-bold:    700;
+}
+
+/* ============================================================
+   SEMANTIC TYPE CLASSES
+   ============================================================ */
+.kz-display {
+  font-family: var(--kz-font-num);
+  font-size: var(--kz-display);
+  font-weight: var(--kz-weight-bold);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--kz-ink);
+  font-variant-numeric: tabular-nums;
+}
+.kz-h1 { font: var(--kz-weight-bold) var(--kz-h1)/1.2 var(--kz-font-sans); letter-spacing: -0.01em; color: var(--kz-ink); }
+.kz-h2 { font: var(--kz-weight-semi) var(--kz-h2)/1.25 var(--kz-font-sans); letter-spacing: -0.01em; color: var(--kz-ink-2); }
+.kz-h3 { font: var(--kz-weight-semi) var(--kz-h3)/1.3 var(--kz-font-sans); color: var(--kz-ink-2); }
+.kz-body { font: var(--kz-weight-regular) var(--kz-body)/1.5 var(--kz-font-sans); color: var(--kz-ink); }
+.kz-body-strong { font: var(--kz-weight-semi) var(--kz-body)/1.45 var(--kz-font-sans); color: var(--kz-ink); }
+.kz-caption { font: var(--kz-weight-medium) var(--kz-caption)/1.4 var(--kz-font-sans); color: var(--kz-muted); }
+.kz-label {
+  font: var(--kz-weight-semi) var(--kz-micro)/1.2 var(--kz-font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--kz-muted-2);
+}
+.kz-price {
+  font-family: var(--kz-font-num);
+  font-weight: var(--kz-weight-semi);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--kz-ink);
+}

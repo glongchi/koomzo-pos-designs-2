@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Koomzo POS — Customer Account Record</title>
+  <link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+  <link rel="stylesheet" href="pos/colors_and_type.css" />
+  <link rel="stylesheet" href="forms/form-record.css" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+  <script src="kz/kz-locale.js"></script>
+</head>
+<body>
+
+  <!-- screen-only toolbar -->
+  <div class="fr-toolbar">
+    <a class="fr-brand" href="Koomzo POS - Home.html" style="text-decoration:none;color:inherit">
+      <span class="mk"><ion-icon name="storefront"></ion-icon></span>
+      <b>koomzo<span> · POS</span></b>
+    </a>
+    <span class="tag">Customer Account Record</span>
+    <div class="spacer"></div>
+    <a class="fr-btn" href="Koomzo POS - Forms.html"><ion-icon name="create-outline"></ion-icon>Edit form</a>
+    <button class="fr-btn primary" onclick="window.print()"><ion-icon name="download-outline"></ion-icon>Download PDF</button>
+  </div>
+
+  <!-- document -->
+  <div class="fr-stage">
+    <article class="fr-paper">
+
+      <!-- letterhead -->
+      <header class="fr-head">
+        <span class="mk"><ion-icon name="storefront"></ion-icon></span>
+        <div class="fr-head__org">
+          <b>koomzo<span> · POS</span></b>
+          <span class="addr">Koomzo Retail SARL · Rue Njo-Njo, Bonapriso · Douala, Cameroun</span>
+        </div>
+        <div class="fr-head__doc">
+          <h1>Customer Account Record</h1>
+          <span class="badge"><ion-icon name="checkmark-circle"></ion-icon>Completed</span>
+        </div>
+      </header>
+
+      <!-- meta strip -->
+      <div class="fr-meta">
+        <div class="fr-meta__cell"><div class="k">Form No.</div><div class="v mono">CR-100482</div></div>
+        <div class="fr-meta__cell"><div class="k">Date completed</div><div class="v">21 Jun 2026</div></div>
+        <div class="fr-meta__cell"><div class="k">Completed by</div><div class="v">A. Bello (Cashier)</div></div>
+        <div class="fr-meta__cell"><div class="k">Branch</div><div class="v">Harbour Lane</div></div>
+      </div>
+
+      <!-- 1 · Account -->
+      <section class="fr-section">
+        <div class="fr-section__head"><span class="fr-section__num">1</span><h2>Account Details</h2><span class="line"></span></div>
+        <div class="fr-fields">
+          <div class="fr-field"><div class="lbl">Account type</div><div class="val">Business</div></div>
+          <div class="fr-field"><div class="lbl">Full name</div><div class="val">Nadège Fotso</div></div>
+          <div class="fr-field"><div class="lbl">Email address</div><div class="val">nadege.fotso@wouri.cm</div></div>
+          <div class="fr-field"><div class="lbl">Phone</div><div class="val mono">+237 6 90 22 71 55</div></div>
+          <div class="fr-field"><div class="lbl">Customer group</div><div class="val">Wholesale</div></div>
+          <div class="fr-field"><div class="lbl">Account ID</div><div class="val mono">CUST-0Q8F2K</div></div>
+        </div>
+      </section>
+
+      <!-- 2 · Preferences (radio + checkbox) -->
+      <section class="fr-section">
+        <div class="fr-section__head"><span class="fr-section__num">2</span><h2>Contact &amp; Preferences</h2><span class="line"></span></div>
+        <div class="fr-fields">
+          <div class="fr-field">
+            <div class="lbl">Preferred contact method</div>
+            <div class="fr-checklist">
+              <div class="fr-check radio off"><span class="mark"></span>Email</div>
+              <div class="fr-check radio on"><span class="mark"></span>Text message</div>
+              <div class="fr-check radio off"><span class="mark"></span>Phone call</div>
+            </div>
+          </div>
+          <div class="fr-field">
+            <div class="lbl">Subscriptions</div>
+            <div class="fr-checklist">
+              <div class="fr-check on"><span class="mark"><ion-icon name="checkmark-outline"></ion-icon></span>Marketing emails</div>
+              <div class="fr-check on"><span class="mark"><ion-icon name="checkmark-outline"></ion-icon></span>Digital receipts</div>
+              <div class="fr-check off"><span class="mark"></span>Loyalty program</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 · Settings (toggles) -->
+      <section class="fr-section">
+        <div class="fr-section__head"><span class="fr-section__num">3</span><h2>Account Settings</h2><span class="line"></span></div>
+        <div class="fr-togglist">
+          <div class="fr-tog">
+            <div class="t"><b>Active account</b><span>Customer can be charged and earn points</span></div>
+            <span class="state yes"><ion-icon name="checkmark-outline"></ion-icon>Enabled</span>
+          </div>
+          <div class="fr-tog">
+            <div class="t"><b>Tax exempt</b><span>Skip sales tax on this customer's orders</span></div>
+            <span class="state yes"><ion-icon name="checkmark-outline"></ion-icon>Enabled</span>
+          </div>
+          <div class="fr-tog">
+            <div class="t"><b>Credit terms (Net 30)</b><span>Allow invoiced orders paid within 30 days</span></div>
+            <span class="state no"><ion-icon name="close-outline"></ion-icon>Disabled</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 · Loyalty (range + date) -->
+      <section class="fr-section">
+        <div class="fr-section__head"><span class="fr-section__num">4</span><h2>Loyalty &amp; Discount</h2><span class="line"></span></div>
+        <div class="fr-fields">
+          <div class="fr-field span2">
+            <div class="lbl">Standing discount — applied at checkout</div>
+            <div class="fr-bar">
+              <div class="fr-bar__top"><span class="k">Off every order</span><span class="v">12%</span></div>
+              <div class="fr-bar__track"><div class="fr-bar__fill" style="width:48%"></div></div>
+              <div class="fr-bar__ticks"><span>0%</span><span>25%</span></div>
+            </div>
+          </div>
+          <div class="fr-field"><div class="lbl">Member since</div><div class="val">Mar 14, 2024</div></div>
+          <div class="fr-field"><div class="lbl">Lifetime spend</div><div class="val mono">2 760 000 F</div></div>
+        </div>
+      </section>
+
+      <!-- 5 · Opening order summary -->
+      <section class="fr-section">
+        <div class="fr-section__head"><span class="fr-section__num">5</span><h2>Opening Order</h2><span class="line"></span></div>
+        <div class="fr-summary">
+          <div class="fr-summary__row"><span class="k">Café en grains — 12 × 1 kg</span><span class="v">336 000 F</span></div>
+          <div class="fr-summary__row"><span class="k">Member discount (12%)</span><span class="v" style="color:var(--kz-discount)">−40 320 F</span></div>
+          <div class="fr-summary__row"><span class="k">TVA (19,25 %)</span><span class="v">56 916 F</span></div>
+          <div class="fr-summary__row total"><span class="k">Total charged</span><span class="v">352 596 F</span></div>
+        </div>
+      </section>
+
+      <!-- 6 · Notes -->
+      <section class="fr-section">
+        <div class="fr-section__head"><span class="fr-section__num">6</span><h2>Internal Notes</h2><span class="line"></span></div>
+        <div class="fr-notes">Prefers delivery on Tuesdays before 9am. Invoice copies to comptes@wouri.cm. Nut allergy in the office — keep almond products separate when fulfilling sample orders.</div>
+      </section>
+
+      <!-- signatures -->
+      <div class="fr-sign">
+        <div class="fr-sign__line">
+          <div class="ink">Nadège Fotso</div>
+          <div class="who">Nadège Fotso</div>
+          <div class="role">Customer signature · 21 Jun 2026</div>
+        </div>
+        <div class="fr-sign__line">
+          <div class="ink">A. Bello</div>
+          <div class="who">Amara Bello</div>
+          <div class="role">Authorised by · Cashier, Harbour Lane</div>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <footer class="fr-foot">
+        <span><b>Koomzo POS</b> · Customer Account Record</span>
+        <span class="spacer"></span>
+        <span>Form CR-100482 · Confidential</span>
+      </footer>
+
+    </article>
+  </div>
+
+</body>
+</html>

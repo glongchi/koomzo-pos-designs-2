@@ -1,0 +1,91 @@
+/* Koomzo Retail POS — Sales history. Every completed transaction, searchable,
+   with the receipt as the source of truth and refunds handed to Returns. */
+
+/* derived from the one platform tender list, plus the two this module adds */
+window.RX_TENDERS = Object.assign(
+  {},
+  ...window.KZ_LOCALE.tenderList.map((t) => ({ [t.id]: { label: t.label, icon: t.icon } })),
+  { credit: { label: 'Store credit', icon: 'gift-outline' },
+    split:  { label: 'Split',        icon: 'git-branch-outline' } },
+);
+
+window.RX_SALE_STATUS = {
+  paid:     { label:'Paid',            tone:'low' },
+  partial:  { label:'Partly refunded', tone:'watch' },
+  refunded: { label:'Refunded',        tone:'high' },
+  voided:   { label:'Voided',          tone:'high' },
+  unpaid:   { label:'On account',      tone:'watch' },
+};
+
+const L = (name, sub, qty, price, extra) => Object.assign({ name, sub, qty, price }, extra);
+
+window.RX_SALES = [
+  { id:'s1', no:'1047', at:'Today · 14:12', ts:'2026-08-16T14:12', lane:'Caisse 1', cashier:'Anita Ndongo',
+    customer:'Walk-in', status:'paid', tender:'momo', ref:'6 55 41 88 41', rate:0.1925,
+    lines:[ L('Argile mate','75 ml',2,7000), L('Spray texturisant','200 ml',1,8500) ],
+    events:[ ['14:12','Sale completed','MTN MoMo 6 55 41 88 41 approved · auth 0293'], ['14:12','Receipt printed','Caisse 1 printer'] ] },
+  { id:'s2', no:'1046', at:'Today · 13:55', ts:'2026-08-16T13:55', lane:'Caisse 2', cashier:'Divine Ayuk',
+    customer:'Amara Diallo', status:'paid', tender:'om', rate:0.1925, tip:2200,
+    lines:[ L('Coloration complète','Nadia · 120 min',1,52000,{ service:true }), L('Après-shampooing','250 ml',1,10500) ],
+    events:[ ['13:55','Sale completed','Orange Money · 6 99 20 88 41'], ['13:56','E-receipt sent','+237 6 99 20 88 41'], ['13:56','Loyalty accrued','+174 points'] ] },
+  { id:'s3', no:'1045', at:'Today · 13:20', ts:'2026-08-16T13:20', lane:'Caisse 1', cashier:'Anita Ndongo',
+    customer:'Walk-in', status:'partial', tender:'cash', rate:0.1925, tendered:23500,
+    lines:[ L('Brosse ronde','35 mm',1,8500,{ refunded:1 }), L('Pinces à mèches','pack of 6',2,4300), L('Baume à lèvres SPF15','sheer',1,3100) ],
+    events:[ ['13:20','Sale completed','Espèces reçues 23 500 F'], ['15:04','Refund issued','1 × Brosse ronde · 9 500 F to cash · reason Faulty'] ] },
+  { id:'s4', no:'1044', at:'Today · 12:48', ts:'2026-08-16T12:48', lane:'Caisse 3', cashier:'M. Ekindi',
+    customer:'Nadège Fotso', status:'paid', tender:'split', rate:0.1925,
+    lines:[ L('Sérum hydratant','30 ml',1,15000), L('Shampooing réparateur','300 ml',1,9500), L('Carte cadeau','loaded value',1,18000,{ nonstock:true }) ],
+    split:[ ['momo',24500,'6 94 00 99 20'], ['credit',18000,''] ],
+    events:[ ['12:48','Sale completed','Split · MTN MoMo 24 500 F + store credit 18 000 F'], ['12:48','Gift card activated','GC-8841 · 18 000 F'] ] },
+  { id:'s5', no:'1043', at:'Today · 12:05', ts:'2026-08-16T12:05', lane:'Caisse 1', cashier:'Anita Ndongo',
+    customer:'Walk-in', status:'voided', tender:'momo', rate:0.1925,
+    lines:[ L('Veste matelassée','L · Olive',1,53500) ],
+    events:[ ['12:05','Sale started','Caisse 1'], ['12:06','Voided before tender','Customer left · approved by M. Ekindi'] ] },
+  { id:'s6', no:'1042', at:'Today · 11:31', ts:'2026-08-16T11:31', lane:'Caisse 2', cashier:'Divine Ayuk',
+    customer:'Walk-in', status:'paid', tender:'cash', rate:0.1925, tendered:16000,
+    lines:[ L('Brushing','Corin · 30 min',1,13500,{ service:true }) ],
+    events:[ ['11:31','Sale completed','Espèces reçues 16 000 F'] ] },
+  { id:'s7', no:'1041', at:'Today · 11:02', ts:'2026-08-16T11:02', lane:'Kiosque',  cashier:'Libre-service',
+    customer:'Walk-in', status:'paid', tender:'om', ref:'6 94 11 00 38', rate:0.1925,
+    lines:[ L('Baume à lèvres SPF15','sheer',3,3100) ],
+    events:[ ['11:02','Sale completed','Orange Money · kiosque · 6 94 11 00 38'], ['11:02','E-receipt declined','Customer chose no receipt'] ] },
+  { id:'s8', no:'1040', at:'Today · 10:44', ts:'2026-08-16T10:44', lane:'Caisse 1', cashier:'Anita Ndongo',
+    customer:'Thomas Ngwa', status:'unpaid', tender:'credit', rate:0.1925,
+    lines:[ L('Oxydant 20 vol','1 L trade',2,8500), L('Feuilles d’aluminium','500 sheets',1,10000) ],
+    events:[ ['10:44','Invoiced to account','Compte professionnel TN-04 · 30 jours'], ['10:44','Receipt emailed','thomas@ngwasalon.cm'] ] },
+  { id:'s9', no:'1039', at:'Today · 10:12', ts:'2026-08-16T10:12', lane:'Caisse 2', cashier:'Divine Ayuk',
+    customer:'Walk-in', status:'paid', tender:'momo', ref:'6 77 58 11 80', rate:0.1925, disc:2900,
+    lines:[ L('Coffret duo réparateur','shampoo + conditioner',1,17500,{ composite:true }) ],
+    events:[ ['10:12','Discount applied','−2 900 F · staff friends & family · approved by M. Ekindi'], ['10:12','Sale completed','MTN MoMo 6 77 58 11 80 approved'] ] },
+  { id:'s10', no:'1038', at:'Yesterday · 17:20', ts:'2026-08-15T17:20', lane:'Caisse 1', cashier:'Anita Ndongo',
+    customer:'Walk-in', status:'paid', tender:'momo', ref:'6 55 41 88 41', rate:0.1925,
+    lines:[ L('Spray texturisant','200 ml',1,8500) ],
+    events:[ ['17:20','Sale completed','MTN MoMo 6 55 41 88 41 approved'] ] },
+  { id:'s11', no:'1037', at:'Yesterday · 16:40', ts:'2026-08-15T16:40', lane:'Caisse 3', cashier:'M. Ekindi',
+    customer:'Nadège Fotso', status:'refunded', tender:'om', ref:'6 94 00 99 20', rate:0.1925,
+    lines:[ L('Écouteurs sans fil','Black · SN 88-2210-4',1,46500,{ refunded:1 }) ],
+    events:[ ['16:40','Sale completed','Orange Money 6 94 00 99 20 approved'], ['Today · 09:30','Full refund','50 000 F to Orange Money 6 94 00 99 20 · reason Faulty'] ] },
+  { id:'s12', no:'1036', at:'Yesterday · 15:58', ts:'2026-08-15T15:58', lane:'Caisse 2', cashier:'Divine Ayuk',
+    customer:'Walk-in', status:'paid', tender:'om', rate:0.1925,
+    lines:[ L('Coupe et finition','Ife · 45 min',1,23500,{ service:true }), L('Argile mate','75 ml',1,7000) ],
+    events:[ ['15:58','Sale completed','Orange Money · 6 94 00 11 77'], ['15:58','Commission posted','Ife · 35% of service'] ] },
+  { id:'s13', no:'1035', at:'Yesterday · 14:22', ts:'2026-08-15T14:22', lane:'Caisse 1', cashier:'Anita Ndongo',
+    customer:'Walk-in', status:'paid', tender:'cash', rate:0.1925, tendered:7000,
+    lines:[ L('Pinces à mèches','pack of 6',1,4300) ],
+    events:[ ['14:22','Sale completed','Espèces reçues 7 000 F'] ] },
+  { id:'s14', no:'1034', at:'Yesterday · 09:41', ts:'2026-08-15T09:41', lane:'Caisse 1', cashier:'Anita Ndongo',
+    customer:'Amara Diallo', status:'paid', tender:'momo', ref:'6 99 20 88 41', rate:0.1925,
+    lines:[ L('Mèches — demi-tête','Nadia · 90 min',1,43000,{ service:true }), L('Shampooing réparateur','300 ml',1,9500), L('Sérum hydratant','30 ml',1,15000) ],
+    events:[ ['09:41','Sale completed','MTN MoMo 6 99 20 88 41 approved'], ['09:41','E-receipt sent','+237 6 99 20 88 41'] ] },
+];
+
+/* derived totals — one place, so the list, the receipt and the KPIs never disagree */
+window.RX_SALE = {
+  gross: (s) => s.lines.reduce((a, l) => a + l.qty * l.price, 0),
+  net: (s) => window.RX_SALE.gross(s) - (s.disc || 0),
+  tax: (s) => Math.round(window.RX_SALE.net(s) * s.rate),
+  total: (s) => window.RX_SALE.net(s) + window.RX_SALE.tax(s) + (s.tip || 0),
+  refund: (s) => Math.round(s.lines.reduce((a, l) => a + (l.refunded || 0) * l.price, 0) * (1 + s.rate)),
+  units: (s) => s.lines.reduce((a, l) => a + l.qty, 0),
+  counts: (s) => s.status === 'voided' ? 0 : 1,
+};

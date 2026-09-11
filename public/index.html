@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Koomzo — Screens</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png">
+<link rel="stylesheet" href="pos/colors_and_type.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.wrap{max-width:1180px;margin:0 auto;padding:48px 24px 80px}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.top svg{width:38px;height:38px}
+.wm{font:700 26px/1 var(--kz-font-sans);letter-spacing:-.03em}
+.wm .oo{color:var(--kz-primary-tint)}
+.lede{font:400 16px/1.55 var(--kz-font-sans);color:var(--kz-muted);max-width:60ch;margin:0 0 28px}
+.search{display:flex;align-items:center;gap:10px;background:var(--kz-surface);border:1px solid var(--kz-border-strong);border-radius:var(--kz-radius);padding:12px 16px;margin-bottom:34px}
+.search ion-icon{font-size:20px;color:var(--kz-muted-3)}
+.search input{flex:1;border:0;outline:0;font:400 15px var(--kz-font-sans);color:var(--kz-ink);background:transparent}
+.grp{margin-bottom:34px}
+.grp h2{font:700 11px/1 var(--kz-font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--kz-muted-3);margin:0 0 14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:12px}
+.card{display:flex;align-items:center;gap:14px;background:var(--kz-surface);border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px;min-height:var(--kz-touch);transition:transform .18s cubic-bezier(.4,0,.2,1),box-shadow .18s,border-color .18s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--kz-shadow);border-color:var(--kz-primary-tint)}
+.card .ic{width:40px;height:40px;flex:none;border-radius:var(--kz-radius-sm);background:var(--kz-primary-wash);display:grid;place-items:center}
+.card .ic ion-icon{font-size:21px;color:var(--kz-primary)}
+.card b{display:block;font:600 15px/1.3 var(--kz-font-sans);color:var(--kz-ink)}
+.card span{display:block;font:400 13px/1.4 var(--kz-font-sans);color:var(--kz-muted-2);margin-top:3px}
+.empty{font:400 15px var(--kz-font-sans);color:var(--kz-muted);padding:20px 0}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useMemo } = React;
+
+const SCREENS = [
+  { g:'Workspace', i:'grid-outline', f:'Koomzo - Control Centre.html', n:'Control Centre', d:'Module hub and capability switches' },
+  { g:'Workspace', i:'log-in-outline', f:'Koomzo - Login.html', n:'Login', d:'Phone + password, EN/FR' },
+  { g:'Workspace', i:'person-add-outline', f:'Koomzo - Signup & Platform Pitch.html', n:'Signup', d:'Create a workspace' },
+  { g:'Workspace', i:'play-circle-outline', f:'Koomzo - Introduction Walkthrough.html', n:'Introduction Walkthrough', d:'Eight-screen product tour' },
+  { g:'Workspace', i:'home-outline', f:'Koomzo POS - Home.html', n:'Home', d:'Operator landing' },
+  { g:'Workspace', i:'apps-outline', f:'Koomzo POS - Apps.html', n:'Apps', d:'Install and dial modules' },
+  { g:'Workspace', i:'settings-outline', f:'Koomzo POS - Settings.html', n:'Settings', d:'Workspace configuration' },
+  { g:'Workspace', i:'people-outline', f:'Koomzo POS - Users.html', n:'Users & Roles', d:'Team and permissions' },
+
+  { g:'Selling', i:'card-outline', f:'Koomzo POS.html', n:'Point of Sale', d:'The register board' },
+  { g:'Selling', i:'storefront-outline', f:'Koomzo POS - Retail.html', n:'Retail', d:'Retail register' },
+  { g:'Selling', i:'swap-horizontal-outline', f:'Koomzo POS - Retail Flex.html', n:'Retail Flex', d:'Sales, inventory, ops' },
+  { g:'Selling', i:'restaurant-outline', f:'Koomzo POS - Restaurant & Bar.html', n:'Restaurant & Bar', d:'Floor, register, kitchen, kiosk' },
+  { g:'Selling', i:'basket-outline', f:'Koomzo Grocery - Till, Dates & Shelf.html', n:'Grocery', d:'Till, dates and shelf' },
+  { g:'Selling', i:'phone-portrait-outline', f:'Koomzo POS - Mobile.html', n:'Mobile', d:'Phone register' },
+  { g:'Selling', i:'pricetag-outline', f:'Koomzo POS - Products.html', n:'Products', d:'Catalogue' },
+  { g:'Selling', i:'pricetags-outline', f:'Koomzo POS - Products v2.html', n:'Products v2', d:'Catalogue, revised' },
+  { g:'Selling', i:'barcode-outline', f:'Koomzo POS - Barcode Labels.html', n:'Barcode Labels', d:'Label designer' },
+
+  { g:'Operations', i:'bed-outline', f:'Koomzo Hotel - Rooms, Folio & Housekeeping.html', n:'Hotel', d:'Rack, folio, housekeeping' },
+  { g:'Operations', i:'cut-outline', f:'Koomzo Salon - Appointments, Tasks, Team.html', n:'Salon', d:'Appointments and team' },
+  { g:'Operations', i:'barbell-outline', f:'Koomzo Gym - Front Desk, Members & Classes.html', n:'Gym & Wellness', d:'Front desk, members, classes' },
+  { g:'Operations', i:'time-outline', f:'Koomzo Queue Management.html', n:'Queue Management', d:'Serve and display' },
+  { g:'Operations', i:'tv-outline', f:'Koomzo Signage - Screens.html', n:'Signage', d:'Players, loops, boards' },
+  { g:'Operations', i:'cube-outline', f:'Koomzo POS - Inventory.html', n:'Inventory', d:'Items, stock, purchasing' },
+  { g:'Operations', i:'construct-outline', f:'Koomzo POS - MRP.html', n:'Manufacturing', d:'BOMs, work orders, costing' },
+  { g:'Operations', i:'hammer-outline', f:'Koomzo MRP - Shop Floor.html', n:'Shop Floor', d:'Operator terminal' },
+  { g:'Operations', i:'receipt-outline', f:'Koomzo POS - Invoicing.html', n:'Invoicing', d:'List, builder, print' },
+
+  { g:'Low-code engines', i:'clipboard-outline', f:'Koomzo POS - Form Builder.html', n:'Form Builder', d:'Fields, steps, rules, data sources' },
+  { g:'Low-code engines', i:'language-outline', f:'Koomzo POS - Form Builder Multilingual.html', n:'Form Builder — Multilingual', d:'EN/FR authoring' },
+  { g:'Low-code engines', i:'document-text-outline', f:'Koomzo POS - Forms.html', n:'Forms', d:'Published forms' },
+  { g:'Low-code engines', i:'albums-outline', f:'Koomzo POS - Form Submissions.html', n:'Submissions', d:'Answers inbox' },
+  { g:'Low-code engines', i:'reader-outline', f:'Koomzo POS - Form Record.html', n:'Form Record', d:'One submission' },
+  { g:'Low-code engines', i:'git-network-outline', f:'Koomzo POS - Workflow Orchestrator.html', n:'Workflow Orchestrator', d:'Recipes across modules' },
+  { g:'Low-code engines', i:'pulse-outline', f:'Koomzo POS - Workflow Runs.html', n:'Workflow Runs', d:'What ran, and when' },
+  { g:'Low-code engines', i:'shapes-outline', f:'Koomzo POS - Flow Designer.html', n:'Flow Designer', d:'Canvas authoring' },
+  { g:'Low-code engines', i:'flash-outline', f:'Koomzo POS - Automations.html', n:'Automations', d:'When / then rules' },
+];
+
+const GROUPS = ['Workspace', 'Selling', 'Operations', 'Low-code engines'];
+
+function Card({ s }) {
+  return (
+    <a className="card" href={encodeURI(s.f)}>
+      <span className="ic"><ion-icon name={s.i}></ion-icon></span>
+      <span><b>{s.n}</b><span>{s.d}</span></span>
+    </a>
+  );
+}
+
+function App() {
+  const [q, setQ] = useState('');
+  const hits = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    if (!t) return SCREENS;
+    return SCREENS.filter(s => (s.n + ' ' + s.d + ' ' + s.g).toLowerCase().includes(t));
+  }, [q]);
+
+  return (
+    <div className="wrap">
+      <div className="top">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="5" y="5" width="10.5" height="10.5" rx="3" fill="#6a61bf"/>
+          <rect x="19" y="7" width="10.5" height="10.5" rx="3" fill="#837bd0"/>
+          <rect x="5" y="19" width="10.5" height="10.5" rx="3" fill="#837bd0"/>
+          <rect x="19" y="20.5" width="10.5" height="10.5" rx="3" fill="#6a61bf"/>
+        </svg>
+        <div className="wm">k<span className="oo">oo</span>mzo</div>
+      </div>
+      <p className="lede">Every screen in the suite, running locally. Each one is a React app served by the Node server in this folder.</p>
+
+      <div className="search">
+        <ion-icon name="search-outline"></ion-icon>
+        <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search screens" aria-label="Search screens" />
+      </div>
+
+      {GROUPS.map(g => {
+        const items = hits.filter(s => s.g === g);
+        if (!items.length) return null;
+        return (
+          <div className="grp" key={g}>
+            <h2>{g}</h2>
+            <div className="cards">{items.map(s => <Card s={s} key={s.f} />)}</div>
+          </div>
+        );
+      })}
+      {!hits.length && <div className="empty">No screen matches “{q}”.</div>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

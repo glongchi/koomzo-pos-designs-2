@@ -1,0 +1,140 @@
+/* ============================================================
+   Koomzo POS — Users & Roles admin kit (layered on padmin.css)
+   Reuses the generic list shell (.pa-rail / .pa-main / .pa-table /
+   .pa-drawer / .pam / .pd). Adds the user/role-specific atoms:
+   avatars, role chips, status pills, toggles, permission rows,
+   and the Users/Roles segmented control.
+   ============================================================ */
+
+/* ---------------- avatar ---------------- */
+.ua-av {
+  display: flex; align-items: center; justify-content: center; border-radius: 999px;
+  flex-shrink: 0; overflow: hidden; line-height: 1; font-family: var(--kz-font-sans);
+  font-weight: 700; letter-spacing: -.01em; box-shadow: inset 0 0 0 1px rgba(20,24,38,.04);
+}
+
+/* ---------------- role chips ---------------- */
+.ua-roles { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; white-space: normal; }
+.ua-role {
+  display: inline-flex; align-items: center; height: 23px; padding: 0 9px; border-radius: 999px;
+  font: 700 11.5px var(--kz-font-sans); letter-spacing: .005em; white-space: nowrap;
+}
+.ua-role.more { background: var(--kz-surface-2); color: var(--kz-muted); border: 1px solid var(--kz-border); }
+
+/* ---------------- status pill ---------------- */
+.ua-status {
+  display: inline-flex; align-items: center; gap: 7px; height: 26px; padding: 0 12px 0 10px;
+  border-radius: 999px; font: 700 12.5px var(--kz-font-sans); white-space: nowrap;
+}
+.ua-status i { width: 7px; height: 7px; border-radius: 999px; flex-shrink: 0; }
+.ua-status.asdot { background: transparent !important; padding: 0; gap: 8px; color: var(--kz-ink-2) !important; font-weight: 600; }
+
+/* ---------------- muted cells ---------------- */
+.ua-email { font: 500 13.5px var(--kz-font-sans); color: var(--kz-muted); }
+.ua-cell-muted { font: 500 13px var(--kz-font-sans); color: var(--kz-muted); }
+.ua-cell-mono { font-family: var(--kz-font-num); font-variant-numeric: tabular-nums; color: var(--kz-muted); font-size: 13.5px; white-space: nowrap; }
+.ua-by { display: inline-flex; align-items: center; gap: 8px; }
+.ua-dash { color: var(--kz-muted-3); }
+
+/* ---------------- Users / Roles segment ---------------- */
+.ua-seg { display: flex; gap: 4px; padding: 4px; background: var(--kz-surface-2); border: 1px solid var(--kz-border); border-radius: 12px; margin-left: 16px; }
+.ua-seg button { display: flex; align-items: center; gap: 7px; height: 34px; padding: 0 16px; border: none; background: transparent; border-radius: 9px; font: 600 13.5px var(--kz-font-sans); color: var(--kz-muted); transition: all .15s; }
+.ua-seg button ion-icon { font-size: 17px; }
+.ua-seg button:hover { color: var(--kz-ink-2); }
+.ua-seg button.active { background: #fff; color: var(--kz-primary); box-shadow: var(--kz-shadow-sm); }
+.ua-seg button .seg-count { font: 700 11px var(--kz-font-num); font-variant-numeric: tabular-nums; padding: 1px 7px; border-radius: 999px; background: rgba(20,24,38,.06); }
+.ua-seg button.active .seg-count { background: var(--kz-primary-wash); color: var(--kz-primary); }
+
+/* ---------------- toggle switch ---------------- */
+.ua-toggle { width: 42px; height: 25px; border-radius: 999px; background: var(--kz-border-strong); border: none; padding: 0; position: relative; flex-shrink: 0; transition: background .16s; }
+.ua-toggle.on { background: var(--kz-primary); }
+.ua-toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 19px; height: 19px; border-radius: 999px; background: #fff; box-shadow: var(--kz-shadow-sm); transition: transform .16s; }
+.ua-toggle.on::after { transform: translateX(17px); }
+.ua-toggle:active::after { width: 22px; }
+
+/* ---------------- permission rows (role detail) ---------------- */
+.ua-perm { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--kz-border); }
+.ua-perm:last-child { border-bottom: none; }
+.ua-perm-ico { width: 36px; height: 36px; border-radius: 9px; background: var(--kz-surface-2); display: flex; align-items: center; justify-content: center; color: var(--kz-muted); flex-shrink: 0; }
+.ua-perm-ico ion-icon { font-size: 18px; }
+.ua-perm-t { flex: 1; min-width: 0; }
+.ua-perm-t b { font: 600 14px var(--kz-font-sans); color: var(--kz-ink); display: block; }
+.ua-perm-t small { font: 500 12px var(--kz-font-sans); color: var(--kz-muted-2); }
+
+/* ---------------- role picker (user detail) ---------------- */
+.ua-rolepick { display: flex; flex-wrap: wrap; gap: 8px; }
+.ua-rolepick button { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 11px; border: 1px solid var(--kz-border-strong); background: #fff; font: 600 13.5px var(--kz-font-sans); color: var(--kz-ink-2); transition: all .14s; }
+.ua-rolepick button .swatch { width: 10px; height: 10px; border-radius: 999px; flex-shrink: 0; }
+.ua-rolepick button:hover { border-color: var(--kz-primary-tint); }
+.ua-rolepick button.on { border-color: var(--kz-primary); background: var(--kz-primary-wash); color: var(--kz-primary); box-shadow: inset 0 0 0 1px var(--kz-primary); }
+
+/* ---------------- member stack ---------------- */
+.ua-stack { display: flex; align-items: center; }
+.ua-stack .ua-av { border: 2px solid #fff; margin-left: -9px; }
+.ua-stack .ua-av:first-child { margin-left: 0; }
+.ua-stack-more { margin-left: -9px; border: 2px solid #fff; background: var(--kz-surface-2); color: var(--kz-muted); display: flex; align-items: center; justify-content: center; border-radius: 999px; font: 700 11px var(--kz-font-num); flex-shrink: 0; }
+
+/* ---------------- activity info rows ---------------- */
+.ua-info { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--kz-border); }
+.ua-info:last-child { border-bottom: none; }
+.ua-info .k { font: 500 13px var(--kz-font-sans); color: var(--kz-muted); display: flex; align-items: center; gap: 9px; }
+.ua-info .k ion-icon { font-size: 17px; color: var(--kz-muted-2); }
+.ua-info .v { font: 600 13.5px var(--kz-font-sans); color: var(--kz-ink-2); text-align: right; }
+
+/* ---------------- role color swatch picker (role detail) ---------------- */
+.ua-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.ua-swatches button { width: 36px; height: 36px; border-radius: 10px; border: 2px solid transparent; display: flex; align-items: center; justify-content: center; background: transparent; transition: border-color .14s; }
+.ua-swatches button.on { border-color: var(--kz-ink-2); }
+.ua-swatches button i { width: 20px; height: 20px; border-radius: 7px; display: block; }
+
+/* ---------------- ROLES table cells ---------------- */
+.ua-rolecell { display: flex; align-items: center; gap: 12px; white-space: normal; }
+.ua-rolecell .rc-ico { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ua-rolecell .rc-ico ion-icon { font-size: 20px; }
+.ua-rolecell .t b { font: 600 14.5px var(--kz-font-sans); color: var(--kz-ink); display: flex; align-items: center; gap: 7px; letter-spacing: -.01em; }
+.ua-rolecell .t b .sysbadge { font: 600 9.5px var(--kz-font-sans); letter-spacing: .05em; text-transform: uppercase; color: var(--kz-muted-2); background: var(--kz-surface-2); border: 1px solid var(--kz-border); border-radius: 5px; padding: 1px 5px; }
+.ua-rolecell .t small { font: 400 12px var(--kz-font-sans); color: var(--kz-muted-2); }
+
+.ua-level { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: var(--kz-radius-sm); background: var(--kz-surface-2); border: 1px solid var(--kz-border); font: 600 12px var(--kz-font-sans); color: var(--kz-muted); white-space: nowrap; }
+
+.ua-permsum { display: flex; flex-direction: column; gap: 5px; min-width: 116px; }
+.ua-permsum .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.ua-permsum .top b { font: 700 13px var(--kz-font-num); font-variant-numeric: tabular-nums; color: var(--kz-ink); }
+.ua-permsum .top span { font: 600 11px var(--kz-font-sans); color: var(--kz-muted-2); }
+.ua-permsum .track { height: 5px; border-radius: 999px; background: var(--kz-border); overflow: hidden; }
+.ua-permsum .fill { height: 100%; border-radius: 999px; background: var(--kz-primary); }
+
+/* ---------------- PHONE — segment + role card ---------------- */
+.ua-mseg { flex-shrink: 0; display: flex; gap: 4px; margin: 10px 16px 0; padding: 4px; background: var(--kz-surface-2); border: 1px solid var(--kz-border); border-radius: 12px; }
+.ua-mseg button { flex: 1; height: 38px; border: none; background: transparent; border-radius: 9px; font: 600 13.5px var(--kz-font-sans); color: var(--kz-muted); display: flex; align-items: center; justify-content: center; gap: 7px; }
+.ua-mseg button ion-icon { font-size: 17px; }
+.ua-mseg button.active { background: #fff; color: var(--kz-primary); box-shadow: var(--kz-shadow-sm); }
+
+.ua-rolecard { display: flex; align-items: center; gap: 12px; padding: 14px; background: #fff; border: 1px solid var(--kz-border); border-radius: var(--kz-radius); text-align: left; transition: all .14s; }
+.ua-rolecard:active { transform: scale(.985); background: var(--kz-surface-2); }
+.ua-rolecard .rc-ico { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ua-rolecard .rc-ico ion-icon { font-size: 24px; }
+.ua-rolecard .rc-body { flex: 1; min-width: 0; }
+.ua-rolecard .rc-body .nm { font: 600 15px var(--kz-font-sans); color: var(--kz-ink); display: flex; align-items: center; gap: 7px; }
+.ua-rolecard .rc-body .ds { font: 400 12.5px var(--kz-font-sans); color: var(--kz-muted-2); margin-top: 1px; }
+.ua-rolecard .rc-body .mt { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.ua-rolecard .rc-members { font: 600 12px var(--kz-font-sans); color: var(--kz-muted); display: flex; align-items: center; gap: 5px; }
+.ua-rolecard .rc-members ion-icon { font-size: 15px; }
+
+/* phone user card extras */
+.pam__card .ua-roles { margin-top: 7px; }
+.ua-mcard-status { margin-left: auto; }
+
+/* invite well in user detail */
+.ua-invite { display: flex; align-items: center; gap: 11px; padding: 12px 14px; background: var(--kz-warning-wash); border-radius: var(--kz-radius); margin-top: 2px; }
+.ua-invite ion-icon { font-size: 20px; color: var(--kz-warning); flex-shrink: 0; }
+.ua-invite .t { flex: 1; min-width: 0; }
+.ua-invite .t b { font: 600 13px var(--kz-font-sans); color: var(--kz-ink-2); display: block; }
+.ua-invite .t small { font: 500 12px var(--kz-font-sans); color: var(--kz-muted); }
+.ua-invite button { height: 34px; padding: 0 13px; border-radius: 9px; border: none; background: var(--kz-warning); color: #fff; font: 600 12.5px var(--kz-font-sans); flex-shrink: 0; }
+
+/* status select segmented (user detail) */
+.ua-statpick { display: flex; gap: 8px; }
+.ua-statpick button { flex: 1; height: 40px; border-radius: 11px; border: 1px solid var(--kz-border-strong); background: #fff; font: 600 13px var(--kz-font-sans); color: var(--kz-muted); display: flex; align-items: center; justify-content: center; gap: 7px; transition: all .14s; }
+.ua-statpick button i { width: 8px; height: 8px; border-radius: 999px; }
+.ua-statpick button.on { border-width: 1.5px; }

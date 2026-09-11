@@ -1,0 +1,136 @@
+/* ============================================================
+   Koomzo POS — Flow Designer (Workflow v2 style)
+   A faithful recreation of the saswat-pramati/workflow-ui diagram editor:
+   SVG flowchart shapes (ellipse Start/End · rectangle Activity ·
+   diamond Condition), orthogonal arrow connectors on a grid canvas,
+   dark "Actions / Toolbar" cards, a Property Inspector, and a live
+   "Controls" JSON panel. Rendered in Koomzo tokens.
+   ============================================================ */
+
+.fd { display: flex; flex-direction: column; height: 100%; background: var(--kz-bg); overflow: hidden; font-family: var(--kz-font-sans); }
+
+/* ---------------- NAVBAR ---------------- */
+.fd-navbar { flex-shrink: 0; display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px; background: var(--kz-dark-bg); }
+.fd-navbar__mark { width: 30px; height: 30px; border-radius: 8px; background: var(--kz-primary); display: flex; align-items: center; justify-content: center; }
+.fd-navbar__mark ion-icon { font-size: 18px; color: #fff; }
+.fd-navbar__title { font: 600 17px var(--kz-font-sans); color: #fff; letter-spacing: -.01em; }
+.fd-navbar__title span { color: var(--kz-dark-muted); font-weight: 400; font-size: 13px; margin-left: 4px; }
+.fd-navbar__spacer { flex: 1; }
+.fd-navbtn { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--kz-success); background: transparent; color: var(--kz-success); font: 600 13.5px var(--kz-font-sans); cursor: pointer; transition: all .14s; }
+.fd-navbtn ion-icon { font-size: 16px; }
+.fd-navbtn:hover { background: var(--kz-success); color: #fff; }
+.fd-navbtn.run { border-color: #57c98a; color: #57c98a; }
+.fd-navbtn.run:hover { background: var(--kz-success); color: #fff; }
+
+/* ---------------- ACTION BAR ---------------- */
+.fd-actionbar { flex-shrink: 0; display: flex; align-items: center; gap: 4px; height: 44px; padding: 0 12px; background: var(--kz-dark-surface); border-top: 1px solid rgba(255,255,255,.06); }
+.fd-actbtn { width: 34px; height: 34px; border: none; background: transparent; border-radius: 7px; color: #c7cbd6; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .12s; }
+.fd-actbtn ion-icon { font-size: 19px; }
+.fd-actbtn:hover:not(:disabled) { background: rgba(255,255,255,.1); color: #fff; }
+.fd-actbtn:disabled { opacity: .32; cursor: default; }
+.fd-actbtn.danger:hover:not(:disabled) { background: var(--kz-discount); color: #fff; }
+.fd-actsep { width: 1px; height: 22px; background: rgba(255,255,255,.12); margin: 0 6px; }
+.fd-actionbar__hint { margin-left: auto; font: 500 11.5px var(--kz-font-sans); color: var(--kz-dark-muted); display: flex; align-items: center; gap: 6px; }
+.fd-actionbar__hint ion-icon { font-size: 14px; }
+
+/* ---------------- MAIN GRID ---------------- */
+.fd-main { flex: 1; min-height: 0; display: grid; grid-template-columns: 190px 1fr 322px; }
+.fd.is-tablet .fd-main { grid-template-columns: 164px 1fr 282px; }
+.fd-side { min-height: 0; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 16px; background: var(--kz-surface-2); }
+.fd-side.right { border-left: 1px solid var(--kz-border); }
+.fd-side.left { border-right: 1px solid var(--kz-border); }
+
+/* dark-headed cards (Bootstrap card bg-light + card-header bg-dark) */
+.fd-card { background: #fff; border: 1px solid var(--kz-border); border-radius: 10px; overflow: hidden; box-shadow: var(--kz-shadow-sm); }
+.fd-card__head { display: flex; align-items: center; height: 40px; padding: 0 14px; background: var(--kz-dark-bg); color: #fff; font: 600 13px var(--kz-font-sans); }
+.fd-card__head .collapse-btn { margin-left: auto; width: 22px; height: 22px; border: none; background: transparent; color: var(--kz-dark-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 5px; }
+.fd-card__head .collapse-btn:hover { background: rgba(255,255,255,.12); color: #fff; }
+.fd-card__head .collapse-btn ion-icon { font-size: 16px; }
+.fd-card__body { padding: 8px; }
+
+/* Actions list (New / Load / Clear) */
+.fd-actions-list { display: flex; flex-direction: column; }
+.fd-actions-list button { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px; border: none; background: transparent; border-radius: 8px; font: 500 14px var(--kz-font-sans); color: var(--kz-primary); cursor: pointer; text-align: left; transition: all .12s; }
+.fd-actions-list button ion-icon { font-size: 17px; color: var(--kz-muted-2); }
+.fd-actions-list button:hover { background: var(--kz-primary-wash); }
+.fd-actions-list button:hover ion-icon { color: var(--kz-primary); }
+
+/* Toolbar shapes */
+.fd-shapes { display: flex; flex-direction: column; gap: 10px; padding: 4px; }
+.fd-shape {
+  display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--kz-border); border-radius: 9px;
+  background: #fff; cursor: grab; transition: all .14s;
+}
+.fd-shape:hover { border-color: var(--kz-primary-tint); background: var(--kz-surface-2); transform: translateY(-1px); box-shadow: var(--kz-shadow-sm); }
+.fd-shape:active { cursor: grabbing; transform: scale(.98); }
+.fd-shape svg { flex-shrink: 0; }
+.fd-shape__t b { display: block; font: 600 13px var(--kz-font-sans); color: var(--kz-ink); }
+.fd-shape__t span { display: block; font: 400 11px var(--kz-font-sans); color: var(--kz-muted-2); }
+
+/* ---------------- CANVAS ---------------- */
+.fd-canvaswrap { min-width: 0; position: relative; overflow: auto; background: #fff; }
+.fd-canvas { display: block; background-color: #fff;
+  background-image: linear-gradient(var(--kz-border) 1px, transparent 1px), linear-gradient(90deg, var(--kz-border) 1px, transparent 1px);
+  background-size: 24px 24px; }
+
+/* SVG shapes */
+.fd-shape-rect { fill: #fff; stroke: var(--kz-ink-2); stroke-width: 1.5; }
+.fd-shape-rect.sel { stroke: var(--kz-primary); stroke-width: 1.8; stroke-dasharray: 6 4; }
+.fd-shape-ellipse { fill: #fff; stroke: var(--kz-ink-2); stroke-width: 1.5; }
+.fd-shape-ellipse.sel { stroke: var(--kz-primary); stroke-width: 1.8; stroke-dasharray: 6 4; }
+.fd-shape-diamond { fill: #fff; stroke: var(--kz-ink-2); stroke-width: 1.5; }
+.fd-shape-diamond.sel { stroke: var(--kz-primary); stroke-width: 1.8; stroke-dasharray: 6 4; }
+.fd-shape-rect.target, .fd-shape-ellipse.target, .fd-shape-diamond.target { stroke: var(--kz-primary); stroke-width: 2; stroke-dasharray: 4 3; }
+.fd-shape-g { cursor: move; }
+.fd-shape-g.running .fd-shape-rect,
+.fd-shape-g.running .fd-shape-ellipse,
+.fd-shape-g.running .fd-shape-diamond { stroke: var(--kz-success); stroke-width: 2.5; stroke-dasharray: none; filter: drop-shadow(0 0 6px rgba(46,158,91,.5)); }
+.fd-ctext { fill: var(--kz-ink); font: 700 12.5px var(--kz-font-sans); text-anchor: middle; pointer-events: none; user-select: none; }
+.fd-branchlabel { fill: var(--kz-discount); font: 700 11px var(--kz-font-sans); user-select: none; }
+
+/* connectors */
+.fd-link { fill: none; stroke: var(--kz-muted-3); stroke-width: 1.8; }
+.fd-link.sel { stroke: var(--kz-primary); stroke-width: 2.2; }
+.fd-link-hit { fill: none; stroke: transparent; stroke-width: 14; pointer-events: stroke; cursor: pointer; }
+
+/* connection handles (triangles) shown on selected shape */
+.fd-handle { fill: var(--kz-muted-2); cursor: crosshair; transition: fill .12s; }
+.fd-handle:hover, .fd-handle.arming { fill: var(--kz-primary); }
+.fd-receiver { fill: rgba(106,97,191,.12); stroke: var(--kz-primary); stroke-width: 1.5; stroke-dasharray: 4 3; cursor: pointer; }
+
+/* connect hint */
+.fd-connhint { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 9px; padding: 8px 13px; background: var(--kz-ink); color: #fff; border-radius: 999px; box-shadow: var(--kz-shadow-lg); font: 600 12px var(--kz-font-sans); z-index: 20; }
+.fd-connhint ion-icon { font-size: 15px; }
+.fd-connhint button { border: none; background: rgba(255,255,255,.2); color: #fff; height: 22px; padding: 0 9px; border-radius: 999px; font: 600 11px var(--kz-font-sans); cursor: pointer; }
+
+/* ---------------- PROPERTY INSPECTOR ---------------- */
+.fd-prop-title { font: 700 15px var(--kz-font-sans); color: var(--kz-ink); padding: 4px 4px 2px; }
+.fd-prop-title .meta { color: var(--kz-muted-2); font: 500 11px var(--kz-font-num); margin-left: 4px; }
+.fd-prop-empty { padding: 22px 12px; text-align: center; color: var(--kz-muted-2); font: 400 12.5px/1.5 var(--kz-font-sans); }
+.fd-prop-empty ion-icon { font-size: 30px; color: var(--kz-muted-3); display: block; margin: 0 auto 8px; }
+.fd-fg { padding: 8px 4px; }
+.fd-fg label { display: block; font: 600 12px var(--kz-font-sans); color: var(--kz-ink-2); margin-bottom: 5px; }
+.fd-control { width: 100%; height: 36px; padding: 0 10px; border: 1px solid var(--kz-border-strong); border-radius: 8px; background: #fff; font: 500 13px var(--kz-font-sans); color: var(--kz-ink); outline: none; transition: all .14s; }
+.fd-control:focus { border-color: var(--kz-primary-tint); box-shadow: 0 0 0 3px var(--kz-primary-wash); }
+.fd-control.mono { font-family: var(--kz-font-num); }
+select.fd-control { appearance: none; cursor: pointer; padding-right: 28px; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23858a9b' d='M0 0h10L5 6z'/></svg>"); background-repeat: no-repeat; background-position: right 10px center; }
+.fd-check { display: flex; align-items: center; gap: 8px; padding: 7px 4px; font: 500 13px var(--kz-font-sans); color: var(--kz-ink-2); cursor: pointer; }
+.fd-check input { width: 16px; height: 16px; accent-color: var(--kz-primary); }
+.fd-check-row { display: flex; gap: 18px; padding: 4px; }
+
+/* Controls JSON panel */
+.fd-json { background: var(--kz-dark-bg); border-radius: 0 0 10px 10px; max-height: 260px; overflow: auto; }
+.fd-json pre { margin: 0; padding: 12px 14px; font: 400 11.5px/1.5 var(--kz-font-num); color: #c8cde0; }
+.fd-json .k { color: #9d96e8; }
+.fd-json .s { color: #7fd1a8; }
+.fd-json .n { color: #e0a36a; }
+.fd-card.dark { background: var(--kz-dark-bg); }
+.fd-card.dark .fd-card__head { border-bottom: 1px solid rgba(255,255,255,.07); }
+
+/* run toast */
+.fd-toast { position: absolute; top: 12px; right: 14px; display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #fff; border: 1px solid var(--kz-border); border-left: 3px solid var(--kz-success); border-radius: 10px; box-shadow: var(--kz-shadow-lg); font: 600 12.5px var(--kz-font-sans); color: var(--kz-ink); z-index: 30; }
+.fd-toast ion-icon { font-size: 18px; color: var(--kz-success); }
+
+@media (max-width: 1100px) {
+  .fd-main { grid-template-columns: 168px 1fr 286px; }
+}

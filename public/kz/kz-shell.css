@@ -1,0 +1,44 @@
+/* Koomzo — the shared module shell, for pages that predate it.
+   Older modules (Invoicing, Forms, Automations) rendered inside a scaled device
+   frame nested in a presenter window. They now use the same stage as the recent
+   modules: the app fills the surface, and the device is a Tweak, not chrome.
+   Loaded AFTER padmin.css so the frame rules it no longer needs are neutralised. */
+.stage{padding:0;flex:none;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.rt-wrap>.pa-app{width:100%;height:100%;min-height:0}
+.stage.tablet .rt-wrap>.pa-app,.stage.phone .rt-wrap>.pa-app{border-radius:20px}
+/* the padmin rail, rebuilt as an intra-module rail with badges */
+.pa-rail__item{position:relative}
+.pa-rail__item .padot{position:absolute;top:5px;right:7px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--kz-primary);color:#fff;font:700 9.5px var(--kz-font-sans);display:grid;place-items:center;font-style:normal}
+.pa-rail__item.active .padot{background:var(--kz-primary);color:#fff}
+.pa-setupwrap{padding:22px;overflow-y:auto;min-height:0}
+/* a frame div kept only for balance: it must not lay anything out */
+.rt-pass{display:contents}
+
+/* ------------------------------------------------------------------
+   Reflow. The padmin pages were drawn at a fixed 1440×900 and used to be
+   scaled to fit inside a device frame; full-bleed, they must reflow instead.
+   .rt-wrap is the query container, so this reaches every converted root — .pa-app,
+   .wf, .fb, .fd alike — and responds to the real surface: a narrow window AND the
+   tablet/phone preview. */
+.rt-wrap{container-type:inline-size}
+/* every rule below is scoped to .rt-wrap: the module stylesheets load after this
+   file, so a bare single-class selector would lose the cascade to them. */
+@container (max-width:1240px){
+  /* header, filter and footer rows wrap instead of pushing content out of the box */
+  .rt-wrap .pa-pagehead,.rt-wrap .pa-toolbar,.rt-wrap .pa-footer,.rt-wrap .au-tabs,.rt-wrap .fb-toolbar,.rt-wrap .wf-toolbar{flex-wrap:wrap;row-gap:10px}
+  .rt-wrap .pa-search{max-width:none;flex:1 1 220px}
+  .rt-wrap .pa-drawer{max-width:100%}
+}
+@container (max-width:980px){
+  /* auto margins would keep a right-aligned group on its own overflowing line */
+  .rt-wrap .pa-pagehead__actions,.rt-wrap .pa-toolbar__right,.rt-wrap .pa-footer__range{margin-left:0}
+  .rt-wrap .pa-pagehead,.rt-wrap .pa-toolbar,.rt-wrap .pa-footer{padding-left:16px;padding-right:16px}
+  .rt-wrap .pa-tablewrap{margin:0 16px}
+  .rt-wrap .pa-pagehead h1{font-size:22px}
+  /* the two canvas overlays were only clear of each other at the old pane width */
+  .rt-wrap .wf-legend{bottom:64px}
+  /* a flex:1 spacer claims a whole row once the bar wraps, and the bar triples in height */
+  .rt-wrap .wf-toolbar__spacer,.rt-wrap .fb-toolbar__spacer{flex:0 1 0;min-width:0}
+  .rt-wrap .wf-toolbar,.rt-wrap .fb-toolbar{height:auto}
+  .rt-wrap .wf-toolbar__name{flex:1 1 170px}
+}
