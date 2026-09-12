@@ -1,20 +1,27 @@
 /* Koomzo Inventory — Purchases (orders + receiving + reorder suggestions), Suppliers, Reports, Setup. */
 
-function PurchaseView({ caps }) {
+function PurchaseView({ caps, loc, onOpen }) {
   const [tab, setTab] = useState('orders');
-  const [selId, setSelId] = useState('po2');
+  const [selId, setSelId] = useState(IV_POS[0] ? IV_POS[0].id : null);
+  /* `pushed` is the phone's navigation state. On tablet+ the pane is always beside the
+     list and this is ignored; narrow, it decides whether the detail is on screen. */
+  const [pushed, setPushed] = useState(false);
   const [recv, setRecv] = useState({});
+  const [sq, setSq] = useState({});
+  useEffect(() => { if (IV_POS[0]) setSelId(IV_POS[0].id); }, [IV_POS.length]);
   const doc = IV_POS.find((p) => p.id === selId);
 
   const suggestions = IV_ITEMS.filter((i) => i.stock && i.par && IV.onHand(i, 'all') <= i.reorder)
     .map((i) => ({ item: i, need: Math.max(0, i.par - IV.onHand(i, 'all')) }));
+  const sneed = (r) => sq[r.item.id] !== undefined ? sq[r.item.id] : r.need;
 
   return (
     <div className="view">
       <div className="view__head">
         <div><h2>Purchases</h2><p>Order, receive, and cost the stock in</p></div>
         <div className="sp"></div>
-        <button className="btn primary"><ion-icon name="add-outline"></ion-icon>New order</button>
+        <button className="btn" onClick={() => onOpen('receive')}><ion-icon name="download-outline"></ion-icon>Receive</button>
+        <button className="btn primary" onClick={() => onOpen('newOrder')}><ion-icon name="add-outline"></ion-icon>New order</button>
       </div>
 
       <Seg value={tab} onChange={setTab} tabs={[['orders', 'Orders', IV_POS.length],
@@ -26,7 +33,7 @@ function PurchaseView({ caps }) {
             {IV_POS.map((p) => {
               const pct = IV.poRecvPct(p), st = IV_PO_STATUS[p.status];
               return (
-                <button className={'doc' + (selId === p.id ? ' on' : '')} key={p.id} onClick={() => setSelId(p.id)}>
+                <button className={'doc' + (selId === p.id ? ' on' : '')} key={p.id} onClick={() => { setSelId(p.id); setPushed(true); }}>
                   <div className="op-ic"><ion-icon name="receipt-outline"></ion-icon></div>
                   <div>
                     <div className="doc__no">{p.no}</div>
@@ -44,7 +51,8 @@ function PurchaseView({ caps }) {
             })}
           </div>
 
-          {doc && <PoPane doc={doc} recv={recv} setRecv={setRecv} />}
+          {doc && <PoPane doc={doc} recv={recv} setRecv={setRecv} onOpen={onOpen}
+            pushed={pushed} onBack={() => setPushed(false)} />}
         </div>
       )}
 
@@ -54,21 +62,26 @@ function PurchaseView({ caps }) {
         {IV_SUPPLIERS.map((s) => {
           const rows = suggestions.filter((x) => x.item.supplier === s.id);
           if (!rows.length) return null;
-          const total = rows.reduce((a, r) => a + r.need * r.item.cost, 0);
+          const total = rows.reduce((a, r) => a + sneed(r) * r.item.cost, 0);
           return (
             <div className="card" key={s.id} style={{ padding: 0, marginBottom: 12 }}>
               <div className="op-head">
                 <div><h3>{s.name}</h3><p>Lead time {s.lead} days · {s.terms} · minimum {money(s.moq)}</p></div>
                 <div className="sp"></div>
                 {total < s.moq && <Risk tone="watch">Below minimum</Risk>}
-                <button className="btn primary"><ion-icon name="receipt-outline"></ion-icon>Raise draft · {money(total)}</button>
+                <button className="btn primary" disabled={!total} onClick={() => {
+                  const lines = rows.filter((r) => sneed(r) > 0).map((r) => ({ id: r.item.id, qty: sneed(r), cost: r.item.cost }));
+                  const po = window.IVS.createPO({ supplier: s.id, to: 'wh', lines, send: false });
+                  setSelId(po.id); setPushed(true); setTab('orders');
+                }}><ion-icon name="receipt-outline"></ion-icon>Raise draft · {money(total)}</button>
               </div>
               {rows.map((r) => (
                 <div className="ln" key={r.item.id}>
                   <div><div className="ln__n">{r.item.name}</div><div className="ln__s">{r.item.sku} · on hand {IV.onHand(r.item, 'all')} · par {r.item.par}</div></div>
                   <div className="r ln-exp" style={{ color: 'var(--kz-muted-2)' }}>{money(r.item.cost)}</div>
-                  <div><input className="numin" defaultValue={r.need} /></div>
-                  <div className="r">{money(r.need * r.item.cost)}</div>
+                  <div><input className="numin" value={sneed(r)}
+                    onChange={(e) => setSq((c) => ({ ...c, [r.item.id]: Math.max(0, +e.target.value || 0) }))} /></div>
+                  <div className="r">{money(sneed(r) * r.item.cost)}</div>
                 </div>
               ))}
             </div>
@@ -79,15 +92,22 @@ function PurchaseView({ caps }) {
   );
 }
 
-function PoPane({ doc, recv, setRecv }) {
+function PoPane({ doc, recv, setRecv, onOpen, pushed, onBack }) {
   const sup = IV_SUPPLIERS.find((s) => s.id === doc.supplier);
   const get = (l) => recv[doc.id + l.id] !== undefined ? recv[doc.id + l.id] : l.recv;
   const set = (l, v) => setRecv((c) => ({ ...c, [doc.id + l.id]: Math.max(0, +v || 0) }));
   const outstanding = doc.lines.reduce((s, l) => s + (l.qty - get(l)) * l.cost, 0);
   const receivedVal = doc.lines.reduce((s, l) => s + get(l) * l.cost, 0);
+  /* the input holds cumulative received-to-date, so a receipt posts the delta. Untouched,
+     the button receives the whole outstanding balance — the common case at the door. */
+  const typed = doc.lines.some((l) => recv[doc.id + l.id] !== undefined);
+  const arriving = doc.lines
+    .map((l) => ({ id: l.id, qty: typed ? get(l) - l.recv : l.qty - l.recv, cost: l.cost }))
+    .filter((l) => l.qty > 0);
   return (
-    <div className="mdpane">
+    <div className={'mdpane' + (pushed ? ' pushed' : '')}>
       <div className="mdpane__hd">
+        <button className="icbtn backbtn" onClick={onBack}><ion-icon name="chevron-back-outline"></ion-icon></button>
         <div className="av" style={{ background: 'var(--kz-primary-wash)', color: 'var(--kz-primary)' }}><ion-icon name="receipt-outline"></ion-icon></div>
         <div><h3>{doc.no}</h3><p>{sup.name} · into {IV.loc(doc.to).name}</p></div>
       </div>
@@ -121,42 +141,53 @@ function PoPane({ doc, recv, setRecv }) {
           <span>Receiving posts a <b>receipt</b> movement per line into {IV.loc(doc.to).name} and re-averages unit cost. Short receipts leave the order open.</span></div>
       </div>
       <div className="mdfoot">
-        <button className="btn"><ion-icon name="print-outline"></ion-icon>Print</button>
-        <button className="btn primary" disabled={doc.status === 'received'}>
-          <ion-icon name="download-outline"></ion-icon>{doc.status === 'draft' ? 'Send order' : 'Receive'}</button>
+        <button className="btn" onClick={() => onOpen('print', { po: doc })}><ion-icon name="print-outline"></ion-icon>Print</button>
+        {doc.status === 'draft'
+          ? <button className="btn primary" onClick={() => window.IVS.sendPO(doc.id)}>
+              <ion-icon name="send-outline"></ion-icon>Send order</button>
+          : <button className="btn primary" disabled={doc.status === 'received' || !arriving.length}
+              onClick={() => { window.IVS.receive({ poId: doc.id, lines: arriving, ref: doc.no + ' · ' + sup.name }); setRecv({}); }}>
+              <ion-icon name="download-outline"></ion-icon>
+              {doc.status === 'received' ? 'Received' : !arriving.length ? 'Nothing arriving'
+                : typed ? 'Receive ' + arriving.length + ' line' + (arriving.length > 1 ? 's' : '')
+                : 'Receive all outstanding'}</button>}
       </div>
     </div>
   );
 }
 
 /* ================= SUPPLIERS ================= */
-function SuppliersView() {
-  const [selId, setSelId] = useState('sup1');
-  const s = IV_SUPPLIERS.find((x) => x.id === selId);
-  const items = IV_ITEMS.filter((i) => i.supplier === selId);
+function SuppliersView({ onOpen }) {
+  const [selId, setSelId] = useState(IV_SUPPLIERS[0].id);
+  const [pushed, setPushed] = useState(false);
+  const s = IV_SUPPLIERS.find((x) => x.id === selId) || IV_SUPPLIERS[0];
+  const items = IV_ITEMS.filter((i) => i.supplier === s.id);
+  const sent = (window.IV_OUTBOX || []).filter((m) => m.supplier === s.id);
+  const orders = IV_POS.filter((p) => p.supplier === s.id && p.status !== 'received');
   return (
     <div className="view">
       <div className="view__head">
         <div><h2>Suppliers</h2><p>Who you buy from, and how reliably</p></div>
         <div className="sp"></div>
-        <button className="btn primary"><ion-icon name="add-outline"></ion-icon>New supplier</button>
+        <button className="btn primary" onClick={() => onOpen('newSupplier')}><ion-icon name="add-outline"></ion-icon>New supplier</button>
       </div>
       <div className="mdgrid">
         <div className="card" style={{ padding: 0 }}>
           {IV_SUPPLIERS.map((x) => (
-            <button className={'doc' + (selId === x.id ? ' on' : '')} key={x.id} onClick={() => setSelId(x.id)}>
+            <button className={'doc' + (selId === x.id ? ' on' : '')} key={x.id} onClick={() => { setSelId(x.id); setPushed(true); }}>
               <div className="op-ic"><ion-icon name="people-circle-outline"></ion-icon></div>
               <div>
                 <div className="doc__no" style={{ fontFamily: 'var(--kz-font-sans)' }}>{x.name}</div>
-                <div className="doc__m">{x.items} items · lead {x.lead} d · {x.terms}</div>
+                <div className="doc__m">{IV_ITEMS.filter((i) => i.supplier === x.id).length} items · lead {x.lead} d · {x.terms}</div>
               </div>
               <div className="sp"></div>
               <Risk tone={x.onTime > 0.9 ? 'low' : x.onTime > 0.8 ? 'watch' : 'high'}>{Math.round(x.onTime * 100)}% on time</Risk>
             </button>
           ))}
         </div>
-        <div className="mdpane">
+        <div className={'mdpane' + (pushed ? ' pushed' : '')}>
           <div className="mdpane__hd">
+            <button className="icbtn backbtn" onClick={() => setPushed(false)}><ion-icon name="chevron-back-outline"></ion-icon></button>
             <div className="av" style={{ background: 'var(--kz-primary-wash)', color: 'var(--kz-primary)' }}><ion-icon name="business-outline"></ion-icon></div>
             <div><h3>{s.name}</h3><p>{s.contact}</p></div>
           </div>
@@ -165,6 +196,32 @@ function SuppliersView() {
             <KV k="Payment terms" v={s.terms} /><KV k="Lead time" v={s.lead + ' days'} />
             <KV k="Minimum order" v={money(s.moq)} num /><KV k="Spend · 12 mo" v={money(s.spend)} num />
             <div className="hint"><ion-icon name="information-circle-outline"></ion-icon><span>{s.note}</span></div>
+            {orders.length > 0 && (
+              <div className="grp">
+                <span className="grp__t">Open orders</span>
+                {orders.map((p) => (
+                  <div className="op-row" key={p.id}>
+                    <div className="op-ic"><ion-icon name="receipt-outline"></ion-icon></div>
+                    <div><div className="op-k">{p.no}</div><div className="op-d">{IV_PO_STATUS[p.status].label} · due {p.expected}</div></div>
+                    <div className="sp"></div>
+                    <div className="op-v small">{money(IV.poTotal(p))}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {sent.length > 0 && (
+              <div className="grp">
+                <span className="grp__t">Sent from this device</span>
+                {sent.slice(0, 4).map((m) => (
+                  <div className="op-row" key={m.id}>
+                    <div className="op-ic"><ion-icon name={m.state === 'queued' ? 'time-outline' : 'mail-open-outline'}></ion-icon></div>
+                    <div><div className="op-k">{m.subject}</div><div className="op-d">{m.at}{m.ref ? ' · ' + m.ref : ''}</div></div>
+                    <div className="sp"></div>
+                    <Risk tone={m.state === 'queued' ? 'watch' : 'low'}>{m.state === 'queued' ? 'Queued' : 'Sent'}</Risk>
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="grp">
               <span className="grp__t">Items supplied</span>
               {items.map((i) => (
@@ -177,8 +234,8 @@ function SuppliersView() {
             </div>
           </div>
           <div className="mdfoot">
-            <button className="btn"><ion-icon name="mail-outline"></ion-icon>Email</button>
-            <button className="btn primary"><ion-icon name="receipt-outline"></ion-icon>New order</button>
+            <button className="btn" onClick={() => onOpen('email', { supplier: s })}><ion-icon name="mail-outline"></ion-icon>Email</button>
+            <button className="btn primary" onClick={() => onOpen('newOrder', { supplierId: s.id })}><ion-icon name="receipt-outline"></ion-icon>New order</button>
           </div>
         </div>
       </div>

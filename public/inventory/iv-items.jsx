@@ -112,7 +112,7 @@ function MoveRow({ m }) {
 /* ================= ITEMS ================= */
 const TYPE_FILTERS = [['all', 'All'], ['product', 'Products'], ['service', 'Services'], ['composite', 'Composites'], ['nonstock', 'Non-stock']];
 
-function ItemsView({ loc, caps, selId, onSelect, items, onPatch }) {
+function ItemsView({ loc, caps, selId, onSelect, items, rev, onPatch, onOpen }) {
   const [q, setQ] = useState('');
   const [type, setType] = useState('all');
   const [cat, setCat] = useState('all');
@@ -134,7 +134,7 @@ function ItemsView({ loc, caps, selId, onSelect, items, onPatch }) {
       if (sort.k === 'value') return (IV.value(a, loc) - IV.value(b, loc)) * sort.d;
       return String(a.name).localeCompare(String(b.name)) * sort.d;
     });
-  }, [items, q, type, cat, stockF, sort, loc]);
+  }, [items, rev, q, type, cat, stockF, sort, loc]);
 
   const flip = (k) => setSort((s) => s.k === k ? { k, d: -s.d } : { k, d: 1 });
   const toggle = (id) => setSel((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
@@ -146,8 +146,8 @@ function ItemsView({ loc, caps, selId, onSelect, items, onPatch }) {
       <div className="view__head">
         <div><h2>Items</h2><p>{rows.length} of {items.length} · {money(shown)} at cost</p></div>
         <div className="sp"></div>
-        <button className="btn"><ion-icon name="cloud-upload-outline"></ion-icon>Import</button>
-        <button className="btn primary" onClick={() => onSelect('new')}><ion-icon name="add-outline"></ion-icon>New item</button>
+        <button className="btn" onClick={() => onOpen('import')}><ion-icon name="cloud-upload-outline"></ion-icon>Import</button>
+        <button className="btn primary" onClick={() => onOpen('newItem')}><ion-icon name="add-outline"></ion-icon>New item</button>
       </div>
 
       <div className="fbar">
@@ -175,7 +175,11 @@ function ItemsView({ loc, caps, selId, onSelect, items, onPatch }) {
             <ion-icon name="eye-outline"></ion-icon>Show in POS</button>
           <button className="btn" onClick={() => { sel.forEach((id) => onPatch(id, (i) => ({ pos: { ...i.pos, show: false } }))); setSel(new Set()); }}>
             <ion-icon name="eye-off-outline"></ion-icon>Hide</button>
-          {caps.purchase && <button className="btn"><ion-icon name="receipt-outline"></ion-icon>Add to order</button>}
+          {caps.purchase && <button className="btn" onClick={() => {
+            const first = IV.item([...sel][0]);
+            onOpen('newOrder', { supplierId: first && first.supplier ? first.supplier : null });
+            setSel(new Set());
+          }}><ion-icon name="receipt-outline"></ion-icon>Add to order</button>}
           <button className="btn" onClick={() => setSel(new Set())}>Clear</button>
         </div>
       )}
@@ -222,14 +226,14 @@ function ItemsView({ loc, caps, selId, onSelect, items, onPatch }) {
           {!rows.length && <EmptyState icon="cube-outline" title="No items match" sub="Clear a filter or search a different SKU." />}
         </div>
 
-        {item && <ItemPane item={item} loc={loc} caps={caps} onPatch={onPatch} onClose={() => onSelect(null)} />}
+        {item && <ItemPane item={item} loc={loc} caps={caps} onPatch={onPatch} onOpen={onOpen} onClose={() => onSelect(null)} />}
       </div>
     </div>
   );
 }
 
 /* ---------- the item pane: one object, five faces ---------- */
-function ItemPane({ item, loc, caps, onPatch, onClose }) {
+function ItemPane({ item, loc, caps, onPatch, onOpen, onClose }) {
   const isService = item.type === 'service';
   const tabs = ['details', isService ? 'service' : 'stock', item.type === 'composite' ? 'recipe' : null, 'pos', 'history'].filter(Boolean);
   const [tab, setTab] = useState('details');
@@ -238,7 +242,7 @@ function ItemPane({ item, loc, caps, onPatch, onClose }) {
   const setPos = (patch) => onPatch(item.id, (i) => ({ pos: { ...i.pos, ...patch } }));
 
   return (
-    <div className="mdpane overlay">
+    <div className="mdpane pushed">
       <div className="mdpane__hd">
         <Av item={item} />
         <div style={{ minWidth: 0 }}>
@@ -309,8 +313,8 @@ function ItemPane({ item, loc, caps, onPatch, onClose }) {
             <KV k="Par level" v={item.par} num />
             <KV k="Supplier" v={item.supplier ? IV_SUPPLIERS.find((s) => s.id === item.supplier).name : '—'} />
             <div className="actbar">
-              <button className="btn primary"><ion-icon name="create-outline"></ion-icon>Adjust</button>
-              {caps.transfers && <button className="btn"><ion-icon name="git-compare-outline"></ion-icon>Transfer</button>}
+              <button className="btn primary" onClick={() => onOpen && onOpen('adjust', { itemId: item.id })}><ion-icon name="create-outline"></ion-icon>Adjust</button>
+              {caps.purchase && <button className="btn" onClick={() => onOpen && onOpen('newOrder', { supplierId: item.supplier })}><ion-icon name="receipt-outline"></ion-icon>Order</button>}
             </div>
           </> : <EmptyState icon="infinite-outline" title="No stock to hold"
             sub={item.type === 'service' ? 'A service consumes time, not units — see the Service tab.' : 'Non-stock items are never counted.'} />}

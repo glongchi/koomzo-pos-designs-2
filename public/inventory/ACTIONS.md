@@ -1,0 +1,151 @@
+# Inventory — action contract
+
+Every action button in the Inventory module now posts. This file is the handoff note:
+what each action takes, what it writes, and which rule the **server** must re-resolve
+in `koomzoapps` (the design-system copy enforces it client-side only, so the UI can
+respond with no network — it is a mirror, not the authority).
+
+All calls live in `inventory/iv-store.js` as `IVS.*`. The argument shapes are the
+contract; the array mutation is the mock backend and is not.
+
+## Invariant the whole module rests on
+
+A quantity is never edited — it is **moved**. Every action that changes a number
+writes one movement row (`IV_MOVES`) carrying item, location, kind, qty, reason,
+reference and cost. If an action cannot name its movement, it is not allowed to run.
+
+| Screen | Button | Call | Writes | SERVER must enforce |
+|---|---|---|---|---|
+| Items | New item | `createItem(draft)` | item; `adjust`/`found` movement if an opening balance is given | SKU uniqueness per tenant; opening balance only via a movement, never a direct quantity |
+| Items | Import | `importItems(rows, locId)` | items created/updated; one `found` movement per row with a qty | SKU is the merge key; reject the whole file or none — no partial commit |
+| Items | Add to order *(bulk)* | opens `newOrder` prefilled with the first selection's supplier | — | — |
+| Stock | Receive | `receive({poId, locId, lines, ref})` | `receipt` movement per line; `recv` on the order; order status; weighted-average cost | cost re-average rounded to whole XAF on write; over-receipt recorded, never silently clamped |
+| Stock | Post adjustment | `postAdjustment({itemId, locId, delta, reason, note})` | one `adjust` movement | reason is mandatory; a negative result needs an owner PIN **and** a role permitted to authorise it (mock accepts any 4 digits) |
+| Stock | Export | client-side CSV of the filtered movement log | — | — |
+| Purchases | New order | `createPO({supplier, to, lines, send})` | order (`draft` or `sent`) | MOQ shortfall is a warning, never a block — it is our rule, not the supplier's |
+| Purchases | Send order | `sendPO(id)` | status `sent`; outbox row | idempotent — a retry must not send twice |
+| Purchases | Receive *(pane)* | `receive({poId, lines})` | as above | the pane input is **cumulative received-to-date**; the post is the delta |
+| Purchases | Print | none — renders `.docpaper`, `window.print()` | — | — |
+| Purchases | Raise draft *(suggestion)* | `createPO({send:false})` | draft order per supplier | par/reorder read at raise time, not at suggestion time |
+| Counts | New count | `createCount({loc, scope, blind, lines})` | count with expected frozen at open | expected must be captured server-side at open; a client-supplied expected is forgeable |
+| Counts | Schedule cycle | `scheduleCycle(cfg)` | rotation (`IV_CYCLES`) | — |
+| Counts | Save draft | `saveCount(id, counted)` | line counts; status `open`/`review` | — |
+| Counts | Post count | `postCount(id, counted)` | one `count` movement per differing line; variance to shrinkage; status `posted` | posted counts are immutable — a mistake is corrected by a new adjustment |
+| Vendors | New supplier | `createSupplier(d)` | supplier | name uniqueness per tenant |
+| Vendors | Email | `queueEmail(m)` | outbox row, `sent` or `queued` | offline queue is per device and must de-duplicate on flush |
+| Vendors | New order | opens `newOrder` for that supplier | — | — |
+
+## Decisions worth carrying to koomzoapps
+
+1. **Two legitimate ways stock arrives.** Against an order, and without one. Both write
+   receipt movements and re-average cost; only the first can close an order. A system
+   that models only the first gets direct deliveries entered as adjustments, and
+   shrinkage reporting becomes unreadable.
+2. **Negative stock is allowed, authorised.** The shelf is the truth. Blocking the
+   post makes staff stop recording, which is worse than a negative. So: reason
+   required always, PIN required when the result goes below zero.
+3. **Blind count is the default.** A visible expected figure gets typed back at you;
+   it will not find theft. The expected value is hidden from the counter but frozen
+   at open, so the variance is still computable.
+4. **Cumulative vs delta on receiving.** The pane's input is what has arrived *in
+   total*; the post is the difference. Untouched, the button receives the whole
+   outstanding balance — the common case at the door.
+5. **Cost rounds to whole francs on every write.** XAF has no minor unit, so an
+   unrounded weighted average makes every downstream valuation fractional. Same rule
+   as the money gates.
+6. **A post says what it wrote.** Toasts are in domain terms — “Posted CC-0033 · 2
+   movements · variance −1 250 F”, not “Saved”. An operator who cannot see what a
+   button did stops trusting the button.
+
+## Layout — master–detail is a push on mobile, a pane on tablet+
+
+Purchases, Counts, Vendors and Transfers all use `.mdgrid` + `.mdpane`. Stacking the
+detail *below* the master list on a phone is the defect this replaces: the user scrolls
+past the entire list to reach what they just tapped, and the tap gives no feedback until
+they do.
+
+Under 1000px the pane leaves the flow entirely (`.mdgrid>.mdpane:not(.pushed)` is
+`display:none`) and a tap sets `pushed`, which turns it into a full-height overlay with
+a back chevron — the behaviour `ion-split-pane` gives you natively in `koomzoapps`.
+Three rules make it read as navigation rather than a resized pane:
+
+1. **Back clears the navigation state, not the selection.** `pushed` is separate from
+   `selId`, so rotating to tablet width shows the pane beside the list with the
+   selection intact rather than an empty pane.
+2. **The record identifies itself in its own header** (PO-2214 · Aurelia Labs · into
+   Central Warehouse), because the list that supplied that context is off-screen.
+3. **The footer actions stay pinned** — Receive/Print, Post count, Email/New order.
+   They are why the detail was opened.
+
+Panes assembled from several blocks rather than one `.mdbd` wrap them in `.mdscroll`,
+which is `display:contents` at desktop (layout unchanged) and becomes the single scroll
+region when pushed.
+
+**In `koomzoapps` this is `ion-split-pane` with `when="md"`**, and the push is a real
+`ion-nav` route — which gets the hardware back button and the swipe-back gesture for
+free. Do not port the class toggle; port the intent.
+
+### Where this pattern lives across the design system
+
+`.mdpane`/`.mdgrid` are defined in **this file** and consumed by MRP, Retail Flex and
+Products v2 as well as Inventory, so the mobile contract is cross-module: **a pane must
+carry `pushed` to be visible under 1000px.** The class name is load-bearing, not
+cosmetic — renaming it silently blanks panes in modules that never get opened during
+the change.
+
+| Module · screen | Push state | Notes |
+|---|---|---|
+| Inventory · Items | selection | pane only mounts when an item is selected |
+| Inventory · Purchases / Counts / Vendors / Transfers | explicit `pushed` | these seed a default selection, so selection alone can't drive it |
+| MRP · Planning / Work orders / BOM | selection | shares `.mdpane` from this file |
+| Retail Flex · Sales | selection | shares `.mdpane` from this file |
+| Hotel · Folio | explicit `pushed` | own grid (`.htf`), seeds first in-house stay |
+| Catalog · Categories | `editId` | own grid (`.catwrap`), selection is the state |
+| Salon · Team | `showing` | predates this work, same contract, own vocabulary |
+
+**Deliberately not master–detail** — these are two-column *layouts* whose second column
+is a peer, not a detail of a selection, and stacking is correct: the POS boards
+(`.board`, `.grtill`, `.gmpos`, `.gmdesk` — the order panel is a peer of the
+catalogue), Hotel Pre-arrival (`.htpa`, a guest-phone preview; its row tap opens a
+modal sheet), Queue serve console (`.qsplit`, a lane side-panel), Home's `.kh-cols`,
+Control Centre's `.cc2`, Barcode's `.bc-split`, and `.form2`.
+
+**Two naming hazards to settle before this ports.** `.back-s` is owned by `sl.css`, and
+which bundles load it varies: Hotel and Grocery load it *before* `ht.css` (so Hotel's
+back button can use `.sbtn gh`, and its `.htf.pushed .back-s` rule at 0-3-0 + `!important`
+correctly outranks sl.css's `@container (min-width:641px)` hide), while the Retail Flex
+bundle does **not** load it at all — so Catalog builds its back control from `.btn`
+(rx.css, always present there) and scopes every `.back-s` rule to `.catwrap`. The rule
+that falls out: **never depend on, or restyle, a class another module owns** — check the
+bundle's actual stylesheet list, not the class's existence in the tree. That is the same
+failure mode as the `overlay`→`pushed` rename, one level down.
+
+And Salon's `showing` is a third name for one concept (`overlay` → `pushed` →
+`showing`); in `koomzoapps` all three collapse into `ion-split-pane`, so the vocabulary
+should be unified at the port rather than propagated.
+
+## Known gaps, named rather than left silent
+
+- **Late-mounted `ion-icon` elements do not always hydrate.** Every `ion-icon` costs a
+  per-icon SVG fetch from the CDN; icons present at initial load resolve, but ones
+  mounted later (a pushed pane, an opened sheet) can stay `visibility:hidden` at 0×0 —
+  observed as 0 of 76 hydrated in Categories' glyph picker. Two consequences already
+  applied: the back affordance is an **inline SVG**, because a navigation control whose
+  glyph may not arrive is worse than one without a glyph; and `Koomzo POS - Retail Flex.html`
+  was moved from `cdn.jsdelivr` to `unpkg` to match every other bundle (one origin, and
+  the glyph picker fires 76 requests at once). **This is a pre-existing condition the
+  push work exposed** rather than caused — the editor used to be a stacked block nobody
+  scrolled to and is now the whole mobile screen. In `koomzoapps` it does not survive
+  the port: `@ionic/angular` bundles Ionicons locally, so there is no per-icon fetch and
+  nothing to hydrate late. Any icon that must render **offline** should not depend on a
+  network glyph regardless.
+
+- **Transfers** still has unwired buttons (Send / Receive / New transfer). Same action
+  shape as receiving — two movements, one document — but out of scope for this pass.
+- **Lot and serial capture on receipt.** `receive()` accepts a `lot` per line and the
+  movement carries it, but no sheet collects it yet; items with `lot:true` should
+  require it before the post is allowed.
+- **Reports → Export CSV** and **Setup → Add location / Add reason** are not wired.
+- **Email is a queue, not a transport.** `queueEmail` records intent and state; there
+  is no send. In `koomzoapps` this is a server-side job, and the device queue must
+  de-duplicate against it.

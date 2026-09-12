@@ -65,7 +65,7 @@ function WoPane({ o, caps, onClose, onPatch }) {
   const checks = MRP_QC.filter((c) => c.wo === o.no);
   const cost = MR.cost(o.no);
   return (
-    <aside className="mdpane overlay">
+    <aside className="mdpane pushed">
       <div className="mdpane__hd">
         <PartAv p={p} size={46} />
         <div style={{ minWidth: 0 }}><h3>{o.no}</h3><p>{p.name} · {q(o.qty, p.unit)}</p></div>

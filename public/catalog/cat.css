@@ -1,6 +1,24 @@
 /* Koomzo — Categories screen styles. Layers on rx.css / rx-ops.css / iv.css. */
 .catwrap{display:grid;grid-template-columns:1fr 400px;gap:14px;align-items:start;max-width:1120px}
-@container (max-width:1000px){.catwrap{grid-template-columns:1fr}}
+/* `.back-s` is Salon's class and sl.css is NOT loaded in the Retail Flex bundle, so the
+   control is built from `.btn` (rx.css, always present here) and every rule below is
+   parent-scoped. Never depend on — or restyle — a class another module owns. */
+/* The back affordance is the one glyph that must render even when a late-mounted
+   <ion-icon> fails to hydrate (each one costs a per-icon SVG fetch), so it is drawn
+   inline rather than fetched. */
+.chev{flex:none;display:block}
+.catwrap .back-s{display:none}
+@container (max-width:1000px){
+  .catwrap{grid-template-columns:1fr}
+  /* the editor is the detail of a tapped row — a push, not a block stacked underneath.
+     Selection IS the navigation state here, so `pushed` mirrors editId. */
+  .catwrap:not(.pushed) .cateditor{display:none}
+  .catwrap.pushed .catlist{display:none}
+  .catwrap.pushed .back-s{display:inline-flex!important}
+  /* back and X both dismiss; one affordance is enough in a phone header */
+  .catwrap.pushed .close-w{display:none}
+}
+.back-s{display:none}
 
 .catrow{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--kz-border)}
 .catrow:last-of-type{border-bottom:none}

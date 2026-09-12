@@ -1,0 +1,282 @@
+/* Koomzo Inventory — mutation layer.
+   Every action in this module lands here, and every action that changes a quantity
+   writes a movement row. That is the module's one invariant: stock is never edited,
+   it is always *moved*. Views read the window.IV_* collections directly and re-render
+   off a revision counter, so a post is visible everywhere at once (rail badges,
+   overview KPIs, item history) without prop plumbing.
+
+   Mock backend note: this file IS the backend for the design system. In koomzoapps the
+   same call signatures become service methods — the argument shapes are the contract,
+   the array mutation is not. Anything marked SERVER below is enforced here for the
+   prototype but must be re-resolved server-side on write. */
+
+(function () {
+  const ls = new Set();
+  let rev = 0;
+  const bump = () => { rev++; ls.forEach((f) => f(rev)); };
+
+  const pad = (n) => String(n).padStart(2, '0');
+  const clock = () => { const d = new Date(); return 'Today · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+  const today = () => { const d = new Date(); return pad(d.getDate()) + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]; };
+
+  let mSeq = 100, poSeq = 2216, cSeq = 34, supSeq = 3, itSeq = 100, cySeq = 0, msgSeq = 0;
+  const nextNo = (prefix, seq) => prefix + '-' + String(seq).padStart(4, '0');
+
+  /* who is posting — in production this is the session user, immutable for the session */
+  const WHO = 'M. Ekindi';
+
+  window.IV_CYCLES = window.IV_CYCLES || [];
+  window.IV_OUTBOX = window.IV_OUTBOX || [];
+
+  const toasts = [];
+
+  /* ---------- primitives ---------- */
+  function move(m) {
+    const row = Object.assign({ id: 'm' + (++mSeq), at: clock(), who: WHO }, m);
+    window.IV_MOVES.unshift(row);
+    return row;
+  }
+  function applyStock(itemId, locId, delta) {
+    const it = window.IV.item(itemId);
+    if (!it || !it.stock) return;
+    it.stock[locId] = (it.stock[locId] || 0) + delta;
+  }
+  /* weighted average, rounded to whole francs on every write — XAF has no minor unit,
+     so an unrounded unit cost would make every downstream valuation fractional. */
+  function reaverage(itemId, qty, unitCost) {
+    const it = window.IV.item(itemId);
+    if (!it || !it.stock || !qty) return it ? it.cost : 0;
+    const held = window.IV.onHand(it, 'all');
+    const before = it.cost || 0;
+    it.cost = Math.round(((held * before) + (qty * unitCost)) / Math.max(1, held + qty));
+    return it.cost;
+  }
+
+  const IVS = {
+    /* ---------- store ---------- */
+    sub(fn) { ls.add(fn); return () => ls.delete(fn); },
+    rev: () => rev,
+    tx(fn) { const r = fn(); bump(); return r; },
+    say(msg, tone) { toasts.push({ id: 't' + Date.now() + Math.random(), msg, tone: tone || 'ok' }); bump(); },
+    toasts: () => toasts,
+    drop(id) { const i = toasts.findIndex((t) => t.id === id); if (i > -1) toasts.splice(i, 1); bump(); },
+    who: WHO, clock, today,
+
+    /* ---------- items ---------- */
+    createItem(d) {
+      return IVS.tx(() => {
+        const id = 'x' + (++itSeq);
+        const tracks = d.type === 'product';
+        const it = {
+          id, name: d.name.trim(), sku: (d.sku || '').trim().toUpperCase(), barcode: (d.barcode || '').trim(),
+          type: d.type, cat: d.cat, brand: d.brand || '', unit: d.unit || 'each',
+          cost: +d.cost || 0, price: +d.price || 0,
+          icon: d.icon || (window.IV_CATS.find((c) => c.id === d.cat) || {}).icon || 'cube-outline',
+          tint: d.tint || window.IV_TINTS.slate,
+          supplier: d.supplier || null,
+          pos: { show: !!d.posShow, cat: d.cat, tile: d.type === 'service' ? 'list' : 'image' },
+        };
+        if (tracks) {
+          it.reorder = +d.reorder || 0; it.par = +d.par || 0;
+          it.backbar = !!d.backbar;
+          it.stock = { dt: 0, up: 0, ap: 0, wh: 0 };
+        }
+        if (d.type === 'service') {
+          it.service = { duration: +d.duration || 30, buffer: 5, staff: ['Any stylist'], room: 'Chair',
+            commission: 0.35, consumes: [], online: true, deposit: 0 };
+        }
+        if (d.type === 'composite') it.recipe = [];
+        window.IV_ITEMS.push(it);
+        /* opening balance is a movement, not a silent number */
+        if (tracks && +d.opening > 0) {
+          applyStock(id, d.openingLoc, +d.opening);
+          move({ item: id, loc: d.openingLoc, kind: 'adjust', qty: +d.opening, reason: 'found',
+            ref: 'Opening balance', cost: (+d.opening) * (+d.cost || 0) });
+        }
+        IVS.say(it.name + ' created' + (tracks && +d.opening > 0 ? ' · opening ' + d.opening + ' at ' + window.IV.loc(d.openingLoc).code : ''));
+        return it;
+      });
+    },
+
+    /* rows already validated by the sheet. mode: 'create' | 'update' | 'skip' per row */
+    importItems(rows, locId) {
+      return IVS.tx(() => {
+        let created = 0, updated = 0, opening = 0;
+        rows.forEach((r) => {
+          if (r.mode === 'skip') return;
+          if (r.mode === 'update') {
+            const it = window.IV_ITEMS.find((i) => i.sku.toUpperCase() === r.sku.toUpperCase());
+            Object.assign(it, { name: r.name || it.name, price: r.price != null ? r.price : it.price,
+              cost: r.cost != null ? r.cost : it.cost });
+            updated++;
+            return;
+          }
+          const id = 'x' + (++itSeq);
+          window.IV_ITEMS.push({
+            id, name: r.name, sku: r.sku.toUpperCase(), barcode: r.barcode || '', type: 'product',
+            cat: r.cat, unit: 'each', cost: r.cost || 0, price: r.price || 0, reorder: 0, par: 0,
+            icon: (window.IV_CATS.find((c) => c.id === r.cat) || {}).icon || 'cube-outline',
+            tint: window.IV_TINTS.slate, pos: { show: false, cat: r.cat, tile: 'image' },
+            stock: { dt: 0, up: 0, ap: 0, wh: 0 },
+          });
+          created++;
+          if (r.qty > 0) {
+            applyStock(id, locId, r.qty);
+            move({ item: id, loc: locId, kind: 'adjust', qty: r.qty, reason: 'found',
+              ref: 'Import · opening balance', cost: r.qty * (r.cost || 0) });
+            opening++;
+          }
+        });
+        IVS.say(created + ' created · ' + updated + ' updated' + (opening ? ' · ' + opening + ' opening balances posted' : ''));
+        return { created, updated, opening };
+      });
+    },
+
+    /* ---------- adjustments ---------- */
+    /* SERVER: a negative result needs a reason and an owner PIN. The sheet collects both;
+       production re-checks the PIN and the role that may authorise a negative. */
+    postAdjustment({ itemId, locId, delta, reason, note }) {
+      return IVS.tx(() => {
+        const it = window.IV.item(itemId);
+        applyStock(itemId, locId, delta);
+        const r = window.IV_REASONS.find((x) => x.id === reason);
+        move({ item: itemId, loc: locId, kind: 'adjust', qty: delta, reason,
+          ref: note && note.trim() ? note.trim() : r.label, cost: Math.abs(delta) * (it.cost || 0) });
+        IVS.say('Adjusted · ' + it.name + ' ' + (delta > 0 ? '+' : '−') + Math.abs(delta) + ' at ' + window.IV.loc(locId).code);
+        return { after: it.stock[locId] };
+      });
+    },
+
+    /* ---------- receiving ---------- */
+    /* lines: [{ id, qty, cost, lot }] — qty is what physically arrived, not what was ordered. */
+    receive({ poId, locId, lines, ref }) {
+      return IVS.tx(() => {
+        const po = poId ? window.IV_POS.find((p) => p.id === poId) : null;
+        const at = po ? po.to : locId;
+        let value = 0, n = 0;
+        lines.filter((l) => l.qty > 0).forEach((l) => {
+          applyStock(l.id, at, l.qty);
+          reaverage(l.id, l.qty, l.cost);
+          move({ item: l.id, loc: at, kind: 'receipt', qty: l.qty, ref: ref, cost: l.qty * l.cost, lot: l.lot || null });
+          if (po) { const pl = po.lines.find((x) => x.id === l.id); if (pl) pl.recv += l.qty; }
+          value += l.qty * l.cost; n++;
+        });
+        if (po) {
+          const done = po.lines.every((l) => l.recv >= l.qty);
+          const some = po.lines.some((l) => l.recv > 0);
+          po.status = done ? 'received' : some ? 'partial' : po.status;
+          po.received = window.IVS.today();
+        }
+        IVS.say('Received ' + n + ' line' + (n === 1 ? '' : 's') + ' · ' + window.money(value) + ' into ' + window.IV.loc(at).code);
+        return { value, n, status: po ? po.status : null };
+      });
+    },
+
+    /* ---------- purchase orders ---------- */
+    createPO({ supplier, to, lines, send }) {
+      return IVS.tx(() => {
+        const po = {
+          id: 'po' + (++poSeq), no: nextNo('PO', poSeq), supplier, to,
+          status: send ? 'sent' : 'draft', created: clock(),
+          expected: IVS.etaFor(supplier),
+          lines: lines.map((l) => ({ id: l.id, qty: +l.qty, cost: +l.cost, recv: 0 })),
+        };
+        window.IV_POS.unshift(po);
+        IVS.say(po.no + (send ? ' sent to ' : ' saved as draft · ') + (window.IV_SUPPLIERS.find((s) => s.id === supplier) || {}).name);
+        return po;
+      });
+    },
+    sendPO(id) {
+      return IVS.tx(() => {
+        const po = window.IV_POS.find((p) => p.id === id);
+        po.status = 'sent'; po.sent = clock();
+        window.IV_OUTBOX.unshift({ id: 'msg' + (++msgSeq), supplier: po.supplier, subject: 'Purchase order ' + po.no,
+          at: clock(), state: navigator.onLine === false ? 'queued' : 'sent', kind: 'po', ref: po.no });
+        IVS.say(po.no + ' sent · ' + (navigator.onLine === false ? 'queued until back online' : 'emailed to supplier'));
+        return po;
+      });
+    },
+    etaFor(supplierId) {
+      const s = window.IV_SUPPLIERS.find((x) => x.id === supplierId);
+      const d = new Date(); d.setDate(d.getDate() + ((s && s.lead) || 5));
+      return pad(d.getDate()) + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+    },
+
+    /* ---------- counts ---------- */
+    createCount({ loc, scope, blind, lines }) {
+      return IVS.tx(() => {
+        const c = { id: 'c' + (++cSeq), no: nextNo(scope.indexOf('Full') === 0 ? 'FC' : 'CC', cSeq),
+          loc, scope, status: 'open', blind: !!blind, by: WHO, at: clock(), lines };
+        window.IV_COUNTS.unshift(c);
+        IVS.say(c.no + ' opened · ' + lines.length + ' lines at ' + window.IV.loc(loc).code);
+        return c;
+      });
+    },
+    saveCount(id, counted) {
+      return IVS.tx(() => {
+        const c = window.IV_COUNTS.find((x) => x.id === id);
+        c.lines.forEach((l) => { const v = counted[id + l.id]; if (v !== undefined) l.cnt = v; });
+        c.status = c.lines.every((l) => l.cnt != null) ? 'review' : 'open';
+        IVS.say(c.no + ' saved · ' + c.lines.filter((l) => l.cnt != null).length + '/' + c.lines.length + ' counted');
+        return c;
+      });
+    },
+    /* one movement per line that differs; the value difference books to shrinkage */
+    postCount(id, counted) {
+      return IVS.tx(() => {
+        const c = window.IV_COUNTS.find((x) => x.id === id);
+        let rows = 0, variance = 0;
+        c.lines.forEach((l) => {
+          const v = counted[id + l.id] !== undefined ? counted[id + l.id] : l.cnt;
+          l.cnt = v;
+          const d = v - l.exp;
+          if (!d) return;
+          const it = window.IV.item(l.id);
+          applyStock(l.id, c.loc, d);
+          move({ item: l.id, loc: c.loc, kind: 'count', qty: d, reason: 'recount',
+            ref: 'Count ' + c.no, cost: Math.abs(d) * (it.cost || 0) });
+          rows++; variance += d * (it.cost || 0);
+        });
+        c.status = 'posted'; c.postedAt = clock();
+        if (variance < 0) {
+          const r = window.IV_SHRINK.find((x) => x.reason === 'Shrinkage / theft');
+          if (r) { r.v += Math.abs(variance); r.note = 'Includes ' + c.no; }
+        }
+        IVS.say('Posted ' + c.no + ' · ' + rows + ' movement' + (rows === 1 ? '' : 's') + ' · variance ' + window.money(variance),
+          variance < 0 ? 'warn' : 'ok');
+        return { rows, variance };
+      });
+    },
+    scheduleCycle(cfg) {
+      return IVS.tx(() => {
+        const cy = Object.assign({ id: 'cy' + (++cySeq), by: WHO, created: clock() }, cfg);
+        window.IV_CYCLES.unshift(cy);
+        IVS.say('Cycle scheduled · ' + cfg.cadenceLabel + ' · next ' + cfg.next[0]);
+        return cy;
+      });
+    },
+
+    /* ---------- suppliers ---------- */
+    createSupplier(d) {
+      return IVS.tx(() => {
+        const s = { id: 'sup' + (++supSeq), name: d.name.trim(), contact: d.contact || '—',
+          email: d.email || '', phone: d.phone || '', terms: d.terms, lead: +d.lead || 7,
+          moq: +d.moq || 0, items: 0, spend: 0, onTime: 1, note: d.note || 'New supplier — no delivery history yet.' };
+        window.IV_SUPPLIERS.push(s);
+        IVS.say(s.name + ' added · ' + s.terms + ' · lead ' + s.lead + ' days');
+        return s;
+      });
+    },
+    queueEmail(m) {
+      return IVS.tx(() => {
+        const online = navigator.onLine !== false;
+        const msg = Object.assign({ id: 'msg' + (++msgSeq), at: clock(), state: online ? 'sent' : 'queued' }, m);
+        window.IV_OUTBOX.unshift(msg);
+        IVS.say(online ? 'Sent to ' + m.to : 'Queued — sends when the device is back online', online ? 'ok' : 'warn');
+        return msg;
+      });
+    },
+  };
+
+  window.IVS = IVS;
+})();

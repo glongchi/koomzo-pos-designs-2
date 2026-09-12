@@ -50,7 +50,11 @@
 .posdot ion-icon{font-size:15px}
 .posdot.on{color:var(--kz-success)}
 
-/* ---------- master–detail ---------- */
+/* ---------- master–detail ----------
+   `.mdpane` is defined HERE and consumed by MRP, Retail Flex and Products v2 as well as
+   Inventory — it is shared vocabulary, so the mobile contract below is a cross-module
+   contract. A pane must carry `pushed` to be visible under 1000px; the class name is
+   load-bearing, not cosmetic. */
 .mdgrid{display:grid;grid-template-columns:1fr 400px;gap:14px;align-items:start;min-height:0}
 .mdgrid.wide{grid-template-columns:1fr 460px}
 .mdpane{position:sticky;top:0;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);overflow:hidden}
@@ -67,6 +71,10 @@
 .mdbd{padding:14px 16px 18px;display:flex;flex-direction:column;gap:14px;max-height:min(64vh,720px);overflow-y:auto}
 .mdfoot{display:flex;gap:9px;padding:12px 16px;border-top:1px solid var(--kz-border);background:var(--kz-surface-2)}
 .mdfoot .btn{flex:1;justify-content:center}
+.backbtn{display:none}
+/* panes built from several blocks rather than one .mdbd: display:contents leaves the
+   desktop layout untouched and becomes the single scroll region when pushed. */
+.mdscroll{display:contents}
 
 /* key/value rows inside the pane */
 .kv{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid var(--kz-border)}
@@ -207,6 +215,82 @@
 .hint.pri{background:var(--kz-primary-wash);border-color:var(--kz-primary-tint)}
 .hint.pri ion-icon{color:var(--kz-primary)}
 
+/* ---------- action sheets ---------- */
+.sheet.xl{width:880px}
+.sel.wide{width:100%;max-width:none;height:44px}
+.minibtn{height:28px;padding:0 10px;border-radius:8px;border:1px solid var(--kz-border-strong);background:var(--kz-surface-2);font:600 11.5px var(--kz-font-sans);color:var(--kz-ink-2);flex:none}
+.minibtn:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.icbtn.sm{width:32px;height:32px;border-radius:8px}
+.icbtn.sm ion-icon{font-size:15px}
+.linkbtn{border:none;background:none;padding:0}
+.impbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.csvin{width:100%;min-height:118px;resize:vertical;border:1px solid var(--kz-border-strong);border-radius:10px;padding:11px 12px;background:#fff;font:500 12.5px/1.6 var(--kz-font-num);color:var(--kz-ink);outline:none}
+.csvin:focus{border-color:var(--kz-primary);box-shadow:0 0 0 3px var(--kz-primary-wash)}
+.csvin.msg{min-height:150px;font:400 13px/1.65 var(--kz-font-sans)}
+.hint.warn{background:var(--kz-warning-wash);border-color:#eddcb4}
+.hint.warn ion-icon{color:#a3761c}
+.hint.bad{background:var(--kz-discount-wash);border-color:#f3c8ba}
+.hint.bad ion-icon{color:var(--kz-discount)}
+
+/* item search / add */
+.addpop{border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-top:7px;overflow:hidden;background:#fff;box-shadow:var(--kz-shadow-sm)}
+.addrow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:9px 12px;border:none;border-bottom:1px solid var(--kz-border);background:#fff}
+.addrow:last-child{border-bottom:none}
+.addrow:hover{background:var(--kz-primary-wash)}
+.addrow .nm{font:600 13px var(--kz-font-sans)}
+.addrow .ds{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin-top:1px}
+.addrow .sp{flex:1}
+.addrow ion-icon{font-size:20px;color:var(--kz-primary);flex:none}
+.addnone{padding:11px 13px;font:500 12.5px var(--kz-font-sans);color:var(--kz-muted-3)}
+
+/* editable line blocks inside sheets */
+.lned{border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;background:#fff}
+.lnh,.lnr{display:grid;grid-template-columns:minmax(150px,1fr) 74px 88px 92px 38px;gap:10px;align-items:center;padding:9px 13px}
+.lnh{background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);font:600 10.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+.lnh .r,.lnr .r{text-align:right;font:700 13px var(--kz-font-num);font-variant-numeric:tabular-nums}
+.lnh .r{font:600 10.5px var(--kz-font-sans);letter-spacing:.06em}
+.lnr{border-bottom:1px solid var(--kz-border)}
+.lnr:last-child{border-bottom:none}
+.lnh.rcv,.lnr.rcv{grid-template-columns:minmax(150px,1fr) 72px 78px 82px 92px}
+.lnh.imp,.lnr.imp{grid-template-columns:34px minmax(140px,1fr) 78px 78px 56px 116px}
+.lnr.off{opacity:.5}
+
+/* toasts — a post says what it wrote */
+.ivtoasts{position:absolute;left:50%;transform:translateX(-50%);bottom:18px;z-index:120;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.ivtoast{display:flex;align-items:center;gap:10px;max-width:min(520px,92vw);padding:11px 12px 11px 14px;border-radius:var(--kz-radius);background:var(--kz-dark-surface,#20242f);color:#fff;box-shadow:var(--kz-shadow-lg);font:600 12.5px/1.45 var(--kz-font-sans);pointer-events:auto;animation:rise .2s cubic-bezier(.4,0,.2,1)}
+.ivtoast ion-icon{font-size:18px;color:#5fd08a;flex:none}
+.ivtoast.warn ion-icon{color:#f0c05a}
+.ivtoast button{border:none;background:none;color:rgba(255,255,255,.6);display:flex;flex:none}
+.ivtoast button ion-icon{font-size:16px;color:inherit}
+
+/* printable order */
+.docpaper{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:26px 28px;font-family:var(--kz-font-sans)}
+.dp__top{display:flex;gap:20px;justify-content:space-between;padding-bottom:16px;border-bottom:2px solid var(--kz-ink)}
+.dp__mark{width:32px;height:32px;border-radius:8px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font-size:18px;margin-bottom:8px}
+.dp__org{font:700 17px var(--kz-font-sans);letter-spacing:-.01em}
+.dp__meta{font:500 11.5px/1.6 var(--kz-font-sans);color:var(--kz-muted-2);margin-top:3px}
+.dp__no{text-align:right}
+.dp__t{font:600 10.5px var(--kz-font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--kz-muted-3)}
+.dp__n{font:700 22px var(--kz-font-num);letter-spacing:-.01em;margin-top:2px}
+.dp__addr{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:16px 0;border-bottom:1px solid var(--kz-border);font:500 12.5px/1.7 var(--kz-font-sans)}
+.dp__lab{display:block;font:600 10px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:4px}
+.dp__tbl{width:100%;border-collapse:collapse;margin-top:16px}
+.dp__tbl th{font:600 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);text-align:left;padding:0 8px 7px;border-bottom:1px solid var(--kz-border)}
+.dp__tbl td{padding:9px 8px;border-bottom:1px solid var(--kz-border);font:500 12.5px var(--kz-font-sans)}
+.dp__tbl .r{text-align:right;font-family:var(--kz-font-num);font-variant-numeric:tabular-nums}
+.dp__tbl tfoot td{font:700 14px var(--kz-font-num);border-bottom:none;border-top:2px solid var(--kz-ink);padding-top:11px}
+.dp__note{margin-top:16px;padding:11px 13px;background:var(--kz-surface-2);border-radius:8px;font:400 11.5px/1.6 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.dp__sign{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:26px}
+.dp__sign>div{border-top:1px solid var(--kz-border-strong);padding-top:7px;font:600 12px var(--kz-font-sans)}
+.dp__sign .dp__lab{border:none;padding:0}
+@media print{
+  body *{visibility:hidden!important}
+  .docpaper,.docpaper *{visibility:visible!important}
+  .docpaper{position:fixed;left:0;top:0;width:100%;border:none;box-shadow:none;padding:0;margin:0}
+  .ivtoasts{display:none!important}
+  @page{margin:14mm}
+}
+
 /* ---------- responsive ---------- */
 @container (max-width:1180px){
   .ithead,.itrow{grid-template-columns:minmax(180px,2.2fr) 92px 96px 104px 84px}
@@ -216,8 +300,14 @@
   .mdgrid,.mdgrid.wide{grid-template-columns:1fr}
   .main{position:relative}
   .mdpane{position:static}
-  .mdpane.overlay{position:absolute;top:56px;left:0;right:0;bottom:0;z-index:80;border-radius:0;border:none;border-top:1px solid var(--kz-border);display:flex;flex-direction:column;animation:rise .2s cubic-bezier(.4,0,.2,1)}
-  .mdpane.overlay .mdbd{flex:1;max-height:none}
+  /* master–detail on a phone is a navigation push, not a stack: the list IS the screen
+     and the detail slides in over it. Without `pushed` the pane is not in the flow at
+     all, so the user never scrolls past the list to reach what they tapped. */
+  .mdgrid>.mdpane:not(.pushed){display:none}
+  .mdpane.pushed{position:absolute;top:56px;left:0;right:0;bottom:0;z-index:80;border-radius:0;border:none;border-top:1px solid var(--kz-border);display:flex;flex-direction:column;animation:rise .2s cubic-bezier(.4,0,.2,1)}
+  .mdpane.pushed .mdbd{flex:1;max-height:none}
+  .backbtn{display:grid!important}
+  .mdpane.pushed .mdscroll{display:block;flex:1;min-height:0;overflow-y:auto}
   .mdbd{max-height:none}
 }
 @container (max-width:880px){
@@ -232,12 +322,25 @@
   .mdpane{border-radius:0}
   .mdfoot{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
   .mdfoot .btn{height:48px}
-  .ln{grid-template-columns:1fr 84px;gap:8px 10px}
+  /* three visible cells, not two: name + entry + result. With two columns the result
+     wrapped onto a second grid row and the figure read as a separate line item. */
+  .ln{grid-template-columns:minmax(0,1fr) 72px 88px;gap:8px 10px}
   .ln .ln-exp{display:none}
+  .prog{display:none}
+  .doc__no{white-space:nowrap}
   .mv__t{display:none}
   .fbar .field{min-width:100%}
   .sel{flex:1;max-width:none}
   .donut{flex-direction:column;align-items:flex-start}
   .hbar .nm{min-width:96px;font-size:12px}
   .locsw .lname{display:none}
+  .lnh,.lnh.rcv,.lnh.imp{display:none}
+  .lnr{grid-template-columns:1fr 68px 68px 36px;gap:8px 10px;padding:11px 12px}
+  .lnr:not(.rcv):not(.imp)>:nth-child(4){display:none}
+  .lnr.rcv{grid-template-columns:1fr 72px minmax(92px,auto);gap:8px 10px;padding:11px 12px}
+  .lnr.rcv>:nth-child(2),.lnr.rcv>:nth-child(3){display:none}
+  .lnr.imp{grid-template-columns:1fr 54px 108px;gap:8px 10px;padding:11px 12px}
+  .lnr.imp>:nth-child(1),.lnr.imp>:nth-child(3),.lnr.imp>:nth-child(4){display:none}
+  .docpaper{padding:18px 16px}
+  .dp__addr,.dp__sign{grid-template-columns:1fr}
 }

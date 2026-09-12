@@ -121,7 +121,7 @@ function SalePane({ s, onRefund, onCustomer, onPrint, onClose }) {
   const voided = s.status === 'voided';
 
   return (
-    <div className="mdpane overlay">
+    <div className="mdpane pushed">
       <div className="mdpane__hd">
         <div className="av" style={{ background: 'var(--kz-primary-wash)', color: 'var(--kz-primary)' }}><ion-icon name="receipt-outline"></ion-icon></div>
         <div style={{ minWidth: 0 }}>

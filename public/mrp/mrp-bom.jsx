@@ -38,7 +38,7 @@ function BomView({ caps }) {
           </Hint>
         </div>
 
-        {pane && <aside className="mdpane overlay">
+        {pane && <aside className="mdpane pushed">
           <div className="mdpane__hd">
             <PartAv p={out} size={46} />
             <div style={{ minWidth: 0 }}><h3>{out.name}</h3><p>{b.name} · rév {b.rev} · {b.batch}</p></div>

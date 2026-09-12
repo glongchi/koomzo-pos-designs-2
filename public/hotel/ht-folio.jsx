@@ -4,7 +4,11 @@ function FolioView({ api }) {
   const st = api.st;
   const open = st.stays.filter((s) => ['inhouse', 'due', 'arr'].indexOf(s.status) > -1);
   const [sel, setSel] = useState(api.folioFocus || (open[0] && open[0].id));
-  useEffect(() => { if (api.folioFocus) setSel(api.folioFocus); }, [api.folioFocus]);
+  /* phone navigation state. Wide, the folio sits beside the room list and this is
+     ignored; narrow, the list IS the screen until a room is tapped — a folio is the
+     longest pane in the product and must never sit below the list you scrolled past. */
+  const [pushed, setPushed] = useState(false);
+  useEffect(() => { if (api.folioFocus) { setSel(api.folioFocus); setPushed(true); } }, [api.folioFocus]);
   const s = open.find((x) => x.id === sel) || open[0];
   const lines = s ? (st.folio[s.id] || []) : [];
   const f = folioSum(lines);
@@ -19,12 +23,12 @@ function FolioView({ api }) {
         {s && <button className="btn primary" onClick={() => api.openSettle(s.id)}><ion-icon name="log-out-outline"></ion-icon>Check out & settle</button>}
       </div>
 
-      <div className="htf">
+      <div className={'htf' + (pushed ? ' pushed' : '')}>
         <div className="htflist">
           {open.map((x) => {
             const fx = folioSum(st.folio[x.id] || []);
             return (
-              <button key={x.id} className={'htfrow' + (s && x.id === s.id ? ' on' : '')} onClick={() => setSel(x.id)}>
+              <button key={x.id} className={'htfrow' + (s && x.id === s.id ? ' on' : '')} onClick={() => { setSel(x.id); setPushed(true); }}>
                 <div style={{ minWidth: 0 }}>
                   <div className="htfrow__n">{x.no} · {x.guest}</div>
                   <div className="htfrow__s">{x.status === 'due' ? 'Departing today' : x.status === 'arr' ? 'Arriving' : x.plan !== 'nightly' ? x.plan + ' tenancy' : nights(x.nights)}</div>
@@ -38,8 +42,10 @@ function FolioView({ api }) {
         </div>
 
         {s && (
-          <section className="panel">
+          <section className="panel htfpane">
             <div className="panel__hd">
+              <button className="sbtn gh back-s" onClick={() => setPushed(false)}>
+                <svg className="chev" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path></svg>Rooms</button>
               <div><h3>{s.guest}</h3><p>Room {s.no} · folio F-{s.id.replace('st', '').padStart(4, '0')} · {srcOf(s.source).name}</p></div>
               <div className="sp"></div>
               <button className="sbtn" onClick={() => api.toast('Folio printed · 80 mm and A4 copy for the guest')}><ion-icon name="print-outline"></ion-icon><span className="lbl-h">Print</span></button>

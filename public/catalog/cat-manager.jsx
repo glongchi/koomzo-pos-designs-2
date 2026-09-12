@@ -66,8 +66,8 @@ function CategoriesView({ biz, cats, tiles, glyphMode, onBiz, onCats, onTiles, o
         </div>
       )}
 
-      <div className="catwrap">
-        <div className="panel">
+      <div className={'catwrap' + (editId ? ' pushed' : '')}>
+        <div className="panel catlist">
           <div className="panel__hd">
             <div className="ic" style={{ background: b.tint.bg, color: b.tint.fg, width: 38, height: 38, borderRadius: 11, display: 'grid', placeItems: 'center', flex: 'none' }}>
               <ion-icon name={b.icon} style={{ fontSize: 19 }}></ion-icon>
@@ -98,12 +98,15 @@ function CategoriesView({ biz, cats, tiles, glyphMode, onBiz, onCats, onTiles, o
           </div>
         </div>
 
-        <div className="panel">
+        <div className="panel cateditor">
           {edit ? (
             <>
-              <div className="panel__hd"><div><h3>{edit.label}</h3><p>Name, glyph and colour</p></div>
+              <div className="panel__hd">
+                <button className="btn back-s" onClick={() => setEditId(null)}>
+                  <svg className="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path></svg>Categories</button>
+                <div><h3>{edit.label}</h3><p>Name, glyph and colour</p></div>
                 <div className="sp" style={{ flex: 1 }}></div>
-                <button className="icbtn" onClick={() => setEditId(null)}><ion-icon name="close-outline"></ion-icon></button></div>
+                <button className="icbtn close-w" onClick={() => setEditId(null)}><ion-icon name="close-outline"></ion-icon></button></div>
               <div className="panel__bd">
                 <label className="flab">Name</label>
                 <div className="field"><input value={edit.label} onChange={(e) => set(edit.id, { label: e.target.value })} /></div>

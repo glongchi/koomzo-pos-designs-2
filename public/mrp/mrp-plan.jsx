@@ -209,7 +209,7 @@ function MaterialsView({ caps }) {
         </div>
 
         {p && (
-          <aside className="mdpane overlay">
+          <aside className="mdpane pushed">
             <div className="mdpane__hd">
               <PartAv p={p} size={46} />
               <div style={{ minWidth: 0 }}><h3>{p.name}</h3><p>{p.code} · {p.unit}</p></div>

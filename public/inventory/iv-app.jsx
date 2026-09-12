@@ -19,16 +19,38 @@ const NAV = [
   { id: 'suppliers', label: 'Vendors',   icon: 'people-circle-outline', cap: 'suppliers' },
 ];
 
+/* one router for every action sheet in the module. Views ask for a sheet by name and
+   pass only what they know (the order, the supplier); location and capabilities come
+   from the shell so no sheet has to guess which location it is acting on. */
+function SheetHost({ sheet, loc, caps, onClose, onItem, onPO, onCount }) {
+  const k = sheet.kind;
+  if (k === 'adjust') return <AdjustSheet loc={loc} caps={caps} itemId={sheet.itemId} onClose={onClose} />;
+  if (k === 'newItem') return <NewItemSheet loc={loc} caps={caps} onClose={onClose} onCreated={onItem} />;
+  if (k === 'import') return <ImportSheet loc={loc} caps={caps} onClose={onClose} />;
+  if (k === 'receive') return <ReceiveSheet loc={loc} caps={caps} poId={sheet.poId} onClose={onClose} />;
+  if (k === 'newOrder') return <NewOrderSheet supplierId={sheet.supplierId} onClose={onClose} onCreated={onPO} />;
+  if (k === 'print') return <PrintSheet po={sheet.po} onClose={onClose} />;
+  if (k === 'newCount') return <NewCountSheet loc={loc} caps={caps} onClose={onClose} onCreated={onCount} />;
+  if (k === 'schedule') return <ScheduleCycleSheet loc={loc} caps={caps} onClose={onClose} />;
+  if (k === 'newSupplier') return <NewSupplierSheet onClose={onClose} />;
+  if (k === 'email') return <EmailSheet supplier={sheet.supplier} onClose={onClose} />;
+  return null;
+}
+
 function App() {
   const boot = window.IV_BOOT || {};
   const [t, setTweak] = useTweaks(Object.assign({}, TWEAK_DEFAULTS, boot.tweaks || {}));
   const [caps, setCaps] = useState(() => ({ ...(t.mode === 'lite' ? CAPS_LITE : CAPS_FULL) }));
   const [view, setView] = useState(boot.view || (t.mode === 'lite' ? 'items' : 'overview'));
   const [loc, setLoc] = useState('all');
-  const [items, setItems] = useState(IV_ITEMS);
   const [selId, setSelId] = useState(null);
   const [sheet, setSheet] = useState(null);
   const [locOpen, setLocOpen] = useState(false);
+  /* one subscription: every posted document, receipt, count and adjustment re-renders
+     the whole module, so rail badges and overview KPIs can never disagree with the ledger */
+  const rev = useIVRev();
+  const items = window.IV_ITEMS;
+  const open = (kind, extra) => setSheet(Object.assign({ kind: kind }, extra || {}));
 
   const setMode = (m) => { setTweak('mode', m); setCaps({ ...(m === 'lite' ? CAPS_LITE : CAPS_FULL) }); setView(m === 'lite' ? 'items' : 'overview'); };
   useEffect(() => { setCaps({ ...(t.mode === 'lite' ? CAPS_LITE : CAPS_FULL) }); }, [t.mode]);
@@ -51,7 +73,7 @@ function App() {
     transfers: (window.IV_TRANSFERS || []).filter((x) => x.status === 'in-transit').length,
   };
 
-  const patch = (id, fn) => setItems((cur) => cur.map((i) => i.id === id ? { ...i, ...fn(i) } : i));
+  const patch = (id, fn) => window.IVS.tx(() => { const it = window.IV.item(id); Object.assign(it, fn(it)); });
   const openItem = (id) => { setView('items'); setSelId(id); };
 
   const locName = loc === 'all' ? 'All locations' : IV.loc(loc).name;
@@ -112,20 +134,25 @@ function App() {
             </header>
 
             {view === 'overview' && <Overview loc={loc} caps={caps} onGo={setView} onOpenItem={openItem} />}
-            {view === 'items' && <ItemsView loc={loc} caps={caps} items={items} selId={selId} onSelect={setSelId} onPatch={patch} />}
-            {view === 'stock' && <StockView loc={loc} caps={caps} onAdjust={() => setSheet('adjust')} />}
-            {view === 'purchase' && <PurchaseView caps={caps} />}
-            {view === 'counts' && <CountsView loc={loc} />}
+            {view === 'items' && <ItemsView loc={loc} caps={caps} items={items} rev={rev} selId={selId} onSelect={setSelId} onOpen={open} onPatch={patch} />}
+            {view === 'stock' && <StockView loc={loc} caps={caps} onOpen={open} onAdjust={() => open('adjust')} />}
+            {view === 'purchase' && <PurchaseView caps={caps} loc={loc} onOpen={open} />}
+            {view === 'counts' && <CountsView loc={loc} caps={caps} onOpen={open} />}
             {view === 'transfers' && <TransfersView />}
             {view === 'reports' && <ReportsView loc={loc} />}
-            {view === 'suppliers' && <SuppliersView />}
+            {view === 'suppliers' && <SuppliersView onOpen={open} />}
             {view === 'setup' && <><ModuleSetup mid="inventory" />
               <div style={{ height: 14 }}></div></>}
             {view === 'setup' && <SetupView caps={caps} mode={t.mode} loc={loc}
               onMode={setMode} onCap={(k) => setCaps((c) => ({ ...c, [k]: !c[k] }))} />}
           </div>
 
-          {sheet === 'adjust' && <AdjustSheet loc={loc} onClose={() => setSheet(null)} />}
+          {sheet && <SheetHost sheet={sheet} loc={loc} caps={caps}
+            onClose={() => setSheet(null)}
+            onItem={(id) => { setView('items'); setSelId(id); }}
+            onPO={(id) => { setView('purchase'); setSheet(null); }}
+            onCount={() => setView('counts')} />}
+          <Toasts />
 
           <TweaksPanel>
             <TweakSection label="Module" />

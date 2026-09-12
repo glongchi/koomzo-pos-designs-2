@@ -231,7 +231,21 @@
 
 /* ---------- folio ---------- */
 .htf{display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start}
-@container (max-width:940px){.htf{grid-template-columns:1fr}}
+/* `.back-s` is Salon's shared class (sl.css loads first and hides it above 641px with
+   !important), so every rule here is parent-scoped — this module must not restyle a
+   class another module owns. */
+.htf .back-s{display:none}
+/* drawn inline, not fetched — a back button whose glyph can fail to load is worse than
+   no glyph, and every <ion-icon> costs a per-icon SVG request */
+.htf .chev{flex:none;display:block}
+@container (max-width:940px){
+  .htf{grid-template-columns:1fr}
+  /* master–detail is a navigation push on a phone, not a stack: the detail leaves the
+     flow entirely so the desk never scrolls past the room list to reach the folio. */
+  .htf:not(.pushed) .htfpane{display:none}
+  .htf.pushed .htflist{display:none}
+  .htf.pushed .back-s{display:inline-flex!important}
+}
 .htflist{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);overflow:hidden}
 .htfrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:none;border-bottom:1px solid var(--kz-border);padding:11px 13px}
 .htfrow:last-child{border-bottom:none}
