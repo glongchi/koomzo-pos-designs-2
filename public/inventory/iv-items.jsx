@@ -1,6 +1,6 @@
 /* Koomzo Inventory — Overview + Items (the two screens Lite mode keeps). */
 
-function Overview({ loc, caps, onGo, onOpenItem }) {
+function Overview({ loc, caps, onGo, onOpenItem, bare }) {
   const items = IV_ITEMS;
   const stocked = items.filter((i) => i.stock);
   const value = stocked.reduce((s, i) => s + IV.value(i, loc), 0);
@@ -16,18 +16,18 @@ function Overview({ loc, caps, onGo, onOpenItem }) {
     { k: 'Items tracked', v: stocked.length, sub: services + ' services' },
     { k: 'Low stock', v: low.length, tone: low.length ? 'warn' : null, go: 'items' },
     { k: 'Out of stock', v: out.length, tone: out.length ? 'bad' : null, go: 'items' },
-    { k: 'On order', v: money(incoming), go: 'purchase', cap: 'purchase' },
+    { k: 'On order', v: money(incoming), go: 'orders', cap: 'purchase' },
     { k: 'Shrinkage · MTD', v: money(shrink), tone: 'warn', go: 'reports', cap: 'valuation' },
   ].filter((k) => !k.cap || caps[k.cap]);
 
   return (
-    <div className="view">
-      <div className="view__head">
+    <div className={bare ? '' : 'view'}>
+      {!bare && <div className="view__head">
         <div><h2>Overview</h2><p>{loc === 'all' ? 'All locations' : IV.loc(loc).name} · live position</p></div>
         <div className="sp"></div>
-        {caps.purchase && <button className="btn" onClick={() => onGo('purchase')}><ion-icon name="receipt-outline"></ion-icon>New order</button>}
-        {caps.counts && <button className="btn primary desk-only" onClick={() => onGo('counts')}><ion-icon name="clipboard-outline"></ion-icon>Start count</button>}
-      </div>
+        {caps.purchase && <button className="btn" onClick={() => onGo('orders')}><ion-icon name="receipt-outline"></ion-icon>New order</button>}
+        {caps.counts && <button className="btn primary desk-only" onClick={() => onGo('stock')}><ion-icon name="clipboard-outline"></ion-icon>Start count</button>}
+      </div>}
 
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))' }}>
         {kpis.map((k) => (
@@ -45,7 +45,7 @@ function Overview({ loc, caps, onGo, onOpenItem }) {
             <div className="op-head">
               <div><h3>Needs attention</h3><p>Below par at {loc === 'all' ? 'any location' : IV.loc(loc).name}</p></div>
               <div className="sp"></div>
-              {caps.reorder && <button className="btn" onClick={() => onGo('purchase')}><ion-icon name="sparkles-outline"></ion-icon>Suggest order</button>}
+              {caps.purchase && <button className="btn" onClick={() => onGo('orders')}><ion-icon name="sparkles-outline"></ion-icon>Suggest order</button>}
             </div>
             {[...out, ...low].slice(0, 6).map((i) => (
               <button className="doc" key={i.id} onClick={() => onOpenItem(i.id)}>
@@ -110,7 +110,45 @@ function MoveRow({ m }) {
 }
 
 /* ================= ITEMS ================= */
-const TYPE_FILTERS = [['all', 'All'], ['product', 'Products'], ['service', 'Services'], ['composite', 'Composites'], ['nonstock', 'Non-stock']];
+const TYPE_FILTERS = [['all', 'All'], ['product', 'Products'], ['service', 'Services'], ['composite', 'Bundles'], ['nonstock', 'Non-stock']];
+
+/* Add item ▾ — the button adds a stock item; the caret offers the other three, and
+   only when their capability is on. A Lite shop sees a plain button with no caret,
+   which is the point: 95% tap the main button and never learn the rest exist. */
+function AddItemBtn({ caps, onOpen }) {
+  const [open, setOpen] = useState(false);
+  const extra = [
+    caps.services && ['service', 'Service', 'time-outline', 'Sells time, not units'],
+    caps.composite && ['composite', 'Bundle', 'layers-outline', 'Several items sold as one'],
+    caps.composite && ['nonstock', 'Non-stock', 'card-outline', 'Gift cards, deposits, fees'],
+  ].filter(Boolean);
+  useEffect(() => {
+    if (!open) return;
+    const f = () => setOpen(false);
+    document.addEventListener('click', f);
+    return () => document.removeEventListener('click', f);
+  }, [open]);
+  return (
+    <div className="splitbtn" onClick={(e) => e.stopPropagation()}>
+      <button className="btn primary" onClick={() => onOpen('newItem', { itemKind: 'product' })}>
+        <ion-icon name="add-outline"></ion-icon>Add item</button>
+      {extra.length > 0 && <>
+        <button className="btn primary caret" onClick={() => setOpen((v) => !v)} aria-label="Other item types">
+          <ion-icon name="chevron-down-outline"></ion-icon></button>
+        {open && (
+          <div className="splitmenu">
+            {extra.map(([k, label, icon, desc]) => (
+              <button key={k} onClick={() => { setOpen(false); onOpen('newItem', { itemKind: k }); }}>
+                <ion-icon name={icon}></ion-icon>
+                <div><b>{label}</b><span>{desc}</span></div>
+              </button>
+            ))}
+          </div>
+        )}
+      </>}
+    </div>
+  );
+}
 
 function ItemsView({ loc, caps, selId, onSelect, items, rev, onPatch, onOpen }) {
   const [q, setQ] = useState('');
@@ -147,7 +185,7 @@ function ItemsView({ loc, caps, selId, onSelect, items, rev, onPatch, onOpen }) 
         <div><h2>Items</h2><p>{rows.length} of {items.length} · {money(shown)} at cost</p></div>
         <div className="sp"></div>
         <button className="btn" onClick={() => onOpen('import')}><ion-icon name="cloud-upload-outline"></ion-icon>Import</button>
-        <button className="btn primary" onClick={() => onOpen('newItem')}><ion-icon name="add-outline"></ion-icon>New item</button>
+        <AddItemBtn caps={caps} onOpen={onOpen} />
       </div>
 
       <div className="fbar">
@@ -313,7 +351,7 @@ function ItemPane({ item, loc, caps, onPatch, onOpen, onClose }) {
             <KV k="Par level" v={item.par} num />
             <KV k="Supplier" v={item.supplier ? IV_SUPPLIERS.find((s) => s.id === item.supplier).name : '—'} />
             <div className="actbar">
-              <button className="btn primary" onClick={() => onOpen && onOpen('adjust', { itemId: item.id })}><ion-icon name="create-outline"></ion-icon>Adjust</button>
+              <button className="btn primary" onClick={() => onOpen && onOpen('adjust', { itemId: item.id })}><ion-icon name="swap-vertical-outline"></ion-icon>Adjust</button>
               {caps.purchase && <button className="btn" onClick={() => onOpen && onOpen('newOrder', { supplierId: item.supplier })}><ion-icon name="receipt-outline"></ion-icon>Order</button>}
             </div>
           </> : <EmptyState icon="infinite-outline" title="No stock to hold"
@@ -453,4 +491,4 @@ function PosTab({ item, setPos }) {
   );
 }
 
-Object.assign(window, { Overview, ItemsView, ItemPane, MoveRow, ServiceTab, PosTab });
+Object.assign(window, { Overview, ItemsView, ItemPane, MoveRow, ServiceTab, PosTab, AddItemBtn });

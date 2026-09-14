@@ -157,31 +157,54 @@ function PoPane({ doc, recv, setRecv, onOpen, pushed, onBack }) {
 }
 
 /* ================= SUPPLIERS ================= */
+/* ================= PARTNERS =================
+   One list with role tags, not a supplier book and a customer book. The same record
+   answers “who did we buy this from” and “who did we issue it to”, and a partner who
+   does both — common here — is one account rather than two that drift. Supply-side
+   facts (lead time, minimum, on-time) only render for a partner that supplies. */
 function SuppliersView({ onOpen }) {
-  const [selId, setSelId] = useState(IV_SUPPLIERS[0].id);
+  const [role, setRole] = useState('all');
+  const list = IV_PARTNERS.filter((p) => role === 'all' || p.roles.indexOf(role) > -1);
+  const [selId, setSelId] = useState(IV_PARTNERS[0].id);
   const [pushed, setPushed] = useState(false);
-  const s = IV_SUPPLIERS.find((x) => x.id === selId) || IV_SUPPLIERS[0];
+  const s = list.find((x) => x.id === selId) || list[0] || IV_PARTNERS[0];
+  const supplies = s.roles.indexOf('supplier') > -1;
+  const buys = s.roles.indexOf('customer') > -1;
   const items = IV_ITEMS.filter((i) => i.supplier === s.id);
   const sent = (window.IV_OUTBOX || []).filter((m) => m.supplier === s.id);
   const orders = IV_POS.filter((p) => p.supplier === s.id && p.status !== 'received');
   return (
     <div className="view">
       <div className="view__head">
-        <div><h2>Suppliers</h2><p>Who you buy from, and how reliably</p></div>
+        <div><h2>Partners</h2><p>Everyone you buy from or sell to, in one list</p></div>
         <div className="sp"></div>
-        <button className="btn primary" onClick={() => onOpen('newSupplier')}><ion-icon name="add-outline"></ion-icon>New supplier</button>
+        <button className="btn primary" onClick={() => onOpen('newSupplier')}><ion-icon name="add-outline"></ion-icon>Add partner</button>
+      </div>
+      <div className="fbar">
+        <div className="opts" style={{ marginTop: 0 }}>
+          {[['all', 'All', 'people-outline'], ['supplier', 'Suppliers', 'cube-outline'], ['customer', 'Customers', 'person-outline']].map(([v, l, ic]) => (
+            <button key={v} className={'opt' + (role === v ? ' on' : '')} style={{ height: 36, fontSize: 12.5 }} onClick={() => setRole(v)}>
+              <ion-icon name={ic} style={{ fontSize: 15 }}></ion-icon>{l}
+              <i style={{ fontStyle: 'normal', opacity: .55, marginLeft: 2 }}>{v === 'all' ? IV_PARTNERS.length : IV_PARTNERS.filter((p) => p.roles.indexOf(v) > -1).length}</i>
+            </button>
+          ))}
+        </div>
       </div>
       <div className="mdgrid">
         <div className="card" style={{ padding: 0 }}>
-          {IV_SUPPLIERS.map((x) => (
+          {list.map((x) => (
             <button className={'doc' + (selId === x.id ? ' on' : '')} key={x.id} onClick={() => { setSelId(x.id); setPushed(true); }}>
-              <div className="op-ic"><ion-icon name="people-circle-outline"></ion-icon></div>
+              <div className="op-ic"><ion-icon name={x.roles.indexOf('supplier') > -1 ? 'people-circle-outline' : 'person-circle-outline'}></ion-icon></div>
               <div>
                 <div className="doc__no" style={{ fontFamily: 'var(--kz-font-sans)' }}>{x.name}</div>
-                <div className="doc__m">{IV_ITEMS.filter((i) => i.supplier === x.id).length} items · lead {x.lead} d · {x.terms}</div>
+                <div className="doc__m">{x.roles.indexOf('supplier') > -1
+                  ? IV_ITEMS.filter((i) => i.supplier === x.id).length + ' items · lead ' + x.lead + ' d · ' + x.terms
+                  : x.contact + ' · ' + x.terms}</div>
               </div>
               <div className="sp"></div>
-              <Risk tone={x.onTime > 0.9 ? 'low' : x.onTime > 0.8 ? 'watch' : 'high'}>{Math.round(x.onTime * 100)}% on time</Risk>
+              <div className="roletags">
+                {x.roles.map((r) => <span className={'roletag ' + r} key={r}>{IV_ROLE[r].label}</span>)}
+              </div>
             </button>
           ))}
         </div>
@@ -190,11 +213,16 @@ function SuppliersView({ onOpen }) {
             <button className="icbtn backbtn" onClick={() => setPushed(false)}><ion-icon name="chevron-back-outline"></ion-icon></button>
             <div className="av" style={{ background: 'var(--kz-primary-wash)', color: 'var(--kz-primary)' }}><ion-icon name="business-outline"></ion-icon></div>
             <div><h3>{s.name}</h3><p>{s.contact}</p></div>
+            <div className="sp"></div>
+            <div className="roletags">{s.roles.map((r) => <span className={'roletag ' + r} key={r}>{IV_ROLE[r].label}</span>)}</div>
           </div>
           <div className="mdbd">
-            <KV k="Email" v={s.email} /><KV k="Phone" v={s.phone} />
-            <KV k="Payment terms" v={s.terms} /><KV k="Lead time" v={s.lead + ' days'} />
-            <KV k="Minimum order" v={money(s.moq)} num /><KV k="Spend · 12 mo" v={money(s.spend)} num />
+            <KV k="Email" v={s.email || '—'} /><KV k="Phone" v={s.phone || '—'} />
+            <KV k="Payment terms" v={s.terms} />
+            {supplies && <><KV k="Lead time" v={s.lead + ' days'} />
+              <KV k="Minimum order" v={money(s.moq)} num />
+              <KV k="On time" v={Math.round(s.onTime * 100) + '%'} /></>}
+            <KV k={buys && !supplies ? 'Sold to · 12 mo' : 'Spend · 12 mo'} v={money(s.spend)} num />
             <div className="hint"><ion-icon name="information-circle-outline"></ion-icon><span>{s.note}</span></div>
             {orders.length > 0 && (
               <div className="grp">
@@ -223,19 +251,21 @@ function SuppliersView({ onOpen }) {
               </div>
             )}
             <div className="grp">
-              <span className="grp__t">Items supplied</span>
-              {items.map((i) => (
+              <span className="grp__t">{supplies ? 'Items supplied' : 'Items bought'}</span>
+              {items.length ? items.map((i) => (
                 <div className="rcp" key={i.id}>
                   <div className="rcp__ic" style={{ background: i.tint.bg, color: i.tint.fg }}><ion-icon name={i.icon}></ion-icon></div>
                   <div><div className="nm">{i.name}</div><div className="ds">{i.sku} · {money(i.cost)}</div></div>
                   <div className="sp"></div><StockPill item={i} loc="all" />
                 </div>
-              ))}
+              )) : <div className="fhint">Nothing linked yet.</div>}
             </div>
           </div>
           <div className="mdfoot">
             <button className="btn" onClick={() => onOpen('email', { supplier: s })}><ion-icon name="mail-outline"></ion-icon>Email</button>
-            <button className="btn primary" onClick={() => onOpen('newOrder', { supplierId: s.id })}><ion-icon name="receipt-outline"></ion-icon>New order</button>
+            {supplies
+              ? <button className="btn primary" onClick={() => onOpen('newOrder', { supplierId: s.id })}><ion-icon name="receipt-outline"></ion-icon>New order</button>
+              : <button className="btn primary" onClick={() => onOpen('move', { mkind: 'out' })}><ion-icon name="arrow-up-outline"></ion-icon>Stock out</button>}
           </div>
         </div>
       </div>
@@ -243,9 +273,28 @@ function SuppliersView({ onOpen }) {
   );
 }
 
+/* ================= ORDERS =================
+   Purchases and the suppliers they are raised against are one job with two faces, so
+   they are one destination with two tabs — not two rail entries a shopkeeper has to
+   choose between. Sales orders and returns are deliberately absent: neither exists in
+   the data model yet, and a tab that opens on an empty shell is the pattern this
+   restructure set out to remove. */
+function OrdersView({ caps, loc, onOpen }) {
+  const tabs = [['purchases', 'Purchases', (IV_POS || []).filter((p) => p.status === 'sent' || p.status === 'partial').length]]
+    .concat(caps.suppliers ? [['suppliers', 'Partners', IV_PARTNERS.length]] : []);
+  const [tab, setTab] = useState('purchases');
+  return (
+    <div className="view">
+      {tabs.length > 1 && <Seg value={tab} onChange={setTab} tabs={tabs} />}
+      {tab === 'purchases' && <div className="ivsub"><PurchaseView caps={caps} loc={loc} onOpen={onOpen} /></div>}
+      {tab === 'suppliers' && <div className="ivsub"><SuppliersView onOpen={onOpen} /></div>}
+    </div>
+  );
+}
+
 /* ================= REPORTS ================= */
-function ReportsView({ loc }) {
-  const [tab, setTab] = useState('value');
+function ReportsView({ loc, caps, onGo, onOpenItem }) {
+  const [tab, setTab] = useState('summary');
   const stocked = IV_ITEMS.filter((i) => i.stock);
   const byCat = IV_CATS.map((c) => ({
     ...c, v: stocked.filter((i) => i.cat === c.id).reduce((s, i) => s + IV.value(i, loc), 0),
@@ -265,7 +314,9 @@ function ReportsView({ loc }) {
         <div className="sp"></div>
         <button className="btn"><ion-icon name="download-outline"></ion-icon>Export CSV</button>
       </div>
-      <Seg value={tab} onChange={setTab} tabs={[['value', 'Valuation'], ['margin', 'Margin & COGS'], ['move', 'Turnover'], ['shrink', 'Shrinkage']]} />
+      <Seg value={tab} onChange={setTab} tabs={[['summary', 'Summary'], ['value', 'Valuation'], ['margin', 'Margin & COGS'], ['move', 'Turnover'], ['shrink', 'Shrinkage']]} />
+
+      {tab === 'summary' && <Overview loc={loc} caps={caps || {}} onGo={onGo} onOpenItem={onOpenItem} bare />}
 
       {tab === 'value' && <div className="op2">
         <div className="card">
@@ -367,6 +418,15 @@ function ReportsView({ loc }) {
 }
 
 /* ================= SETUP ================= */
+const TIER_COPY = {
+  lite:     { name: 'Lite',     chip: 'Lite · one shop',   icon: 'leaf-outline',
+    desc: 'Items, stock in / out / adjust, and the ledger. One location.' },
+  standard: { name: 'Standard', chip: 'Standard',          icon: 'storefront-outline',
+    desc: 'Adds locations, moving stock, purchasing, partners and reports.' },
+  pro:      { name: 'Pro',      chip: 'Pro · full',        icon: 'business-outline',
+    desc: 'Adds counts and cycle programmes, bundles, lots and serials.' },
+};
+
 function SetupView({ caps, onCap, mode, onMode, loc }) {
   const on = (k) => !!caps[k];
   return (
@@ -374,21 +434,28 @@ function SetupView({ caps, onCap, mode, onMode, loc }) {
       <div className="view__head">
         <div><h2>Setup</h2><p>Turn the module into what this business actually needs</p></div>
         <div className="sp"></div>
-        <span className={'modechip' + (mode === 'full' ? ' full' : '')}>{mode === 'full' ? 'Full inventory' : 'Lite · product list'}</span>
+        <span className={'modechip' + (mode === 'pro' ? ' full' : '')}>{TIER_COPY[mode] ? TIER_COPY[mode].chip : mode}</span>
       </div>
 
       <div className="setup2">
         <div className="panel">
-          <div className="panel__hd"><div><h3>Mode</h3><p>Lite hides every screen a corner shop never opens</p></div></div>
+          <div className="panel__hd"><div><h3>Plan</h3><p>Each tier is a floor, not a cage — every capability below is still switchable</p></div></div>
           <div className="panel__bd">
             <div className="opts" style={{ marginTop: 0 }}>
-              <button className={'opt' + (mode === 'lite' ? ' on' : '')} style={{ height: 44 }} onClick={() => onMode('lite')}>
-                <ion-icon name="list-outline"></ion-icon>Lite</button>
-              <button className={'opt' + (mode === 'full' ? ' on' : '')} style={{ height: 44 }} onClick={() => onMode('full')}>
-                <ion-icon name="cube-outline"></ion-icon>Full</button>
+              {['lite', 'standard', 'pro'].map((m) => (
+                <button key={m} className={'opt' + (mode === m ? ' on' : '')} style={{ height: 44 }} onClick={() => onMode(m)}>
+                  <ion-icon name={TIER_COPY[m].icon}></ion-icon>{TIER_COPY[m].name}</button>
+              ))}
             </div>
-            <div className="hint" style={{ marginTop: 14 }}><ion-icon name="information-circle-outline"></ion-icon>
-              <span><b>Lite</b> is one screen: items, price, and a quantity you can type over. <b>Full</b> adds ordering, counting, transfers and valuation — every one of them optional below. Switching never changes your data.</span></div>
+            <div className="tierlist">
+              {['lite', 'standard', 'pro'].map((m) => (
+                <div className={'tierrow' + (mode === m ? ' on' : '')} key={m}>
+                  <b>{TIER_COPY[m].name}</b><span>{TIER_COPY[m].desc}</span>
+                </div>
+              ))}
+            </div>
+            <div className="hint" style={{ marginTop: 12 }}><ion-icon name="information-circle-outline"></ion-icon>
+              <span>The tier sets which capabilities are on; it never removes a route or touches your data. A screen that is not rendered is a screen nobody verifies, so everything reads the same map.</span></div>
           </div>
 
           <div className="panel__hd" style={{ borderTop: '1px solid var(--kz-border)' }}>
@@ -447,4 +514,4 @@ function SetupView({ caps, onCap, mode, onMode, loc }) {
   );
 }
 
-Object.assign(window, { PurchaseView, SuppliersView, ReportsView, SetupView });
+Object.assign(window, { OrdersView, PurchaseView, SuppliersView, ReportsView, SetupView, TIER_COPY });

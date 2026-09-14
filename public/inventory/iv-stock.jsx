@@ -1,23 +1,90 @@
-/* Koomzo Inventory — Stock (on hand + movements + adjust), Counts, Transfers. */
+/* Koomzo Inventory — Stock: the ledger, on hand, in transit and counts.
 
-function StockView({ loc, caps, onAdjust, onOpen }) {
-  const [tab, setTab] = useState('hand');
+   One screen, because the four verbs an operator uses all post into the same ledger and
+   they should see the consequence of the button without navigating. The verbs are still
+   four plainly-named buttons — they just live beside the result rather than in four
+   separate corners of the app. */
+
+function StockView({ loc, caps, onOpen }) {
+  const tabs = [['ledger', 'Ledger'], ['hand', 'On hand']]
+    .concat(caps.transfers ? [['transit', 'In transit', (IV_TRANSFERS || []).filter((t) => t.status === 'in-transit').length]] : [])
+    .concat(caps.counts ? [['counts', 'Counts', (IV_COUNTS || []).filter((c) => c.status !== 'posted').length]] : []);
+  const [tab, setTab] = useState('ledger');
   const [q, setQ] = useState('');
-  const [kind, setKind] = useState('all');
+  const [kindF, setKindF] = useState('all');
+  const [selNo, setSelNo] = useState(null);
+  const [pushed, setPushed] = useState(false);
+  useIVRev();
+
   const stocked = IV_ITEMS.filter((i) => i.stock && (!q || (i.name + i.sku).toLowerCase().includes(q.toLowerCase())));
   const locs = caps.locations ? IV_LOCATIONS : IV_LOCATIONS.filter((l) => l.id === 'dt');
-  const moves = IV_MOVES.filter((m) => (kind === 'all' || m.kind === kind) && (loc === 'all' || m.loc === loc));
+  const docs = IV.ledger(loc).filter((d) => kindF === 'all' || d.kind === kindF);
+  const sel = docs.find((d) => d.no === selNo) || docs[0] || null;
+
+  /* a post selects its own document: the operator submits and the thing they just wrote
+     is already open, named and at the top. A button whose result you must go looking for
+     is a button people stop trusting. */
+  const posted = (no) => { setTab('ledger'); setKindF('all'); setSelNo(no); setPushed(true); };
+  const act = (kind) => onOpen('move', { mkind: kind, onPosted: posted });
+
+  const verbs = MOVE_KINDS.filter(([id]) => id !== 'move' || caps.transfers);
 
   return (
     <div className="view">
       <div className="view__head">
         <div><h2>Stock</h2><p>{caps.locations ? locs.length + ' locations' : 'Single location'} · {stocked.length} tracked items</p></div>
         <div className="sp"></div>
-        <button className="btn" onClick={() => onOpen('receive')}><ion-icon name="download-outline"></ion-icon>Receive</button>
-        <button className="btn primary" onClick={onAdjust}><ion-icon name="create-outline"></ion-icon>Adjust stock</button>
+        <div className="mvacts">
+          {verbs.map(([id, label, icon]) => (
+            <button key={id} className={'mvact ' + id} onClick={() => act(id)}>
+              <ion-icon name={icon}></ion-icon>{label}
+            </button>
+          ))}
+          {caps.counts && <button className="mvact count" onClick={() => onOpen('newCount')}>
+            <ion-icon name="clipboard-outline"></ion-icon>Count</button>}
+        </div>
       </div>
 
-      <Seg value={tab} onChange={setTab} tabs={[['hand', 'On hand'], ['moves', 'Movements', moves.length]]} />
+      <Seg value={tab} onChange={setTab} tabs={tabs} />
+
+      {tab === 'ledger' && <>
+        <div className="fbar">
+          <select className="sel" value={kindF} onChange={(e) => setKindF(e.target.value)}>
+            <option value="all">Everything</option>
+            {Object.keys(IV_DOC_KIND).map((x) => <option key={x} value={x}>{IV_DOC_KIND[x].label}</option>)}
+          </select>
+          <div className="sp" style={{ flex: 1 }}></div>
+          <button className="btn" onClick={() => {
+            const head = 'document,when,type,item,sku,location,before,change,after,reason,reference,value\n';
+            const body = docs.map((d) => d.lines.map((m) => {
+              const it = IV.item(m.item);
+              return [d.no, m.at, IV_DOC_KIND[d.kind].label, it.name, it.sku, IV.loc(m.loc).code,
+                m.before != null ? m.before : '', m.qty, m.before != null ? m.before + m.qty : '',
+                m.reason || '', '"' + (m.ref || '') + '"', m.cost || 0].join(',');
+            }).join('\n')).join('\n');
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([head + body], { type: 'text/csv' }));
+            a.download = 'ledger-' + (loc === 'all' ? 'all' : IV.loc(loc).code) + '.csv';
+            a.click(); URL.revokeObjectURL(a.href);
+            window.IVS.say(docs.length + ' documents exported');
+          }}><ion-icon name="download-outline"></ion-icon>Export</button>
+        </div>
+
+        {docs.length ? (
+          <div className="mdgrid wide">
+            <div className="card lgrlist" style={{ padding: 0 }}>
+              {docs.map((d) => (
+                <LedgerRow key={d.no} d={d} on={sel && sel.no === d.no}
+                  onClick={() => { setSelNo(d.no); setPushed(true); }} />
+              ))}
+            </div>
+            {sel && <LedgerPane d={sel} pushed={pushed} onBack={() => setPushed(false)} />}
+          </div>
+        ) : <div className="card" style={{ padding: 0 }}>
+          <EmptyState icon="swap-vertical-outline" title="Nothing posted yet"
+            sub="Stock in, stock out, move or adjust — every posting lands here." />
+        </div>}
+      </>}
 
       {tab === 'hand' && <>
         <div className="fbar">
@@ -47,124 +114,11 @@ function StockView({ loc, caps, onAdjust, onOpen }) {
           </table>
         </div>
         <div className="hint" style={{ marginTop: 12 }}><ion-icon name="information-circle-outline"></ion-icon>
-          <span>Quantities are read-only here. Every change goes through an <b>adjustment, receipt, transfer or count</b> so the movement log stays complete.</span></div>
+          <span>Quantities are read-only here. Every change goes through <b>stock in, stock out, a move, an adjustment or a count</b> so the ledger stays complete.</span></div>
       </>}
 
-      {tab === 'moves' && <>
-        <div className="fbar">
-          <select className="sel" value={kind} onChange={(e) => setKind(e.target.value)}>
-            <option value="all">All movement types</option>
-            {Object.keys(IV_MOVE_KIND).map((k) => <option key={k} value={k}>{IV_MOVE_KIND[k].label}</option>)}
-          </select>
-          <div className="sp" style={{ flex: 1 }}></div>
-          <button className="btn" onClick={() => {
-            const head = 'when,item,sku,location,type,qty,reason,reference,value\n';
-            const body = moves.map((m) => {
-              const it = IV.item(m.item);
-              return [m.at, it.name, it.sku, IV.loc(m.loc).code, m.kind, m.qty, m.reason || '', '"' + (m.ref || '') + '"', m.cost || 0].join(',');
-            }).join('\n');
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([head + body], { type: 'text/csv' }));
-            a.download = 'movements-' + (loc === 'all' ? 'all' : IV.loc(loc).code) + '.csv';
-            a.click(); URL.revokeObjectURL(a.href);
-            window.IVS.say(moves.length + ' movement rows exported');
-          }}><ion-icon name="download-outline"></ion-icon>Export</button>
-        </div>
-        <div className="card" style={{ padding: 0 }}>
-          {moves.map((m) => <MoveRow key={m.id} m={m} />)}
-          {!moves.length && <EmptyState icon="swap-vertical-outline" title="No movements" sub="Nothing of this type at this location." />}
-        </div>
-      </>}
-    </div>
-  );
-}
-
-/* ---------- adjust sheet ---------- */
-/* The only screen that changes a quantity by hand — so it is also the only one that
-   needs a reason on every post and an authorisation when the result goes negative. */
-function AdjustSheet({ loc, caps, itemId, onClose }) {
-  const [id, setId] = useState(itemId && IV.item(itemId) && IV.item(itemId).stock ? itemId : 'i4');
-  const [at, setAt] = useState(loc === 'all' ? 'dt' : loc);
-  const [reason, setReason] = useState('recount');
-  const [delta, setDelta] = useState(-1);
-  const [note, setNote] = useState('');
-  const [pin, setPin] = useState('');
-  const item = IV.item(id);
-  const before = item.stock[at] || 0;
-  const after = before + delta;
-  const r = IV_REASONS.find((x) => x.id === reason);
-  const negative = after < 0;
-  const blocked = delta === 0 || (negative && pin.length < 4);
-  return (
-    <div className="scrim" onClick={onClose}>
-      <div className="sheet" onClick={(e) => e.stopPropagation()}>
-        <div className="sheet__head">
-          <div><h3>Adjust stock</h3><p>{IV.loc(at).name} · writes one movement row</p></div>
-          <div className="sp"></div>
-          <button className="icbtn" onClick={onClose}><ion-icon name="close-outline"></ion-icon></button>
-        </div>
-        <div className="sheet__body">
-          <div>
-            <label className="flab">Item</label>
-            <select className="sel" style={{ width: '100%', maxWidth: 'none', height: 46 }} value={id} onChange={(e) => setId(e.target.value)}>
-              {IV_ITEMS.filter((i) => i.stock).map((i) => <option key={i.id} value={i.id}>{i.name} · {i.sku}</option>)}
-            </select>
-          </div>
-          {caps && caps.locations && (
-            <div>
-              <label className="flab">Location</label>
-              <select className="sel" style={{ width: '100%', maxWidth: 'none', height: 46 }} value={at} onChange={(e) => setAt(e.target.value)}>
-                {IV_LOCATIONS.map((l) => <option key={l.id} value={l.id}>{l.name} · on hand {item.stock[l.id] || 0}</option>)}
-              </select>
-            </div>
-          )}
-          <div>
-            <span className="lbl">Reason</span>
-            <div className="opts">
-              {IV_REASONS.map((x) => (
-                <button key={x.id} className={'opt' + (reason === x.id ? ' on' : '')} style={{ height: 38, fontSize: 12.5 }}
-                  onClick={() => { setReason(x.id); if (x.dir === 'out' && delta > 0) setDelta(-delta); if (x.dir === 'in' && delta < 0) setDelta(-delta); }}>
-                  {x.label}</button>
-              ))}
-            </div>
-          </div>
-          <div className="fgrid">
-            <div>
-              <label className="flab">Change</label>
-              <div className="stepper" style={{ gap: 8 }}>
-                <button onClick={() => setDelta((d) => d - 1)} style={{ width: 44, height: 44 }}><ion-icon name="remove-outline"></ion-icon></button>
-                <input className="numin" style={{ height: 44, textAlign: 'center', flex: 1 }} value={delta}
-                  onChange={(e) => setDelta(+e.target.value || 0)} />
-                <button onClick={() => setDelta((d) => d + 1)} style={{ width: 44, height: 44 }}><ion-icon name="add-outline"></ion-icon></button>
-              </div>
-            </div>
-            <div>
-              <label className="flab">Result</label>
-              <div className="pricebox" style={{ height: 44, alignItems: 'center' }}>
-                <span className="k" style={{ whiteSpace: 'nowrap' }}>{before} →</span>
-                <span className="v" style={{ fontSize: 20, color: negative ? 'var(--kz-discount)' : 'var(--kz-ink)' }}>{after}</span>
-              </div>
-            </div>
-          </div>
-          <Field label="Note" placeholder="What happened" value={note} onChange={setNote} />
-          {negative && <>
-            <Warn tone="bad" icon="lock-closed-outline">
-              This takes {IV.loc(at).code} to <b>{after}</b>. Negative stock is allowed — the shelf is the truth, not the system — but it needs an owner's authorisation so the variance has a name against it.
-            </Warn>
-            <Field label="Owner PIN" value={pin} type="text" placeholder="····"
-              onChange={(v) => setPin(String(v).replace(/\D/g, '').slice(0, 4))}
-              hint="Mock backend accepts any four digits. Production checks it against the owner's PIN and the role allowed to authorise a negative." />
-          </>}
-          <div className="hint"><ion-icon name="cash-outline"></ion-icon>
-            <span>Cost impact <b>{money(Math.abs(delta) * (item.cost || 0))}</b> — posted to {r.label.toLowerCase()}.</span></div>
-        </div>
-        <div className="sheet__foot">
-          <button className="btn" onClick={onClose}>Cancel</button>
-          <button className="btn primary" disabled={blocked}
-            onClick={() => { window.IVS.postAdjustment({ itemId: id, locId: at, delta, reason, note }); onClose(); }}>
-            <ion-icon name="checkmark-outline"></ion-icon>Post adjustment</button>
-        </div>
-      </div>
+      {tab === 'transit' && <div className="ivsub"><TransfersView caps={caps} loc={loc} onOpen={onOpen} /></div>}
+      {tab === 'counts' && <div className="ivsub"><CountsView loc={loc} caps={caps} onOpen={onOpen} /></div>}
     </div>
   );
 }
@@ -410,4 +364,4 @@ function TransfersView({ caps, loc, onOpen }) {
   );
 }
 
-Object.assign(window, { StockView, AdjustSheet, CountsView, TransfersView });
+Object.assign(window, { StockView, CountsView, TransfersView });

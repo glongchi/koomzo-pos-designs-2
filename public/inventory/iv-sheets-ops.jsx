@@ -1,6 +1,6 @@
 /* Koomzo Inventory — action sheets: Receive, New order, Print order, New count, Schedule cycle. */
 
-const IV_STAFF = ['M. Ekindi', 'A. Oliver', 'Nadia K.', 'D. Patel'];
+const IV_STAFF = ['M. Ekindi', 'A. Foumane', 'Nadia Bilé', 'D. Tchatchoua'];
 
 /* ============ RECEIVE ============ */
 /* Two ways stock legitimately arrives: against an order, or without one (a walk-in
@@ -192,7 +192,7 @@ function PrintSheet({ po, onClose }) {
           <div>
             <div className="dp__mark"><ion-icon name="cube"></ion-icon></div>
             <div className="dp__org">Koomzo Retail</div>
-            <div className="dp__meta">Downtown Store · Yaoundé<br />+237 6 99 000 1122 · buying@koomzo.cm</div>
+            <div className="dp__meta">Akwa Boutique · Douala<br />+237 6 99 000 1122 · buying@koomzo.cm</div>
           </div>
           <div className="dp__no">
             <div className="dp__t">Purchase order</div>

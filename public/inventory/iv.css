@@ -350,3 +350,136 @@
   .docpaper{padding:18px 16px}
   .dp__addr,.dp__sign{grid-template-columns:1fr}
 }
+
+
+/* ---------- nested views ----------
+   Counts, Transfers, Purchases and Suppliers became tabs inside Stock and Orders. They
+   still render their own .view + head (which carries their actions), so the wrapper
+   strips the duplicated page padding. .view is owned by rx.css — this rule is scoped
+   under our own class rather than restyling another module's selector globally. */
+.ivsub{display:contents}
+.ivsub>.view{padding:0;gap:14px}
+.ivsub>.view>.view__head h2{font-size:16px}
+
+/* ---------- the four verbs ----------
+   Colour carries the verb. It is data, not decoration: an operator learns four tints in
+   one shift and then reads the ledger without reading the labels. */
+.mvacts{display:flex;gap:8px;flex-wrap:wrap}
+.mvact{display:inline-flex;align-items:center;gap:7px;height:40px;min-height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--kz-border-strong);background:#fff;font:600 13px var(--kz-font-sans);color:var(--kz-ink-2);cursor:pointer;transition:border-color .14s,background .14s,transform .12s}
+.mvact ion-icon{font-size:17px}
+.mvact:hover{transform:translateY(-1px)}
+.mvact:active{transform:scale(.97)}
+.mvact.in{color:#2f74d0}.mvact.in:hover{background:var(--kz-info-wash);border-color:#a9c6ee}
+.mvact.out{color:var(--kz-discount)}.mvact.out:hover{background:var(--kz-discount-wash);border-color:#f4bfae}
+.mvact.move{color:#b8861f}.mvact.move:hover{background:var(--kz-warning-wash);border-color:#eddaa8}
+.mvact.adjust{color:var(--kz-success)}.mvact.adjust:hover{background:var(--kz-success-wash);border-color:#a9dcbf}
+.mvact.count{color:var(--kz-primary)}.mvact.count:hover{background:var(--kz-primary-wash);border-color:var(--kz-primary-tint)}
+
+/* ---------- movement sheet ---------- */
+.mvsheet .sheet__head{padding-bottom:12px}
+.mvhead{display:flex;gap:12px;align-items:flex-start}
+.mvhead__ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none;background:color-mix(in srgb, var(--mv) 12%, #fff);color:var(--mv)}
+.mvhead__ic ion-icon{font-size:20px}
+.mvrule{height:2px;background:var(--mv,var(--kz-primary));opacity:.9}
+.mvkinds{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px}
+.mvk{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:44px;border-radius:10px;border:1px solid var(--kz-border);background:var(--kz-surface-2);font:600 13px var(--kz-font-sans);color:var(--kz-muted-2);cursor:pointer}
+.mvk ion-icon{font-size:16px}
+.mvk:hover{border-color:var(--kz-border-strong);color:var(--kz-ink-2)}
+.mvk.on{background:#fff;border-width:1.5px}
+.mvk.on.in{border-color:#2f74d0;color:#2f74d0;background:var(--kz-info-wash)}
+.mvk.on.out{border-color:var(--kz-discount);color:var(--kz-discount);background:var(--kz-discount-wash)}
+.mvk.on.move{border-color:#b8861f;color:#b8861f;background:var(--kz-warning-wash)}
+.mvk.on.adjust{border-color:var(--kz-success);color:var(--kz-success);background:var(--kz-success-wash)}
+
+/* line editor: on hand, the typed figure, and the result it produces — so the operator
+   never has to do the arithmetic the form is about */
+.mvlines{border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;background:#fff}
+.mvlines.flat{border-left:none;border-right:none;border-radius:0}
+.mvlh,.mvlr{display:grid;grid-template-columns:minmax(140px,1fr) 74px 92px 116px 38px;gap:10px;align-items:center;padding:9px 13px}
+.mvlh.doc,.mvlr.doc{grid-template-columns:minmax(140px,1fr) 116px 84px}
+.mvlh{background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);font:600 10.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+.mvlh .r{text-align:right}
+.mvlr{border-bottom:1px solid var(--kz-border)}
+.mvlr:last-of-type{border-bottom:none}
+.mvlr .r{text-align:right}
+.mvnm{display:flex;align-items:center;gap:10px;min-width:0}
+.mvnm .itav{width:32px;height:32px;border-radius:8px}
+.mvnm .itav ion-icon{font-size:16px}
+.mvres{display:flex;align-items:center;justify-content:flex-end;gap:6px;font-family:var(--kz-font-num);font-variant-numeric:tabular-nums}
+.mvres ion-icon{font-size:13px;color:var(--kz-muted-3)}
+.mvres .b{font-weight:600;color:var(--kz-muted-2);font-size:13px}
+.mvres .a{font-weight:700;font-size:15px;color:var(--kz-ink)}
+.mvres .a.pos{color:var(--kz-success)}
+.mvres .a.neg{color:var(--kz-discount)}
+.mvchg{font:700 14px var(--kz-font-num);font-variant-numeric:tabular-nums}
+.mvchg.pos{color:var(--kz-success)}.mvchg.neg{color:var(--kz-discount)}
+.mvtot{display:flex;align-items:center;gap:12px;padding:11px 13px;border-top:1px solid var(--kz-border);background:var(--kz-surface-2);font:600 12.5px var(--kz-font-sans);color:var(--kz-muted-2);white-space:nowrap}
+.mvtot b{font:700 15px var(--kz-font-num);font-variant-numeric:tabular-nums;color:var(--kz-ink)}
+.mvtot b.pos{color:var(--kz-success)}.mvtot b.neg{color:var(--kz-discount)}
+
+/* ---------- the ledger ---------- */
+.lgrlist{max-height:min(72vh,860px);overflow-y:auto}
+.lgr{display:flex;gap:12px;width:100%;text-align:left;padding:14px 15px;background:#fff;border:none;border-bottom:1px solid var(--kz-border);cursor:pointer;transition:background .13s}
+.lgr:last-child{border-bottom:none}
+.lgr:hover{background:var(--kz-surface-2)}
+.lgr.on{background:var(--kz-primary-wash);box-shadow:inset 3px 0 0 var(--kz-primary)}
+.lgr__ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+.lgr__ic ion-icon{font-size:18px}
+.lgr__b{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.lgr__t{display:flex;align-items:baseline;gap:8px}
+.lgr__t .v{font:700 14.5px var(--kz-font-sans);letter-spacing:-.01em}
+.lgr__t .w,.lgr__f .w{font:500 11.5px var(--kz-font-num);color:var(--kz-muted-3);white-space:nowrap}
+.lgr__s{font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.lgr__i{font:400 12.5px var(--kz-font-sans);color:var(--kz-muted-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lgr__f{display:flex;align-items:center;gap:7px;margin-top:3px;font:600 12px var(--kz-font-sans);color:var(--kz-ink-2)}
+.lgr__f ion-icon{font-size:12px;color:var(--kz-muted-3)}
+.lgr__f .tag{display:inline-flex;align-items:center;height:19px;padding:0 7px;border-radius:5px;font:700 10px var(--kz-font-sans);letter-spacing:.04em;text-transform:uppercase}
+.lgr__f .tag.from{background:var(--kz-discount-wash);color:var(--kz-discount)}
+.lgr__f .tag.to{background:var(--kz-info-wash);color:#2f74d0}
+.lgr__f .tag.transit{background:var(--kz-warning-wash);color:#8a6414}
+.lgr .sp{flex:1}
+
+/* ---------- split button ---------- */
+.splitbtn{position:relative;display:flex;align-items:stretch}
+.splitbtn .btn.primary{border-top-right-radius:0;border-bottom-right-radius:0}
+.splitbtn .btn.primary.caret{width:36px;padding:0;justify-content:center;border-radius:0 10px 10px 0;margin-left:1px;box-shadow:none}
+.splitbtn .btn.primary.caret ion-icon{font-size:15px}
+.splitmenu{position:absolute;top:calc(100% + 6px);right:0;z-index:60;width:250px;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);box-shadow:var(--kz-shadow-lg);overflow:hidden;padding:4px}
+.splitmenu button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:9px 10px;border:none;background:none;border-radius:8px;cursor:pointer}
+.splitmenu button:hover{background:var(--kz-surface-2)}
+.splitmenu button ion-icon{font-size:19px;color:var(--kz-primary);flex:none}
+.splitmenu button b{display:block;font:600 13px var(--kz-font-sans);color:var(--kz-ink)}
+.splitmenu button span{display:block;font:400 11.5px var(--kz-font-sans);color:var(--kz-muted-3);margin-top:1px}
+
+/* ---------- new item form ---------- */
+.nirow{display:flex;gap:12px;align-items:flex-start}
+.niphoto{width:88px;height:88px;border-radius:var(--kz-radius);background:var(--kz-surface-2);border:1px dashed var(--kz-border-strong);display:grid;place-items:center;color:var(--kz-muted-3);flex:none;cursor:pointer}
+.niphoto ion-icon{font-size:24px}
+.niphoto:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.nisku{display:inline-flex;align-items:center;gap:7px;margin-top:7px;padding:0;border:none;background:none;cursor:pointer;font:600 12px var(--kz-font-num);color:var(--kz-muted-3)}
+.nisku ion-icon{font-size:13px}
+.nisku em{font:500 11.5px var(--kz-font-sans);font-style:normal;color:var(--kz-primary)}
+.nisku:hover{color:var(--kz-primary)}
+.nimore{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;height:34px;padding:0 12px;border-radius:var(--kz-radius-pill);border:1px solid var(--kz-border);background:var(--kz-surface-2);font:600 12.5px var(--kz-font-sans);color:var(--kz-muted-2);cursor:pointer}
+.nimore:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.nimore ion-icon{font-size:14px}
+
+/* ---------- role tags ---------- */
+.roletags{display:flex;gap:5px;flex-wrap:wrap;flex:none}
+.roletag{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--kz-radius-sm);font:700 10px var(--kz-font-sans);letter-spacing:.04em;text-transform:uppercase}
+.roletag.supplier{background:var(--kz-info-wash);color:#2f74d0}
+.roletag.customer{background:var(--kz-primary-wash);color:var(--kz-primary)}
+
+/* ---------- tier list ---------- */
+.tierlist{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.tierrow{display:flex;gap:10px;align-items:baseline;padding:9px 11px;border-radius:9px;background:var(--kz-surface-2);border:1px solid transparent}
+.tierrow.on{background:var(--kz-primary-wash);border-color:var(--kz-primary-tint)}
+.tierrow b{font:700 12.5px var(--kz-font-sans);flex:none;width:64px}
+.tierrow span{font:400 12.5px/1.5 var(--kz-font-sans);color:var(--kz-muted)}
+
+@media (max-width:1000px){
+  .mvacts{width:100%;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+  .mvact{flex:none}
+  .mvlh,.mvlr{grid-template-columns:minmax(110px,1fr) 62px 78px 96px 34px;gap:7px;padding:9px 10px}
+  .mvlh.doc,.mvlr.doc{grid-template-columns:minmax(110px,1fr) 100px 70px}
+}
