@@ -120,15 +120,15 @@ function ItemAdd({ filter, exclude, onAdd, placeholder }) {
   );
 }
 
-/* editable order/receipt lines. cols: qty + cost, or qty only */
-function LineRows({ lines, onQty, onCost, onDrop, right, head }) {
+/* editable order/receipt lines. cols: qty + cost, or qty only (variant 'noCost') */
+function LineRows({ lines, onQty, onCost, onDrop, right, head, variant }) {
   return (
-    <div className="lned">
-      <div className="lnh">{head.map((h, n) => <div key={n} className={n ? 'r' : ''}>{h}</div>)}<div></div></div>
+    <div className={'lned' + (variant ? ' ' + variant : '')}>
+      <div className={'lnh' + (variant ? ' ' + variant : '')}>{head.map((h, n) => <div key={n} className={n ? 'r' : ''}>{h}</div>)}<div></div></div>
       {lines.map((l) => {
         const it = IV.item(l.id);
         return (
-          <div className="lnr" key={l.id}>
+          <div className={'lnr' + (variant ? ' ' + variant : '')} key={l.id}>
             <div><div className="ln__n">{it.name}</div><div className="ln__s">{it.sku}{it.unit !== 'each' ? ' · ' + it.unit : ''}</div></div>
             <div><input className="numin" value={l.qty} onChange={(e) => onQty(l.id, e.target.value)} /></div>
             {onCost && <div><input className="numin" value={l.cost} onChange={(e) => onCost(l.id, e.target.value)} /></div>}

@@ -252,6 +252,7 @@
 .lnr{border-bottom:1px solid var(--kz-border)}
 .lnr:last-child{border-bottom:none}
 .lnh.rcv,.lnr.rcv{grid-template-columns:minmax(150px,1fr) 72px 78px 82px 92px}
+.lnh.trf,.lnr.trf{grid-template-columns:minmax(150px,1fr) 74px 88px 38px}
 .lnh.imp,.lnr.imp{grid-template-columns:34px minmax(140px,1fr) 78px 78px 56px 116px}
 .lnr.off{opacity:.5}
 
@@ -304,7 +305,11 @@
      and the detail slides in over it. Without `pushed` the pane is not in the flow at
      all, so the user never scrolls past the list to reach what they tapped. */
   .mdgrid>.mdpane:not(.pushed){display:none}
-  .mdpane.pushed{position:absolute;top:56px;left:0;right:0;bottom:0;z-index:80;border-radius:0;border:none;border-top:1px solid var(--kz-border);display:flex;flex-direction:column;animation:rise .2s cubic-bezier(.4,0,.2,1)}
+  /* z-index 10 clears .main content and sticky table cells (2–3) while staying BELOW
+     .scrim (70, owned by rx.css) — a pushed pane is app chrome, not a modal layer, so
+     every sheet opened from its own .mdfoot must still paint over it. Raising the scrim
+     instead would mean restyling another module's class to fix ours. */
+  .mdpane.pushed{position:absolute;top:56px;left:0;right:0;bottom:0;z-index:10;border-radius:0;border:none;border-top:1px solid var(--kz-border);display:flex;flex-direction:column;animation:rise .2s cubic-bezier(.4,0,.2,1)}
   .mdpane.pushed .mdbd{flex:1;max-height:none}
   .backbtn{display:grid!important}
   .mdpane.pushed .mdscroll{display:block;flex:1;min-height:0;overflow-y:auto}
@@ -339,6 +344,7 @@
   .lnr:not(.rcv):not(.imp)>:nth-child(4){display:none}
   .lnr.rcv{grid-template-columns:1fr 72px minmax(92px,auto);gap:8px 10px;padding:11px 12px}
   .lnr.rcv>:nth-child(2),.lnr.rcv>:nth-child(3){display:none}
+  .lnr.trf{grid-template-columns:1fr 68px minmax(80px,auto) 36px;gap:8px 10px;padding:11px 12px}
   .lnr.imp{grid-template-columns:1fr 54px 108px;gap:8px 10px;padding:11px 12px}
   .lnr.imp>:nth-child(1),.lnr.imp>:nth-child(3),.lnr.imp>:nth-child(4){display:none}
   .docpaper{padding:18px 16px}

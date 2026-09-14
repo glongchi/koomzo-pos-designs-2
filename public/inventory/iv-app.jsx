@@ -33,6 +33,8 @@ function SheetHost({ sheet, loc, caps, onClose, onItem, onPO, onCount }) {
   if (k === 'newCount') return <NewCountSheet loc={loc} caps={caps} onClose={onClose} onCreated={onCount} />;
   if (k === 'schedule') return <ScheduleCycleSheet loc={loc} caps={caps} onClose={onClose} />;
   if (k === 'newSupplier') return <NewSupplierSheet onClose={onClose} />;
+  if (k === 'newTransfer') return <NewTransferSheet loc={loc} onClose={onClose} onCreated={sheet.onCreated} />;
+  if (k === 'printTransfer') return <TransferPrintSheet tr={sheet.tr} onClose={onClose} />;
   if (k === 'email') return <EmailSheet supplier={sheet.supplier} onClose={onClose} />;
   return null;
 }
@@ -138,7 +140,7 @@ function App() {
             {view === 'stock' && <StockView loc={loc} caps={caps} onOpen={open} onAdjust={() => open('adjust')} />}
             {view === 'purchase' && <PurchaseView caps={caps} loc={loc} onOpen={open} />}
             {view === 'counts' && <CountsView loc={loc} caps={caps} onOpen={open} />}
-            {view === 'transfers' && <TransfersView />}
+            {view === 'transfers' && <TransfersView caps={caps} loc={loc} onOpen={open} />}
             {view === 'reports' && <ReportsView loc={loc} />}
             {view === 'suppliers' && <SuppliersView onOpen={open} />}
             {view === 'setup' && <><ModuleSetup mid="inventory" />

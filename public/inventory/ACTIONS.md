@@ -31,6 +31,10 @@ reference and cost. If an action cannot name its movement, it is not allowed to 
 | Counts | Schedule cycle | `scheduleCycle(cfg)` | rotation (`IV_CYCLES`) | — |
 | Counts | Save draft | `saveCount(id, counted)` | line counts; status `open`/`review` | — |
 | Counts | Post count | `postCount(id, counted)` | one `count` movement per differing line; variance to shrinkage; status `posted` | posted counts are immutable — a mistake is corrected by a new adjustment |
+| Transfers | New transfer | `createTransfer({from, to, lines, send})` | transfer (`draft`, or `in-transit` if sent now) | source ≠ destination; lines capped at on-hand **at source** — a send must not drive a location negative |
+| Transfers | Send | `sendTransfer(id)` | outbound `transfer` movement per line; status `in-transit` | decrements source only — the destination is **not** credited until receipt |
+| Transfers | Receive | `receiveTransfer(id, lines)` | inbound `transfer` movement per line; `recv` per line; status | a short arrival leaves the balance in transit against the same document — never a second transfer |
+| Transfers | Print list | none — renders `.docpaper`, `window.print()` | — | — |
 | Vendors | New supplier | `createSupplier(d)` | supplier | name uniqueness per tenant |
 | Vendors | Email | `queueEmail(m)` | outbox row, `sent` or `queued` | offline queue is per device and must de-duplicate on flush |
 | Vendors | New order | opens `newOrder` for that supplier | — | — |
@@ -49,11 +53,19 @@ reference and cost. If an action cannot name its movement, it is not allowed to 
    at open, so the variance is still computable.
 4. **Cumulative vs delta on receiving.** The pane's input is what has arrived *in
    total*; the post is the difference. Untouched, the button receives the whole
-   outstanding balance — the common case at the door.
-5. **Cost rounds to whole francs on every write.** XAF has no minor unit, so an
+   outstanding balance — the common case at the door. Transfers differ deliberately:
+   the input is *this* arrival (capped at the outstanding balance), because a transfer
+   receipt happens once at a loading bay rather than being revised over days.
+5. **A transfer is one document with two postings.** Send decrements source; receive
+   credits destination. Between them the quantity is **in transit** — owned, visible in
+   valuation, and not sellable at either end. A system that models this as a decrement
+   plus an unrelated increment cannot answer "where is my stock right now", and a short
+   arrival becomes an unexplained variance at two locations instead of a balance against
+   one document.
+6. **Cost rounds to whole francs on every write.** XAF has no minor unit, so an
    unrounded weighted average makes every downstream valuation fractional. Same rule
    as the money gates.
-6. **A post says what it wrote.** Toasts are in domain terms — “Posted CC-0033 · 2
+7. **A post says what it wrote.** Toasts are in domain terms — “Posted CC-0033 · 2
    movements · variance −1 250 F”, not “Saved”. An operator who cannot see what a
    button did stops trusting the button.
 
@@ -80,6 +92,15 @@ Three rules make it read as navigation rather than a resized pane:
 Panes assembled from several blocks rather than one `.mdbd` wrap them in `.mdscroll`,
 which is `display:contents` at desktop (layout unchanged) and becomes the single scroll
 region when pushed.
+
+**Stacking: a pushed pane is app chrome, not a modal layer.** `.mdpane.pushed` sits at
+`z-index:10` — enough to clear `.main` content and sticky table cells (2–3), and
+deliberately *below* `.scrim` (70). It was 80 for one round, which painted every pane
+over the modal scrim and made every `.mdfoot` action (Print, Receive, Email, Post count)
+mount-but-unreachable on narrow viewports across all five pushed panes. Note the fix
+direction: the pane was lowered rather than the scrim raised, because `.scrim` belongs
+to `rx.css` — **fix your own class, never another module's.** Anything that must paint
+over a pushed pane belongs above 70, like `.ivtoasts` at 120.
 
 **In `koomzoapps` this is `ion-split-pane` with `when="md"`**, and the push is a real
 `ion-nav` route — which gets the hardware back button and the swipe-back gesture for
@@ -142,6 +163,11 @@ should be unified at the port rather than propagated.
 
 - **Transfers** still has unwired buttons (Send / Receive / New transfer). Same action
   shape as receiving — two movements, one document — but out of scope for this pass.
+- **Transfer notes are collected and discarded.** The New transfer sheet takes a note
+  (driver, crate count) but `createTransfer` has nowhere to persist it — the movement's
+  `ref` carries only the document number and the far location. Either add it to the
+  transfer record or drop the field; a field that silently loses input is worse than no
+  field.
 - **Lot and serial capture on receipt.** `receive()` accepts a `lot` per line and the
   movement carries it, but no sheet collects it yet; items with `lot:true` should
   require it before the post is allowed.

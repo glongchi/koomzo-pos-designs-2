@@ -205,11 +205,11 @@ window.IV_COUNTS = [
 /* ---------- transfers ---------- */
 window.IV_TRANSFERS = [
   { id:'t1', no:'TR-0086', from:'wh', to:'ap', status:'in-transit', sent:'Today · 09:10', eta:'Today · 17:00', by:'M. Ekindi',
-    lines:[ { id:'i6', qty:48 }, { id:'i3', qty:12 } ] },
+    lines:[ { id:'i6', qty:48, recv:0 }, { id:'i3', qty:12, recv:0 } ] },
   { id:'t2', no:'TR-0085', from:'wh', to:'up', status:'draft', sent:'—', eta:'Tomorrow', by:'M. Ekindi',
-    lines:[ { id:'i10', qty:2000 }, { id:'i9', qty:5000 }, { id:'i11', qty:1000 } ] },
+    lines:[ { id:'i10', qty:2000, recv:0 }, { id:'i9', qty:5000, recv:0 }, { id:'i11', qty:1000, recv:0 } ] },
   { id:'t3', no:'TR-0084', from:'wh', to:'dt', status:'received', sent:'Today · 08:00', eta:'Today · 12:30', by:'D. Patel',
-    lines:[ { id:'i2', qty:12 } ] },
+    lines:[ { id:'i2', qty:12, recv:12 } ] },
 ];
 
 /* ---------- report seeds ---------- */

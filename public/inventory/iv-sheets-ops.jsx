@@ -371,4 +371,118 @@ function ScheduleCycleSheet({ loc, caps, onClose }) {
   );
 }
 
-Object.assign(window, { ReceiveSheet, NewOrderSheet, PrintSheet, NewCountSheet, ScheduleCycleSheet, IV_STAFF });
+/* ============ NEW TRANSFER ============ */
+/* The only document that posts twice. Source availability is the real constraint here:
+   you cannot send what is not on the shelf, so lines are capped at on-hand AT SOURCE
+   and the sheet says so rather than letting the send drive a location negative. */
+function NewTransferSheet({ loc, onClose, onCreated }) {
+  const [from, setFrom] = useState('wh');
+  const [to, setTo] = useState(loc === 'all' || loc === 'wh' ? 'dt' : loc);
+  const [lines, setLines] = useState([]);
+  const [note, setNote] = useState('');
+
+  const onHandAt = (id, at) => { const it = IV.item(id); return (it.stock && it.stock[at]) || 0; };
+  const addLine = (i) => setLines((c) => c.concat([{ id: i.id, qty: Math.min(1, onHandAt(i.id, from)) || 1 }]));
+  const patch = (id, v) => setLines((c) => c.map((l) => l.id === id ? { ...l, qty: Math.max(0, +v || 0) } : l));
+  const over = lines.filter((l) => l.qty > onHandAt(l.id, from));
+  const value = lines.reduce((a, l) => a + l.qty * (IV.item(l.id).cost || 0), 0);
+  const ok = from !== to && lines.some((l) => l.qty > 0);
+
+  return (
+    <Sheet w="xl" title="New transfer" sub="One document, two postings — out of source now, on hand at destination when it arrives" onClose={onClose}
+      foot={<>
+        <button className="btn" onClick={onClose}>Cancel</button>
+        <button className="btn" disabled={!ok}
+          onClick={() => { const t = window.IVS.createTransfer({ from, to, lines, send: false }); onCreated && onCreated(t.id); onClose(); }}>
+          Save draft</button>
+        <button className="btn primary" disabled={!ok}
+          onClick={() => { const t = window.IVS.createTransfer({ from, to, lines, send: true }); onCreated && onCreated(t.id); onClose(); }}>
+          <ion-icon name="airplane-outline"></ion-icon>Send now · {money(value)}</button>
+      </>}>
+      <div className="fgrid">
+        <Sel label="From" value={from} onChange={(v) => { setFrom(v); setLines([]); }} hint="Stock leaves here on send">
+          {window.IV_LOCATIONS.map((l) => <option key={l.id} value={l.id}>{l.name} · {l.kind}</option>)}
+        </Sel>
+        <Sel label="To" value={to} onChange={setTo} hint="Arrives on hand only when received">
+          {window.IV_LOCATIONS.filter((l) => l.id !== from).map((l) => <option key={l.id} value={l.id}>{l.name} · {l.kind}</option>)}
+        </Sel>
+      </div>
+      {from === to && <Warn tone="bad" icon="close-circle-outline">Source and destination are the same location.</Warn>}
+      <ItemAdd exclude={lines.map((l) => l.id)} onAdd={addLine}
+        filter={(i) => !!i.stock && onHandAt(i.id, from) > 0}
+        placeholder={'Add an item held at ' + IV.loc(from).name} />
+      <LineRows lines={lines} head={['Line', 'Qty', 'Value']} variant="trf"
+        onQty={(id, v) => patch(id, v)}
+        onDrop={(id) => setLines((c) => c.filter((l) => l.id !== id))}
+        right={(l, it) => <>{money(l.qty * (it.cost || 0))}
+          <div className="ln__s" style={{ textAlign: 'right' }}>{onHandAt(l.id, from)} at source</div></>} />
+      {lines.length > 0 && <div className="pricebox"><span className="k">In transit · {lines.length} lines</span><span className="v">{money(value)}</span></div>}
+      {over.length > 0 && <Warn tone="bad" icon="warning-outline">
+        {over.length} line{over.length > 1 ? 's' : ''} above what {IV.loc(from).name} holds — {over.map((l) => IV.item(l.id).name + ' has ' + onHandAt(l.id, from)).join(', ')}.
+        Sending anyway drives that location negative, which needs an adjustment with an owner PIN instead.
+      </Warn>}
+      <Field label="Note" value={note} onChange={setNote} placeholder="Driver, crate count, anything the receiving end should know" />
+      <Warn icon="git-compare-outline">
+        <b>Save draft</b> reserves nothing — stock stays sellable at {IV.loc(from).name}. <b>Send now</b> posts the outbound movement immediately, and the quantity is owned but not sellable at either end until the destination receives it.
+      </Warn>
+    </Sheet>
+  );
+}
+
+/* ============ PRINT TRANSFER LIST ============ */
+/* The picking list. Quantity column is deliberately left for a pen — the point of the
+   paper is to record what physically went in the crate, which is then typed at the
+   far end and becomes the variance if it differs. */
+function TransferPrintSheet({ tr, onClose }) {
+  const f = IV.loc(tr.from), t = IV.loc(tr.to);
+  const value = tr.lines.reduce((a, l) => a + l.qty * (IV.item(l.id).cost || 0), 0);
+  const units = tr.lines.reduce((a, l) => a + l.qty, 0);
+  return (
+    <Sheet w="xl" title={'Print ' + tr.no} sub="Picking list — travels with the crate" onClose={onClose}
+      foot={<>
+        <button className="btn" onClick={onClose}>Close</button>
+        <button className="btn primary" onClick={() => window.print()}><ion-icon name="print-outline"></ion-icon>Print</button>
+      </>}>
+      <div className="docpaper">
+        <div className="dp__top">
+          <div>
+            <div className="dp__mark"><ion-icon name="git-compare"></ion-icon></div>
+            <div className="dp__org">Koomzo Retail</div>
+            <div className="dp__meta">Internal stock transfer<br />Not a sale · no money changes hands</div>
+          </div>
+          <div className="dp__no">
+            <div className="dp__t">Transfer</div>
+            <div className="dp__n">{tr.no}</div>
+            <div className="dp__meta">Raised {tr.sent === '—' ? 'not sent' : tr.sent}<br />Expected {tr.eta}<br />{tr.lines.length} lines · {units} units</div>
+          </div>
+        </div>
+        <div className="dp__addr">
+          <div><span className="dp__lab">From</span>{f.name}<br />{f.kind} · code {f.code}<br />Picked by {tr.by}</div>
+          <div><span className="dp__lab">To</span>{t.name}<br />{t.kind} · code {t.code}<br />Receiving hours 08:00 – 17:00</div>
+        </div>
+        <table className="dp__tbl">
+          <thead><tr><th>#</th><th>Item</th><th>SKU</th><th className="r">Sent</th><th className="r">Received</th><th className="r">Value</th></tr></thead>
+          <tbody>
+            {tr.lines.map((l, n) => {
+              const it = IV.item(l.id);
+              return <tr key={l.id}><td>{n + 1}</td><td>{it.name}</td><td>{it.sku}</td>
+                <td className="r">{qtyFmt(l.qty, it.unit)}</td><td className="r" style={{ color: 'var(--kz-muted-3)' }}>&nbsp;</td>
+                <td className="r">{money(l.qty * (it.cost || 0))}</td></tr>;
+            })}
+          </tbody>
+          <tfoot><tr><td colSpan="5" className="r">Transfer value</td><td className="r">{money(value)}</td></tr></tfoot>
+        </table>
+        <div className="dp__note">
+          Count into the crate against the <b>Sent</b> column and write what actually travelled in <b>Received</b>. Any difference is typed at {t.name} and posts as a variance against {tr.no} — do not raise a second transfer for a short delivery.
+        </div>
+        <div className="dp__sign">
+          <div><span className="dp__lab">Picked by</span>{tr.by}</div>
+          <div><span className="dp__lab">Received by</span>&nbsp;</div>
+          <div><span className="dp__lab">Date</span>&nbsp;</div>
+        </div>
+      </div>
+    </Sheet>
+  );
+}
+
+Object.assign(window, { ReceiveSheet, NewOrderSheet, PrintSheet, NewCountSheet, ScheduleCycleSheet, NewTransferSheet, TransferPrintSheet, IV_STAFF });

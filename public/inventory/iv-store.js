@@ -19,7 +19,7 @@
   const clock = () => { const d = new Date(); return 'Today · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); };
   const today = () => { const d = new Date(); return pad(d.getDate()) + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]; };
 
-  let mSeq = 100, poSeq = 2216, cSeq = 34, supSeq = 3, itSeq = 100, cySeq = 0, msgSeq = 0;
+  let mSeq = 100, poSeq = 2216, cSeq = 34, supSeq = 3, itSeq = 100, cySeq = 0, msgSeq = 0, trSeq = 86;
   const nextNo = (prefix, seq) => prefix + '-' + String(seq).padStart(4, '0');
 
   /* who is posting — in production this is the session user, immutable for the session */
@@ -255,6 +255,66 @@
         return cy;
       });
     },
+
+    /* ---------- transfers ---------- */
+    /* A transfer is ONE document with TWO postings, never a decrement plus an unrelated
+       increment. Send moves stock out of source and into in-transit; receive brings it
+       on hand at destination. Between the two, the quantity is owned, visible, and not
+       sellable — which is exactly why the destination is NOT incremented on send. */
+    createTransfer({ from, to, lines, send }) {
+      return IVS.tx(() => {
+        const t = {
+          id: 't' + (++trSeq), no: nextNo('TR', trSeq), from, to,
+          status: 'draft', by: WHO, sent: '—', eta: IVS.etaLocal(),
+          lines: lines.map((l) => ({ id: l.id, qty: +l.qty, recv: 0 })),
+        };
+        window.IV_TRANSFERS.unshift(t);
+        if (send) return IVS.sendTransfer(t.id), t;
+        IVS.say(t.no + ' saved as draft · ' + window.IV.loc(from).code + ' → ' + window.IV.loc(to).code);
+        return t;
+      });
+    },
+    sendTransfer(id) {
+      return IVS.tx(() => {
+        const t = window.IV_TRANSFERS.find((x) => x.id === id);
+        let n = 0, value = 0;
+        t.lines.forEach((l) => {
+          const it = window.IV.item(l.id);
+          applyStock(l.id, t.from, -l.qty);
+          move({ item: l.id, loc: t.from, kind: 'transfer', qty: -l.qty,
+            ref: t.no + ' to ' + window.IV.loc(t.to).name, cost: l.qty * (it.cost || 0) });
+          n++; value += l.qty * (it.cost || 0);
+        });
+        t.status = 'in-transit'; t.sent = clock();
+        IVS.say(t.no + ' sent · ' + n + ' line' + (n === 1 ? '' : 's') + ' · ' + window.money(value) + ' in transit');
+        return t;
+      });
+    },
+    /* lines: [{ id, qty }] — what physically arrived. A short arrival is a variance at
+       the destination, recorded against the transfer, never silently clamped. */
+    receiveTransfer(id, lines) {
+      return IVS.tx(() => {
+        const t = window.IV_TRANSFERS.find((x) => x.id === id);
+        let n = 0, short = 0;
+        (lines || t.lines.map((l) => ({ id: l.id, qty: l.qty - l.recv }))).forEach((r) => {
+          if (r.qty <= 0) return;
+          const it = window.IV.item(r.id);
+          applyStock(r.id, t.to, r.qty);
+          move({ item: r.id, loc: t.to, kind: 'transfer', qty: r.qty,
+            ref: t.no + ' from ' + window.IV.loc(t.from).name, cost: r.qty * (it.cost || 0) });
+          const tl = t.lines.find((l) => l.id === r.id);
+          if (tl) tl.recv += r.qty;
+          n++;
+        });
+        t.lines.forEach((l) => { if (l.recv < l.qty) short += l.qty - l.recv; });
+        t.status = t.lines.every((l) => l.recv >= l.qty) ? 'received' : 'in-transit';
+        t.received = clock();
+        IVS.say('Received ' + n + ' line' + (n === 1 ? '' : 's') + ' at ' + window.IV.loc(t.to).code +
+          (short ? ' · ' + short + ' still in transit' : ''), short ? 'warn' : 'ok');
+        return { n, short };
+      });
+    },
+    etaLocal() { const d = new Date(); d.setHours(d.getHours() + 6); return 'Today · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); },
 
     /* ---------- suppliers ---------- */
     createSupplier(d) {

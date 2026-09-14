@@ -304,30 +304,43 @@ function CountsView({ loc, caps, onOpen }) {
 }
 
 /* ================= TRANSFERS ================= */
-function TransfersView() {
-  const [selId, setSelId] = useState('t1');
+function TransfersView({ caps, loc, onOpen }) {
+  const list = IV_TRANSFERS;
+  const [selId, setSelId] = useState(list[0] ? list[0].id : null);
   const [pushed, setPushed] = useState(false);
-  const doc = IV_TRANSFERS.find((t) => t.id === selId);
-  const tone = { draft: 'low', 'in-transit': 'watch', received: 'ok' };
+  /* arriving quantities, keyed per transfer+line like PoPane — one concept for "what
+     physically turned up" across every receiving surface in the module */
+  const [arr, setArr] = useState({});
+  const doc = list.find((t) => t.id === selId);
+  /* status is field data; the chip is UI copy. Every value gets a label so no chip ever
+     renders a raw enum — the defect the removed `in-transit`-only lookup produced. */
+  const TR_STATUS = { draft: { label: 'Draft', tone: 'low' }, 'in-transit': { label: 'In transit', tone: 'watch' }, received: { label: 'Received', tone: 'low' } };
+  const get = (l) => arr[selId + l.id] !== undefined ? arr[selId + l.id] : l.qty - l.recv;
+  const setQ = (l, v) => setArr((c) => ({ ...c, [selId + l.id]: Math.max(0, Math.min(l.qty - l.recv, +v || 0)) }));
+  const arriving = doc ? doc.lines.map((l) => ({ id: l.id, qty: get(l) })).filter((l) => l.qty > 0) : [];
+  const inTransitValue = doc ? doc.lines.reduce((a, l) => a + (l.qty - l.recv) * (IV.item(l.id).cost || 0), 0) : 0;
+  const shortAfter = doc ? doc.lines.reduce((a, l) => a + Math.max(0, (l.qty - l.recv) - get(l)), 0) : 0;
+
   return (
     <div className="view">
       <div className="view__head">
         <div><h2>Transfers</h2><p>Stock in motion between locations</p></div>
         <div className="sp"></div>
-        <button className="btn primary"><ion-icon name="add-outline"></ion-icon>New transfer</button>
+        <button className="btn primary" onClick={() => onOpen('newTransfer', { onCreated: (id) => { setSelId(id); setPushed(true); } })}>
+          <ion-icon name="add-outline"></ion-icon>New transfer</button>
       </div>
       <div className="mdgrid wide">
-        <div className="card" style={{ padding: 0 }}>
-          {IV_TRANSFERS.map((t) => (
+        <div className="card transflist" style={{ padding: 0 }}>
+          {list.map((t) => (
             <button className={'doc' + (selId === t.id ? ' on' : '')} key={t.id} onClick={() => { setSelId(t.id); setPushed(true); }}>
               <div className="op-ic"><ion-icon name="git-compare-outline"></ion-icon></div>
               <div>
                 <div className="doc__no">{t.no}</div>
-                <div className="doc__m">{IV.loc(t.from).name} → {IV.loc(t.to).name} · {t.lines.length} lines</div>
+                <div className="doc__m">{IV.loc(t.from).name} → {IV.loc(t.to).name} · {t.lines.length} line{t.lines.length === 1 ? '' : 's'}
+                  {t.status === 'in-transit' && t.lines.some((l) => l.recv > 0) ? ' · part received' : ''}</div>
               </div>
               <div className="sp"></div>
-              <Risk tone={t.status === 'received' ? 'low' : t.status === 'in-transit' ? 'watch' : 'low'}>
-                {t.status === 'in-transit' ? 'In transit' : t.status}</Risk>
+              <Risk tone={TR_STATUS[t.status].tone}>{TR_STATUS[t.status].label}</Risk>
             </button>
           ))}
         </div>
@@ -340,9 +353,26 @@ function TransfersView() {
             </div>
             <div className="mdbd">
               <KV k="Sent" v={doc.sent} /><KV k="Expected" v={doc.eta} /><KV k="Raised by" v={doc.by} />
+              {doc.status !== 'draft' && <KV k="Still in transit" v={money(inTransitValue)} />}
               <div className="grp">
-                <span className="grp__t">Lines</span>
-                {doc.lines.map((l) => {
+                <span className="grp__t">{doc.status === 'in-transit' ? 'Lines · type what arrived' : 'Lines'}</span>
+                {doc.status === 'in-transit' ? (
+                  <div className="lned">
+                    <div className="lnh rcv"><div>Line</div><div className="r">Sent</div><div className="r">In</div><div className="r">Arriving</div><div className="r">Value</div></div>
+                    {doc.lines.map((l) => {
+                      const it = IV.item(l.id), a = get(l), rem = l.qty - l.recv;
+                      return (
+                        <div className="lnr rcv" key={l.id}>
+                          <div><div className="ln__n">{it.name}</div><div className="ln__s">{it.sku}</div></div>
+                          <div className="r ln__s">{qtyFmt(l.qty)}</div>
+                          <div className="r ln__s">{l.recv || '—'}</div>
+                          <div><input className={'numin' + (a < rem ? ' warnv' : '')} value={a} onChange={(e) => setQ(l, e.target.value)} /></div>
+                          <div className="r">{money(a * (it.cost || 0))}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : doc.lines.map((l) => {
                   const it = IV.item(l.id);
                   return (
                     <div className="rcp" key={l.id}>
@@ -353,13 +383,25 @@ function TransfersView() {
                   );
                 })}
               </div>
+              {doc.status === 'draft' && <div className="hint"><ion-icon name="document-outline"></ion-icon>
+                <span>Nothing is reserved. Stock stays sellable at <b>{IV.loc(doc.from).name}</b> until this is sent.</span></div>}
               {doc.status === 'in-transit' && <div className="hint"><ion-icon name="airplane-outline"></ion-icon>
                 <span>Quantities have left <b>{IV.loc(doc.from).name}</b> but are not yet on hand at {IV.loc(doc.to).name}. In-transit stock is owned, visible, and not sellable.</span></div>}
+              {doc.status === 'in-transit' && shortAfter > 0 && <div className="hint warn"><ion-icon name="alert-circle-outline"></ion-icon>
+                <span>Receiving less than was sent leaves <b>{shortAfter} unit{shortAfter === 1 ? '' : 's'}</b> in transit against {doc.no}. That is the honest state — do not raise a second transfer for a short arrival.</span></div>}
+              {doc.status === 'received' && <div className="hint"><ion-icon name="checkmark-done-outline"></ion-icon>
+                <span>Complete. Both postings are in the ledger — out of {IV.loc(doc.from).name}, on hand at {IV.loc(doc.to).name}.</span></div>}
             </div>
             <div className="mdfoot">
-              <button className="btn">Print list</button>
-              <button className="btn primary" disabled={doc.status === 'received'}>
-                <ion-icon name="checkmark-outline"></ion-icon>{doc.status === 'draft' ? 'Send' : 'Receive'}</button>
+              <button className="btn" onClick={() => onOpen('printTransfer', { tr: doc })}>
+                <ion-icon name="print-outline"></ion-icon>Print list</button>
+              {doc.status === 'draft'
+                ? <button className="btn primary" onClick={() => window.IVS.sendTransfer(doc.id)}>
+                    <ion-icon name="airplane-outline"></ion-icon>Send</button>
+                : <button className="btn primary" disabled={doc.status === 'received' || !arriving.length}
+                    onClick={() => { window.IVS.receiveTransfer(doc.id, arriving); setArr({}); }}>
+                    <ion-icon name="download-outline"></ion-icon>
+                    {doc.status === 'received' ? 'Received' : !arriving.length ? 'Nothing arriving' : 'Receive ' + arriving.length + ' line' + (arriving.length > 1 ? 's' : '')}</button>}
             </div>
           </div>
         )}
