@@ -1,0 +1,23 @@
+# Firebase / GCP
+.firebase/
+firebase-debug.log
+firestore-debug.log
+pubsub-debug.log
+ui-debug.log
+
+# Node
+node_modules/
+functions/node_modules/
+functions/lib/
+npm-debug.log*
+
+# Secrets / local env
+.env
+.env.local
+*-service-account.json
+.runtimeconfig.json
+
+# Editor
+.DS_Store
+.idea/
+.vscode/

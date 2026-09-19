@@ -6,15 +6,22 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "profile": "pharmacy",
   "layout": "right",
   "density": "comfortable",
-  "stock": "lite",
-  "device": "desktop"
+  "device": "desktop",
+  "phoneOrder": "bar"
 }/*EDITMODE-END*/;
+
+/* the convergence canvas opens three frames of this page, each pinned to a
+   phone pattern — so the URL, not saved tweak state, wins when it says so */
+const RX_URL = new URLSearchParams(location.search);
 
 let UID = 1;
 const cfgFrom = (p) => ({ entry: p.entry, tiles: p.tiles, picker: p.picker, features: { ...p.features } });
 
 function App() {
-  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [t, setTweakRaw] = useTweaks(TWEAK_DEFAULTS);
+  const setTweak = setTweakRaw;
+  const device = RX_URL.get('device') || t.device;
+  const phoneOrder = RX_URL.get('phoneOrder') || t.phoneOrder;
   const preset = window.RX_PROFILES.find((p) => p.id === t.profile) || window.RX_PROFILES[0];
   const [cfg, setCfg] = useState(() => cfgFrom(preset));
   const catalogBase = window.RX_CATALOG[preset.id];
@@ -28,8 +35,10 @@ function App() {
   const [sheet, setSheet] = useState(null); // keypad | customer | tender
   const [customer, setCustomer] = useState(null);
   const [held, setHeld] = useState(window.RX_HELD);
-  const [orderNo, setOrderNo] = useState(1047);
+  /* composed at the till: LOC-REG-SESSION-SEQ, immutable once issued (change 7) */
+  const [orderNo, setOrderNo] = useState(() => window.KZ_TICKET.compose({ loc: 'DLA1', reg: 'C1', seq: 1047 }));
   const [cartOpen, setCartOpen] = useState(false);
+  const [tabView, setTabView] = useState('catalog');
   const kzRead = () => window.KZ
     ? window.KZ.mod('retail').caps.reduce((a, c) => (a[c.key] = window.KZ.on('retail', c.key), a), {})
     : { ...window.RX_FITS.full.mods };
@@ -42,12 +51,23 @@ function App() {
   const [glyphMode, setGlyphMode] = useState('glyph');
   const catalog = useMemo(() => extra.length
     ? { cats: catalogBase.cats, items: [...catalogBase.items, ...extra] } : catalogBase, [catalogBase, extra]);
-  const [stock, setStock] = useState(() => window.RX_STOCK_SEED(window.RX_CATALOG[preset.id]));
-  const stockOn = t.stock !== 'off';
+  /* ONE on-hand, and it is the ledger's. A preset switch is a different shop, so its
+     products are seeded into the ledger as real items with a real opening balance. */
+  const [stockRev, setStockRev] = useState(0);
+  useEffect(() => window.KZ_STOCK.sub(() => setStockRev((r) => r + 1)), []);
+  useEffect(() => {
+    window.KZ_STOCK.seedCatalog(preset.id, window.RX_CATALOG[preset.id].items, window.RX_LOC, window.RX_SEED_QTY);
+  }, [preset.id]);
+  const stock = useMemo(() => window.RX_STOCK_VIEW(catalog.items), [catalog, stockRev]);
+  /* the tier is a TENANT capability now, not a register tweak — an Inventory-only
+     business has no register to hold it, and 'off' is incoherent for them. */
+  const stockTier = window.KZ_STOCK.tier;
+  const stockOn = stockTier !== 'off';
+  const [stockToast, setStockToast] = useState(null);
 
-  useEffect(() => { setCfg(cfgFrom(preset)); setCat('all'); setQ(''); setOrder([]); setSelUid(null); setFlow(null); setExtra([]); setBizCats(null); setStock(window.RX_STOCK_SEED(window.RX_CATALOG[preset.id])); }, [preset.id]);
+  useEffect(() => { setCfg(cfgFrom(preset)); setCat('all'); setQ(''); setOrder([]); setSelUid(null); setFlow(null); setExtra([]); setBizCats(null); }, [preset.id]);
   useEffect(() => { if (modules[view] === false) setView('register'); }, [modules, view]);
-  useEffect(() => { if (view === 'inventory' && t.stock === 'off') setView('register'); }, [t.stock, view]);
+  useEffect(() => { if (view === 'inventory' && stockTier === 'off') setView('register'); }, [stockTier, view]);
 
   const dirty = useMemo(() => JSON.stringify(cfg) !== JSON.stringify(cfgFrom(preset)), [cfg, preset]);
   const F = cfg.features;
@@ -108,16 +128,19 @@ function App() {
   const totals = useMemo(() => {
     const gross = order.reduce((s, o) => s + o.price * o.qty, 0);
     const net = order.reduce((s, o) => s + o.price * o.qty * (1 - o.disc / 100), 0);
-    const tax = +(net * preset.tax).toFixed(2);
-    return { gross, net, discount: +(gross - net).toFixed(2), tax, total: +(net + tax).toFixed(2) };
+    const tax = window.KZ_LOCALE.tax(net, preset.zeroRated);
+    return { gross: Math.round(gross), net: Math.round(net), discount: Math.round(gross - net),
+      tax, total: Math.round(net) + tax };
   }, [order, preset]);
 
   const count = order.reduce((s, o) => s + (o.weighed ? 1 : o.qty), 0);
-  const reset = () => { setOrder([]); setSelUid(null); setCustomer(null); setCartOpen(false); setOrderNo((n) => n + 1); };
+  /* the total is frozen once any tender is captured */
+  const partTendered = useMemo(() => window.KZ_TENDER.store.load(orderNo).length > 0, [orderNo, sheet]);
+  const reset = () => { setOrder([]); setSelUid(null); setCustomer(null); setCartOpen(false); setOrderNo((n) => window.KZ_TICKET.next(n)); };
 
   const holdTicket = () => {
     if (!order.length) return;
-    setHeld((h) => [{ id: 'h' + Date.now(), label: 'Ticket #' + orderNo, who: customer ? customer.name : 'Walk-in',
+    setHeld((h) => [{ id: 'h' + Date.now(), no: orderNo, label: 'Ticket ' + window.KZ_TICKET.short(orderNo), who: customer ? customer.name : 'Walk-in',
       items: count, total: totals.total, at: 'just now', note: 'On hold' }, ...h]);
     reset(); setView('tickets');
   };
@@ -141,14 +164,26 @@ function App() {
     if (selLine) setSheet({ kind: 'keypad' });
   };
 
-  const drawer = t.layout === 'drawer';
+  /* One register, four device compositions. On a phone the ticket's home is a
+     tenant choice — sheet, bar or tab — because a shop owner holding the only
+     till in the business has a preference and should keep it. */
+  const phone = device === 'phone';
+  const comp = phone ? phoneOrder : t.layout;
+  const drawer = comp === 'drawer';
+  const boardCls = 'board' + (comp === 'right' ? '' : ' ' + comp);
   const cartCls = 'cart' + (drawer ? ' aside' : '') + (cartOpen ? ' open' : '');
+  /* which surface holds the ticket in this composition */
+  const showCart = comp === 'right' || comp === 'sheet' || (comp === 'tabs' ? tabView === 'order' : cartOpen);
+  const showBar = (comp === 'bar') || (drawer && !cartOpen);
+  const showScrim = comp === 'bar' && cartOpen;
+  /* nothing half-open when the composition changes underneath the operator */
+  useEffect(() => { setCartOpen(false); setTabView('catalog'); setSheet(null); }, [comp, device]);
   const titles = {
     register: ['Register', preset.name + (dirty ? ' · modified' : '')],
     tickets: ['Open tickets', held.length + ' on hold'],
     sales: ['Sales', 'Transaction history'],
     categories: ['Categories', 'Catalogue structure & tiles'],
-    inventory: ['Stock', t.stock === 'off' ? 'Not enabled' : 'On hand at Caisse 1'],
+    inventory: ['Stock', stockTier === 'off' ? 'Not enabled' : 'On hand at Caisse 1'],
     returns: ['Returns & exchange', 'Receipt lookup'], customers: ['Customers', 'Loyalty members'],
     shift: ['Shift & cash drawer', 'Caisse 1 · Anita Ndongo'], setup: ['Setup', 'Profile & capabilities'],
   };
@@ -156,17 +191,18 @@ function App() {
   const cur = flow ? flow.steps[flow.i] : null;
 
   return (
-    <div className={'stage ' + (t.device === 'desktop' ? 'full' : t.device)}>
+    <div className={'stage ' + (device === 'desktop' ? 'full' : device)}>
       <div className="rt-wrap">
       <div className={'rt' + (t.density === 'compact' ? ' compact' : '')}>
         <Rail view={view} onView={setView} held={held.length}
-          modules={{ ...modules, inventory: t.stock !== 'off' }} />
+          modules={{ ...modules, inventory: stockOn }} />
         <div className="main">
           <TopBar profile={preset} modified={dirty} title={titles[view][0]} sub={titles[view][1]} onProfile={() => setView('setup')} />
 
           {view === 'register' && (
-            <div className={'board' + (drawer ? ' drawer' : '')}>
-              <section className="cat">
+            <div className={boardCls}>
+              {comp === 'tabs' && <TabStrip view={tabView} onView={setTabView} count={count} />}
+              <section className="cat" style={comp === 'tabs' && tabView === 'order' ? { display: 'none' } : null}>
                 {cfg.entry !== 'grid' && (
                   <EntryBar mode={cfg.entry} value={q} onValue={setQ} onSubmit={onSubmitEntry}
                     showWeigh={F.scale}
@@ -180,14 +216,16 @@ function App() {
                     heading={cat === 'all' ? (cfg.entry === 'scan' ? 'Quick keys' : 'All products') : catalog.cats.find((c) => c.id === cat).label} />
                 </div>
               </section>
-              {(!drawer || cartOpen) && <Cart cls={cartCls} orderNo={orderNo} items={order} customer={customer}
+              {showScrim && <div className="boardscrim" onClick={() => setCartOpen(false)} />}
+              {showCart && <Cart cls={cartCls} orderNo={orderNo} items={order} customer={customer}
                 totals={totals} profile={preset} features={F} modules={modules} selUid={selUid}
                 onSelect={(uid) => { setSelUid(uid); setSheet({ kind: 'keypad' }); }}
-                onQty={changeQty} onClear={reset} onHold={holdTicket}
+                locked={partTendered} onQty={partTendered ? () => {} : changeQty} onClear={partTendered ? () => {} : reset} onHold={holdTicket}
                 onCustomer={() => setSheet({ kind: 'customer' })} onQuick={quickAction}
                 onPay={() => setSheet({ kind: 'tender' })}
-                onClose={drawer || cartOpen ? () => setCartOpen(false) : null} />}
-              {!cartOpen && <DockBar total={totals.total} count={count} onOpen={() => setCartOpen(true)} />}
+                onHead={comp === 'sheet' ? () => setCartOpen((v) => !v) : null}
+                onClose={comp === 'sheet' ? () => setCartOpen(false) : (drawer || cartOpen ? () => setCartOpen(false) : null)} />}
+              {showBar && <DockBar total={totals.total} count={count} onOpen={() => setCartOpen(true)} />}
             </div>
           )}
 
@@ -201,7 +239,7 @@ function App() {
               if (window.KZ) { Object.keys(mods).forEach((x) => window.KZ.setCap('retail', x, mods[x])); setModulesRaw(kzRead()); }
               else setModulesRaw({ ...mods });
             }}
-            stockMode={t.stock} onStockMode={(v) => setTweak('stock', v)}
+            stockMode={stockTier} onStockMode={(v) => { window.KZ_STOCK.tier = v; }}
             onPreset={(id) => setTweak('profile', id)}
             onToggle={(k) => setCfg((c) => ({ ...c, features: { ...c.features, [k]: !c.features[k] } }))}
             onSet={(k, v) => setCfg((c) => ({ ...c, [k]: v }))}
@@ -210,10 +248,26 @@ function App() {
           {view === 'returns' && <ReturnsView />}
           {view === 'sales' && <SalesView onRefund={() => setView('returns')} onCustomer={() => setView('customers')} />}
           {view === 'customers' && <CustomersView onPick={(c) => { setCustomer(c); setView('register'); }} />}
-          {view === 'shift' && <ShiftView />}
-          {view === 'inventory' && <InventoryView profile={preset} catalog={catalog} stock={stock} onStock={setStock}
-            mode={t.stock} onMode={(v) => setTweak('stock', v)}
-            onCreate={(p, s) => { setExtra((x) => [...x, p]); setStock((m) => ({ ...m, [p.id]: s })); }}
+          {view === 'shift' && <ShiftView held={held} onResume={() => setView('tickets')}
+            onVoid={(t) => setHeld((h) => t === 'all' ? [] : h.filter((x) => x.id !== t.id))} />}
+          {view === 'inventory' && <InventoryView profile={preset} catalog={catalog} stock={stock}
+            onCount={(id, qty) => window.KZ_STOCK.postCount({ itemId: id, locId: window.RX_LOC, counted: qty,
+              ref: 'Counted at Caisse 1', actor: { kind: 'register', label: 'Caisse 1' } })}
+            onShow={(id, show) => window.KZ_STOCK.tx(() => { const it = window.KZ_STOCK.item(id); if (it) it.pos.show = show; })}
+            mode={stockTier} onMode={(v) => { window.KZ_STOCK.tier = v; }}
+            onCreate={(p, s) => {
+              setExtra((x) => [...x, p]);
+              /* a new product's opening balance is a movement, so its history starts honest */
+              window.KZ_STOCK.tx(() => {
+                window.KZ_STOCK.items().push({ id: p.id, name: p.name, sku: p.sku, type: 'product', cat: p.cat,
+                  unit: p.unit || 'each', cost: s.cost || 0, price: p.price, icon: p.icon, tint: p.tint,
+                  reorder: s.reorder || 0, par: s.par || 0, weighed: !!p.weighed, stock: {},
+                  pos: { show: s.show !== false, cat: p.cat, tile: 'image' }, recipe: null });
+                if (s.on > 0) window.KZ_STOCK.post(p.id, window.RX_LOC, s.on, { kind: 'adjust', reason: 'found',
+                  doc: 'AJ-NEW-' + p.id, ref: 'Opening balance', cost: s.on * (s.cost || 0),
+                  actor: { kind: 'register', label: 'Caisse 1' } });
+              });
+            }}
             onCats={modules.categories !== false ? () => setView('categories') : null} />}
           {view === 'categories' && <CategoriesView biz={biz} cats={bizCats || window.BIZ(biz).cats}
             tiles={cfg.tiles} glyphMode={glyphMode}
@@ -244,8 +298,26 @@ function App() {
           }} />}
         {sheet && sheet.kind === 'customer' && <CustomerSheet onClose={() => setSheet(null)}
           onPick={(c) => { setCustomer(c); setSheet(null); }} />}
-        {sheet && sheet.kind === 'tender' && <TenderSheet total={totals.total} onClose={() => setSheet(null)}
+        {sheet && sheet.kind === 'tender' && <TenderSheet total={totals.total} ticketNo={orderNo} onClose={() => setSheet(null)}
+          onPaid={() => {
+            /* money in, stock out — the two halves of a sale, at the one commit point.
+               Nothing moved while the ticket was open, so an abandoned ticket left no trace. */
+            const res = window.KZ_SALES.postSale({
+              ticketNo: orderNo, locId: window.RX_LOC,
+              actor: { kind: 'register', label: 'Caisse 1' },
+              customer: customer && customer.name,
+              lines: order.map((o) => ({ id: o.id, qty: o.qty, lot: o.lot || null, serial: o.serial || null })),
+            });
+            setStockToast(window.KZ_SALES.negativeCopy(res.negatives));
+          }}
           onDone={() => { setSheet(null); reset(); }} />}
+        {stockToast && (
+          <div className="stocktoast" onClick={() => setStockToast(null)}>
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <span>{stockToast}</span>
+            <button onClick={() => { setStockToast(null); setView('inventory'); }}>Count</button>
+          </div>
+        )}
 
         <TweaksPanel>
           <TweakSection label="Business profile" />
@@ -260,13 +332,18 @@ function App() {
             options={[{ value: 'comfortable', label: 'Comfortable' }, { value: 'compact', label: 'Compact' }]}
             onChange={(v) => setTweak('density', v)} />
           <TweakSection label="Inventory" />
-          <TweakRadio label="Stock control" value={t.stock}
+          {/* a tenant capability the register reads — kept here as a preview shortcut */}
+          <TweakRadio label="Stock control" value={stockTier}
             options={[{ value: 'off', label: 'Off' }, { value: 'lite', label: 'Lite' }, { value: 'full', label: 'Full' }]}
-            onChange={(v) => setTweak('stock', v)} />
+            onChange={(v) => { window.KZ_STOCK.tier = v; }} />
           <TweakSection label="Preview" />
-          <TweakRadio label="Device" value={t.device}
-            options={[{ value: 'desktop', label: 'Desktop' }, { value: 'tablet', label: 'Tablet' }, { value: 'phone', label: 'Phone' }]}
+          <TweakSelect label="Device" value={device}
+            options={[{ value: 'desktop', label: 'Laptop / counter' }, { value: 'tablet', label: 'Tablet — landscape' },
+              { value: 'tabletp', label: 'Tablet — portrait' }, { value: 'phone', label: 'Phone' }]}
             onChange={(v) => setTweak('device', v)} />
+          <TweakRadio label="Phone: ticket lives in" value={phoneOrder}
+            options={[{ value: 'bar', label: 'Bar' }, { value: 'sheet', label: 'Sheet' }, { value: 'tabs', label: 'Tab' }]}
+            onChange={(v) => setTweak('phoneOrder', v)} />
         </TweaksPanel>
       </div>
       </div>

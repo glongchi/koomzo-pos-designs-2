@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Register ↔ Inventory: the sale as a stock event</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.sp{flex:1}
+.shell{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 14px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 16px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 6px 10px}
+.side a.nv{display:flex;align-items:center;gap:9px;min-height:34px;padding:6px 10px;border-radius:9px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a.nv ion-icon{font-size:15px;color:var(--kz-muted-3);flex:none}
+.side a.nv:hover{background:var(--kz-surface-2);color:var(--kz-ink)}
+.side a.nv.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.side a.nv.on ion-icon{color:var(--kz-primary)}
+.doc{padding:34px 34px 110px;max-width:1080px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.lede{margin:0 0 22px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:74ch;text-wrap:pretty}
+h2{margin:44px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em;scroll-margin-top:22px}
+h3{margin:26px 0 8px;font:700 15px var(--kz-font-sans)}
+.sub{margin:0 0 14px;font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-muted);max-width:76ch;text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:76ch;text-wrap:pretty}
+.mono{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 6px;color:var(--kz-ink-2);white-space:nowrap}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px}
+.card h4{margin:0 0 5px;font:700 14px var(--kz-font-sans);display:flex;align-items:center;gap:8px}
+.card h4 ion-icon{color:var(--kz-primary);font-size:16px}
+.card p{margin:0;font:400 13px/1.65 var(--kz-font-sans)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.tblwrap{overflow-x:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+.y{color:var(--kz-success);font-weight:700}.n{color:var(--kz-discount);font-weight:700}.pp{color:#8a6414;font-weight:700}
+.note{display:flex;gap:10px;background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:13px 15px;margin-bottom:12px}
+.note ion-icon{color:var(--kz-primary);font-size:17px;flex:none;margin-top:1px}
+.note p{margin:0;font-size:13px;line-height:1.62}
+.note.warn{background:var(--kz-warning-wash);border-color:#e8d6a8}
+.note.warn ion-icon{color:#8a6414}
+.note.bad{background:var(--kz-discount-wash);border-color:#f2c4b4}
+.note.bad ion-icon{color:#b8401f}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:14px 16px;margin-bottom:12px}
+.st{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:5px 11px;border-radius:var(--kz-radius-pill);background:var(--kz-surface-2);border:1px solid var(--kz-border);font:600 12px var(--kz-font-sans);color:var(--kz-ink-2)}
+.st ion-icon{font-size:14px;color:var(--kz-muted-2)}
+.st.key{background:var(--kz-primary-wash);border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.st.key ion-icon{color:var(--kz-primary)}
+.st.money{background:var(--kz-success-wash);border-color:#bfe3cd;color:#1f7a45}
+.st.money ion-icon{color:#1f7a45}
+.st.stock{background:var(--kz-info-wash);border-color:#bed4f5;color:#2a63b8}
+.st.stock ion-icon{color:#2a63b8}
+.ar{color:var(--kz-muted-3);font:600 13px var(--kz-font-sans)}
+.rules{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:4px 18px;margin-bottom:12px}
+.rule{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--kz-border)}
+.rule:last-child{border-bottom:none}
+.rule .n2{width:22px;height:22px;border-radius:6px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none;margin-top:1px}
+.rule .t{font:400 13.5px/1.62 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.tier{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:12px}
+.tc{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:15px 17px}
+.tc.on{border-color:var(--kz-primary-tint);box-shadow:0 0 0 3px var(--kz-primary-wash)}
+.tc .w{font:700 9.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--kz-muted-3)}
+.tc .nm{font:700 17px var(--kz-font-sans);letter-spacing:-.01em;margin:3px 0 6px}
+.tc .d{font:400 12.5px/1.6 var(--kz-font-sans);color:var(--kz-ink-2);margin-bottom:9px;text-wrap:pretty}
+.tc ul{margin:0;padding-left:16px}
+.tc li{font:400 12px/1.6 var(--kz-font-sans);color:var(--kz-muted);margin-bottom:3px}
+.ba{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:var(--kz-border);border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-top:4px}
+.ba>div{background:#fff;padding:11px 13px}
+.ba .t2{font:700 9.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:6px}
+.ba code{display:block;font:500 11.5px/1.7 var(--kz-font-num);white-space:pre-wrap;word-break:break-word;color:var(--kz-ink-2)}
+.ba .bad code{color:#b8401f}.ba .good code{color:#1f7a45}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.sev{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--kz-radius-pill);background:var(--kz-discount-wash);color:#b8401f}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side">
+<div class="side__mark"><div class="ic"><ion-icon name="git-network"></ion-icon></div><b>koomzo · POS</b></div>
+<p class="side__v">Register ↔ Inventory · Sep 2026</p>
+<div class="side__g">The model</div>
+<a class="nv" href="#idea"><ion-icon name="bulb-outline"></ion-icon>The one idea</a>
+<a class="nv" href="#concepts"><ion-icon name="cube-outline"></ion-icon>Concepts</a>
+<a class="nv" href="#ledger"><ion-icon name="swap-vertical-outline"></ion-icon>Why a ledger</a>
+<div class="side__g">The flow</div>
+<a class="nv" href="#sale"><ion-icon name="cart-outline"></ion-icon>A sale, end to end</a>
+<a class="nv" href="#read"><ion-icon name="eye-outline"></ion-icon>What the register reads</a>
+<a class="nv" href="#write"><ion-icon name="create-outline"></ion-icon>What it writes</a>
+<a class="nv" href="#reverse"><ion-icon name="return-down-back-outline"></ion-icon>Returns &amp; voids</a>
+<a class="nv" href="#offline"><ion-icon name="cloud-offline-outline"></ion-icon>Offline &amp; oversell</a>
+<div class="side__g">Tiers</div>
+<a class="nv" href="#tiers"><ion-icon name="layers-outline"></ion-icon>Off · Lite · Full</a>
+<a class="nv" href="#products"><ion-icon name="list-outline"></ion-icon>Products v2 — the Lite shop</a>
+<a class="nv" href="#upgrade"><ion-icon name="trending-up-outline"></ion-icon>Growing a tier</a>
+<div class="side__g">Beyond retail</div>
+<a class="nv" href="#special"><ion-icon name="color-fill-outline"></ion-icon>Recipes, back bar, kits</a>
+<div class="side__g">State</div>
+<a class="nv" href="#invariants"><ion-icon name="shield-checkmark-outline"></ion-icon>Invariants</a>
+<a class="nv" href="#gap"><ion-icon name="warning-outline"></ion-icon>The gap in the build</a>
+<a class="nv" href="#closed"><ion-icon name="checkmark-done-outline"></ion-icon>What shipped</a>
+</nav>
+
+<main class="doc">
+<p class="eb">Integration spec · the seam between two modules</p>
+<h1>The register and the inventory are one ledger</h1>
+<p class="lede">A sale is two events that must never come apart: <b>money in</b> and <b>stock out</b>. The register owns the first, Inventory owns the second, and the entire integration exists to guarantee that a paid ticket always produced a stock movement — and that the movement says which ticket, which till, which operator and what it cost. This document states that seam: the concepts, the business process, the three tiers a shop can run it at, and the gap between design and code that <a href="#closed">§15</a> closes.</p>
+<div class="links">
+<a href="Koomzo POS - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Inventory module</a>
+<a href="Koomzo POS - Products v2.html"><ion-icon name="list-outline"></ion-icon>Products v2 · Lite</a>
+<a href="Koomzo POS - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Register · Stock tab</a>
+<a href="Koomzo Inventory - IA &amp; Integration.html"><ion-icon name="git-network-outline"></ion-icon>Inventory IA</a>
+<a href="Koomzo - Register Functional Spec.html"><ion-icon name="document-text-outline"></ion-icon>Register spec</a>
+</div>
+
+<h2 id="idea">1 · The one idea</h2>
+<div class="note"><ion-icon name="git-commit-outline"></ion-icon><p><b>Stock is never edited. It is always moved.</b> There is no screen anywhere in Koomzo that sets an on-hand number directly. Every quantity change — a sale, a delivery, a breakage, a count correction, an opening balance — is a <b>movement row</b> that records what the quantity was before, what changed it, who did it and under what document. On-hand is the sum of movements, never a field someone typed.</p></div>
+<p>That single rule is what makes the register and the inventory the same system rather than two systems that gossip. The register does not "update stock" — it <b>posts a sale movement</b>, in the same ledger, in the same shape, as a warehouse receipt. Which means a shopkeeper asking <i>why do I have 3 left when I bought 12?</i> gets a list of nine answers rather than a shrug.</p>
+<p>It is also why the shop can grow without a migration. A market stall that holds no quantities and a pharmacy that tracks batch and expiry are running the same ledger with different numbers of capabilities switched on.</p>
+
+<h2 id="concepts">2 · Concepts</h2>
+<p class="sub">The vocabulary the seam depends on. Where the two modules use a different word for one object, both appear.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:19%">Concept</th><th>What it is, and why the register cares</th></tr></thead>
+<tbody>
+<tr><td><b>Item</b></td><td>The thing that exists. Name, SKU, cost, price, unit. Owned by Inventory — the register never creates the truth about an item, though it may create the item itself mid-sale.</td></tr>
+<tr><td><b>Product vs. Item</b></td><td>The register sells a <b>product</b>: an item plus a channel decision (is it on the grid, in which category, with which tile). One item can be stocked and not sellable; the reverse is also legal.</td></tr>
+<tr><td><b>Show in POS</b></td><td>The single flag that decides whether the register ever sees an item. Off keeps it stockable and countable but off the grid — this is how a salon holds hair colour it never sells, and how a shop hides a line without deleting its history.</td></tr>
+<tr><td><b>Location</b></td><td>Where stock physically is: store, salon, kiosk, warehouse. Carries a <b>sells</b> flag — a dépôt holds stock but no register. On-hand is always <i>per location</i>; a company-wide number is a report, never a till's answer.</td></tr>
+<tr><td><b>On hand</b></td><td>Units at one location right now. A derived figure — the sum of that item's movements there.</td></tr>
+<tr><td><b>Movement</b></td><td>One quantity change at one location: item, delta, <b>before</b>, kind, document, reference, who, cost. The atom of the whole system.</td></tr>
+<tr><td><b>Movement kind</b></td><td><span class="mono">sale</span> · <span class="mono">receipt</span> · <span class="mono">issue</span> · <span class="mono">transfer</span> · <span class="mono">count</span> · <span class="mono">adjust</span>. The register only ever writes <span class="mono">sale</span> — and its reversal.</td></tr>
+<tr><td><b>Document</b></td><td>What caused a group of movements: a ticket (<span class="mono">SO-</span>), purchase order (<span class="mono">PO-</span>), transfer (<span class="mono">TR-</span>), count (<span class="mono">CC-</span>), adjustment (<span class="mono">AJ-</span>). A document is the audit handle — you read the ledger by document, not by row.</td></tr>
+<tr><td><b>Reason</b></td><td>Required on an adjustment: damaged, expired, sample, back-bar use, recount, theft. This is what turns "we lost 40 000 F of stock" into a shrinkage report an owner can act on.</td></tr>
+<tr><td><b>Unit cost</b></td><td>Weighted average, re-averaged on every receipt and rounded to the whole franc. The register needs it for exactly one purpose: stamping the cost onto the sale movement so margin is knowable.</td></tr>
+<tr><td><b>Reorder point / par</b></td><td>The level that makes an item "low", and the level to buy back up to. Drives the tile badge at the till and the needs-ordering list.</td></tr>
+<tr><td><b>Batch / lot &amp; serial</b></td><td>Sub-identities of one item. The register's qualifier chain captures them at the moment of sale, and they travel onto the movement — which is how a pharmacy recalls a lot and a shop honours a warranty.</td></tr>
+<tr><td><b>Composite / recipe</b></td><td>An item whose sale depletes <i>components</i> rather than itself. A gift basket, a cocktail, a plat du jour.</td></tr>
+</tbody></table></div>
+
+<h2 id="ledger">3 · Why a ledger, and not a number</h2>
+<p class="sub">The expensive-looking choice that is actually the cheap one.</p>
+<div class="g2">
+<div class="card"><h4><ion-icon name="help-circle-outline"></ion-icon>It answers "why"</h4><p>A number tells a shopkeeper they have 3. A ledger tells them they bought 12, sold 7, broke 1, gave 1 as a sample and miscounted 0 — which is the only version that lets them change anything.</p></div>
+<div class="card"><h4><ion-icon name="people-outline"></ion-icon>It survives staff</h4><p>Every row carries an operator. In a trade with high turnover and shared devices, "who moved this" is not an accusation — it is the difference between training and guessing.</p></div>
+<div class="card"><h4><ion-icon name="calculator-outline"></ion-icon>It makes margin real</h4><p>Because the sale movement carries the unit cost <i>at the moment of sale</i>, margin is a fact about history, not a recalculation that changes when the next delivery re-averages cost.</p></div>
+<div class="card"><h4><ion-icon name="cloud-offline-outline"></ion-icon>It merges offline</h4><p>Movements are append-only deltas, so two tills that sold offline can both be replayed on reconnect. Two tills that each wrote an absolute on-hand would have to be reconciled by hand — or one would silently win.</p></div>
+</div>
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><p><b>The <span class="mono">before</span> field earns its place.</b> Every movement stores the on-hand it found. The ledger can then show <b>12 → 9</b> rather than a bare <b>−3</b>, which is the difference between a log a shopkeeper can read and one only an accountant can. It also makes a broken sync detectable: if a row's <span class="mono">before</span> does not match the running total, something was replayed twice.</p></div>
+
+<h2 id="sale">4 · A sale, end to end</h2>
+<p class="sub">One ticket for two bottles of shampoo at the Akwa boutique. Money and stock, in order.</p>
+<div class="flow">
+<span class="st key"><ion-icon name="grid-outline"></ion-icon>Tile tapped</span><span class="ar">→</span>
+<span class="st"><ion-icon name="eye-outline"></ion-icon>Read on-hand</span><span class="ar">→</span>
+<span class="st"><ion-icon name="options-outline"></ion-icon>Qualifiers: batch, serial</span><span class="ar">→</span>
+<span class="st"><ion-icon name="receipt-outline"></ion-icon>Line on ticket</span><span class="ar">→</span>
+<span class="st money"><ion-icon name="card-outline"></ion-icon>Tendered &amp; paid</span><span class="ar">→</span>
+<span class="st stock"><ion-icon name="swap-vertical-outline"></ion-icon>Sale movement posted</span><span class="ar">→</span>
+<span class="st stock"><ion-icon name="trending-down-outline"></ion-icon>On-hand 5 → 3</span><span class="ar">→</span>
+<span class="st"><ion-icon name="notifications-outline"></ion-icon>Low-stock signal</span>
+</div>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:15%">Step</th><th style="width:36%">What happens</th><th>Why it is there</th></tr></thead>
+<tbody>
+<tr><td><b>Tile tapped</b></td><td>The register resolves the product and asks Inventory for on-hand <i>at this location</i>.</td><td>A till must never quote a company-wide number. The stock in the dépôt is not sellable at the counter.</td></tr>
+<tr><td><b>Availability shown</b></td><td>Count badge when low; dimmed tile and <i>Out</i> at zero; hidden items are not on the grid at all.</td><td>The register never lies about availability. Selling something absent is worse than not offering it.</td></tr>
+<tr><td><b>Qualifiers</b></td><td>Batch (FEFO default), serial, weight are captured by the register's entry chain.</td><td>This is the only moment these are knowable. Nobody reconstructs which lot left the shop afterwards.</td></tr>
+<tr><td><b>Line exists</b></td><td>Quantity, price, discount, and any qualifier ride on the line. <b>No stock has moved yet.</b></td><td>An open ticket is not a commitment. Abandoning it must leave no trace in the ledger.</td></tr>
+<tr><td><b>Paid</b></td><td>The tender completes and the ticket becomes immutable.</td><td>Payment is the commit point — see the invariant below.</td></tr>
+<tr><td><b>Movement posted</b></td><td>One <span class="mono">sale</span> movement per line: negative delta, <span class="mono">before</span> captured, document = the ticket number, <span class="mono">who</span> = the register, cost = unit cost × qty.</td><td>This is the integration. Everything else is reads.</td></tr>
+<tr><td><b>Derived effects</b></td><td>On-hand falls; the item may cross its reorder point and appear on the needs-ordering list; stock value and COGS update; a composite depletes components instead of itself.</td><td>All downstream of the one movement. Nothing recomputes stock from tickets.</td></tr>
+</tbody></table></div>
+<div class="note warn"><ion-icon name="git-commit-outline"></ion-icon><p><b>Stock moves on payment, not on add-to-ticket.</b> The alternative — decrementing when a line is added — means an abandoned ticket permanently loses stock, and in a queue where tickets are held, cleared and resumed constantly, that drift is unrecoverable. The cost of this choice is a short window where two tills can both sell the last unit; <a href="#offline">§8</a> is how that is handled.</p></div>
+
+<h2 id="read">5 · What the register reads</h2>
+<p class="sub">Continuously, and cheaply. None of it is authoritative in the register.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:24%">Read</th><th>Used for</th></tr></thead>
+<tbody>
+<tr><td><b>Sellable products</b></td><td>The grid. Filtered by <span class="mono">Show in POS</span> and by what this location stocks.</td></tr>
+<tr><td><b>Categories</b></td><td>The category rail. Owned by the catalogue, not per-register.</td></tr>
+<tr><td><b>Price &amp; unit</b></td><td>The line price and whether the item is sold each, by weight or by length.</td></tr>
+<tr><td><b>On hand at this location</b></td><td>Tile badges, the <i>Out</i> state, and the mid-shift stock tab.</td></tr>
+<tr><td><b>Reorder point</b></td><td>Whether "low" is true for this item at this location.</td></tr>
+<tr><td><b>Batches &amp; expiry</b></td><td>The batch picker, FEFO-ordered, with short-dated lots surfaced first.</td></tr>
+<tr><td><b>Unit cost</b></td><td>Stamped onto the sale movement. Never shown to a cashier.</td></tr>
+<tr><td><b>Recipe / components</b></td><td>Knowing that selling this depletes something else.</td></tr>
+</tbody></table></div>
+
+<h2 id="write">6 · What the register writes</h2>
+<p class="sub">Deliberately almost nothing. A till is a narrow pen into the ledger.</p>
+<div class="rules">
+<div class="rule"><span class="n2">1</span><span class="t"><b>A sale movement per sold line</b>, on payment. Negative, at this location, documented by the ticket number.</span></div>
+<div class="rule"><span class="n2">2</span><span class="t"><b>A reversing movement</b> on a refund or a post-payment void — never an edit or a deletion of the original.</span></div>
+<div class="rule"><span class="n2">3</span><span class="t"><b>A count correction</b>, from the register's own Stock tab, when a cashier fixes an obviously wrong number mid-shift. It posts as a <span class="mono">count</span> movement with a reason, exactly like the module's own count — a till gets no privileged silent path.</span></div>
+<div class="rule"><span class="n2">4</span><span class="t"><b>A new item</b>, when a shop rings something not in the catalogue yet. Created with an opening balance posted as a movement, so its history starts honest rather than with a mystery number.</span></div>
+<div class="rule"><span class="n2">5</span><span class="t"><b>A quick receive</b> (Full tier only), so a delivery arriving mid-shift can be taken onto stock without leaving the lane. Posts as a normal <span class="mono">receipt</span> and re-averages cost.</span></div>
+</div>
+<p>Everything else — purchase orders, transfers, valuation, supplier terms — is the module's, and the register hands off to it with a single <b>Open inventory</b> action rather than reimplementing any of it.</p>
+
+<h2 id="reverse">7 · Returns, voids and the shape of a reversal</h2>
+<p class="sub">The most common place a POS quietly corrupts its own stock.</p>
+<div class="ba">
+<div class="bad"><div class="t2">Wrong</div><code>// refund: put it back
+item.stock[loc] += 2;
+// or: delete the sale movement</code></div>
+<div class="good"><div class="t2">Right</div><code>// a new movement, forward in time
+post(item, loc, +2, {
+  kind: 'sale', qty: +2,
+  doc: 'SO-1047-R',
+  ref: 'Refund of SO-1047',
+  reason: 'customer return' })</code></div>
+</div>
+<p style="margin-top:12px">A reversal is <b>a new movement in the opposite direction</b>, referencing the original document. The original row is never touched. Two consequences worth stating: the ledger shows that a thing was sold and then came back — which is a fact a buyer needs — and the returned unit's condition becomes a decision rather than an assumption.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:24%">Case</th><th>Stock effect</th></tr></thead>
+<tbody>
+<tr><td><b>Return, resellable</b></td><td>Positive movement back to the selling location. Available again immediately.</td></tr>
+<tr><td><b>Return, damaged</b></td><td>Positive movement, then an immediate <span class="mono">adjust</span> out with reason <i>damaged</i>. Two rows, because two things happened — the customer's refund and the business's loss are different events.</td></tr>
+<tr><td><b>Exchange</b></td><td>One document, two movements: the old item in, the new item out. Never a refund and an unrelated sale.</td></tr>
+<tr><td><b>Void before payment</b></td><td><b>Nothing.</b> No stock moved on add, so nothing reverses. This is the reward for committing on payment.</td></tr>
+<tr><td><b>Void after payment</b></td><td>A reversal, role-gated and reasoned, identical in shape to a refund.</td></tr>
+<tr><td><b>Serial returned</b></td><td>The serial comes back on hand and its warranty is voided — the serial is the link that makes this possible at all.</td></tr>
+</tbody></table></div>
+
+<h2 id="offline">8 · Offline, and the oversell window</h2>
+<p class="sub">The register must keep selling with no network. That has an honest cost, and the design pays it deliberately.</p>
+<p>Because on-hand is derived from movements, an offline till can keep selling against its <b>last known</b> on-hand and queue its sale movements. On reconnect they replay in timestamp order and the server recomputes. Two tills that both sold the last unit produce a <b>negative on-hand</b> — and that is the correct outcome, not a bug to hide.</p>
+<div class="rules">
+<div class="rule"><span class="n2">1</span><span class="t">A negative on-hand is <b>surfaced, never clamped to zero</b>. Clamping destroys the evidence that the shop sold something it did not have, which is exactly the thing the owner needs to see.</span></div>
+<div class="rule"><span class="n2">2</span><span class="t">The register warns at zero but <b>does not block the sale</b>. A customer standing at the counter with the physical item in their hand is more authoritative than a stock number — refusing the sale to protect the number is the wrong trade.</span></div>
+<div class="rule"><span class="n2">3</span><span class="t">A negative resolves the way every other discrepancy does: <b>a count</b>. It appears on the overview as needing attention, and counting the shelf posts the correction with a reason.</span></div>
+<div class="rule"><span class="n2">4</span><span class="t">Movements are <b>idempotent on replay</b>, keyed by the ticket number that produced them. A till that syncs twice must not sell the same two bottles twice — this is the same reasoning as the payment idempotency key.</span></div>
+</div>
+
+<h2 id="tiers">9 · Off · Lite · Full</h2>
+<p class="sub">One data model, three amounts of screen. The merchant never meets a screen their business does not run.</p>
+<div class="tier">
+<div class="tc"><span class="w">Tier 0</span><div class="nm">Off</div>
+<div class="d">A priced product list. No quantities held, nothing ever out of stock, no Stock tab in the rail.</div>
+<ul><li>Market stall, bar, food truck</li><li>Reorders by looking at the shelf</li><li>Sales post no movements</li></ul></div>
+<div class="tc on"><span class="w">Tier 1 · default</span><div class="nm">Lite</div>
+<div class="d">One screen: item, price, a quantity you can type over, and Show in POS. Sales decrement. Shipped as <b>Products v2</b>.</div>
+<ul><li>Corner shop, single salon</li><li>No orders, counts or transfers</li><li>Movement log still kept</li></ul></div>
+<div class="tc"><span class="w">Tier 2</span><div class="nm">Full</div>
+<div class="d">The module: purchasing, receiving, counts, transfers, composites, valuation, suppliers, batch, serials.</div>
+<ul><li>Multi-store, warehouse, pharmacy</li><li>Every capability individually optional</li><li>Same ledger, more documents</li></ul></div>
+</div>
+<p>The tier is chosen in one place — <b>Stock control: Off · Lite · Full</b>, sitting with the other register settings beside item entry and tile style. A capability that is off removes its rail item, its fields on the item pane and its column in reports. Turning it on adds them back <i>with the data already there</i>.</p>
+
+<h2 id="products">10 · Products v2 — the shop that doesn't want an inventory</h2>
+<p class="sub">Your recollection is right, and the reason it exists is worth being precise about.</p>
+<div class="note"><ion-icon name="list-outline"></ion-icon><p><b>Products v2 is not a cut-down inventory. It is the Lite tier's whole user interface.</b> Same items, same movements, same ledger underneath — but one screen instead of nine, and no document ever shown to the user. A corner shop gets stock control without ever meeting a purchase order.</p></div>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:26%">A shopkeeper wants to…</th><th style="width:37%">In Products v2 (Lite)</th><th>In the module (Full)</th></tr></thead>
+<tbody>
+<tr><td>Add a product</td><td>One row: name, price, quantity, Show in POS</td><td>Item pane with cost, supplier, reorder, par, batch and serial policy</td></tr>
+<tr><td>Fix a wrong quantity</td><td><b>Type over the number.</b> A movement is posted behind it with reason <i>recount</i></td><td>Open or schedule a count; variance posts in units and money</td></tr>
+<tr><td>Take in a delivery</td><td>Type the new higher number</td><td>Receive against a purchase order; cost re-averages; supplier reliability updates</td></tr>
+<tr><td>Know what to buy</td><td>A low list, by reorder point</td><td>Reorder suggestions with lead time, par level and supplier grouping</td></tr>
+<tr><td>Hide a line</td><td>Show in POS off</td><td>Same toggle, same flag</td></tr>
+<tr><td>Know what it's worth</td><td>— not shown</td><td>Valuation, COGS, margin, turnover, shrinkage by reason</td></tr>
+</tbody></table></div>
+<p><b>The design tension, stated plainly.</b> "Type over the quantity" is a deliberate violation of the <i>stock is never edited</i> rule at the level of the interface — and the resolution is that it only <i>looks</i> like an edit. It still posts a movement with a reason. The shopkeeper gets the affordance they expect; the ledger gets the row it needs; and if that business later turns on Full, its history is already coherent.</p>
+
+<h2 id="upgrade">11 · Growing a tier, without a migration</h2>
+<div class="flow">
+<span class="st"><ion-icon name="pricetag-outline"></ion-icon>Off · a price list</span><span class="ar">→</span>
+<span class="st key"><ion-icon name="list-outline"></ion-icon>Lite · quantities appear</span><span class="ar">→</span>
+<span class="st"><ion-icon name="business-outline"></ion-icon>+ locations</span><span class="ar">→</span>
+<span class="st"><ion-icon name="receipt-outline"></ion-icon>+ purchasing</span><span class="ar">→</span>
+<span class="st"><ion-icon name="clipboard-outline"></ion-icon>+ counts</span><span class="ar">→</span>
+<span class="st stock"><ion-icon name="cube-outline"></ion-icon>Full</span>
+</div>
+<p>Each arrow is a switch, not a project. Turning on <b>locations</b> takes the single implicit location and names it; existing movements already carry it. Turning on <b>purchasing</b> means deliveries stop being "type a bigger number" and start being receipts against an order — and the items, costs and suppliers are already there. <b>Nothing is lost switching back down</b>: the capability's screens disappear, its data stays, and the ledger keeps every row.</p>
+<p>This is the commercial argument as much as the technical one. A shop that outgrows Koomzo's Lite tier does not shop around for an inventory system — it turns one on.</p>
+
+<h2 id="special">12 · When a sale isn't one unit out</h2>
+<div class="g2">
+<div class="card"><h4><ion-icon name="layers-outline"></ion-icon>Composites &amp; recipes</h4><p>Selling a gift basket or a cocktail depletes the <b>components</b>, not the parent — several movements under one ticket. The parent may hold no stock at all.</p></div>
+<div class="card"><h4><ion-icon name="color-fill-outline"></ion-icon>The salon back bar</h4><p>Colour, developer and foil are ordinary stocked items with <b>Show in POS</b> off. A colour service lists them as consumed on completion; finishing the appointment posts one adjustment per component with reason <i>back-bar use</i>. That is how a salon finally sees true service margin.</p></div>
+<div class="card"><h4><ion-icon name="time-outline"></ion-icon>Services</h4><p>Sell time, not units. No stock movement for the service itself — but it may deplete components, book a resource and post a commission.</p></div>
+<div class="card"><h4><ion-icon name="scale-outline"></ion-icon>Weighed goods</h4><p>Quantity <i>is</i> the weight and price is per kilo. The movement carries the fractional quantity — the one place a non-integer quantity is correct, while the money stays whole francs.</p></div>
+</div>
+
+<h2 id="invariants">13 · Invariants</h2>
+<div class="rules">
+<div class="rule"><span class="n2">1</span><span class="t">On-hand is <b>derived</b> from movements. No screen sets it directly; every change is a movement with a <span class="mono">before</span>, a document and an operator.</span></div>
+<div class="rule"><span class="n2">2</span><span class="t">Stock moves <b>on payment</b>, never on add-to-ticket. An abandoned ticket leaves no trace in the ledger.</span></div>
+<div class="rule"><span class="n2">3</span><span class="t">A paid ticket and its movements are <b>one transaction</b>. A sale that took money without moving stock, or moved stock without taking money, is a defect — not a state the system may rest in.</span></div>
+<div class="rule"><span class="n2">4</span><span class="t">Every sale movement carries the <b>ticket number</b>, so any stock question is answerable back to a receipt, and any receipt forward to its stock effect.</span></div>
+<div class="rule"><span class="n2">5</span><span class="t">A correction is <b>a new movement</b>. Nothing in the ledger is ever edited or deleted, by any role.</span></div>
+<div class="rule"><span class="n2">6</span><span class="t">On-hand is always <b>per location</b>. A till answers for its own location only; a company total is a report.</span></div>
+<div class="rule"><span class="n2">7</span><span class="t">A <b>negative on-hand is legal and visible</b>. It means the shop sold what it did not have, and the fix is a count, not a clamp.</span></div>
+<div class="rule"><span class="n2">8</span><span class="t">Movements are <b>idempotent</b> on replay, keyed by their document. Syncing twice must not sell the same unit twice.</span></div>
+<div class="rule"><span class="n2">9</span><span class="t">The unit cost stamped on a sale movement is the cost <b>at that moment</b>, so a later delivery re-averaging cost never rewrites past margin.</span></div>
+<div class="rule"><span class="n2">10</span><span class="t"><span class="mono">Show in POS</span> is the only thing that decides register visibility. Deleting an item to hide it is never the answer — history would go with it.</span></div>
+</div>
+
+<h2 id="gap">14 · The gap between this design and the code <span style="font:700 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:#1f7a45;vertical-align:middle">· closed</span></h2>
+<p class="sub">Found while writing this, and now fixed. Everything in this section describes the state <b>before</b> that work — see <a href="#closed">§15</a> for what shipped.</p>
+<div class="note bad"><ion-icon name="warning-outline"></ion-icon><p><b>As found — the register did not post stock movements, and nothing did.</b> <span class="mono">iv-store.js</span> has a posting function for every other path — receive, adjust, count, transfer, back-bar — and <b>no <span class="mono">postSale</span></b>. The <span class="mono">kind:'sale'</span> rows in the movement log are seed data written by hand. Meanwhile Retail Flex tracks availability in its own local <span class="mono">RX_STOCK_SEED</span> map and decrements <i>that</i>, so the register's stock and the module's stock are two unconnected numbers that happen to look consistent in a demo.</p></div>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:26%">What exists</th><th>State</th></tr></thead>
+<tbody>
+<tr><td>The ledger and its invariant</td><td><b class="y">Built</b> — and genuinely good — one <span class="mono">post()</span> captures <span class="mono">before</span> for every path</td></tr>
+<tr><td>Receive, adjust, count, transfer</td><td><b class="y">Built</b> · all posting correctly</td></tr>
+<tr><td>Back-bar consumption</td><td><b class="y">Built</b> — the salon case works end to end</td></tr>
+<tr><td>Register reads availability</td><td><b class="pp">Built</b> — but against a local seed map, not the module</td></tr>
+<tr><td><b>Register posts a sale movement</b></td><td><b class="n">Missing entirely</b></td></tr>
+<tr><td>Refund reversal</td><td><b class="n">Missing</b> — follows from the above</td></tr>
+<tr><td>Composite depletion on sale</td><td><b class="n">Never triggered</b> — modelled in data only</td></tr>
+</tbody></table></div>
+<h3>What closing it needs</h3>
+<div class="rules">
+<div class="rule"><span class="n2">1</span><span class="t"><b><span class="mono">IVS.postSale(ticket)</span></b> in <span class="mono">iv-store.js</span> — one document, one movement per line, <span class="mono">doc</span> = the ticket number, <span class="mono">who</span> = the register, cost stamped per line. It is the smallest of the existing posting functions and the most important.</span></div>
+<div class="rule"><span class="n2">2</span><span class="t"><b>Composite expansion inside it</b>, so selling a basket posts its components. The recipe is already on the item.</span></div>
+<div class="rule"><span class="n2">3</span><span class="t"><b><span class="mono">IVS.reverseSale(ticketNo, lines, condition)</span></b> for refunds, writing forward-in-time reversals and the damaged-goods adjustment where needed.</span></div>
+<div class="rule"><span class="n2">4</span><span class="t"><b>Flex reads the module, not a seed.</b> Replace <span class="mono">RX_STOCK_SEED</span> with reads against <span class="mono">IV.onHand(item, loc)</span> so there is one on-hand in the product, not two. This is the change that makes the other three mean anything.</span></div>
+<div class="rule"><span class="n2">5</span><span class="t"><b>Tier gating at the post</b>, not the call site: <i>Off</i> posts nothing, <i>Lite</i> and <i>Full</i> post identically. One check in one place, so no register can forget it.</span></div>
+</div>
+<div class="note" style="margin-top:14px"><ion-icon name="git-pull-request-outline"></ion-icon><p><b>Built:</b> <a href="Koomzo - Stock Posting Implementation Plan.html">Closing the stock-posting gap</a> — eight phases, all shipped (<a href="#closed">§15</a>). Two findings widened the job and are both resolved: the ledger <i>was</i> module-private, so it moved to the platform as <span class="mono">kz/kz-stock.js</span>; and Products v2 <i>loaded no posting engine at all</i>, which made the Lite tier's "type over the quantity" promise unimplementable until it gained one.</p></div>
+<p>Worth noting the ordering risk: invariant 3 says the ticket and its movements are one transaction. Building the sale posting <i>after</i> the payment flow already shipped means that transaction boundary has to be added to code that has no reason to expect it — which was the argument for doing this before more registers started taking money.</p>
+
+<h2 id="closed">15 · What shipped</h2>
+<p class="sub">All eight phases of the <a href="Koomzo - Stock Posting Implementation Plan.html">implementation plan</a> are in. The seam described in §1–13 is now real code.</p>
+<div class="note"><ion-icon name="checkmark-done-circle-outline"></ion-icon><p><b>The ledger is platform, in two files.</b> <span class="mono">kz/kz-stock.js</span> is the universal core — items, locations, movements, <span class="mono">post()</span>, on-hand, cost averaging — with no knowledge of tickets or tenders, so a tenant who runs Inventory alone loads it and nothing else. <span class="mono">kz/kz-stock-sales.js</span> is the POS's adapter over it, loaded only by registers.</p></div>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:21%">Phase</th><th>What landed</th></tr></thead>
+<tbody>
+<tr><td><b>1 · Platform</b></td><td><span class="mono">iv-store.js</span>'s ledger moved to <span class="mono">kz-stock.js</span>; the module binds <span class="mono">IV_ITEMS</span>/<span class="mono">IV_MOVES</span> to it so its screens read the very same objects the registers post into. <span class="mono">post()</span> and <span class="mono">reaverage()</span> in the module are now one line each.</td></tr>
+<tr><td><b>2 · postSale</b></td><td>One document, one movement per line, through the core's <span class="mono">post()</span>. Tier read from the tenant, never passed in. Returns the negatives it created so the caller can surface them without the ledger knowing about UI.</td></tr>
+<tr><td><b>3 · Flex</b></td><td><span class="mono">RX_STOCK_SEED</span> is gone. Tiles, the Stock tab and the low list read <span class="mono">KZ_STOCK.onHand()</span>; the stepper posts a <span class="mono">count</span> correction with a reason. Verified end to end: selling one Ibuprofène took on-hand 7 → 6 and wrote <span class="mono">sale −1, before 7, doc DLA1-C1-0918-1047, lot B24-0871, who Caisse 1, cost 504</span> — the batch captured by the qualifier chain riding onto the movement.</td></tr>
+<tr><td><b>4 · Reversals</b></td><td><span class="mono">reverseSale</span> writes forward-in-time positives referencing the original; the sale row is never touched. Flex's returns screen gained a <b>Condition of the goods</b> control — <i>damaged</i> posts the unit back on hand and straight out again to shrinkage, because the customer's refund and the business's loss are two facts.</td></tr>
+<tr><td><b>5 · Products v2</b></td><td>The Lite tier had <b>no posting engine at all</b> — and, it turned out, was not rendering either: it was missing <span class="mono">iv-sheetkit.jsx</span>, so <span class="mono">useIVRev</span> was undefined and the page threw on mount. Both fixed; 18 items now render and the tier's promise is implementable.</td></tr>
+<tr><td><b>6 · Other registers</b></td><td>Grocery (20 items), Salon (7 retail lines) and Gym (10 bar/shop lines) each adopt their catalogue into the one ledger and post at their own commit point. Salon posts <b>products only</b> — a service's back-bar consumption is posted when the appointment completes, and double-posting it would halve true service margin.</td></tr>
+<tr><td><b>7 · Composites</b></td><td><span class="mono">expand()</span> inside <span class="mono">postSale</span>: an item with a recipe posts movements for its components, and the row carries <span class="mono">via</span> so the parent is traceable.</td></tr>
+<tr><td><b>8 · Idempotency</b></td><td>Keyed on the ticket number. Verified: posting the same ticket twice moves on-hand once and returns <span class="mono">replayed: true</span>.</td></tr>
+</tbody></table></div>
+<h3>Three decisions taken while building</h3>
+<div class="rules">
+<div class="rule"><span class="n2">1</span><span class="t"><b>The commit point moved.</b> Sale posting was first wired to the charge sheet's <i>done</i> callback — which fires when the cashier taps <b>New order</b>, not when the money lands. A ticket paid and then abandoned would have taken money and moved no stock. <span class="mono">useCharge</span> gained an <span class="mono">onPaid</span> hook that fires the moment the balance reaches zero, which is the only honest reading of invariant 3.</span></div>
+<div class="rule"><span class="n2">2</span><span class="t"><b>The tier is a tenant capability now</b>, not a Retail Flex tweak — an Inventory-only business has no register to hold it, and <i>Off</i> is incoherent for a tenant whose whole module is stock. The Flex control still exists as a preview shortcut, but it writes <span class="mono">KZ_STOCK.tier</span>.</span></div>
+<div class="rule"><span class="n2">3</span><span class="t"><b>A preset switch seeds real items.</b> Flex's nine demo trades are different shops, so each seeds its products into the ledger once with a real opening-balance movement, rather than the ledger holding nine parallel item sets. Non-Flex modules adopt their catalogue under a namespaced id (<span class="mono">grocery:p1</span>) so a shop's plantain and a salon's shampoo cannot collide.</span></div>
+</div>
+<p><b>Left deliberately undone.</b> Restaurant does not post: its stock event is <i>fire</i>, not payment, because a cooked dish has consumed its ingredients whether the table pays or not. Folding it in would have corrupted the post-on-payment rule. It needs its own short spec on recipe depletion at fire time.</p>
+<h3>Validation sweep</h3>
+<p class="sub">Each claim above probed against the running code rather than the source.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:30%">Check</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td>Core carries no sale vocabulary</td><td><b class="y">Pass</b> · no <span class="mono">sale</span>/<span class="mono">ticket</span>/<span class="mono">refund</span> key on <span class="mono">KZ_STOCK</span>; <span class="mono">postSale</span> exists only on the adapter</td></tr>
+<tr><td>Inventory-only tenant</td><td><b class="y">Pass</b> · on the Inventory and Products v2 pages the core is present and <span class="mono">KZ_SALES</span> is <b>undefined</b></td></tr>
+<tr><td>Phase 1 behaviour-neutral</td><td><b class="y">Pass</b> · <span class="mono">KZ_STOCK.items() === IV_ITEMS</span>; an <span class="mono">IVS.postAdjustment</span> still posts <span class="mono">adjust −2, before 34, reason damaged, AJ-0113</span></td></tr>
+<tr><td>Tier <i>Off</i> posts nothing</td><td><b class="y">Pass</b> · returns <span class="mono">skipped: 'tier-off'</span>, 0 rows, on-hand unchanged; the Stock rail item disappears and tiles lose their badges</td></tr>
+<tr><td>Tier cannot be spoofed</td><td><b class="y">Pass</b> · with the tenant at <i>off</i> and the caller claiming <span class="mono">tier: 'full'</span>: 0 rows, <span class="mono">skipped: 'tier-off'</span>, on-hand 7 → 7. <span class="mono">postSale</span> never destructures a tier, so a caller-supplied one is structurally unreachable</td></tr>
+<tr><td>Idempotent replay</td><td><b class="y">Pass</b> · same ticket twice → on-hand moves once, <span class="mono">replayed: true</span></td></tr>
+<tr><td>Composite expansion</td><td><b class="y">Pass</b> · a 1× kit with a 2× recipe moved the component by 2, parent by 0, row carrying <span class="mono">via: kit</span></td></tr>
+<tr><td>Negative surfaced, not clamped</td><td><b class="y">Pass</b> · reached −977 and produced <i>"…is now -977 — count the shelf when the queue clears."</i></td></tr>
+<tr><td>Actor is neutral</td><td><b class="y">Pass</b> · a user post records <span class="mono">Q</span>, a register post records <span class="mono">Caisse 1</span></td></tr>
+<tr><td>Register Stock tab is the ledger</td><td><b class="y">Pass</b> · tab and ledger both read 7; the stepper posted <span class="mono">count +1, before 7, reason recount, who Caisse 1</span> and the row re-rendered to 8</td></tr>
+<tr><td>Lite tier posts</td><td><b class="y">Pass</b> · Products v2 renders 18 rows and a quantity edit grew the log 12 → 13</td></tr>
+<tr><td>Salon service guard</td><td><b class="y">Pass</b> · a mixed ticket posted 1 row for the product and none for the service</td></tr>
+<tr><td>No second stock truth left</td><td><b class="y">Pass</b> · no <span class="mono">RX_STOCK_SEED</span>, <span class="mono">t.stock</span> or <span class="mono">onStock</span> anywhere in live code</td></tr>
+</tbody></table></div>
+<div class="note warn"><ion-icon name="alert-circle-outline"></ion-icon><p><b>Two things the sweep did not clear.</b> The three seeded <span class="mono">kind:'sale'</span> rows in <span class="mono">iv-data.js</span> are still there — harmless in this prototype because on-hand is a stored field rather than a replay of the log, but they must go before the log is ever summed. And <span class="mono">IV.onHand()</span> in <span class="mono">iv-data.js</span> is now a second implementation of the core's <span class="mono">onHand</span>; both read the same objects so they cannot disagree today, but it is the exact shape of duplication that produced this gap in the first place and should collapse into the core.</p></div>
+</main>
+</div>
+<script>
+const links=[...document.querySelectorAll('.side a.nv')];
+const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('on'));const a=map.get(e.target.id);if(a)a.classList.add('on')}})},{rootMargin:'-10% 0px -80% 0px'});
+document.querySelectorAll('main h2[id]').forEach(h=>io.observe(h));
+</script>
+</body>
+</html>

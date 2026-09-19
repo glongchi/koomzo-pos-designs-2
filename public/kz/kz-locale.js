@@ -5,17 +5,20 @@
    is 5 F, and a price with a decimal point is a bug. Everything below rounds to
    a whole franc and groups thousands with a space, the way a local receipt does. */
 
-const KZ_XAF = (n) => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+/* Non-breaking throughout: a currency figure must never wrap mid-number, and
+   the unit must never be orphaned onto the next line. Hotel's local helper had
+   this rule right and the rest of the suite did not — so it lives here now. */
+const KZ_XAF = (n) => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0');
 
 window.KZ_LOCALE = {
   /* 12 500 FCFA — the full form, for totals, invoices and anything printed */
-  money: (n) => KZ_XAF(n) + ' FCFA',
+  money: (n) => KZ_XAF(n) + '\u00a0FCFA',
   /* 12 500 F — the short form, for dense tables, tiles and signage */
-  short: (n) => KZ_XAF(n) + ' F',
+  short: (n) => KZ_XAF(n) + '\u00a0F',
   /* bare grouped number, when a column header already says FCFA */
   num: KZ_XAF,
   /* signed, for variances and refunds */
-  signed: (n) => (n < 0 ? '−' : '') + KZ_XAF(Math.abs(n)) + ' FCFA',
+  signed: (n) => (n < 0 ? '−' : '') + KZ_XAF(Math.abs(n)) + '\u00a0FCFA',
   int: (n) => KZ_XAF(n),
 
   /* TVA is national and single-rated; there is no per-city sales tax */
@@ -23,6 +26,10 @@ window.KZ_LOCALE = {
   vatLabel: 'TVA (19,25 %)',
   /* the tax number a business quotes on an invoice */
   taxIdLabel: 'NIU',
+  /* The ONLY place tax is computed. A profile says whether it is taxed, never
+     at what rate — the rate is national. Whole francs: XAF has no minor unit. */
+  tax: (net, zeroRated) => (zeroRated ? 0 : Math.round((Number(net) || 0) * 19.25 / 100)),
+  taxLabel: (zeroRated) => (zeroRated ? 'TVA (0 %)' : 'TVA (19,25 %)'),
 
   currency: { code: 'XAF', label: 'Franc CFA (XAF)', symbol: 'FCFA' },
   /* the coins that actually exist, so cash rounding options mean something */
@@ -70,5 +77,6 @@ window.KZ_LOCALE = {
 };
 
 /* the shared formatter every module used to define for itself */
-window.money = window.KZ_LOCALE.short;
+/* the one formatter. Gym, Hotel and Grocery each defined this again as xaf(). */
+window.money = (n) => (n < 0 ? '−' : '') + window.KZ_LOCALE.short(Math.abs(n));
 window.moneyFull = window.KZ_LOCALE.money;

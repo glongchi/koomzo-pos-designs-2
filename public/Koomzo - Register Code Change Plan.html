@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Register Spec · Code Change Plan</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.sp{flex:1}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 14px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 16px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 6px 10px}
+.side a.nv{display:flex;align-items:center;gap:9px;min-height:34px;padding:6px 10px;border-radius:9px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a.nv ion-icon{font-size:15px;color:var(--kz-muted-3);flex:none}
+.side a.nv:hover{background:var(--kz-surface-2);color:var(--kz-ink)}
+.side a.nv.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.side a.nv.on ion-icon{color:var(--kz-primary)}
+.doc{padding:34px 34px 110px;max-width:1080px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.lede{margin:0 0 22px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:72ch;text-wrap:pretty}
+h2{margin:44px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em;scroll-margin-top:22px}
+h3{margin:26px 0 8px;font:700 15px var(--kz-font-sans)}
+.sub{margin:0 0 14px;font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-muted);max-width:74ch;text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:74ch;text-wrap:pretty}
+.mono{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 6px;color:var(--kz-ink-2);white-space:nowrap}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px}
+.card h4{margin:0 0 4px;font:700 14px var(--kz-font-sans);display:flex;align-items:center;gap:8px}
+.card h4 ion-icon{color:var(--kz-primary);font-size:16px}
+.card p{margin:0;font-size:13px;line-height:1.65}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.tblwrap{overflow-x:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+td .y{color:var(--kz-success);font-weight:700}td .n{color:var(--kz-muted-3)}
+.chg{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:11px;overflow:hidden}
+.chg__h{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.chg__h .num{width:26px;height:26px;border-radius:7px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none}
+.chg__h b{font:700 13.5px var(--kz-font-sans)}
+.chg__b{padding:13px 16px}
+.chg__b p{margin:0 0 9px;font-size:13.5px}
+.chg__b p:last-child{margin-bottom:0}
+.sev{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--kz-radius-pill)}
+.sev.bug{background:var(--kz-discount-wash);color:#b8401f}
+.sev.gap{background:var(--kz-warning-wash);color:#8a6414}
+.sev.new{background:var(--kz-info-wash);color:#2a63b8}
+.sev.ok{background:var(--kz-success-wash);color:#1f7a45}
+.sev.done{background:var(--kz-success-wash);color:#1f7a45}
+.done-ic{width:20px;height:20px;border-radius:999px;background:var(--kz-success);display:grid;place-items:center;flex:none}
+.done-ic ion-icon{font-size:12px;color:#fff}
+.banner{display:flex;gap:12px;background:var(--kz-success-wash);border:1px solid #bfe3cd;border-radius:var(--kz-radius);padding:15px 17px;margin-bottom:16px}
+.banner ion-icon{color:#1f7a45;font-size:19px;flex:none;margin-top:1px}
+.banner p{margin:0;font-size:13.5px;line-height:1.62}
+.dev{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:4px 18px;margin-bottom:12px}
+.dev__r{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--kz-border)}
+.dev__r:last-child{border-bottom:none}
+.dev__r ion-icon{color:var(--kz-warning);font-size:16px;flex:none;margin-top:2px}
+.dev__r div{font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-ink-2)}
+.dev__r b{color:var(--kz-ink)}
+.files{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.files span{font:600 11px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:6px;padding:3px 8px;color:var(--kz-ink-2)}
+.ba{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--kz-border);border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-top:4px}
+.ba>div{background:#fff;padding:11px 13px}
+.ba .t{font:700 9.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:6px}
+.ba code{display:block;font:500 11.5px/1.7 var(--kz-font-num);color:var(--kz-ink-2);white-space:pre-wrap;word-break:break-word}
+.ba .bad code{color:#b8401f}
+.ba .good code{color:#1f7a45}
+.note{display:flex;gap:10px;background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:13px 15px;margin-bottom:12px}
+.note ion-icon{color:var(--kz-primary);font-size:17px;flex:none;margin-top:1px}
+.note p{margin:0;font-size:13px;line-height:1.62}
+.note.warn{background:var(--kz-warning-wash);border-color:#e8d6a8}
+.note.warn ion-icon{color:#8a6414}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side">
+<div class="side__mark"><div class="ic"><ion-icon name="git-pull-request"></ion-icon></div><b>koomzo · POS</b></div>
+<p class="side__v">Code change plan · Sep 2026</p>
+<div class="side__g">Assessment</div>
+<a class="nv" href="#verdict"><ion-icon name="checkmark-done-outline"></ion-icon>Verdict</a>
+<a class="nv" href="#status"><ion-icon name="checkmark-done-circle-outline"></ion-icon>Delivered</a>
+<a class="nv" href="#state"><ion-icon name="analytics-outline"></ion-icon>Current state by module</a>
+<a class="nv" href="#tree"><ion-icon name="checkmark-done-outline"></ion-icon>Duplicate trees</a>
+<div class="side__g">Changes</div>
+<a class="nv" href="#c1"><ion-icon name="alert-circle-outline"></ion-icon>1 · Hardcoded tender lists</a>
+<a class="nv" href="#c2"><ion-icon name="alert-circle-outline"></ion-icon>2 · Fractional francs</a>
+<a class="nv" href="#c3"><ion-icon name="alert-circle-outline"></ion-icon>3 · Quick-cash notes</a>
+<a class="nv" href="#c4"><ion-icon name="alert-circle-outline"></ion-icon>4 · Duplicated tax rate</a>
+<a class="nv" href="#c5"><ion-icon name="add-circle-outline"></ion-icon>5 · MoMo pending state</a>
+<a class="nv" href="#c6"><ion-icon name="add-circle-outline"></ion-icon>6 · Tenders array</a>
+<a class="nv" href="#c7"><ion-icon name="add-circle-outline"></ion-icon>7 · Ticket numbering</a>
+<a class="nv" href="#c8"><ion-icon name="add-circle-outline"></ion-icon>8 · Discount ceilings</a>
+<a class="nv" href="#c9"><ion-icon name="add-circle-outline"></ion-icon>9 · Holds block Z close</a>
+<a class="nv" href="#c10"><ion-icon name="add-circle-outline"></ion-icon>10 · Prepare capability</a>
+<a class="nv" href="#c11"><ion-icon name="git-merge-outline"></ion-icon>11 · Retail convergence</a>
+<div class="side__g">Delivery</div>
+<a class="nv" href="#order"><ion-icon name="list-outline"></ion-icon>Order of work</a>
+<a class="nv" href="#nochange"><ion-icon name="shield-checkmark-outline"></ion-icon>Already correct</a>
+</nav>
+
+<main class="doc">
+<p class="eb">Spec conformance audit · register surfaces</p>
+<h1>Code changes the register spec implies</h1>
+<p class="lede">Eleven changes, now all implemented — see <a href="#status">Delivered</a> for what landed and where it departed from this plan. Four of them were defects against decisions the platform has <i>already</i> made rather than new work. The headline finding: <b>Restaurant &amp; Bar is the correct implementation</b>. It reads the shared tender list, uses the shared TVA label, and gates room charge on a live capability. Retail, Retail Flex and Mobile each restate those things locally, and drift where they restate.</p>
+<div class="links">
+<a href="Koomzo - Register Functional Spec.html"><ion-icon name="document-text-outline"></ion-icon>Register spec</a>
+<a href="Koomzo POS - Retail Flex.html"><ion-icon name="options-outline"></ion-icon>Retail Flex</a>
+<a href="Koomzo POS - Restaurant &amp; Bar.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant</a>
+<a href="Koomzo - Phone Compositions.html"><ion-icon name="phone-portrait-outline"></ion-icon>Phone compositions</a>
+</div>
+
+<h2 id="verdict">Verdict</h2>
+<div class="g2">
+<div class="card"><h4><ion-icon name="bug-outline"></ion-icon>4 defects</h4><p>Code that contradicts something the platform already decided — hardcoded tender lists, fractional francs, USD-era cash denominations, duplicated tax rate. These are cheap and should be fixed regardless of the spec.</p></div>
+<div class="card"><h4><ion-icon name="git-branch-outline"></ion-icon>6 gaps</h4><p>Behaviour the spec's §19–20 decisions require and no register has yet: pending MoMo state, a tenders array, structured ticket numbers, discount ceilings, hold-blocking close, the Prepare capability.</p></div>
+<div class="card"><h4><ion-icon name="git-merge-outline"></ion-icon>1 consolidation</h4><p>Retail and Retail Flex converge. Deliberately last — no customer-visible gain, and it is much easier after the four defects are fixed in both.</p></div>
+<div class="card"><h4><ion-icon name="shield-checkmark-outline"></ion-icon>1 reference</h4><p>Restaurant's <span class="mono">ChargeSheet</span> is the pattern to copy. Do not rewrite it — lift it into a shared component and delete the three local copies.</p></div>
+</div>
+
+<h2 id="status">Delivered</h2>
+<p class="sub">All eleven changes are implemented across the four registers. What follows is the audit as written, kept for the reasoning; this section records what actually landed and where it departed from the plan.</p>
+<div class="banner"><ion-icon name="checkmark-done-circle-outline"></ion-icon><p><b>11 of 11 changes in.</b> Four new platform files now own what the registers used to restate — <span class="mono">kz/kz-tender.js</span> (list, phases, persistence), <span class="mono">kz/kz-charge.jsx</span> (the charge model and shared body), <span class="mono">kz/kz-ticket.js</span> (numbering) and <span class="mono">kz/kz-policy.js</span> (discount ceilings). <span class="mono">retail/</span> is retired and the sync trees are gone.</p></div>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:5%">#</th><th style="width:24%">Change</th><th>What landed</th></tr></thead>
+<tbody>
+<tr><td><b>1</b></td><td>Shared tender list</td><td>All four registers read <span class="mono">KZ_TENDER.list()</span>. MoMo default, French labels, no local arrays, no hardcoded card string. Retail and Flex share one <span class="mono">ChargeBody</span>.</td></tr>
+<tr><td><b>2</b></td><td>Whole francs</td><td><span class="mono">KZ_LOCALE.tax()</span> rounds; all totals return integers. Keypad decimal key replaced by <span class="mono">00</span>; weight keeps three decimals. Flex's shift-count and refund screens fixed too.</td></tr>
+<tr><td><b>3</b></td><td>Real denominations</td><td><span class="mono">KZ_TENDER.quickCash()</span> offers the total, the next round 500, then notes that circulate. Change below the 5 F coin is flagged in the paid line.</td></tr>
+<tr><td><b>4</b></td><td>One tax rate</td><td>Profiles carry <span class="mono">zeroRated</span>, never a rate. Labels come from <span class="mono">taxLabel()</span>. Historical sale records keep their own recorded rate, which is correct for a receipt.</td></tr>
+<tr><td><b>5</b></td><td>MoMo pending state</td><td>Seven phases, a 45 s locked-amount countdown, cancel-and-switch as the only escape, push / attest / manual provisioning with an optional last-4 field, and offline forcing attest.</td></tr>
+<tr><td><b>6</b></td><td>Tenders array</td><td>Each capture is its own record with our own reference, persisted to storage the moment it happens. Part payment is a share picker, then a real tender. A resumed part-tendered ticket locks its lines.</td></tr>
+<tr><td><b>7</b></td><td>Ticket numbering</td><td><span class="mono">DLA1-C1-0916-1047</span> composed at the till in all four registers — <span class="mono">C1</span> retail, <span class="mono">M1</span> mobile, <span class="mono">R1</span> restaurant. Short form in tight UI, full number on the record.</td></tr>
+<tr><td><b>8</b></td><td>Discount ceilings</td><td>10 % line / 5 % or 5 000 F ticket, per tenant. Over it, an approval step with a reason list and a named supervisor. Price override always needs one. Shift report shows discount as a share of net.</td></tr>
+<tr><td><b>9</b></td><td>Close gate</td><td>A <i>To resolve</i> card lists held and part-tendered tickets with the money already taken; Close shift is disabled until each is settled, resumed or handed over. Bulk void is supervisor-only. Drawer cash and off-drawer wallet takings are reconciled separately.</td></tr>
+<tr><td><b>10</b></td><td>Prepare capability</td><td>Added to retail, grocery and salon in <span class="mono">kz-caps.js</span>, off by default at <span class="mono">mid</span> tier, with trade-specific copy.</td></tr>
+<tr><td><b>11</b></td><td>Convergence</td><td><span class="mono">retail/</span> deleted. All six fixed profiles already existed as Flex presets. <span class="mono">Koomzo POS - Retail.html</span> is now a short page explaining the merge and redirecting to Flex.</td></tr>
+</tbody></table></div>
+
+<h3>Where the build departed from the plan</h3>
+<div class="dev">
+<div class="dev__r"><ion-icon name="git-compare-outline"></ion-icon><div><b>Change 1 became a shared model, not one shared sheet.</b> The plan said to lift Restaurant's <span class="mono">ChargeSheet</span> into a single component. The three registers have genuinely different CSS vocabularies (<span class="mono">.tender</span>, <span class="mono">.m-tender</span>, <span class="mono">.sheet</span>), so the <i>model</i> is shared via <span class="mono">useCharge</span> and Retail and Flex share the body, while Mobile and Restaurant keep their own markup around the same rules. No register owns a rule; three own their chrome.</div></div>
+<div class="dev__r"><ion-icon name="flask-outline"></ion-icon><div><b>The unhappy phases render but are not clickable.</b> <span class="mono">declined</span>, <span class="mono">expired</span> and <span class="mono">unknown</span> all have panels and copy, and <span class="mono">unknown</span> has its status-query path. But the simulated provider callback always succeeds after 3.6 s, so nothing in the UI reaches them. Worth a tweak toggle before this is used to demo failure handling.</div></div>
+<div class="dev__r"><ion-icon name="restaurant-outline"></ion-icon><div><b>Hospitality hand-over is only in retail's close screen.</b> Decision 20.6's transfer-to-next-shift matters most for a table still eating at shift change, but Restaurant has no shift screen in this module. The retail <i>Hand over</i> button is the mechanism; the hospitality case still needs the floor-plan answer flagged earlier.</div></div>
+<div class="dev__r"><ion-icon name="toggle-outline"></ion-icon><div><b>Prepare is data only.</b> The capability exists and can be switched, but no screen consumes it yet — routing a non-hospitality line to a station is the build behind it, and it is deliberately after launch.</div></div>
+<div class="dev__r"><ion-icon name="pricetag-outline"></ion-icon><div><b>Two numbers are still placeholders.</b> The discount ceilings and the 5 000 F refund-approval threshold are my defaults, not derived from a real tenant's margins — and they belong in tenant settings rather than <span class="mono">kz-policy.js</span> constants.</div></div>
+</div>
+
+<h2 id="state">Current state by module — as audited</h2>
+<p class="sub">What each register actually does today, against the spec's shared-model claim.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:26%">Behaviour</th><th>Restaurant</th><th>Retail</th><th>Flex</th><th>Mobile</th></tr></thead>
+<tbody>
+<tr><td><b>Reads <span class="mono">KZ_LOCALE.tenderList</span></b></td><td class="y">Yes</td><td class="n">No — local array</td><td class="n">No — local array</td><td class="n">No — local array</td></tr>
+<tr><td><b>Default tender</b></td><td class="y">MoMo</td><td class="n">Card</td><td class="n">Card</td><td class="n">Card</td></tr>
+<tr><td><b>French tender labels</b></td><td class="y">Espèces, Carte bancaire</td><td class="n">Cash, Card</td><td class="n">Cash, Card</td><td class="n">Cash, Card</td></tr>
+<tr><td><b>Room charge gated on live folio</b></td><td class="y">Yes</td><td class="n">n/a</td><td class="n">n/a</td><td class="n">n/a</td></tr>
+<tr><td><b>Uses <span class="mono">vatLabel</span></b></td><td class="y">Yes</td><td class="n">Local string</td><td class="n">Computed from profile</td><td class="n">Local string</td></tr>
+<tr><td><b>Whole-franc arithmetic</b></td><td class="y">Yes</td><td class="n"><span class="mono">.toFixed(2)</span></td><td class="n"><span class="mono">.toFixed(2)</span></td><td class="y">Yes</td></tr>
+<tr><td><b>Service charge</b></td><td class="y">Yes</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>
+<tr><td><b>Pending tender state</b></td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="n">No</td></tr>
+<tr><td><b>Several tenders per ticket</b></td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="n">No</td></tr>
+<tr><td><b>Structured ticket number</b></td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="n">No</td></tr>
+<tr><td><b>Discount ceiling / approval</b></td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="n">No</td></tr>
+</tbody></table></div>
+
+<h2 id="tree">The duplicate trees — removed</h2>
+<div class="note"><ion-icon name="checkmark-done-outline"></ion-icon><p>The register sources used to exist in five places — the canonical tree, plus <span class="mono">koomzo-pos-web/public/…</span>, <span class="mono">_sync-bundle/</span>, <span class="mono">_sync-inventory/</span>, <span class="mono">sync-to-local/</span> and <span class="mono">sync-transfers/</span>. Patching those copies individually is how the files drifted apart, and it is why Restaurant was right while three registers were wrong. <b>All 275 files were deleted at the user's direction; the design-system tree is now the single source.</b> The changes below were made there once, and nowhere else.</p></div>
+
+<h2 id="c1">Change 1 · Delete the hardcoded tender lists</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">1</span><b>Three registers restate a list the locale already owns</b><div class="sp"></div><span class="sev bug">Defect</span><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span></div>
+<div class="chg__b">
+<div class="files"><span>retail/rt-screens.jsx · TenderSheet</span><span>mobile/m-components.jsx · MChargeSheet</span><span>retailflex/rx-screens.jsx</span></div>
+<p><span class="mono">kz/kz-locale.js</span> states it outright: <i>"Every register reads this list — none restates it."</i> Three do restate it, and all three drifted — English labels, card as the default, and "Wallet" as a single generic option where the market has two distinct wallets that customers name.</p>
+<div class="ba">
+<div class="bad"><div class="t">Today · retail/rt-screens.jsx</div><code>const [tender, setTender] = useState('card');
+[['card','Card','card-outline'],
+ ['cash','Cash','cash-outline'],
+ ['wallet','Mobile wallet','phone-portrait-outline'],
+ ['split','Split payment','git-branch-outline']]</code></div>
+<div class="good"><div class="t">Target · shared</div><code>const [tender, setTender] = useState('momo');
+const tenders = KZ_LOCALE.tenderList
+  .concat(loyalty ? [LOYALTY] : [])
+  .concat(canRoom ? [ROOM] : []);</code></div>
+</div>
+<p style="margin-top:10px"><b>Do it once.</b> Lift the rules out of Restaurant's <span class="mono">ChargeSheet</span> into the platform, parameterised by the extras a module adds (loyalty, room, split). <i>As built:</i> the list and copy live in <span class="mono">kz/kz-tender.js</span> and the model in <span class="mono">kz/kz-charge.jsx</span>; Retail and Flex share its <span class="mono">ChargeBody</span>, Mobile and Restaurant render their own chrome around the same hook. Net reduction in code either way.</p>
+<p><b>Also:</b> Retail's paid state prints <span class="mono">'Approved · Card ····4417'</span> unconditionally — wrong whenever the tender wasn't a card, which after this change is the common case.</p>
+</div>
+</div>
+
+<h2 id="c2">Change 2 · Fractional francs in retail totals</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">2</span><b>Tax and total computed to two decimals</b><div class="sp"></div><span class="sev bug">Defect</span><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span></div>
+<div class="chg__b">
+<div class="files"><span>retail/rt-app.jsx:71–72</span><span>retailflex/rx-app.jsx</span><span>retail/rt-screens.jsx:125 · KeypadSheet</span></div>
+<p>Invariant 8 of the spec, and the locale file's own comment, say a price with a decimal point is a bug. The retail totals memo produces one on nearly every ticket, and the keypad offers a <span class="mono">.</span> key for price entry.</p>
+<div class="ba">
+<div class="bad"><div class="t">Today</div><code>const tax = +(net * profile.tax).toFixed(2);
+return { … tax, total: +(net + tax).toFixed(2) };
+// keypad
+line.price.toFixed(2)</code></div>
+<div class="good"><div class="t">Target</div><code>const tax = Math.round(net * KZ_LOCALE.vat / 100);
+return { … tax, total: Math.round(net) + tax };
+// keypad: no decimal key for price
+String(Math.round(line.price))</code></div>
+</div>
+<p style="margin-top:10px">Keep the decimal key for <b>weight</b> (kilos legitimately have three places) and remove it in price and discount modes. Weight quantities stay fractional; money never is.</p>
+</div>
+</div>
+
+<h2 id="c3">Change 3 · Quick-cash keys use denominations that don't exist</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">3</span><b>Rounding to the next 5 / 10 / 20</b><div class="sp"></div><span class="sev bug">Defect</span><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span></div>
+<div class="chg__b">
+<div class="files"><span>retail/rt-screens.jsx:184</span></div>
+<p>The keys offer the total rounded up to 5, 10 and 20 — a dollar-till habit. A Cameroonian customer pays with a 1 000, 2 000, 5 000 or 10 000 F note. <span class="mono">KZ_LOCALE.notes</span> already lists exactly those.</p>
+<div class="ba">
+<div class="bad"><div class="t">Today</div><code>[total, ceil(total/5)*5,
+ ceil(total/10)*10, ceil(total/20)*20]</code></div>
+<div class="good"><div class="t">Target</div><code>[total, ...KZ_LOCALE.notes
+   .filter(n => n >= total).slice(0,3)]
+// plus: next round 500 above total</code></div>
+</div>
+<p style="margin-top:10px">Change due should be checked against <span class="mono">KZ_LOCALE.coins</span> so the cashier is warned when exact change is impossible — the 5 F floor is the reason that list exists.</p>
+</div>
+</div>
+
+<h2 id="c4">Change 4 · Tax rate duplicated per profile</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">4</span><b>Each profile carries its own <span class="mono">tax</span> number</b><div class="sp"></div><span class="sev bug">Defect</span><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span></div>
+<div class="chg__b">
+<div class="files"><span>retail/rt-data.js</span><span>retailflex/rx-data.js</span><span>salon/sl-data.js:129</span><span>retailflex/rx-parts.jsx:179</span></div>
+<p>TVA is national and single-rated. Profiles carrying <span class="mono">tax: 0.1925</span> are five copies of one national number, and Flex rebuilds the label by formatting that float back into a string. If the rate ever moves, this is five edits and a formatting bug waiting to happen.</p>
+<div class="ba">
+<div class="bad"><div class="t">Today · rx-parts.jsx</div><code>TVA ({String(+(profile.tax*100)
+  .toFixed(2)).replace('.',',')} %)</code></div>
+<div class="good"><div class="t">Target</div><code>{KZ_LOCALE.vatLabel}
+// profile keeps only: zeroRated: true|false</code></div>
+</div>
+<p style="margin-top:10px">A profile should express <b>whether</b> it is taxed (fresh food, some pharmacy lines are zero-rated), never <b>at what rate</b>.</p>
+</div>
+</div>
+
+<h2 id="c5">Change 5 · Model the MoMo pending state</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">5</span><b>Every charge sheet jumps straight to Paid</b><div class="sp"></div><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span><span class="sev new">New · spec §19</span></div>
+<div class="chg__b">
+<div class="files"><span>kz/kz-tender.js · phases, provisioning</span><span>kz/kz-charge.jsx · useCharge (new)</span></div>
+<p>All four sheets are <span class="mono">const [paid, setPaid] = useState(false)</span> — a boolean. On a push rail the register requests payment and then <i>waits</i> for the customer to authorise on their own handset. A boolean cannot express that, and cannot express a timeout, a decline, or an unknown outcome needing a status query.</p>
+<div class="ba">
+<div class="bad"><div class="t">Today</div><code>const [paid, setPaid] = useState(false);
+onClick={() => setPaid(true)}</code></div>
+<div class="good"><div class="t">Target</div><code>// 'idle' | 'requested' | 'pending'
+// | 'succeeded' | 'declined'
+// | 'expired' | 'unknown'
+const [phase, setPhase] = useState('idle');</code></div>
+</div>
+<p style="margin-top:10px">UI this unlocks: a pending panel with the amount locked and a countdown; <b>Cancel &amp; switch tender</b> as the only escape (never a manual "mark paid" while a push is live); <i>expired</i> presented as an ordinary retry, not an error. Also needs the three provisioning modes from §19 — <b>push</b>, <b>attest</b>, <b>manual</b> — as a tenant capability, since attest is the only one that works offline.</p>
+</div>
+</div>
+
+<h2 id="c6">Change 6 · A ticket holds several tenders</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">6</span><b>Split payment is a label with nothing behind it</b><div class="sp"></div><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span><span class="sev gap">Gap · decision 20.2</span></div>
+<div class="chg__b">
+<div class="files"><span>retail/rt-app.jsx</span><span>restaurant/store.jsx</span><span>mobile/m-app.jsx</span></div>
+<p>Retail's tender sheet offers <i>Split payment</i> and then shows a hint — there is no data structure for a second tender. Decision 20.2 requires each capture to persist as it happens, so a restart mid-split resumes with money already taken intact.</p>
+<div class="ba">
+<div class="bad"><div class="t">Today</div><code>const [tender, setTender] = useState('card');
+// one string, one payment, no balance</code></div>
+<div class="good"><div class="t">Target</div><code>tenders: [{ id, kind, amount, ref,
+  phase, at, by }]
+balance = total − sum(succeeded)
+// persisted on every capture</code></div>
+</div>
+<p style="margin-top:10px">This is the one structural change on the list, and the reason it sits in the "before launch" bucket: changing the shape of a money record after real receipts exist means migrating them. A resumed part-tendered ticket must also lock line editing — the total is already frozen.</p>
+</div>
+</div>
+
+<h2 id="c7">Change 7 · Structured ticket numbers</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">7</span><b><span class="mono">Order #1042</span> everywhere</b><div class="sp"></div><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span><span class="sev gap">Gap · decision 20.4</span></div>
+<div class="chg__b">
+<div class="files"><span>retail/rt-parts.jsx:148</span><span>retailflex/rx-parts.jsx:155</span><span>restaurant/modals.jsx:50</span><span>mobile/m-components.jsx</span></div>
+<p>A bare sequence collides the moment two tills sell offline. Decision 20.4 composes the number at the till from location, register, session and sequence, so collisions are structurally impossible and the server never renumbers a receipt a customer is holding.</p>
+<div class="ba">
+<div class="bad"><div class="t">Today</div><code>Order #{orderNo}   // 1042</code></div>
+<div class="good"><div class="t">Target</div><code>{ticket.no}  // DLA1-C2-0914-0037
+// short form in dense UI: #0037</code></div>
+</div>
+<p style="margin-top:10px">Put the composer in <span class="mono">kz/kz-locale.js</span> or a new <span class="mono">kz/kz-ticket.js</span> next to the other platform-wide formats, so all four registers and the receipt print read one function. Display the short form in tight spaces; print and store the full one.</p>
+</div>
+</div>
+
+<h2 id="c8">Change 8 · Discount ceilings and approval</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">8</span><b>Any cashier can discount any line to zero</b><div class="sp"></div><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span><span class="sev gap">Gap · decision 20.3</span></div>
+<div class="chg__b">
+<div class="files"><span>retail/rt-screens.jsx · KeypadSheet</span><span>restaurant/register-parts.jsx</span><span>mobile/m-components.jsx · MEditor</span></div>
+<p>The keypad accepts a discount percentage with no ceiling and no approval, and price override is available to whoever is at the till. Decision 20.3 sets a line ceiling (default 10 %) and a ticket ceiling (5 % or 5 000 F), with supervisor approval and a reason above it.</p>
+<p>Two tenant settings, one approval sheet, one reason list. The shift report then needs a <b>discount as % of net sales</b> figure — the number an owner can act on, and the reason the ceiling exists at all.</p>
+</div>
+</div>
+
+<h2 id="c9">Change 9 · Held tickets block the Z close</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">9</span><b>Shift close ignores open tickets entirely</b><div class="sp"></div><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span><span class="sev gap">Gap · decision 20.6</span></div>
+<div class="chg__b">
+<div class="files"><span>retail/rt-screens.jsx · ShiftView</span></div>
+<p><span class="mono">ShiftView</span> shows takings by tender and a cash count, and offers Close — with no reference to held or part-tendered tickets. Decision 20.6 requires the close to list them and refuse to complete until each is settled, voided, or transferred to the next shift.</p>
+<p>Add a <b>To resolve</b> card above the cash count, a bulk auto-void that is supervisor-only and writes a reason per ticket, and — for hospitality — transfer-to-next-shift with explicit reassignment of ownership. Also: the Z report must reconcile cash and each wallet separately, since MoMo takings never enter the drawer and must not inflate expected cash.</p>
+</div>
+</div>
+
+<h2 id="c10">Change 10 · The Prepare capability</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">10</span><b>Station routing exists only inside Restaurant</b><div class="sp"></div><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span><span class="sev gap">Gap · decision 20.7</span></div>
+<div class="chg__b">
+<div class="files"><span>kz/kz-caps.js · retail, grocery, salon</span></div>
+<p>Decision 20.7 keeps one routing model and exposes it to non-hospitality trades as <b>Prepare</b>, off by default. Today the retail and grocery module entries in <span class="mono">kz-caps.js</span> have no such capability, so a bakery or butcher counter has no way to route work.</p>
+<p>Add <span class="mono">prepare</span> to the retail, grocery and salon cap lists, default off, at <span class="mono">mid</span> tier. The copy adapts per trade — <i>Send to stylist</i>, <i>Send to counter</i> — but the object underneath stays the one kitchen ticket, so the production display is built once.</p>
+</div>
+</div>
+
+<h2 id="c11">Change 11 · Retail and Flex converge</h2>
+<div class="chg">
+<div class="chg__h"><span class="num">11</span><b>Two retail registers, one product</b><div class="sp"></div><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span><span class="sev gap">Consolidation · decision 20.1</span></div>
+<div class="chg__b">
+<div class="files"><span>retail/* → retailflex/*</span><span>kz/kz-caps.js already points at Flex</span></div>
+<p>Worth noting: <span class="mono">kz-caps.js</span> already names <span class="mono">Koomzo POS - Retail Flex.html</span> as the retail module's file. The platform has effectively chosen Flex; the Retail tree is a second copy that still has to be maintained and, as this audit shows, has quietly diverged.</p>
+<p>Fold Retail's six profiles into Flex's preset list, keep Flex's editable feature map as the only model, and retire <span class="mono">retail/</span>. Do it <b>after</b> changes 1–4, so the defects are fixed once rather than merged twice.</p>
+</div>
+</div>
+
+<h2 id="order">Order of work</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:15%">Stage</th><th style="width:34%">Changes</th><th>Why here</th></tr></thead>
+<tbody>
+<tr><td><b>First · cheap</b></td><td>1 shared tender sheet · 2 whole francs · 3 cash notes · 4 tax rate</td><td>Four defects against decisions already made. Mostly deletion, and they remove the divergence that makes everything after this harder.</td></tr>
+<tr><td><b>Before launch</b></td><td>6 tenders array · 7 ticket numbering</td><td>Both change the shape of stored money records. Cheap now, a migration later.</td></tr>
+<tr><td><b>Launch</b></td><td>5 MoMo pending state · 8 discount ceilings · 9 close blocking</td><td>Real behaviour, real UI. 5 is the largest single piece of new work on this list.</td></tr>
+<tr><td><b>After launch</b></td><td>10 Prepare capability · 11 Retail convergence</td><td>Consolidation with no customer-visible loss. Better done deliberately than under launch pressure.</td></tr>
+</tbody></table></div>
+
+<h2 id="nochange">Already correct — leave alone</h2>
+<div class="g2">
+<div class="card"><h4><ion-icon name="checkmark-circle-outline"></ion-icon>Restaurant ChargeSheet</h4><p>Reads the shared tender list, defaults to MoMo, gates room charge on both a capability <i>and</i> a live folio, posts to the guest folio rather than taking money. Promote it, don't rewrite it.</p></div>
+<div class="card"><h4><ion-icon name="checkmark-circle-outline"></ion-icon>kz/kz-locale.js</h4><p>Money, TVA, coins, notes, phone shape and the tender order are all already right. The problem is three registers not reading it.</p></div>
+<div class="card"><h4><ion-icon name="checkmark-circle-outline"></ion-icon>Restaurant totals</h4><p>Service charge before tax, <span class="mono">vatLabel</span> from the locale, whole francs throughout — exactly the pricing rules in §11.</p></div>
+<div class="card"><h4><ion-icon name="checkmark-circle-outline"></ion-icon>Mobile composition</h4><p>Sheet / bar / tab patterns and the tablet drawer-vs-two-pane split match §17. Its only defect is the tender list.</p></div>
+</div>
+</main>
+</div>
+<script>
+const links=[...document.querySelectorAll('.side a.nv')];
+const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('on'));const a=map.get(e.target.id);if(a)a.classList.add('on')}})},{rootMargin:'-10% 0px -80% 0px'});
+document.querySelectorAll('main h2[id]').forEach(h=>io.observe(h));
+</script>
+</body>
+</html>

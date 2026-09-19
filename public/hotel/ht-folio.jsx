@@ -193,10 +193,10 @@ function SettleSheet({ stayId, api, onClose }) {
         </div>
       </div>
 
-      {tender === 'account' && <div className="note info" style={{ marginTop: 14 }}><ion-icon name="document-text-outline"></ion-icon>
+      {tender === 'tab' && <div className="note info" style={{ marginTop: 14 }}><ion-icon name="document-text-outline"></ion-icon>
         The balance moves to {s.company || 'the company account'} and is invoiced from the Invoicing module. Nothing is taken at the desk.</div>}
-      {(tender === 'momo' || tender === 'orange') && <div className="note info" style={{ marginTop: 14 }}><ion-icon name="phone-portrait-outline"></ion-icon>
-        A payment request goes to the guest's phone. The folio closes when the operator confirms, not when the desk says so.</div>}
+      {window.KZ_TENDER.isWallet(tender) && <div className="note info" style={{ marginTop: 14 }}><ion-icon name="phone-portrait-outline"></ion-icon>
+        {window.KZ_TENDER.pendingCopy(tender)} The folio closes when the operator confirms, not when the desk says so.</div>}
     </HtSheet>
   );
 }

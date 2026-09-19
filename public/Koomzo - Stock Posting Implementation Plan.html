@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Closing the stock-posting gap: implementation plan</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.sp{flex:1}
+.shell{display:grid;grid-template-columns:254px minmax(0,1fr);min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 14px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 16px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 6px 10px}
+.side a.nv{display:flex;align-items:center;gap:9px;min-height:34px;padding:6px 10px;border-radius:9px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a.nv ion-icon{font-size:15px;color:var(--kz-muted-3);flex:none}
+.side a.nv:hover{background:var(--kz-surface-2);color:var(--kz-ink)}
+.side a.nv.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.side a.nv.on ion-icon{color:var(--kz-primary)}
+.doc{padding:34px 34px 110px;max-width:1080px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.lede{margin:0 0 22px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:74ch;text-wrap:pretty}
+h2{margin:44px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em;scroll-margin-top:22px}
+h3{margin:26px 0 8px;font:700 15px var(--kz-font-sans)}
+.sub{margin:0 0 14px;font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-muted);max-width:76ch;text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:76ch;text-wrap:pretty}
+.mono{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 6px;color:var(--kz-ink-2);white-space:nowrap}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px}
+.card h4{margin:0 0 5px;font:700 14px var(--kz-font-sans);display:flex;align-items:center;gap:8px}
+.card h4 ion-icon{color:var(--kz-primary);font-size:16px}
+.card p{margin:0;font:400 13px/1.65 var(--kz-font-sans)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.tblwrap{overflow-x:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+.y{color:var(--kz-success);font-weight:700}.n{color:var(--kz-discount);font-weight:700}.pp{color:#8a6414;font-weight:700}
+.note{display:flex;gap:10px;background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:13px 15px;margin-bottom:12px}
+.note ion-icon{color:var(--kz-primary);font-size:17px;flex:none;margin-top:1px}
+.note p{margin:0;font-size:13px;line-height:1.62}
+.note.warn{background:var(--kz-warning-wash);border-color:#e8d6a8}
+.note.warn ion-icon{color:#8a6414}
+.note.bad{background:var(--kz-discount-wash);border-color:#f2c4b4}
+.note.bad ion-icon{color:#b8401f}
+.ph{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:11px;overflow:hidden}
+.ph__h{display:flex;align-items:center;gap:11px;padding:12px 16px;background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.ph__h .num{width:26px;height:26px;border-radius:7px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none}
+.ph__h b{font:700 13.5px var(--kz-font-sans)}
+.ph__h .meta{font:500 11px var(--kz-font-num);color:var(--kz-muted-2)}
+.ph__b{padding:13px 16px}
+.ph__b p{margin:0 0 9px;font-size:13.5px}
+.ph__b p:last-child{margin-bottom:0}
+.files{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.files span{font:600 11px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:6px;padding:3px 8px;color:var(--kz-ink-2)}
+.files span.new{background:var(--kz-success-wash);border-color:#bfe3cd;color:#1f7a45}
+.tag{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--kz-radius-pill)}
+.tag.inv{background:var(--kz-info-wash);color:#2a63b8}
+.tag.reg{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.tag.both{background:var(--kz-warning-wash);color:#8a6414}
+.tag.plat{background:var(--kz-success-wash);color:#1f7a45}
+.rules{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:4px 18px;margin-bottom:12px}
+.rule{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--kz-border)}
+.rule:last-child{border-bottom:none}
+.rule .n2{width:22px;height:22px;border-radius:6px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none;margin-top:1px}
+.rule .t{font:400 13.5px/1.62 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.ba{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:var(--kz-border);border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-top:4px}
+.ba>div{background:#fff;padding:11px 13px}
+.ba .t2{font:700 9.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:6px}
+.ba code{display:block;font:500 11.5px/1.7 var(--kz-font-num);white-space:pre-wrap;word-break:break-word;color:var(--kz-ink-2)}
+.ba .bad code{color:#b8401f}.ba .good code{color:#1f7a45}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.ask{background:#fff;border:1px solid var(--kz-border-strong);border-radius:var(--kz-radius);padding:4px 18px}
+.ask__r{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--kz-border)}
+.ask__r:last-child{border-bottom:none}
+.ask__r .q{width:22px;height:22px;border-radius:6px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none;margin-top:1px}
+.ask__r div{font:400 13.5px/1.62 var(--kz-font-sans);color:var(--kz-ink-2)}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side">
+<div class="side__mark"><div class="ic"><ion-icon name="git-pull-request"></ion-icon></div><b>koomzo · POS</b></div>
+<p class="side__v">Stock posting · plan · Sep 2026</p>
+<div class="side__g">Analysis</div>
+<a class="nv" href="#answer"><ion-icon name="help-circle-outline"></ion-icon>Both modules? Yes</a>
+<a class="nv" href="#wider"><ion-icon name="warning-outline"></ion-icon>Wider than §14 said</a>
+<a class="nv" href="#blast"><ion-icon name="grid-outline"></ion-icon>Blast radius</a>
+<a class="nv" href="#arch"><ion-icon name="git-network-outline"></ion-icon>The architectural call</a>
+<a class="nv" href="#invonly"><ion-icon name="cube-outline"></ion-icon>The Inventory-only tenant</a>
+<div class="side__g">Plan</div>
+<a class="nv" href="#p1"><ion-icon name="layers-outline"></ion-icon>1 · Ledger becomes platform</a>
+<a class="nv" href="#p2"><ion-icon name="cart-outline"></ion-icon>2 · postSale</a>
+<a class="nv" href="#p3"><ion-icon name="storefront-outline"></ion-icon>3 · Flex reads the ledger</a>
+<a class="nv" href="#p4"><ion-icon name="return-down-back-outline"></ion-icon>4 · Reversals</a>
+<a class="nv" href="#p5"><ion-icon name="list-outline"></ion-icon>5 · Products v2 &amp; Lite</a>
+<a class="nv" href="#p6"><ion-icon name="cut-outline"></ion-icon>6 · The other registers</a>
+<a class="nv" href="#p7"><ion-icon name="layers-outline"></ion-icon>7 · Composites</a>
+<a class="nv" href="#p8"><ion-icon name="cloud-offline-outline"></ion-icon>8 · Idempotency</a>
+<div class="side__g">Delivery</div>
+<a class="nv" href="#order"><ion-icon name="list-outline"></ion-icon>Sequence</a>
+<a class="nv" href="#risk"><ion-icon name="alert-circle-outline"></ion-icon>Risks</a>
+<a class="nv" href="#test"><ion-icon name="checkmark-done-outline"></ion-icon>How we'll know</a>
+<a class="nv" href="#decide"><ion-icon name="hand-left-outline"></ion-icon>Your call</a>
+</nav>
+
+<main class="doc">
+<p class="eb">Implementation plan · §14 of the integration spec</p>
+<h1>Making a paid ticket move stock</h1>
+<p class="lede"><b>Delivered — all eight phases are implemented and verified; see <a href="Koomzo - Register and Inventory Integration.html#closed">§15 of the integration spec</a> for what shipped.</b> Eight changes across <b>three</b> layers, not two. The short answer to your question is yes — both the Inventory and the register modules need work — but the analysis turned up something the integration doc understated: the ledger is currently <b>module-private</b>, and the Lite tier that ships to small shops has <b>no posting engine loaded at all</b>. That changes the shape of the work from "add a function and call it" to "promote the ledger to the platform, then call it from five registers."</p>
+<div class="links">
+<a href="Koomzo - Register and Inventory Integration.html"><ion-icon name="git-network-outline"></ion-icon>Integration spec · §14</a>
+<a href="Koomzo POS - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Inventory module</a>
+<a href="Koomzo POS - Products v2.html"><ion-icon name="list-outline"></ion-icon>Products v2</a>
+<a href="Koomzo POS - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+</div>
+
+<h2 id="answer">1 · Does this need both modules? Yes — and a third thing</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:17%">Layer</th><th style="width:26%">What changes</th><th>Why it cannot be avoided</th></tr></thead>
+<tbody>
+<tr><td><span class="tag inv">Inventory</span></td><td>Gains <span class="mono">postSale</span>, <span class="mono">reverseSale</span>, composite expansion, idempotency keying</td><td>The ledger and its one <span class="mono">post()</span> primitive live here. A sale is a movement kind, and only this module may write movements.</td></tr>
+<tr><td><span class="tag reg">Registers</span></td><td>Stop holding local stock state; call the ledger on payment and on refund</td><td>Flex holds <span class="mono">RX_STOCK_SEED</span> in its own <span class="mono">useState</span>. As long as that exists there are two on-hands and they will disagree.</td></tr>
+<tr><td><span class="tag plat">Platform</span></td><td><b>New:</b> the ledger becomes a shared file the way <span class="mono">kz-tender.js</span> did</td><td>The discovery below. Today no register can even <i>see</i> the ledger — so "call it" is not yet a thing a register can do.</td></tr>
+</tbody></table></div>
+
+<h2 id="wider">2 · Two discoveries that widen the job</h2>
+<div class="note bad"><ion-icon name="warning-outline"></ion-icon><p><b>Discovery 1 — the ledger is module-private.</b> <span class="mono">iv-store.js</span> is loaded by exactly one page: <span class="mono">Koomzo POS - Inventory.html</span>. No register loads any <span class="mono">iv-*</span> file. So §14's "Flex reads the module" is not a swap of one function call — the two modules currently cannot reference each other at all. The ledger has to move to the platform layer first.</p></div>
+<div class="note bad"><ion-icon name="warning-outline"></ion-icon><p><b>Discovery 2 — the Lite tier has no posting engine.</b> <span class="mono">Koomzo POS - Products v2.html</span> loads <span class="mono">iv-data.js</span> but <b>not</b> <span class="mono">iv-store.js</span>. So the tier we ship to corner shops — the one whose whole promise is "type over the quantity and a movement is posted behind it" — has no <span class="mono">IVS</span> object in scope. That promise is currently unimplementable on that page, which makes it the most important line in this plan, not a footnote.</p></div>
+<p>Both discoveries point the same way: the ledger is infrastructure, not a feature of one screen. The suite already made this move once, for money — <span class="mono">kz-tender.js</span>, <span class="mono">kz-policy.js</span>, <span class="mono">kz-ticket.js</span>. Stock is the same kind of thing and belongs in the same place.</p>
+
+<h2 id="blast">3 · Blast radius — who sells stocked goods</h2>
+<p class="sub">Every surface that takes money for a physical thing needs to post. Five do; §14 named one.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:20%">Surface</th><th style="width:20%">Sells</th><th>What it needs</th></tr></thead>
+<tbody>
+<tr><td><b>Retail Flex</b></td><td>Stocked products</td><td>The full change: drop the local map, read the ledger, post on payment, reverse on refund. <b>The reference implementation.</b></td></tr>
+<tr><td><b>Grocery till</b></td><td>Stocked products</td><td>Same as Flex, plus its promotions are already applied at tender — the posting hooks the same commit point.</td></tr>
+<tr><td><b>Salon</b></td><td>Retail products + services</td><td>Products post like Flex. Services post nothing — but a service with a back-bar list already posts consumption, so that path exists and must not be duplicated.</td></tr>
+<tr><td><b>Gym</b></td><td>Pro shop &amp; juice bar</td><td>Bar and shop sales are ordinary stocked sales. Memberships and PT are not stock at all.</td></tr>
+<tr><td><b>Restaurant</b></td><td>Menu items with recipes</td><td>The hardest, and the one I would defer — see <a href="#decide">Your call</a>. A dish depletes ingredients, which is composite expansion at every fire, not at payment.</td></tr>
+<tr><td><b>Hotel</b></td><td>Folio charges</td><td>Nothing. A room night is not stock. F&amp;B postings originate in Restaurant and post there.</td></tr>
+</tbody></table></div>
+<div class="note warn"><ion-icon name="restaurant-outline"></ion-icon><p><b>Restaurant breaks the "post on payment" rule, and that is not a bug in the rule.</b> A fired dish has consumed its ingredients whether or not the table ever pays. So hospitality's stock event is <b>fire</b>, not payment — which is a genuinely different commit point and deserves its own decision rather than being folded into this plan quietly.</p></div>
+
+<h2 id="arch">4 · The architectural call</h2>
+<p class="sub">Three options. I recommend the third.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:19%">Option</th><th style="width:33%">Shape</th><th>Assessment</th></tr></thead>
+<tbody>
+<tr><td><b>A · Load <span class="mono">iv-*</span> into every register</b></td><td>Add the Inventory scripts to five register pages</td><td class="n">Rejected. Drags nine sheet files and the whole module UI into a till that needs one function, and makes the register depend on Inventory's internals rather than a contract.</td></tr>
+<tr><td><b>B · Each register keeps its own stock</b></td><td>Status quo, formalised — registers sync to Inventory later</td><td class="n">Rejected. This is the bug. Two on-hands that "reconcile" is the thing the ledger exists to prevent.</td></tr>
+<tr><td><b>C · Promote the ledger to the platform</b></td><td><span class="mono">kz/kz-stock.js</span> owns items, movements, on-hand and posting. Inventory becomes the <i>module UI</i> over it; registers call it directly.</td><td class="y"><b>Recommended.</b> Same move already made for tender, policy and ticket numbering. One on-hand, one posting path, and the register depends on a narrow contract rather than a module.</td></tr>
+</tbody></table></div>
+<div class="ba">
+<div class="bad"><div class="t2">Today</div><code>Inventory.html
+  └ iv-data.js + iv-store.js   ← ledger
+Products v2.html
+  └ iv-data.js only            ← NO engine
+Retail Flex.html
+  └ RX_STOCK_SEED (useState)   ← a 2nd truth
+Salon / Grocery / Gym
+  └ nothing</code></div>
+<div class="good"><div class="t2">Target</div><code>kz/kz-stock.js                 ← the ledger
+  ├ Inventory.html   (module UI)
+  ├ Products v2.html (Lite UI)
+  ├ Retail Flex.html (reads + posts)
+  ├ Salon / Grocery / Gym
+  └ Restaurant (fire-time, later)</code></div>
+</div>
+
+<h2 id="invonly">5 · Does C cover a tenant who <i>only</i> uses Inventory?</h2>
+<p class="sub">Structurally yes — that is the main argument for it. But <b>not as I specified it in the phases below</b>, and the gap is worth fixing before phase 1 rather than after.</p>
+<div class="note"><ion-icon name="checkmark-circle-outline"></ion-icon><p><b>First, the scenario is real and already supported.</b> <span class="mono">kz-caps.js</span> carries Inventory as a first-class module — <span class="mono">core: 'Items'</span>, <i>"The catalogue. Never hideable."</i> A wholesaler, a distributor, a spare-parts dépôt or an NGO stock room is a legitimate Koomzo tenant with no register at all. Any ledger design has to serve it.</p></div>
+<p><b>Why C is the right direction for them.</b> Options A and B both assume a register exists: A loads the POS's dependencies into the ledger's page, and B makes the register the owner of stock truth with Inventory reconciling to it. Under C, Inventory is simply <i>one consumer of the platform</i> — the same relationship Flex has, with no register in the picture. An Inventory-only tenant loads <span class="mono">kz-stock.js</span> and its own UI, full stop.</p>
+<p>The proof that the core is genuinely universal is already in the data model: the movement kinds include <span class="mono">issue</span>, so a tenant that ships goods out on a delivery note or to a job has a path that is <b>not</b> <span class="mono">sale</span>. Stock leaving is not a POS concept. Money changing hands at a till is.</p>
+<h3>But three things in my phases assume a register — all fixable now</h3>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:21%">Hole</th><th style="width:30%">What breaks with no register</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td><b>The tier has no home</b></td><td><span class="mono">Off · Lite · Full</span> is currently a <b>Retail Flex tweak</b> (<span class="mono">rx-app.jsx</span>, and the selector in Flex's own Setup screen). No register means no tier — and <i>Off</i> is incoherent for a tenant whose entire module <b>is</b> stock.</td><td>Move the tier to a <b>tenant capability</b> the register <i>reads</i> rather than owns. Note the Register Spec already calls it "a tenant switch" while the code makes it a register setting — the two already disagree, and this forces the resolution.</td></tr>
+<tr><td><b><span class="mono">postSale</span> is POS vocabulary</b></td><td>Phase 2 puts <span class="mono">postSale</span>, <span class="mono">reverseSale</span> and tier gating in <span class="mono">kz-stock.js</span> — so an Inventory-only tenant loads sale posting it can never call, and the ledger takes a dependency on <span class="mono">KZ_TICKET</span> for a document type it may never see.</td><td><b>Split the file.</b> <span class="mono">kz-stock.js</span> = the universal core. <span class="mono">kz-stock-sales.js</span> = the POS's entry into it. Inventory-only loads the core alone.</td></tr>
+<tr><td><b><span class="mono">who</span> assumes a till</b></td><td>My phase-2 contract passes <span class="mono">register: 'Caisse 1'</span> and stamps <span class="mono">who: register</span>. An Inventory-only tenant's actor is a <b>user in a session</b> — a storekeeper receiving a delivery, not a lane.</td><td>A neutral <span class="mono">actor</span> on every movement: <span class="mono">{ kind: 'register' | 'user', label }</span>. Otherwise inventory-only rows are blank or lie, and "who moved this" is the ledger's whole point.</td></tr>
+</tbody></table></div>
+<div class="note warn"><ion-icon name="information-circle-outline"></ion-icon><p><b>The shape of the correction:</b> C stands, but the platform layer is <b>two files, not one</b> — a universal stock core, and a sales adapter over it. That also answers the reverse asymmetry cleanly: Hotel needs neither, Restaurant will need a <i>third</i> adapter for fire-time depletion, and none of them force their vocabulary on the others. Phases 1 and 2 below are written against the single-file version and are corrected accordingly.</p></div>
+<p><b>One more consequence worth naming.</b> Under the split, <b>Products v2 becomes the Inventory-only tenant's whole product</b> at the Lite tier — a one-screen stock system with no register anywhere. That is a coherent thing to sell, and it is only coherent if the tier is a tenant capability rather than a register tweak.</p>
+
+<h2 id="p1">Phase 1 · The ledger becomes platform</h2>
+<div class="ph">
+<div class="ph__h"><span class="num">1</span><b>Move the engine, keep the module</b><div class="sp"></div><span class="tag plat">Platform</span><span class="tag inv">Inventory</span><span class="meta">no behaviour change</span></div>
+<div class="ph__b">
+<div class="files"><span class="new">kz/kz-stock.js · new</span><span>inventory/iv-store.js</span><span>inventory/iv-data.js</span><span>4 module pages</span></div>
+<p><span class="mono">iv-store.js</span> becomes <span class="mono">kz/kz-stock.js</span>, exposing <span class="mono">window.KZ_STOCK</span>. The existing <span class="mono">IVS</span> global stays as an alias so no existing call site changes — this phase must be <b>provably behaviour-neutral</b>, because everything after it depends on the module still working exactly as it does now.</p>
+<p><b>Corrected by §5:</b> the platform layer is two files. <span class="mono">kz-stock.js</span> holds only what is universal — items, locations, movements, <span class="mono">post()</span>, on-hand, cost averaging, the <span class="mono">actor</span> concept — and takes no dependency on <span class="mono">KZ_TICKET</span>. Sale posting lands in <span class="mono">kz-stock-sales.js</span> in phase 2. An Inventory-only tenant loads the core and nothing else.</p>
+<p>Also in this phase: the stock tier moves out of Flex's tweaks into a <b>tenant capability</b>, since the core has to answer "is this tenant tracking quantities" without asking a register.</p>
+<p>The item and movement collections move with it. Inventory's screens keep reading <span class="mono">IV_ITEMS</span> and <span class="mono">IV.onHand()</span>; those become thin re-exports of the platform's.</p>
+<p><b>Done when:</b> the Inventory module behaves identically — receive, adjust, count, transfer, back-bar all still post — and <span class="mono">KZ_STOCK</span> is reachable from a page that loads none of the <span class="mono">iv-*</span> UI.</p>
+</div>
+</div>
+
+<h2 id="p2">Phase 2 · <span class="mono">postSale</span></h2>
+<div class="ph">
+<div class="ph__h"><span class="num">2</span><b>The function that closes the gap</b><div class="sp"></div><span class="tag inv">Inventory</span><span class="meta">the core change</span></div>
+<div class="ph__b">
+<div class="files"><span class="new">kz/kz-stock-sales.js · new</span></div>
+<p>One document, one movement per line, routed through the core's existing <span class="mono">post()</span> so <span class="mono">before</span> is captured exactly as every other path captures it. This file is <b>the POS's adapter onto the ledger</b> — nothing an Inventory-only tenant loads.</p>
+<div class="ba">
+<div class="good"><div class="t2">Contract</div><code>KZ_SALES.postSale({
+  ticketNo,        // the document
+  locId,           // where it sold
+  actor,           // { kind:'register', label:'Caisse 1' }
+  lines: [{ id, qty, lot, serial }],
+}) → { doc, rows, negatives: [] }
+// tier is READ from the tenant
+// capability, never passed in</code></div>
+<div class="good"><div class="t2">Per line</div><code>KZ_STOCK.post(id, locId, -qty, {
+  kind: 'sale',
+  doc: ticketNo,
+  ref: 'Ticket ' + short(ticketNo),
+  partner: customer || 'Walk-in',
+  actor,                   // user or register
+  cost: qty * item.cost,   // at this moment
+  lot, serial })</code></div>
+</div>
+<p style="margin-top:10px"><b>Tier gating lives here, not at the call site</b> — <i>Off</i> posts nothing and returns cleanly; <i>Lite</i> and <i>Full</i> post identically. One check in one place means no register can forget it, which is the same reasoning that put the tender list in the platform. It reads the tenant capability rather than trusting a caller's argument, so a register cannot claim a tier it does not have.</p>
+<p><b>Returns the negatives it created</b>, so the caller can surface "this sold below zero" without the ledger having to know about UI.</p>
+</div>
+</div>
+
+<h2 id="p3">Phase 3 · Flex reads the ledger</h2>
+<div class="ph">
+<div class="ph__h"><span class="num">3</span><b>Delete the second truth</b><div class="sp"></div><span class="tag reg">Register</span><span class="meta">the change that makes the rest mean anything</span></div>
+<div class="ph__b">
+<div class="files"><span>retailflex/rx-inv.jsx</span><span>retailflex/rx-app.jsx</span><span>retailflex/rx-parts.jsx</span></div>
+<p><span class="mono">RX_STOCK_SEED</span> and the <span class="mono">stock</span> <span class="mono">useState</span> go. Tiles, the Stock tab and the low list all read <span class="mono">KZ_STOCK.onHand(item, loc)</span>; the Stock tab's stepper posts a <span class="mono">count</span> correction instead of mutating a local object. <span class="mono">InventoryView</span>'s <span class="mono">onStock</span> prop disappears entirely.</p>
+<p>Then the actual wiring: on payment, <span class="mono">postSale</span>. Flex already has everything it needs — the ticket number from <span class="mono">KZ_TICKET</span>, the lines, the operator.</p>
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><p><b>A real subtlety.</b> Flex's catalogue is per-<i>preset</i> (nine trades of demo products) while the ledger holds one item set. Either the presets seed real ledger items on switch, or the ledger gains per-preset item sets. I lean to the first — a preset switch is a <i>different shop</i>, so re-seeding is honest — but it is a decision, not a detail.</p></div>
+<p><b>Done when:</b> selling two units on the register makes the number fall in the Inventory module's own Stock screen, with a <span class="mono">sale</span> row carrying the ticket number.</p>
+</div>
+</div>
+
+<h2 id="p4">Phase 4 · Reversals</h2>
+<div class="ph">
+<div class="ph__h"><span class="num">4</span><b>Refunds, exchanges, post-payment voids</b><div class="sp"></div><span class="tag inv">Inventory</span><span class="tag reg">Register</span></div>
+<div class="ph__b">
+<div class="files"><span>kz/kz-stock.js</span><span>retailflex/rx-screens.jsx</span><span>retailflex/rx-ops.jsx</span></div>
+<p><span class="mono">reverseSale({ ticketNo, lines, condition })</span> writes forward-in-time positives referencing the original document — never an edit, never a delete. <span class="mono">condition: 'resellable' | 'damaged'</span> decides whether a second <span class="mono">adjust</span> row follows it out with reason <i>damaged</i>.</p>
+<p>Flex's refund screen gains the resellable/damaged question. It is one control and it is the difference between a shop knowing its shrinkage and guessing it.</p>
+<p><b>Exchange</b> is one document with both movements — the old item in, the new out — not a refund plus an unrelated sale.</p>
+</div>
+</div>
+
+<h2 id="p5">Phase 5 · Products v2 and the Lite promise</h2>
+<div class="ph">
+<div class="ph__h"><span class="num">5</span><b>Give the Lite tier its engine</b><div class="sp"></div><span class="tag inv">Inventory</span><span class="meta">smallest change, biggest promise</span></div>
+<div class="ph__b">
+<div class="files"><span>Koomzo POS - Products v2.html</span><span>inventory/iv-items.jsx</span></div>
+<p>Load <span class="mono">kz/kz-stock.js</span> on the page — a one-line fix for the discovery above. Then make the quantity field honest: typing over it posts a <span class="mono">count</span> movement with reason <i>recount</i>, exactly as the integration spec says it already does.</p>
+<p>This is where the <b>Lite</b> tier's whole story either holds or doesn't. A corner shop's ledger being coherent is what lets it turn on Full later without a migration — and right now that ledger isn't being written.</p>
+</div>
+</div>
+
+<h2 id="p6">Phase 6 · The other registers</h2>
+<div class="ph">
+<div class="ph__h"><span class="num">6</span><b>Grocery, Salon, Gym</b><div class="sp"></div><span class="tag reg">Register</span><span class="meta">repetition, once Flex is the pattern</span></div>
+<div class="ph__b">
+<div class="files"><span>grocery/gr-till.jsx</span><span>salon/sl-pos.jsx</span><span>gym/gm-money.jsx</span><span>3 module pages</span></div>
+<p>Each loads <span class="mono">kz-stock.js</span> and calls <span class="mono">postSale</span> at the point it already marks a sale done — which, after the tender work, is one well-defined place in each. Mechanical by this stage.</p>
+<p><b>Salon needs one check:</b> a service with a back-bar list already posts consumption. The product path must not double-post it, and the boundary is the item's type — <span class="mono">product</span> posts a sale, <span class="mono">service</span> posts only its consumption.</p>
+</div>
+</div>
+
+<h2 id="p7">Phase 7 · Composites</h2>
+<div class="ph">
+<div class="ph__h"><span class="num">7</span><b>Selling a basket depletes its contents</b><div class="sp"></div><span class="tag inv">Inventory</span></div>
+<div class="ph__b">
+<div class="files"><span>kz/kz-stock.js</span></div>
+<p>Inside <span class="mono">postSale</span>: an item with a recipe posts movements for its <b>components</b>, not itself. The recipe is already on the item; nothing new is modelled. Cost is the sum of component costs, which is what makes a bundle's margin real.</p>
+<p>Deliberately after Flex works — it is an expansion of a function that must first exist and be trusted.</p>
+</div>
+</div>
+
+<h2 id="p8">Phase 8 · Idempotency and offline replay</h2>
+<div class="ph">
+<div class="ph__h"><span class="num">8</span><b>Never sell the same unit twice</b><div class="sp"></div><span class="tag inv">Inventory</span><span class="tag plat">Platform</span></div>
+<div class="ph__b">
+<div class="files"><span>kz/kz-stock.js</span></div>
+<p>Keyed on the ticket number, which <span class="mono">KZ_TICKET</span> already guarantees unique per register per session. A second <span class="mono">postSale</span> for a document that already posted is a no-op returning the original result — the same reasoning as the payment idempotency key, and the reason decision 21.4 composed numbers at the till.</p>
+<p>Negatives are surfaced, never clamped. The overview's <i>needs attention</i> list is where they land.</p>
+</div>
+</div>
+
+<h2 id="order">Sequence</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:13%">Stage</th><th style="width:30%">Phases</th><th>Why this order</th></tr></thead>
+<tbody>
+<tr><td><b>Foundation</b></td><td>1 · ledger to platform</td><td>Nothing else is possible until a register can see the ledger. Behaviour-neutral, so it is also the safest thing to do first.</td></tr>
+<tr><td><b>The spine</b></td><td>2 · postSale · 3 · Flex reads it</td><td>These two together are the actual fix. After them, one register tells the truth and there is a pattern to copy.</td></tr>
+<tr><td><b>Correctness</b></td><td>4 · reversals · 8 · idempotency</td><td>A sale that cannot be reversed is worse than one that does not post. Idempotency pairs with it — both are about the ledger not lying.</td></tr>
+<tr><td><b>Coverage</b></td><td>5 · Products v2 · 6 · other registers</td><td>Phase 5 could go earlier — it is one script tag — but its <i>value</i> depends on the posting path being trustworthy.</td></tr>
+<tr><td><b>Depth</b></td><td>7 · composites</td><td>An expansion of a function that must already be trusted.</td></tr>
+<tr><td><b>Separate</b></td><td>Restaurant fire-time depletion</td><td>A different commit point and a different spec. Not in this plan — see below.</td></tr>
+</tbody></table></div>
+
+<h2 id="risk">Risks</h2>
+<div class="rules">
+<div class="rule"><span class="n2">1</span><span class="t"><b>Phase 1 touches every Inventory screen.</b> Mitigation: the <span class="mono">IVS</span> alias means zero call sites change, and the phase ships only when the module is provably identical. If it is not behaviour-neutral, stop rather than proceed.</span></div>
+<div class="rule"><span class="n2">2</span><span class="t"><b>The transaction boundary is being added late.</b> Invariant 3 says the ticket and its movements are one transaction, but the payment flow already shipped without one. <span class="mono">postSale</span> has to be called where a failure can still fail the sale — in this prototype that is a sequencing discipline; in production it is a real transaction, and it is the single most important thing for the backend to get right.</span></div>
+<div class="rule"><span class="n2">3</span><span class="t"><b>Flex's per-preset catalogue versus one ledger item set.</b> Called out in phase 3 and needs your answer before that phase starts, because both options are defensible and they are hard to swap later.</span></div>
+<div class="rule"><span class="n2">4</span><span class="t"><b>Demo data becomes load-bearing.</b> The seeded <span class="mono">kind:'sale'</span> rows must be removed when real posting lands, or the ledger will double-count its own history. Small, easy to forget, visibly wrong to an owner reading a report.</span></div>
+<div class="rule"><span class="n2">5</span><span class="t"><b>Scope creep toward "just sync it".</b> The tempting shortcut is to keep register-local stock and reconcile periodically. That is option B, it is the current bug, and it should be refused explicitly whenever it resurfaces.</span></div>
+</div>
+
+<h2 id="test">How we'll know it works</h2>
+<div class="g2">
+<div class="card"><h4><ion-icon name="swap-vertical-outline"></ion-icon>The round trip</h4><p>Sell 2 on the register → the Inventory module's Stock screen shows the number fall and a <span class="mono">sale</span> row with that ticket number. One number, two screens.</p></div>
+<div class="card"><h4><ion-icon name="return-down-back-outline"></ion-icon>The reversal</h4><p>Refund one as damaged → two rows appear: the unit back on hand, then straight out again with reason <i>damaged</i>. The original row is untouched.</p></div>
+<div class="card"><h4><ion-icon name="repeat-outline"></ion-icon>The replay</h4><p>Call <span class="mono">postSale</span> twice for one ticket → on-hand moves once. This is the offline case, tested without needing to go offline.</p></div>
+<div class="card"><h4><ion-icon name="toggle-outline"></ion-icon>The tiers</h4><p><i>Off</i> sells and posts nothing. <i>Lite</i> and <i>Full</i> produce byte-identical movements — the tier changes screens, never the ledger.</p></div>
+<div class="card"><h4><ion-icon name="layers-outline"></ion-icon>The basket</h4><p>Sell one composite → components fall, the parent does not.</p></div>
+<div class="card"><h4><ion-icon name="trending-down-outline"></ion-icon>The oversell</h4><p>Sell the last 2 twice → on-hand goes negative, is visible, and is not clamped to zero.</p></div>
+</div>
+
+<h2 id="decide">The calls, and how they went</h2>
+<div class="note" style="margin-bottom:14px"><ion-icon name="checkmark-done-outline"></ion-icon><p>All five were taken on my own recommendation, for a market where a shop's stock record is often its only accounting.</p></div>
+<div class="ask">
+<div class="ask__r"><span class="q">1</span><div><b>Decided: out.</b> Not wired. Its stock event is <i>fire</i>, not payment — a cooked dish has consumed its ingredients whether the table pays or not — so folding it in would either corrupt the "post on payment" rule or special-case it invisibly. It deserves its own short spec on recipe depletion at fire time.</div></div>
+<div class="ask__r"><span class="q">2</span><div><b>Decided: presets seed real ledger items</b>, once each, with a real opening-balance movement. Non-Flex modules adopt under a namespaced id so a grocery's plantain and a salon's shampoo cannot collide.</div></div>
+<div class="ask__r"><span class="q">3</span><div><b>How far do I take phase 1?</b> Minimal is <span class="mono">iv-store.js</span> → <span class="mono">kz-stock.js</span> with an alias. Fuller is also moving <span class="mono">IV_ITEMS</span>/<span class="mono">IV_MOVES</span> and making Inventory a pure UI layer. <b>Decided: fuller</b> — the core owns items, movements and posting; the module binds its arrays to it and keeps the documents. The core/adapter split shipped in this phase, as §5 required.</div></div>
+<div class="ask__r"><span class="q">4</span><div><b>Decided: warn, never block.</b> A negative posts, is surfaced in a toast with a <i>Count</i> shortcut, and is never clamped. In this market refusing a sale to protect a number loses a real customer standing at the counter — and the number is the thing more likely to be wrong. A per-trade hard stop stays open for pharmacy and serialised goods.</div></div>
+<div class="ask__r"><span class="q">5</span><div><b>Decided: moved.</b> <span class="mono">KZ_STOCK.tier</span> is the tenant's; Flex's control writes it rather than owning it. It is a Flex tweak today, which leaves an Inventory-only tenant with no tier at all and makes <i>Off</i> incoherent for them. Moving it is a small change with one visible consequence: the Stock control selector leaves the register's Setup screen and joins the capability map, so an owner sets it once for the business rather than per register.</div></div>
+</div>
+</main>
+</div>
+<script>
+const links=[...document.querySelectorAll('.side a.nv')];
+const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('on'));const a=map.get(e.target.id);if(a)a.classList.add('on')}})},{rootMargin:'-10% 0px -80% 0px'});
+document.querySelectorAll('main h2[id]').forEach(h=>io.observe(h));
+</script>
+</body>
+</html>

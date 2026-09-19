@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Progressive Disclosure: Decisions</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.wrap{max-width:900px;margin:0 auto;padding:44px 24px 80px}
+.hd{display:flex;align-items:center;gap:12px}
+.mark{width:38px;height:38px;border-radius:11px;background:var(--kz-primary);display:grid;place-items:center;box-shadow:var(--kz-shadow-key);flex:none}
+.mark ion-icon{color:#fff;font-size:20px}
+h1{margin:0;font:700 27px var(--kz-font-sans);letter-spacing:-.02em;text-wrap:balance}
+.eyebrow{font:600 11px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px 50px}
+.sub{margin:8px 0 32px 50px;font:400 14.5px/1.65 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty;max-width:64ch}
+h2{margin:44px 0 6px;font:700 20px var(--kz-font-sans);letter-spacing:-.02em;text-wrap:balance}
+h2 .n{font:700 13px var(--kz-font-num);color:var(--kz-primary);margin-right:9px}
+h3.sh{margin:26px 0 8px;font:700 15.5px var(--kz-font-sans)}
+.lead{margin:0 0 16px;font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty;max-width:68ch}
+p{font:400 14px/1.72 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty;max-width:70ch}
+p b{font-weight:700;color:var(--kz-ink)}
+.q{background:#fff;border:1px solid var(--kz-border);border-left:3px solid var(--kz-border-strong);border-radius:var(--kz-radius);padding:14px 18px;margin:0 0 18px}
+.q .l{font:600 10.5px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:5px}
+.q p{margin:0;font-size:13.5px;line-height:1.6;color:var(--kz-muted)}
+.q .you{margin-top:9px;padding-top:9px;border-top:1px solid var(--kz-border);font:500 13px/1.6 var(--kz-font-sans);color:var(--kz-ink-2)}
+.q .you b{font-weight:700}
+.rec{background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:16px 18px;margin:0 0 18px}
+.rec .l{display:flex;align-items:center;gap:7px;font:700 10.5px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-primary);margin-bottom:7px}
+.rec .l ion-icon{font-size:14px}
+.rec p{margin:0;font:500 14.5px/1.62 var(--kz-font-sans);color:var(--kz-ink)}
+.rec p+p{margin-top:9px;font-weight:400;font-size:13.5px;color:var(--kz-ink-2)}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:17px 19px;margin-bottom:11px}
+.card h4{margin:0 0 5px;font:700 14px var(--kz-font-sans)}
+.card p{margin:0;font-size:13px;line-height:1.65}
+.card p+p{margin-top:9px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+@media (max-width:760px){.g2,.g3{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-bottom:12px}
+th,td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+.mono{font:600 12px var(--kz-font-num)}
+.ok{color:var(--kz-success);font-weight:700}
+.no{color:var(--kz-border-strong);font-weight:700}
+.note{display:flex;gap:11px;padding:14px 16px;border-radius:var(--kz-radius);background:var(--kz-surface-2);border:1px solid var(--kz-border);font:400 13.5px/1.68 var(--kz-font-sans);color:var(--kz-ink-2);margin:14px 0;text-wrap:pretty}
+.note ion-icon{font-size:19px;color:var(--kz-muted-2);flex:none;margin-top:2px}
+.note b{font-weight:700}
+.note.warn{background:var(--kz-warning-wash);border-color:#f0dcae}
+.note.warn ion-icon{color:#a3761c}
+.note.stop{background:var(--kz-discount-wash);border-color:#f3c8ba}
+.note.stop ion-icon{color:var(--kz-discount)}
+.pull{border-left:3px solid var(--kz-primary);padding:4px 0 4px 18px;margin:22px 0;font:500 16px/1.6 var(--kz-font-sans);color:var(--kz-ink);text-wrap:pretty;max-width:60ch}
+ul{margin:10px 0;padding-left:20px}
+li{font:400 13.5px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty;max-width:70ch}
+li+li{margin-top:5px}
+li b{font-weight:700;color:var(--kz-ink)}
+.links{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.links a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;border-radius:10px;border:1px solid var(--kz-border-strong);background:#fff;font:600 13.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.links a.pri{background:var(--kz-primary);border-color:var(--kz-primary);color:#fff;box-shadow:var(--kz-shadow-key)}
+.plans{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin:16px 0 12px}
+@media (max-width:860px){.plans{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.plans{grid-template-columns:1fr}}
+.plan{position:relative;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:34px 16px 16px;display:flex;flex-direction:column;gap:6px}
+.plan.on{border:1.5px solid var(--kz-primary);box-shadow:var(--kz-shadow-sm)}
+.plan .nm{font:700 15px var(--kz-font-sans)}
+.plan .pr{font:700 22px var(--kz-font-num);letter-spacing:-.02em}
+.plan .pr small{font:500 11.5px var(--kz-font-sans);color:var(--kz-muted-3);display:block;margin-top:2px;letter-spacing:0}
+.plan .for{font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty;min-height:58px}
+.plan ul{margin:6px 0 0;padding-left:0;list-style:none}
+.plan li{font:500 12px/1.5 var(--kz-font-sans);color:var(--kz-ink-2);display:flex;gap:6px;margin-top:5px}
+.plan li ion-icon{font-size:13px;color:var(--kz-success);flex:none;margin-top:2px}
+.plan .badge{position:absolute;top:12px;left:16px;font:700 9.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;background:var(--kz-primary);color:#fff;border-radius:var(--kz-radius-pill);padding:3px 9px}
+.strip{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:14px 18px;display:flex;gap:13px;align-items:center;flex-wrap:wrap}
+.strip .t{font:700 13.5px var(--kz-font-sans)}
+.strip .d{font:400 12.5px/1.5 var(--kz-font-sans);color:var(--kz-muted);margin-top:2px}
+.strip .sp{flex:1;min-width:20px}
+.states{display:flex;align-items:stretch;gap:0;margin:14px 0;flex-wrap:wrap}
+.state{flex:1;min-width:150px;background:#fff;border:1px solid var(--kz-border);padding:14px 15px}
+.state:first-child{border-radius:var(--kz-radius) 0 0 var(--kz-radius)}
+.state:last-child{border-radius:0 var(--kz-radius) var(--kz-radius) 0}
+.state+.state{border-left:none}
+.state .w{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3)}
+.state .n{font:700 14px var(--kz-font-sans);margin-top:4px}
+.state .d{font:400 12.5px/1.58 var(--kz-font-sans);color:var(--kz-muted);margin-top:4px;text-wrap:pretty}
+.state.a{border-top:3px solid var(--kz-success)}
+.state.b{border-top:3px solid var(--kz-warning)}
+.state.c{border-top:3px solid var(--kz-border-strong)}
+@media (max-width:640px){.state,.state:first-child,.state:last-child{border-radius:var(--kz-radius);border-left:1px solid var(--kz-border)}.state+.state{margin-top:9px}}
+.step{display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--kz-border)}
+.step:last-child{border-bottom:none}
+.step .i{width:28px;height:28px;border-radius:999px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 12px var(--kz-font-num);flex:none}
+.step .i ion-icon{font-size:15px}
+.step .t{font:700 13.5px var(--kz-font-sans)}
+.step .d{font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-muted);margin-top:3px;text-wrap:pretty}
+.steps{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:4px 19px}
+</style>
+  <script src="kz/kz-locale.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hd"><div class="mark"><ion-icon name="git-merge-outline"></ion-icon></div><h1>Progressive disclosure — resolved decisions</h1></div>
+<p class="eyebrow">Koomzo Suite · companion to the UX approach</p>
+<p class="sub">The five open questions, answered. Where you gave a direction I have taken it and worked out the mechanics; where you left it to me I have made a call and said why, and what it costs to get wrong.</p>
+
+<div class="links">
+<a class="pri" href="Koomzo - Progressive Disclosure Approach.html"><ion-icon name="layers-outline"></ion-icon>The approach</a>
+<a href="Koomzo POS - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex · Setup</a>
+</div>
+
+<h2><span class="n">01</span>Pricing &amp; tier naming</h2>
+<div class="q">
+  <div class="l">The question</div>
+  <p>Does Lite / Mid / Full appear on the price card, or stay an internal shape with pricing cut by module and seat?</p>
+  <div class="you"><b>Your position:</b> keep the commercial layer as simple as possible; few plans; likely Free · Starter · Standard · Professional · Enterprise · Custom; Free is a 6-month onboarding runway, not forever. <b>Your concern:</b> cloud cost is usage-based — more records cost you more money.</div>
+</div>
+<div class="rec">
+  <div class="l"><ion-icon name="checkmark-circle"></ion-icon>Recommendation</div>
+  <p>Keep Lite / Mid / Full <b>strictly internal</b>. Never put them on the price card.</p>
+  <p>They are the shape of the interface, not the shape of the contract. The moment a merchant believes hiding a screen changes their bill, they stop configuring for clarity and start configuring for cost — and your best UX mechanism becomes a pricing negotiation. Equally, a merchant who wants one advanced capability must not be forced to buy a whole tier of screens they will never open.</p>
+</div>
+<p><b>The trap, stated plainly.</b> Fusing tier to price creates two failures at once. Downward: "I turned off Shifts, why am I still paying Professional?" Upward: "I only need purchase orders, why must I buy the whole Full tier?" Both conversations are unwinnable, and both are avoidable by keeping the two axes separate: <b>plan sets the ceiling, configuration sets the surface.</b></p>
+
+<h3 class="sh">The two axes</h3>
+<table>
+<tr><th>Axis</th><th>Who controls it</th><th>What it does</th><th>Visible where</th></tr>
+<tr><td><b>Plan</b> (Free → Enterprise)</td><td>Owner, via billing</td><td>Sets the <b>ceiling</b>: which capabilities are <em>available</em> to switch on, included seats, included volume, history retention</td><td>Price card, billing screen, and a single line in Setup: "Available on Standard"</td></tr>
+<tr><td><b>Configuration</b> (tier + switches)</td><td>Owner or manager, in Setup</td><td>Sets the <b>surface</b>: which of the available capabilities this business actually sees</td><td>Setup → Screens. Never mentions money</td></tr>
+</table>
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><span>Practically: a Professional merchant may run a Lite surface and that is a healthy, fully-paid account — they bought headroom and calm. A Starter merchant switching everything on still cannot see purchase orders, and Setup says so in one honest line with an upgrade link. No dead ends, no surprises.</span></div>
+
+<h3 class="sh">Four columns, plus a band</h3>
+<p class="lead">Six plans is too many to render and too many to choose from. Four columns on the card, with Enterprise as a "talk to us" band underneath — visually that reads as four decisions, which is the most a merchant will make on a pricing page.</p>
+<div class="plans">
+  <div class="plan">
+    <span class="badge">6 months</span>
+    <div class="nm">Free</div>
+    <div class="pr">0 F<small>one site, one user</small></div>
+    <div class="for">Get selling today. Converts to Starter at month six.</div>
+    <ul>
+      <li><ion-icon name="checkmark"></ion-icon>Lite surface</li>
+      <li><ion-icon name="checkmark"></ion-icon>500 sales / month</li>
+      <li><ion-icon name="checkmark"></ion-icon>6 months history</li>
+    </ul>
+  </div>
+  <div class="plan">
+    <div class="nm">Starter</div>
+    <div class="pr">18 000 F<small>per site / month</small></div>
+    <div class="for">One counter, one or two people. The daily loop, nothing else.</div>
+    <ul>
+      <li><ion-icon name="checkmark"></ion-icon>Lite &amp; Mid capabilities</li>
+      <li><ion-icon name="checkmark"></ion-icon>3 users included</li>
+      <li><ion-icon name="checkmark"></ion-icon>3,000 sales / month</li>
+      <li><ion-icon name="checkmark"></ion-icon>12 months history</li>
+    </ul>
+  </div>
+  <div class="plan on">
+    <span class="badge">Most shops</span>
+    <div class="nm">Standard</div>
+    <div class="pr">42 000 F<small>per site / month</small></div>
+    <div class="for">A real team and real stock. Ordering, counting, accountability.</div>
+    <ul>
+      <li><ion-icon name="checkmark"></ion-icon>All modules, Full capabilities</li>
+      <li><ion-icon name="checkmark"></ion-icon>10 users included</li>
+      <li><ion-icon name="checkmark"></ion-icon>15,000 sales / month</li>
+      <li><ion-icon name="checkmark"></ion-icon>24 months history</li>
+    </ul>
+  </div>
+  <div class="plan">
+    <div class="nm">Professional</div>
+    <div class="pr">85 000 F<small>per site / month</small></div>
+    <div class="for">Several sites under one roll-up, with the reporting to match.</div>
+    <ul>
+      <li><ion-icon name="checkmark"></ion-icon>Multi-site &amp; transfers</li>
+      <li><ion-icon name="checkmark"></ion-icon>Unlimited users</li>
+      <li><ion-icon name="checkmark"></ion-icon>60,000 sales / month</li>
+      <li><ion-icon name="checkmark"></ion-icon>Unlimited history + API</li>
+    </ul>
+  </div>
+</div>
+<div class="strip">
+  <div style="flex:1;min-width:260px"><div class="t">Enterprise &amp; Custom</div><div class="d">Volume above Professional, MRP, custom integrations, dedicated onboarding, SLA. Priced on the shape of the business.</div></div>
+  <div class="sp"></div>
+  <div class="t" style="color:var(--kz-primary)">Talk to us →</div>
+</div>
+<p style="margin-top:14px">Figures are illustrative — the <b>structure</b> is the recommendation. Note what the card does <em>not</em> do: it does not sell modules separately. Odoo's per-app-per-user matrix is powerful and genuinely hard to quote; for a merchant choosing a till, one number per site wins. Restaurant, Salon and Queue are included from Standard because a business <em>is</em> one of those things, not several — charging separately taxes a customer for being a café that also sells beans.</p>
+
+<h3 class="sh">Metering that matches your cost without punishing use</h3>
+<p>Your cost driver is records. Billing on records directly, though, is the worst of all worlds: the merchant cannot predict the bill, and the rational response is to delete their own history — which destroys the reporting that makes the product sticky. So meter on a proxy that correlates with cost and that a merchant already counts.</p>
+<div class="g2">
+  <div class="card"><h4>Meter: sites, seats, monthly sales volume</h4><p>Sites and seats are legible and stable. Sales volume is the honest proxy for write load — each sale fans out into lines, movements, receipts and sync traffic. A merchant knows roughly how many sales they do a month; they do not know how many rows that is.</p></div>
+  <div class="card"><h4>Lever: history retention by plan</h4><p>The single biggest control on usage cost, and defensible because it is stated up front. Free 6 months, Starter 12, Standard 24, Professional unlimited. <b>Export is always free and always complete</b> — retention is a storage policy, never a hostage situation.</p></div>
+  <div class="card"><h4>Lever: hot / cold tiering</h4><p>Recent periods hot, older archived to cheap object storage and rehydrated on request. Invisible to the merchant beyond a spinner on an old report. This is where the margin is, and it is an engineering decision, not a pricing one.</p></div>
+  <div class="card"><h4>Lever: roll-up on write</h4><p>Daily and monthly aggregates written as transactions land, so reports never scan raw rows. Without this, reporting cost grows super-linearly with tenure and your longest-standing customers become your worst margins.</p></div>
+  <div class="card"><h4>Lever: images by URL</h4><p>Product artwork by hosted URL — already built — moves image storage and bandwidth off your bill by default. Offer managed upload from Standard as a convenience, not as the only path.</p></div>
+  <div class="card"><h4>Guardrail: soft limits only</h4><p>Volume overage sends a notice and offers the next plan. It <b>never blocks a sale</b>. A till that refuses to ring up a customer is a business emergency; the merchant will not forgive it, and no overage revenue is worth that.</p></div>
+</div>
+<div class="note stop"><ion-icon name="warning-outline"></ion-icon><span><b>The one absolute.</b> No pricing mechanism may ever stop the register, the kitchen display, or the appointment book from working. Degrade reporting, delay sync, nag the owner by email — never interrupt the transaction. This constraint belongs in the architecture, not in a policy document.</span></div>
+<div class="note warn"><ion-icon name="time-outline"></ion-icon><span><b>On the six-month Free plan.</b> It only works if it is honest from day one: a persistent, quiet "Free plan · 132 days left" line in Setup and on the owner's home, plus milestone emails at 90, 30 and 7 days. A merchant who discovers the deadline in month six churns and tells people. A merchant who has watched the counter all along upgrades, because by then their data is in there.</span></div>
+
+<h2><span class="n">02</span>Who may configure</h2>
+<div class="q">
+  <div class="l">The question</div>
+  <p>Owner-only or a delegated manager role? Is Setup available on a phone, or deliberately desktop-only?</p>
+  <div class="you"><b>Your position:</b> owner and a delegated manager role may configure; configuration limited to tablet and desktop.</div>
+</div>
+<div class="rec">
+  <div class="l"><ion-icon name="checkmark-circle"></ion-icon>Recommendation</div>
+  <p>Agreed, with a three-level split and one addition: on a phone Setup is <b>visible but read-only</b>.</p>
+  <p>Hiding Setup entirely on a phone teaches managers that the app is inconsistent. Showing it read-only answers the question they actually have on the shop floor — "is returns switched on?" — while keeping the change itself a considered, seated act.</p>
+</div>
+<table>
+<tr><th>Role</th><th>Plan &amp; billing</th><th>Capability switches</th><th>Business settings</th><th>Phone</th></tr>
+<tr><td><b>Owner</b></td><td class="ok">Yes</td><td class="ok">Yes</td><td class="ok">Yes</td><td>Read-only</td></tr>
+<tr><td><b>Manager</b> (delegated)</td><td class="no">No</td><td class="ok">Yes, within plan ceiling</td><td>Yes, except tax &amp; legal identity</td><td>Read-only</td></tr>
+<tr><td><b>Staff</b></td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">Not shown</td></tr>
+<tr><td><b>Koomzo support</b></td><td class="no">No</td><td>Proposes only — merchant approves</td><td>Proposes only</td><td class="no">n/a</td></tr>
+</table>
+<p>Three additions that make delegation safe:</p>
+<ul>
+<li><b>Preview as role, before committing.</b> An owner picks a role and a device and sees the exact surface that configuration produces. Configuration without preview is guesswork, and guesswork is why merchants stop touching Setup.</li>
+<li><b>Every change is logged and digested.</b> Who turned what on or off, and when — visible in Setup, summarised to the owner weekly. This is what stops a manager quietly switching off shift counts, and it is also the answer to "why does last month's report have a column this month's doesn't".</li>
+<li><b>Support access is consented and time-boxed.</b> Support never edits live configuration. They build a <em>proposal</em> the merchant reviews and applies — the same instrument as the onboarding questionnaire in §05, which is why it costs almost nothing to build.</li>
+</ul>
+
+<h2><span class="n">03</span>Downgrade behaviour</h2>
+<div class="q">
+  <div class="l">The question</div>
+  <p>Hiding a capability that already holds records — open purchase orders, an unreconciled shift — needs a defined resolution, not a silent hide.</p>
+  <div class="you"><b>Your position:</b> my call, optimising for great UX.</div>
+</div>
+<div class="rec">
+  <div class="l"><ion-icon name="checkmark-circle"></ion-icon>Recommendation</div>
+  <p>A capability is never toggled straight off when it holds open work. Introduce a third state — <b>Winding down</b> — and let the capability retire itself when the last obligation closes.</p>
+  <p>The merchant's intent ("I don't want this screen any more") is honoured immediately and without an argument. The obligation ("three orders are out with suppliers") is not abandoned. Nobody is forced to do paperwork at the moment they asked for simplicity, and nothing silently disappears.</p>
+</div>
+<div class="states">
+  <div class="state a"><div class="w">State 1</div><div class="n">On</div><div class="d">Fully visible. New records can be created.</div></div>
+  <div class="state b"><div class="w">State 2</div><div class="n">Winding down</div><div class="d">Hidden from the rail. Reachable from one banner on the module home listing what is still open. No new records. Auto-retires when the last one closes.</div></div>
+  <div class="state c"><div class="w">State 3</div><div class="n">Off</div><div class="d">Gone from the interface. Data intact, queryable in reports and exports, restored exactly on re-enable.</div></div>
+</div>
+<h3 class="sh">A pre-flight, not a confirm dialog</h3>
+<p>Flipping a switch that holds records opens a short pre-flight naming what is open, and offering a resolution per class of obligation. Three classes, three defaults:</p>
+<div class="steps">
+  <div class="step"><div class="i"><ion-icon name="document-text-outline"></ion-icon></div><div><div class="t">Open documents — purchase orders, transfers, counts</div><div class="d"><b>Default: wind down.</b> "3 orders are still with suppliers. Purchases will stay reachable until they are received, then disappear on its own." Alternative offered: close them out now, guided. Nothing is deleted, and the merchant does no work today.</div></div></div>
+  <div class="step"><div class="i"><ion-icon name="cash-outline"></ion-icon></div><div><div class="t">Money in flight — unreconciled shift, open drawer, unsettled tender</div><div class="d"><b>The one hard block.</b> Money must land somewhere before its screen can be hidden: reconcile now, or record an explicit written-off variance with an owner PIN and a reason. Merchants accept this instantly because they already believe cash needs a count — the block reads as competence, not obstruction.</div></div></div>
+  <div class="step"><div class="i"><ion-icon name="albums-outline"></ion-icon></div><div><div class="t">Reference data with no obligation — customers, categories, suppliers</div><div class="d"><b>Default: hide immediately.</b> Nothing is in flight, so there is nothing to resolve. One line states what becomes invisible and confirms the records stay, then it is done in a single tap.</div></div></div>
+</div>
+<h3 class="sh">Plan downgrades are a different animal</h3>
+<p>A configuration downgrade hides a screen. A <b>plan</b> downgrade can take a merchant below the volume or retention they are already using — a data question, not a UI one. Rules:</p>
+<ul>
+<li><b>Never delete on downgrade.</b> Data beyond the new retention window enters a 30-day read-only grace period with a one-click complete export, and only then ages out.</li>
+<li><b>Show the consequence before the charge changes</b> — "Standard keeps 24 months; you have 31 months of history. 7 months will be archived on 16 September. Export everything now." Specific, dated, actionable.</li>
+<li><b>Re-upgrading inside the grace window restores everything.</b> Merchants downgrade for cash-flow reasons and come back; make that path frictionless and you keep the account.</li>
+</ul>
+
+<h2><span class="n">04</span>Reporting continuity</h2>
+<div class="q">
+  <div class="l">The question</div>
+  <p>When a capability is turned on mid-period, reports gain a dimension mid-series. Backfill, annotate, or segment?</p>
+  <div class="you"><b>Your position:</b> my call, optimising for great UX.</div>
+</div>
+<div class="rec">
+  <div class="l"><ion-icon name="checkmark-circle"></ion-icon>Recommendation</div>
+  <p><b>Annotate and segment. Never backfill.</b> Estimated history is indistinguishable from real history a month later, and the first time a merchant reconciles against their accountant and the numbers are invented, you have lost them permanently.</p>
+  <p>The one honest exception is a <b>merchant-authored opening balance</b>: a dated, labelled record they entered themselves. That is not backfill — it is data, with provenance.</p>
+</div>
+<div class="g3">
+  <div class="card"><h4>Annotate the axis</h4><p>A marker on the date the dimension became available, with a plain-language note: "Cost data available from 12 Aug." The series simply starts there. No zeros, no gaps pretending to be values.</p></div>
+  <div class="card"><h4>Default to the common window</h4><p>Period-over-period comparisons that cross the boundary default to the window both sides support, and say so. The merchant can widen it deliberately — with the caveat shown, not buried in a footnote.</p></div>
+  <div class="card"><h4>Offer an opening balance</h4><p>Enabling valuation asks for an opening count and value. It posts as a dated <span class="mono">opening</span> record, visible in the movement log like any other. Auditable, attributable, honest.</p></div>
+</div>
+<div class="note"><ion-icon name="git-compare-outline"></ion-icon><span><b>Restatement, not silent revision.</b> If a rollup must be recomputed — a corrected cost, a posted count — the report says <b>restated</b> with a date, and the prior figure stays retrievable. A number that changes without explanation costs more trust than a number that was wrong and was labelled as corrected.</span></div>
+<div class="note warn"><ion-icon name="warning-outline"></ion-icon><span><b>Engineering consequence, worth pricing in now.</b> This requires every capability to carry an <span class="mono">enabled_from</span> timestamp, and the reporting layer to read it. Retrofitting that after four modules ship is significantly more expensive than building it into the capability service in Phase 1.</span></div>
+
+<h2><span class="n">05</span>Default tier &amp; the onboarding questionnaire</h2>
+<div class="q">
+  <div class="l">The question</div>
+  <p>Start everyone at Lite and let them climb, or infer a tier from a signup questionnaire and risk starting too complex?</p>
+  <div class="you"><b>Your position:</b> start at Lite. Add a separate app-wide signup / onboarding questionnaire that support staff can use to configure the customer after the Lite plan.</div>
+</div>
+<div class="rec">
+  <div class="l"><ion-icon name="checkmark-circle"></ion-icon>Recommendation</div>
+  <p>Agreed, and the separation you describe is the right one. Everyone lands on <b>Lite</b> and can take money within minutes. The questionnaire is a <b>separate instrument</b> whose output is a reviewable proposal — never a silent reconfiguration.</p>
+  <p>One rule makes it work: the questionnaire asks about the <b>business</b>, never about the software. A merchant can answer "do you accept returns?" on day one. They cannot answer "do you want the returns module?" — that is our vocabulary, not theirs.</p>
+</div>
+<h3 class="sh">Business profile — one instrument, three users</h3>
+<p>The same questionnaire is used by the merchant self-serve, by sales in a demo, and by support on a call. It produces a <b>diff</b>, not a commit.</p>
+<table>
+<tr><th>Asked</th><th>Never asked</th><th>Proposes</th></tr>
+<tr><td>How many people ring up sales?</td><td>"Enable shift management?"</td><td>2+ → shifts, roles, per-user reporting</td></tr>
+<tr><td>Do you accept returns or exchanges?</td><td>"Enable the returns module?"</td><td>Yes → returns, receipt lookup</td></tr>
+<tr><td>Do you count what is on the shelf?</td><td>"Stock control: off / lite / full?"</td><td>Yes → Inventory Lite; "with a stockroom" → Mid</td></tr>
+<tr><td>Do you order from suppliers on paper today?</td><td>"Enable purchase orders?"</td><td>Yes → purchasing, suppliers, reorder points</td></tr>
+<tr><td>How many places do you trade from?</td><td>"Enable multi-location?"</td><td>2+ → locations, transfers, roll-up reporting</td></tr>
+<tr><td>Do customers book time with you?</td><td>"Enable the Salon module?"</td><td>Yes → appointments, services, staff</td></tr>
+</table>
+<ul>
+<li><b>Output is a reviewable diff.</b> "This will add 4 screens and 1 field. Here is what your register will look like." Apply, adjust, or dismiss.</li>
+<li><b>Re-runnable, never a reset.</b> Businesses change. Re-running produces a fresh diff against current configuration; it never reverts choices the merchant made by hand.</li>
+<li><b>Support-assisted uses the identical tool</b> with consent and an audit trail, and can save a proposal for the owner to approve later. One instrument, three audiences, one thing to maintain.</li>
+</ul>
+<h3 class="sh">Climbing without a sales call</h3>
+<p class="lead">A Lite merchant will not browse Setup looking for features. The ladder has to surface itself at the moment of friction — behavioural triggers, never calendar reminders.</p>
+<div class="g3">
+  <div class="card"><h4>Second user invited</h4><p>"Two people on the till — want to track who sold what, and count the drawer at close?" Offers shifts and roles at the moment they became meaningful.</p></div>
+  <div class="card"><h4>Fifth manual stock correction this week</h4><p>"You have corrected stock five times this week. A weekly cycle count usually stops this." Offers counts, with the evidence in the sentence.</p></div>
+  <div class="card"><h4>Second location created</h4><p>"Moving stock between sites? Transfers keep both counts right." Offers transfers once the merchant has created the problem transfers solve.</p></div>
+</div>
+<div class="note"><ion-icon name="stats-chart-outline"></ion-icon><span><b>Instrument this from the first release.</b> Which capabilities get switched on, in what order, and how long after signup — that data is what re-cuts the tier presets and the trigger thresholds. The ladder should end up reflecting observed behaviour, not our opening guess.</span></div>
+
+<h2><span class="n">06</span>What this changes in the build</h2>
+<p class="lead">Four items move earlier because retrofitting them is materially more expensive than building them in.</p>
+<div class="steps">
+  <div class="step"><div class="i">1</div><div><div class="t">Capability service carries plan ceiling and <span class="mono">enabled_from</span></div><div class="d">One resolver folding plan → tier → switch → role → device, and a timestamp per capability. Both the pricing model (§01) and reporting continuity (§04) depend on it. Phase 1, non-negotiable.</div></div></div>
+  <div class="step"><div class="i">2</div><div><div class="t">Three-state capability, not a boolean</div><div class="d">On / winding down / off. Cheap now, invasive later — every screen that reads a boolean would need revisiting.</div></div></div>
+  <div class="step"><div class="i">3</div><div><div class="t">Roll-up-on-write in the reporting layer</div><div class="d">Your usage-based cost problem is really a reporting-scan problem. Aggregates written as transactions land keep margin flat as tenure grows.</div></div></div>
+  <div class="step"><div class="i">4</div><div><div class="t">Business profile as a first-class screen</div><div class="d">Not a signup wizard. A re-runnable screen producing a reviewable diff, shared by merchant, sales and support. It replaces most configuration training.</div></div></div>
+</div>
+
+<div class="pull">Plan sets the ceiling. Configuration sets the surface. Money never blocks the till, and history is never invented.</div>
+
+</div>
+</body>
+</html>

@@ -66,6 +66,7 @@ const MODULES = [
       C('categories','Categories','Category list, glyphs and tile style.','albums-outline','mid','starter'),
       C('tickets','Open tickets','Park a sale and come back to it.','pause-outline','mid','starter','docs'),
       C('returns','Returns','Refunds against a receipt.','refresh-outline','mid','starter','docs'),
+C('prepare','Prepare & send','Route a line to the counter that makes it — one station, no courses.','flame-outline','mid','starter'),
       C('customers','Customers','Named accounts, loyalty, notes.','people-outline','mid','starter','reference'),
       C('shift','Shift & drawer','Float, count, Z-report.','cash-outline','full','standard','money',{ roles:['owner','manager'] }),
       C('discounts','Manager discounts','Approval above a threshold.','pricetag-outline','full','standard',null,{ roles:['owner','manager'] }),
@@ -94,6 +95,7 @@ const MODULES = [
     core:'Appointment book', coreDesc:'Today and the calendar. Never hideable.',
     file:'Koomzo Salon - Appointments, Tasks, Team.html',
     caps:[
+      C('prepare','Prepare & send','Send a service to the stylist who performs it.','flame-outline','mid','starter'),
       C('register','Take payment','Sell a service or a product at the chair.','card-outline','lite','free'),
       C('services','Services','Authoring: duration, staff, price.','list-outline','lite','free'),
       C('team','Team','Who works when, and on what.','people-outline','mid','starter','reference'),
@@ -171,6 +173,7 @@ const MODULES = [
     core:'Till', coreDesc:'The Retail register with grocery behaviours bolted on. Never hideable.',
     file:'Koomzo Grocery - Till, Dates & Shelf.html',
     caps:[
+      C('prepare','Prepare & send','Send a line to the butcher, bakery or juice counter.','flame-outline','mid','starter'),
       C('weigh','Weighed items','Scale-priced goods, price per kilo.','speedometer-outline','lite','free'),
       C('plu','PLU keypad','Type a short code for loose produce.','keypad-outline','lite','free'),
       C('age','Age-restricted prompts','Beer, spirits and tobacco confirm age before ringing.','warning-outline','lite','free','docs'),

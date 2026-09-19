@@ -2,24 +2,43 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Koomzo POS — Retail</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo POS — Retail (now Retail Flex)</title>
 <link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
 <link rel="stylesheet" href="pos/colors_and_type.css" />
-<link rel="stylesheet" href="retail/rt.css" />
+<meta http-equiv="refresh" content="6;url=Koomzo POS - Retail Flex.html" />
 <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-  <script src="kz/kz-locale.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);padding:24px}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);box-shadow:var(--kz-shadow);max-width:520px;padding:30px 32px}
+.ic{width:44px;height:44px;border-radius:12px;background:var(--kz-primary-wash);display:grid;place-items:center;margin-bottom:16px}
+.ic ion-icon{font-size:22px;color:var(--kz-primary)}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-muted-3);margin:0 0 6px}
+h1{margin:0 0 10px;font:700 21px var(--kz-font-sans);letter-spacing:-.02em}
+p{margin:0 0 12px;font:400 14px/1.68 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+ul{margin:0 0 16px;padding-left:18px}
+li{font:400 13.5px/1.7 var(--kz-font-sans);color:var(--kz-ink-2)}
+.go{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:10px;background:var(--kz-primary);color:#fff;font:600 13.5px var(--kz-font-sans);box-shadow:var(--kz-shadow-key)}
+.go:hover{background:var(--kz-primary-shade);color:#fff}
+.sub{margin:14px 0 0;font:400 12.5px var(--kz-font-sans);color:var(--kz-muted-3)}
+</style>
 </head>
 <body>
-<div id="root"></div>
-<script src="retail/rt-data.js"></script>
-<script type="text/babel" src="pos/tweaks-panel.jsx"></script>
-<script type="text/babel" src="retail/rt-parts.jsx"></script>
-<script type="text/babel" src="retail/rt-screens.jsx"></script>
-<script type="text/babel" src="retail/rt-app.jsx"></script>
+<div class="card">
+<div class="ic"><ion-icon name="git-merge-outline"></ion-icon></div>
+<p class="eb">Change 11 · converged</p>
+<h1>The Retail register is now Retail Flex</h1>
+<p>There were two retail registers doing one job. Flex's editable capability map became the model, and Retail's six fixed profiles became presets inside it — so the one-tap setup survives without the lock-in.</p>
+<p>All six are there, alongside three more:</p>
+<ul>
+<li>Grocery &amp; Convenience · Clothing · Hardware</li>
+<li>Electronics / Repair · Salon add-ons · Bakery / Deli</li>
+<li>Plus Pharmacy, Beauty and the rest Flex already carried</li>
+</ul>
+<p><a class="go" href="Koomzo POS - Retail Flex.html"><ion-icon name="arrow-forward-outline"></ion-icon>Open Retail Flex</a></p>
+<p class="sub">Redirecting in a few seconds. <code>kz-caps.js</code> already named Flex as the retail module's file — this only retires the duplicate tree.</p>
+</div>
 </body>
 </html>

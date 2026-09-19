@@ -139,7 +139,7 @@ function SettingsView({ api }) {
               <div className="panel__bd">
                 <div className="dl">
                   <div className="dlr"><span className="k">Opening hours</span><span className="v num">{fmtS(SL.open)} – {fmtS(SL.close)}</span></div>
-                  <div className="dlr"><span className="k">TVA</span><span className="v num">{String(+(SL.tax * 100).toFixed(2)).replace('.', ',') + ' %'}</span></div>
+                  <div className="dlr"><span className="k">TVA</span><span className="v num">{window.KZ_POLICY.taxLabelFor('salon')}</span></div>
                   <div className="dlr"><span className="k">Pay week ends</span><span className="v">Sunday</span></div>
                 </div>
                 <div className="trow2" style={{ marginTop: 8 }}>

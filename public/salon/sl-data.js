@@ -126,6 +126,8 @@ window.SL = (function () {
     { id: 'p7', name: 'Carte cadeau', cat: 'Retail', price: 20000, stock: null, icon: 'gift-outline' },
   ];
 
-  return { staff, services, appts, tasks, days, myWeek, team, clients, products, tax: 0.1925,
+  /* no tax rate here — TVA is national and lives in kz/kz-locale.js; whether
+     this trade charges it is kz/kz-policy.js's answer (spec 21 / gap 3) */
+  return { staff, services, appts, tasks, days, myWeek, team, clients, products,
     now: 680, open: 540, close: 1140, today: 'Thu 13 Aug', me: 's1', shop: 'Salon Lumière · Bonapriso' };
 })();

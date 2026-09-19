@@ -39,44 +39,25 @@
   let cySeq = 0, msgSeq = 0;
   const nextNo = (prefix, seq) => prefix + '-' + String(seq).padStart(4, '0');
 
-  /* who is posting — in production this is the session user, immutable for the session */
-  const WHO = 'M. Ekindi';
+  /* The ledger itself now lives in kz/kz-stock.js — it was module-private here, which
+     is why no register could post a sale. This file keeps the module's DOCUMENTS
+     (orders, counts, transfers, partners) and delegates every quantity change. */
+  window.KZ_STOCK.bind(window.IV_ITEMS, window.IV_MOVES);
+  const WHO = window.KZ_STOCK.user;
+  /* a post from anywhere — including a register — re-renders this module's views */
+  window.KZ_STOCK.sub(() => bump());
 
   window.IV_CYCLES = window.IV_CYCLES || [];
   window.IV_OUTBOX = window.IV_OUTBOX || [];
 
   const toasts = [];
 
-  /* ---------- primitives ---------- */
-  function move(m) {
-    const row = Object.assign({ id: 'm' + (++mSeq), at: clock(), who: WHO }, m);
-    window.IV_MOVES.unshift(row);
-    return row;
-  }
-  function applyStock(itemId, locId, delta) {
-    const it = window.IV.item(itemId);
-    if (!it || !it.stock) return;
-    it.stock[locId] = (it.stock[locId] || 0) + delta;
-  }
-  /* one posting: capture the on-hand BEFORE, apply, write the movement carrying it.
-     Every quantity change in this file goes through here, so `before` is never absent
-     and the ledger can always show 12 → 9 rather than a bare −3. */
-  function post(itemId, locId, delta, row) {
-    const it = window.IV.item(itemId);
-    const before = it && it.stock ? (it.stock[locId] || 0) : 0;
-    applyStock(itemId, locId, delta);
-    return move(Object.assign({ item: itemId, loc: locId, qty: delta, before: before }, row));
-  }
-  /* weighted average, rounded to whole francs on every write — XAF has no minor unit,
-     so an unrounded unit cost would make every downstream valuation fractional. */
-  function reaverage(itemId, qty, unitCost) {
-    const it = window.IV.item(itemId);
-    if (!it || !it.stock || !qty) return it ? it.cost : 0;
-    const held = window.IV.onHand(it, 'all');
-    const before = it.cost || 0;
-    it.cost = Math.round(((held * before) + (qty * unitCost)) / Math.max(1, held + qty));
-    return it.cost;
-  }
+  /* ---------- primitives: one line each, because the ledger owns them now ----------
+     post() captures the on-hand BEFORE, applies, and writes the row carrying it. It is
+     the same function the registers call, so a sale and a receipt are the same kind of
+     event recorded the same way. */
+  const post = (itemId, locId, delta, row) => window.KZ_STOCK.post(itemId, locId, delta, row);
+  const reaverage = (itemId, qty, unitCost) => window.KZ_STOCK.reaverage(itemId, qty, unitCost);
 
   const IVS = {
     /* ---------- store ---------- */

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo Inventory — IA &amp; integration</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.wrap{max-width:860px;margin:0 auto;padding:40px 24px 72px}
+.hd{display:flex;align-items:center;gap:12px}
+.mark{width:38px;height:38px;border-radius:11px;background:var(--kz-primary);display:grid;place-items:center;box-shadow:var(--kz-shadow-key);flex:none}
+.mark ion-icon{color:#fff;font-size:20px}
+h1{margin:0;font:700 26px var(--kz-font-sans);letter-spacing:-.02em}
+.sub{margin:6px 0 30px 50px;font:400 14px/1.6 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+h2{margin:36px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em}
+.lead{margin:0 0 16px;font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:18px 20px;margin-bottom:12px}
+.card h3{margin:0 0 4px;font:700 15px var(--kz-font-sans)}
+.card p{margin:0;font-size:13.5px;line-height:1.65}
+.card p+p{margin-top:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:720px){.grid2,.grid3{grid-template-columns:1fr}}
+.tier{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:18px;display:flex;flex-direction:column;gap:8px}
+.tier.on{border:1.5px solid var(--kz-primary);background:var(--kz-primary-wash)}
+.tier .ic{width:38px;height:38px;border-radius:11px;background:var(--kz-surface-2);color:var(--kz-muted-2);display:grid;place-items:center}
+.tier.on .ic{background:var(--kz-primary);color:#fff}
+.tier .n{font:700 15px var(--kz-font-sans)}
+.tier .w{font:600 11px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+.tier .d{font:400 13px/1.6 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+.tier ul{margin:2px 0 0;padding-left:17px}
+.tier li{font:500 12.5px/1.7 var(--kz-font-sans);color:var(--kz-ink-2)}
+.flow{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:6px 20px}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--kz-border)}
+.step:last-child{border-bottom:none}
+.step .i{width:28px;height:28px;border-radius:999px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 12px var(--kz-font-num);flex:none}
+.step .t{font:700 13.5px var(--kz-font-sans)}
+.step .d{font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-muted);margin-top:3px;text-wrap:pretty}
+code{font:600 12.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:2px 6px;color:var(--kz-ink-2)}
+.note{display:flex;gap:11px;padding:14px 16px;border-radius:var(--kz-radius);background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-ink-2);margin:14px 0;text-wrap:pretty}
+.note ion-icon{font-size:19px;color:var(--kz-primary);flex:none;margin-top:2px}
+.note b{font-weight:700}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--kz-border);font:400 13px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700}
+.links{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.links a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;border-radius:10px;border:1px solid var(--kz-border-strong);background:#fff;font:600 13.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.links a.pri{background:var(--kz-primary);border-color:var(--kz-primary);color:#fff;box-shadow:var(--kz-shadow-key)}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tg{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:var(--kz-radius-pill);background:var(--kz-surface-2);border:1px solid var(--kz-border);font:600 11.5px var(--kz-font-sans);color:var(--kz-muted-2)}
+.tg.on{background:var(--kz-primary-wash);border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hd"><div class="mark"><ion-icon name="cube-outline"></ion-icon></div><h1>Inventory — information architecture &amp; POS integration</h1></div>
+<p class="sub">How stock is modelled once and consumed everywhere: the register, the salon, the kiosk. Answers the four questions in the brief — catalogue population, service authoring, how small a small shop can go, and where the module lives inside Retail and Retail&nbsp;Flex.</p>
+
+<div class="links">
+<a class="pri" href="Koomzo POS - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Inventory module</a>
+<a href="Koomzo POS - Products v2.html"><ion-icon name="list-outline"></ion-icon>Products v2 (Lite)</a>
+<a href="Koomzo POS - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex · Stock tab</a>
+</div>
+
+<h2>1 · One object, four faces</h2>
+<p class="lead">There is no separate "product database" and "POS catalogue". There is one <b>Item</b>, and the register is one of its channels.</p>
+<div class="grid2">
+  <div class="card"><h3>Item</h3><p>Name, SKU, barcode, price, cost, category, type. Everything a merchant types once. Four types: <b>product</b>, <b>service</b>, <b>composite</b>, <b>non-stock</b>.</p></div>
+  <div class="card"><h3>Stock</h3><p>A quantity per <em>item × location</em>. Only products carry it. Services and gift cards have none, and the UI says so rather than showing a zero.</p></div>
+  <div class="card"><h3>Movement</h3><p>Every change of quantity is a row: sale, receipt, transfer, adjust, count. Nothing edits a quantity silently — that single rule is what makes shrinkage readable.</p></div>
+  <div class="card"><h3>Channel</h3><p>The <code>pos</code> block on the item: show/hide, register category, tile style. This is the join between inventory and the register — nothing else crosses.</p></div>
+</div>
+
+<h2>2 · How products reach the POS catalogue</h2>
+<p class="lead">Explicit, per item, with a live preview of the tile the cashier will see. No implicit sync, no second catalogue to maintain.</p>
+<div class="flow">
+  <div class="step"><div class="i">1</div><div><div class="t">Author the item once, in Inventory</div><div class="d">Items → New item. Name, SKU, barcode, cost, price. The barcode is what a scan resolves to at the lane.</div></div></div>
+  <div class="step"><div class="i">2</div><div><div class="t">Turn on <b>Show in POS</b></div><div class="d">On the item's POS tab. Off is a real state, not an oversight: back-bar colour, developer and foil are stocked, ordered and counted, but must never appear on a register grid.</div></div></div>
+  <div class="step"><div class="i">3</div><div><div class="t">Pick a register category and tile style</div><div class="d">Category drives the chip rail on the board; tile style picks image tile, text key or list row. The pane renders the exact tile as you choose — the merchant never guesses.</div></div></div>
+  <div class="step"><div class="i">4</div><div><div class="t">The register reads, never writes</div><div class="d">The board renders every item with <code>pos.show = true</code> for its location. Availability comes from the same stock record: low shows a count on the tile, out dims the tile.</div></div></div>
+  <div class="step"><div class="i">5</div><div><div class="t">Selling posts a movement back</div><div class="d">One <code>sale</code> row against the selling location. A composite depletes its recipe instead of itself. A service depletes only what it consumes.</div></div></div>
+</div>
+<div class="note"><ion-icon name="bulb-outline"></ion-icon><span><b>Why a toggle rather than automatic.</b> Auto-publish looks tidy until a salon has 40 back-bar SKUs, a warehouse holds packaging, and a kiosk should sell 12 lines out of 300. Bulk-select on the Items list makes the toggle cheap for the common case: select all, Show in POS, done.</span></div>
+
+<h2>3 · Services — same catalogue, different physics</h2>
+<p class="lead">A salon service is an Item with <code>type = service</code>. It sits in the same list, uses the same pricing and tax, and appears on the register through the same POS toggle. What changes is what it holds.</p>
+<table>
+<tr><th>Field</th><th>Product</th><th>Service</th></tr>
+<tr><td><b>Quantity</b></td><td>On hand per location</td><td>None. Capacity is staff time, not units</td></tr>
+<tr><td><b>Duration</b></td><td>—</td><td>Service time + clean-up buffer, feeds Appointments</td></tr>
+<tr><td><b>Who</b></td><td>—</td><td>Staff who may perform it; optional price per stylist level</td></tr>
+<tr><td><b>Resource</b></td><td>—</td><td>Chair, colour bar, treatment room</td></tr>
+<tr><td><b>Cost</b></td><td>Unit cost, re-averaged on receipt</td><td>Back-bar consumption × component cost</td></tr>
+<tr><td><b>On sale</b></td><td>One unit out</td><td>Books time, posts commission, depletes consumption list</td></tr>
+</table>
+<div class="note"><ion-icon name="color-fill-outline"></ion-icon><span><b>The back bar is the whole trick.</b> Colour, developer and foil are ordinary stocked products with <b>Show in POS</b> off. A colour service lists them under <em>Consumes on completion</em> with a quantity. Completing the appointment posts one adjustment per component with reason <em>Back-bar use</em> — so the salon finally sees its true service margin, and reorders colour on data instead of memory.</span></div>
+<p>Services that should never be sold at the register — a patch test, a consultation — simply keep <b>Show in POS</b> off while staying bookable online. Same toggle, same mental model.</p>
+
+<h2>4 · Does every retail POS need an inventory module?</h2>
+<p class="lead">No. Three tiers, one module, one data model. The merchant moves up a tier without a migration, and never sees a screen their business does not run.</p>
+<div class="grid3">
+  <div class="tier"><div class="ic"><ion-icon name="pricetag-outline"></ion-icon></div><span class="w">Tier 0</span><div class="n">Off</div>
+    <div class="d">A fixed product list with prices. No quantities, nothing ever out of stock.</div>
+    <ul><li>Market stall, bar, food truck</li><li>Rail shows no Stock tab</li></ul></div>
+  <div class="tier on"><div class="ic"><ion-icon name="list-outline"></ion-icon></div><span class="w">Tier 1 · default</span><div class="n">Lite</div>
+    <div class="d">One screen: item, price, a quantity you can type over, and Show in POS. Sales decrement it.</div>
+    <ul><li>Corner shop, single salon</li><li>No orders, counts or transfers</li><li>Shipped as <b>Products v2</b></li></ul></div>
+  <div class="tier"><div class="ic"><ion-icon name="cube-outline"></ion-icon></div><span class="w">Tier 2</span><div class="n">Full</div>
+    <div class="d">The module: purchasing, receiving, counts, transfers, composites, valuation, suppliers.</div>
+    <ul><li>Multi-store, warehouse, pharmacy</li><li>Every capability individually optional</li></ul></div>
+</div>
+<p>Progressive disclosure is enforced in one place — the capability map in <b>Setup</b>. A capability that is off removes its rail item, its fields on the item pane and its column in reports. Turning it on adds them back with the data already there; nothing is migrated, nothing is lost switching down.</p>
+<div class="tagrow">
+<span class="tg on">Items &amp; on hand</span><span class="tg on">Movement log</span><span class="tg">Multiple locations</span><span class="tg">Purchase orders</span><span class="tg">Stock counts</span><span class="tg">Transfers</span><span class="tg">Composites</span><span class="tg">Valuation &amp; COGS</span><span class="tg">Reorder suggestions</span><span class="tg">Suppliers</span><span class="tg">Batch &amp; expiry</span><span class="tg">Serials</span>
+</div>
+<p class="lead" style="margin-top:8px">Highlighted two are always on — everything else is a switch.</p>
+
+<h2>5 · Where it lives inside the POS</h2>
+<p class="lead">Same shell, same rail, same gestures. Inventory is not a different application the cashier has to learn.</p>
+<div class="grid2">
+  <div class="card"><h3>In the register — a Stock rail item</h3><p>Second position, right after Register. What a lane actually needs mid-shift: on-hand for this location, a stepper to correct a count, Show in POS, and a needs-ordering list. In Full mode it adds quick receive so a delivery can be scanned in without leaving the lane.</p><p>An <b>Open inventory</b> button hands off to the full module for anything deeper.</p></div>
+  <div class="card"><h3>On the board — availability, not surprise</h3><p>With stock control on, tiles carry the truth: a count badge when low, a dimmed tile and <em>Out</em> flag at zero. Hidden items disappear from the grid entirely. Nothing else about the register changes.</p></div>
+  <div class="card"><h3>In Setup — one selector</h3><p><em>Stock control: Off · Lite · Full</em> sits with the other register settings, beside item entry and tile style. It is the same three tiers, chosen where every other capability of the board is chosen.</p></div>
+  <div class="card"><h3>Across modules</h3><p>Salon Appointments reads services and posts back-bar consumption. The self-serve kiosk reads the same <code>pos.show</code> flag. Retail and Retail Flex share one catalogue; a location decides which subset a device sells.</p></div>
+</div>
+
+<h2>6 · Screen map</h2>
+<table>
+<tr><th>Screen</th><th>Question it answers</th><th>Tier</th></tr>
+<tr><td><b>Overview</b></td><td>What needs me today — low, out, expiring, on order, recent movement</td><td>Full</td></tr>
+<tr><td><b>Items</b></td><td>What do we sell, at what price, visible where</td><td>All</td></tr>
+<tr><td><b>Stock</b></td><td>How much is where, and every change that got it there</td><td>Lite +</td></tr>
+<tr><td><b>Purchases</b></td><td>What is on order, what arrived, what it cost</td><td>Full</td></tr>
+<tr><td><b>Counts</b></td><td>Is the number true — variance in units and in money</td><td>Full</td></tr>
+<tr><td><b>Transfers</b></td><td>What is in motion between locations</td><td>Full</td></tr>
+<tr><td><b>Reports</b></td><td>Value, margin, turnover, leakage</td><td>Full</td></tr>
+<tr><td><b>Suppliers</b></td><td>Who to buy from, lead time, reliability</td><td>Full</td></tr>
+<tr><td><b>Setup</b></td><td>Which of the above this business actually runs</td><td>All</td></tr>
+</table>
+
+<div class="note" style="margin-top:22px"><ion-icon name="phone-portrait-outline"></ion-icon><span><b>Responsive behaviour.</b> Every screen is container-queried, not media-queried, so the same markup previews at desktop, tablet and phone. On phone the rail becomes a bottom bar, item columns collapse to name + stock, and the detail pane becomes a full-screen sheet with a sticky save bar.</span></div>
+
+</div>
+</body>
+</html>

@@ -2,8 +2,8 @@
 const { useState, useMemo, useEffect, useRef } = React;
 
 const HT = window.HT;
-/* non-breaking throughout: a currency figure must never wrap mid-number */
-const xaf = (n) => (n < 0 ? '−' : '') + Math.abs(Math.round(n)).toLocaleString('fr-FR').replace(/\u202f|\u00a0|\s/g, '\u00a0') + '\u00a0F';
+/* one formatter, defined in kz/kz-locale.js — this module used to restate it */
+const xaf = window.money;
 const typeOf = (id) => HT.types.find((t) => t.id === id) || HT.types[0];
 const roomOf = (no) => HT.rooms.find((r) => r.no === no);
 const userOf = (id) => HT.staff.find((s) => s.id === id) || HT.staff[0];

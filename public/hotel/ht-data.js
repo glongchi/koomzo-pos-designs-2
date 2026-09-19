@@ -212,13 +212,9 @@ window.HT = {
     { id:'agent',     name:'Travel agent',   icon:'briefcase-outline', ota:true },
   ],
 
-  tenders: [
-    { id:'cash',   name:'Cash',         icon:'cash-outline' },
-    { id:'momo',   name:'MTN MoMo',     icon:'phone-portrait-outline' },
-    { id:'orange', name:'Orange Money', icon:'phone-portrait-outline' },
-    { id:'card',   name:'Card',         icon:'card-outline' },
-    { id:'account',name:'To account',   icon:'document-text-outline' },
-  ],
+  /* the platform four, plus the company account a corporate folio settles to.
+     'tab' IS that account — one id across the suite, not 'account' here. */
+  tenders: window.KZ_TENDER.named({ tab: true }),
 
   /* last night's numbers, for the audit and the occupancy screens */
   perf: {

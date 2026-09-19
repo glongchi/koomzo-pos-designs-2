@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo Signage — IA &amp; capabilities</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.wrap{max-width:900px;margin:0 auto;padding:40px 24px 80px}
+.hd{display:flex;align-items:center;gap:12px}
+.mark{width:38px;height:38px;border-radius:11px;background:#8d3fb0;display:grid;place-items:center;box-shadow:var(--kz-shadow-key);flex:none}
+.mark ion-icon{color:#fff;font-size:20px}
+h1{margin:0;font:700 26px var(--kz-font-sans);letter-spacing:-.02em}
+.sub{margin:6px 0 30px 50px;font:400 14px/1.6 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+h2{margin:38px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em}
+.lead{margin:0 0 16px;font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:18px 20px}
+.card h3{margin:0 0 4px;font:700 15px var(--kz-font-sans);display:flex;align-items:center;gap:8px}
+.card h3 ion-icon{font-size:17px;color:#8d3fb0}
+.card p{margin:0;font-size:13.5px;line-height:1.65}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:760px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.tier{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:18px;display:flex;flex-direction:column;gap:8px}
+.tier.on{border:1.5px solid #8d3fb0;background:#8d3fb00d}
+.tier .ic{width:38px;height:38px;border-radius:11px;background:var(--kz-surface-2);color:var(--kz-muted-2);display:grid;place-items:center}
+.tier.on .ic{background:#8d3fb0;color:#fff}
+.tier .n{font:700 15px var(--kz-font-sans)}
+.tier .w{font:600 11px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+.tier .d{font:400 13px/1.6 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+.tier ul{margin:2px 0 0;padding-left:17px;display:flex;flex-direction:column;gap:3px}
+.tier li{font:500 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2)}
+.flow{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:6px 20px}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--kz-border)}
+.step:last-child{border-bottom:none}
+.step .i{width:28px;height:28px;border-radius:999px;background:#8d3fb01a;color:#8d3fb0;display:grid;place-items:center;font:700 12px var(--kz-font-num);flex:none}
+.step .t{font:700 13.5px var(--kz-font-sans)}
+.step .d{font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-muted);margin-top:3px;text-wrap:pretty}
+code{font:600 12.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:2px 6px;color:var(--kz-ink-2)}
+.note{display:flex;gap:11px;padding:14px 16px;border-radius:var(--kz-radius);background:#8d3fb00f;border:1px solid #8d3fb033;font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-ink-2);margin:14px 0;text-wrap:pretty}
+.note ion-icon{font-size:19px;color:#8d3fb0;flex:none;margin-top:2px}
+.note b{font-weight:700}
+.note.warn{background:var(--kz-warning-wash);border-color:#efdcae}
+.note.warn ion-icon{color:#c98a20}
+.tbl{overflow-x:auto;border:1px solid var(--kz-border);border-radius:var(--kz-radius);background:#fff}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--kz-border);font:400 13px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700}
+td.nw{white-space:nowrap}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:var(--kz-radius-pill);font:600 11px var(--kz-font-sans);background:var(--kz-surface-2);border:1px solid var(--kz-border);color:var(--kz-muted-2)}
+.pill.lite{background:#2e9e5b14;border-color:#2e9e5b3d;color:#217844}
+.pill.mid{background:#b4791c14;border-color:#b4791c3d;color:#8d5f14}
+.pill.full{background:#8d3fb014;border-color:#8d3fb03d;color:#743394}
+.links{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.links a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;border-radius:10px;border:1px solid var(--kz-border-strong);background:#fff;font:600 13.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:#8d3fb066;color:#8d3fb0}
+.links a.pri{background:#8d3fb0;border-color:#8d3fb0;color:#fff;box-shadow:var(--kz-shadow-key)}
+.links a.pri:hover{color:#fff}
+.ol{display:flex;flex-direction:column;gap:10px}
+.ol .q{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:14px 18px;font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.ol .q b{display:block;font:700 13px var(--kz-font-sans);color:var(--kz-ink);margin-bottom:3px}
+</style>
+  <script src="kz/kz-locale.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hd"><div class="mark"><ion-icon name="tv-outline"></ion-icon></div><h1>Signage — information architecture &amp; capabilities</h1></div>
+<p class="sub">A screen module for a platform that already knows the prices, the menu, the stock and the queue. Signage owns the players, the playlists and the layouts; it owns none of the content. Designed for a 4G dongle that drops for hours at a time, a TV stick with a small cache, and a manager who authors on a desktop and checks from a phone.</p>
+
+<div class="links">
+<a class="pri" href="Koomzo - Functional Specification.html"><ion-icon name="document-text-outline"></ion-icon>Functional spec · Signage</a>
+<a href="Koomzo POS - Restaurant &amp; Bar.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant</a>
+<a href="Koomzo Grocery - Till, Dates &amp; Shelf.html"><ion-icon name="basket-outline"></ion-icon>Grocery</a>
+<a href="Koomzo Queue Management.html"><ion-icon name="people-outline"></ion-icon>Queue</a>
+<a href="Koomzo Hotel - Rooms, Folio &amp; Housekeeping.html"><ion-icon name="bed-outline"></ion-icon>Hotel</a>
+</div>
+
+<h2>The one design decision</h2>
+<p class="lead">Every standalone signage product on the market asks the operator to retype their menu. This one refuses to store a single price.</p>
+<div class="flow">
+  <div class="step"><div class="i">1</div><div><div class="t">A player is a Device, not a new registry</div><div class="d">A TV stick, a kiosk browser, a smart TV, a spare tablet or the till’s second screen all pair with a six-digit code and become a <code>Device</code> with a signage profile. The shell already owns devices, sites and pairing — signage adds orientation, cache state and a heartbeat.</div></div></div>
+  <div class="step"><div class="i">2</div><div><div class="t">A board holds a query, never prices</div><div class="d">A menu board is bound to a category; a price screen to an item set; a rate card to hotel rate plans. The server resolves it at play time. Change a price at the till and the wall agrees within one heartbeat — with <b>no republish, no re-authoring, no second catalogue to keep in step</b>.</div></div></div>
+  <div class="step"><div class="i">3</div><div><div class="t">A playlist is an ordered list of references with durations</div><div class="d">Media, board, notice, ticker, now-serving, wayfinding. Each item can carry a condition — a daypart, a day mask, or a data condition such as <code>stock &gt; 0</code>. Publishing bumps a version; players finish the item they are on and switch cleanly.</div></div></div>
+  <div class="step"><div class="i">4</div><div><div class="t">The player caches whole versions and plays offline for days</div><div class="d">A loop version becomes playable only when every referenced asset is present and checksum-verified. On a dead line the player keeps playing the last complete version and batches its proof-of-play for later. <b>A screen never blanks</b> — that is the module’s first invariant.</div></div></div>
+</div>
+
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><div><b>Signage holds no transaction and no content of its own.</b> It is a passive renderer: it plays media, resolves boards and follows a schedule. Self-service ordering and check-in stay in the Restaurant and Salon kiosks, which own the state machine, the payment gateway and the printer. A greyed-out line is Inventory saying zero. The module’s entire ownership is: players, groups, loops, assets, board definitions, schedule rules, takeovers and play records.</div></div>
+
+<h2>What feeds which surface</h2>
+<p class="lead">Eight public surfaces, one per vertical you asked for. None of them is a new data model.</p>
+<div class="tbl"><table>
+<thead><tr><th>Public surface</th><th>Reads from</th><th>Signage adds</th><th>Tier</th></tr></thead>
+<tbody>
+<tr><td><b>Restaurant menu board</b></td><td>Catalogue, prices, stock-outs, course availability</td><td>Template, zones, daypart switch (breakfast → lunch)</td><td class="nw"><span class="pill lite">Lite</span></td></tr>
+<tr><td><b>Grocery price &amp; promo screen</b></td><td>Prices, markdowns, multibuy promotions</td><td>Ticker of today’s reductions, aisle-scoped item sets</td><td class="nw"><span class="pill lite">Lite</span></td></tr>
+<tr><td><b>Retail promo loop</b></td><td>Uploaded artwork, active promotions</td><td>Playlist order, durations, campaign expiry</td><td class="nw"><span class="pill lite">Lite</span></td></tr>
+<tr><td><b>Salon now-serving</b></td><td>Appointment book, chair state</td><td>Now / next panel, stylist name, wait estimate</td><td class="nw"><span class="pill mid">Mid</span></td></tr>
+<tr><td><b>Queue wall display</b></td><td>Live tickets, counters, called numbers</td><td>Large-format now-serving zone beside a promo loop</td><td class="nw"><span class="pill mid">Mid</span></td></tr>
+<tr><td><b>Notice board</b></td><td>—</td><td>Posts with an expiry, staff or public scope</td><td class="nw"><span class="pill mid">Mid</span></td></tr>
+<tr><td><b>Hotel lobby &amp; rate card</b></td><td>Rate plans, occupancy, events of the day</td><td>Directory, wayfinding zones, rate card template</td><td class="nw"><span class="pill full">Full</span></td></tr>
+<tr><td><b>Corporate / institution board</b></td><td>Forms submissions, automations output</td><td>Multi-site publishing with local overrides</td><td class="nw"><span class="pill full">Full</span></td></tr>
+</tbody>
+</table></div>
+<div class="note warn"><ion-icon name="alert-circle-outline"></ion-icon><div><b>The queue display already exists twice.</b> <code>queue.display</code> and <code>salon.display</code> are shipped capabilities. Signage must not become a third owner of the same wall — the resolution written into the registry is that those capabilities produce the <em>content</em>, and signage’s <code>nowserving</code> item type places it on a managed player. Two modules never own the same object.</div></div>
+
+<h2>Tiers</h2>
+<p class="lead">The ladder assumes the entry hook is a single menu board on a stick, bought because printing a new laminated board every month costs more.</p>
+<div class="grid4">
+  <div class="tier"><div class="ic"><ion-icon name="close-circle-outline"></ion-icon></div><div class="w">Tier 0</div><div class="n">Off</div><div class="d">No public screen. Absent from navigation entirely.</div></div>
+  <div class="tier"><div class="ic"><ion-icon name="tv-outline"></ion-icon></div><div class="w">Tier 1</div><div class="n">Lite</div><div class="d">One or two screens, one loop, prices that maintain themselves.</div>
+    <ul><li>Screens &amp; pairing (core)</li><li>Playlists</li><li>Media library</li><li>Price &amp; menu boards</li></ul></div>
+  <div class="tier"><div class="ic"><ion-icon name="time-outline"></ion-icon></div><div class="w">Tier 2</div><div class="n">Mid</div><div class="d">A venue where the screen changes through the day and across a floor.</div>
+    <ul><li>Zones &amp; templates</li><li>Schedules &amp; dayparting</li><li>Screen groups</li><li>Now serving</li><li>Idle handover</li><li>Promo &amp; price ticker</li><li>Notice board</li></ul></div>
+  <div class="tier on"><div class="ic"><ion-icon name="layers-outline"></ion-icon></div><div class="w">Tier 3</div><div class="n">Full</div><div class="d">An estate: several branches, accountability for what played, and a way to override everything at once.</div>
+    <ul><li>Wayfinding &amp; rate card</li><li>Publish approval</li><li>Screen takeover</li><li>Proof of play</li><li>Multi-site <span class="pill">Pro</span></li></ul></div>
+</div>
+
+<h2>Capability registry</h2>
+<p class="lead">Fifteen capabilities over a never-hideable core, in <code>kz/kz-caps.js</code> alongside the other ten modules. <b>Holds</b> is what obligation a capability can keep open, which is what drives the wind-down pre-flight when it is switched off.</p>
+<div class="tbl"><table>
+<thead><tr><th>Key</th><th>Capability</th><th>Tier</th><th>Plan</th><th>Holds</th><th>Scope</th></tr></thead>
+<tbody>
+<tr><td class="nw"><code>—</code></td><td><b>Screens</b> · the fleet, its health, what is on it now</td><td class="nw"><span class="pill">Core</span></td><td>Free</td><td>—</td><td>Never hideable</td></tr>
+<tr><td class="nw"><code>loops</code></td><td>Playlists <span class="pill">schema: loop</span></td><td class="nw"><span class="pill lite">Lite</span></td><td>Free</td><td>—</td><td>All</td></tr>
+<tr><td class="nw"><code>media</code></td><td>Media library</td><td class="nw"><span class="pill lite">Lite</span></td><td>Free</td><td>reference</td><td>All</td></tr>
+<tr><td class="nw"><code>boards</code></td><td>Price &amp; menu boards</td><td class="nw"><span class="pill lite">Lite</span></td><td>Free</td><td>—</td><td>All</td></tr>
+<tr><td class="nw"><code>zones</code></td><td>Zones &amp; templates</td><td class="nw"><span class="pill mid">Mid</span></td><td>Starter</td><td>—</td><td>Manager+ · desktop, tablet</td></tr>
+<tr><td class="nw"><code>schedule</code></td><td>Schedules &amp; dayparting</td><td class="nw"><span class="pill mid">Mid</span></td><td>Starter</td><td>docs</td><td>All</td></tr>
+<tr><td class="nw"><code>groups</code></td><td>Screen groups</td><td class="nw"><span class="pill mid">Mid</span></td><td>Starter</td><td>—</td><td>All</td></tr>
+<tr><td class="nw"><code>nowserving</code></td><td>Now serving</td><td class="nw"><span class="pill mid">Mid</span></td><td>Starter</td><td>—</td><td>All</td></tr>
+<tr><td class="nw"><code>promos</code></td><td>Promo &amp; price ticker</td><td class="nw"><span class="pill mid">Mid</span></td><td>Starter</td><td>—</td><td>All</td></tr>
+<tr><td class="nw"><code>notices</code></td><td>Notice board</td><td class="nw"><span class="pill mid">Mid</span></td><td>Starter</td><td>—</td><td>All</td></tr>
+<tr><td class="nw"><code>wayfinding</code></td><td>Wayfinding &amp; rate card</td><td class="nw"><span class="pill full">Full</span></td><td>Standard</td><td>—</td><td>All</td></tr>
+<tr><td class="nw"><code>approvals</code></td><td>Publish approval</td><td class="nw"><span class="pill full">Full</span></td><td>Standard</td><td>docs</td><td>Manager+</td></tr>
+<tr><td class="nw"><code>takeover</code></td><td>Screen takeover</td><td class="nw"><span class="pill full">Full</span></td><td>Standard</td><td>—</td><td>Manager+</td></tr>
+<tr><td class="nw"><code>proofofplay</code></td><td>Proof of play</td><td class="nw"><span class="pill full">Full</span></td><td>Standard</td><td>reference</td><td>Manager+</td></tr>
+<tr><td class="nw"><code>interactive</code></td><td>Idle handover · a till or kiosk screen falls back to a playlist between customers</td><td class="nw"><span class="pill mid">Mid</span></td><td>Starter</td><td>—</td><td>desktop, tablet</td></tr>
+<tr><td class="nw"><code>multisite</code></td><td>Multi-site publishing</td><td class="nw"><span class="pill full">Full</span></td><td>Pro</td><td>—</td><td>All</td></tr>
+</tbody>
+</table></div>
+
+<h2>Screen map</h2>
+<p class="lead">One page, seven views, one rail definition in <code>kz/kz-parail.jsx</code>. Signage’s children are views of the parent, not sibling pages — the same rule the Forms and Automations rails follow.</p>
+<div class="tbl"><table>
+<thead><tr><th>View</th><th>Gate</th><th>The job</th><th>Writes</th></tr></thead>
+<tbody>
+<tr><td class="nw"><b>Screens</b></td><td class="nw">core</td><td>Know at a glance that every screen is alive and showing the right thing. Pair, reassign, push now, end a takeover.</td><td>Pairing, assignment, push</td></tr>
+<tr><td class="nw"><b>Playlists</b></td><td class="nw"><code>loops</code></td><td>Order what plays and say when each item is allowed to. Preview at the real aspect ratio before it is public.</td><td>Playlist, version, approval request</td></tr>
+<tr><td class="nw"><b>Media</b></td><td class="nw"><code>media</code></td><td>Hold the artwork once, upload from a phone, know where each asset is playing, set an expiry.</td><td>Asset, expiry</td></tr>
+<tr><td class="nw"><b>Boards</b></td><td class="nw"><code>boards</code></td><td>Build a menu or price board that maintains itself: bind a zone to a category, choose the sold-out treatment.</td><td>Board definition</td></tr>
+<tr><td class="nw"><b>Schedule</b></td><td class="nw"><code>schedule</code></td><td>Say what plays when, simulate a time, see conflicts before the public does.</td><td>Schedule rule, takeover</td></tr>
+<tr><td class="nw"><b>Proof of play</b></td><td class="nw"><code>proofofplay</code></td><td>What played, for how long, and what a screen missed while offline — gaps reported as gaps.</td><td>—</td></tr>
+<tr><td class="nw"><b>Setup</b></td><td class="nw">manager+</td><td>Tier and toggles, cache size, offline tolerance, heartbeat interval, default audio state.</td><td>Capability state, player policy</td></tr>
+</tbody>
+</table></div>
+<div class="note"><ion-icon name="phone-portrait-outline"></ion-icon><div><b>Phone monitors, desktop authors.</b> Screens, Media and Proof of play are full-function on a phone — pairing a stick, uploading a poster and checking that the branch board is alive are all things done while standing in front of the screen. Zones and templates are <code>desktop, tablet</code> scoped, exactly as the Form Builder and Flow Designer are.</div></div>
+
+<h2>The offline contract</h2>
+<p class="lead">You chose to assume an unreliable line. That is not a fallback path here — it is the normal operating mode, and it decides the API shape.</p>
+<div class="grid2">
+  <div class="card"><h3><ion-icon name="cloud-download-outline"></ion-icon>One read, not many</h3><p><code>GET /v1/signage/manifest?player=&amp;since=</code> returns the player’s whole contract in a single ETag’d document: resolved loop version, asset list with checksums, schedule rules, and any active takeover. A player on a bad line makes one request, not twelve.</p></div>
+  <div class="card"><h3><ion-icon name="checkmark-done-outline"></ion-icon>Whole versions only</h3><p>A version is playable when every asset checksums. Until then the player stays on the previous complete version. There is no state in which a loop is half-updated in public.</p></div>
+  <div class="card"><h3><ion-icon name="pulse-outline"></ion-icon>Heartbeat is the only failure signal</h3><p><code>POST /heartbeat</code> carries state, current item, cache bytes and app version — and is also how a takeover is picked up. Missing heartbeats past the tenant’s tolerance is what raises attention; nothing else is inferred.</p></div>
+  <div class="card"><h3><ion-icon name="cloud-upload-outline"></ion-icon>Idempotent play batches</h3><p>Play records are written on the player and uploaded in batches, idempotent on <code>(player, item, started_at)</code>. Uptime gaps are reported as gaps — playback is never backfilled or estimated.</p></div>
+</div>
+
+<h2>Player node — the second half of the module</h2>
+<p class="lead">The console is an ERP module; the player is a separate Capacitor build of the same Angular workspace, shipped as an APK and as a kiosk-browser URL. Two artefacts, one codebase, one set of models.</p>
+<div class="tbl"><table>
+<thead><tr><th>Concern</th><th>Console (ERP module)</th><th>Player node (Capacitor / kiosk)</th></tr></thead>
+<tbody>
+<tr><td class="nw"><b>Build target</b></td><td>Existing Ionic 8 + Angular 19 app, lazy-loaded route</td><td><code>npx cap add android</code> APK · plus the same build served for Chrome kiosk, webOS and Tizen</td></tr>
+<tr><td class="nw"><b>Auth</b></td><td>Tenant user session</td><td>Device token from pairing. No user ever signs in on a screen</td></tr>
+<tr><td class="nw"><b>State</b></td><td>Angular signals over the REST resources</td><td>One signal holding the cached manifest; playback is <code>computed()</code> off it</td></tr>
+<tr><td class="nw"><b>Transport</b></td><td>REST</td><td>Manifest poll on an interval <b>plus</b> optional socket for instant push — the poll is authoritative, the socket only shortens the delay</td></tr>
+<tr><td class="nw"><b>Storage</b></td><td>—</td><td><code>@capacitor/filesystem</code> for assets, addressed by checksum; <code>convertFileSrc()</code> at render, never an HTTP URL</td></tr>
+<tr><td class="nw"><b>Native</b></td><td>—</td><td><code>@capacitor/keep-awake</code>, immersive mode, screen pinning, boot-on-power, set as launcher where the OEM allows</td></tr>
+<tr><td class="nw"><b>Layout</b></td><td>Responsive board editor</td><td>CSS Grid <code>grid-template-areas</code> per template — zones are named grid areas, not absolute pixels</td></tr>
+</tbody>
+</table></div>
+<div class="note"><ion-icon name="git-network-outline"></ion-icon><div><b>The socket is a nicety, not the contract.</b> A signage estate on 4G cannot depend on a held connection. The player is correct with polling alone; a push only makes an update arrive in seconds instead of within the heartbeat interval. Any design where a missed socket frame means stale content on a wall is the wrong design for this market.</div></div>
+
+<h2>Hardware — software-first, deliberately</h2>
+<p class="lead">The module targets what an operator can actually buy locally, and treats every panel as a dumb display behind a cheap player. Screen brand is not a supported dimension.</p>
+<div class="tbl"><table>
+<thead><tr><th>What the tenant owns</th><th>How it runs</th><th>Player <code>kind</code></th></tr></thead>
+<tbody>
+<tr><td>Android TV stick or box, Fire-OS signage stick</td><td>Sideloaded or store-installed APK, set as launcher</td><td class="nw"><code>tv_stick</code></td></tr>
+<tr><td>Commercial display with Android SoC, or a floor-standing totem</td><td>Same APK, installed on the panel itself. No external box</td><td class="nw"><code>smart_tv</code></td></tr>
+<tr><td>Tizen or webOS commercial panel</td><td>Web build in the panel’s own browser, or a stick in HDMI</td><td class="nw"><code>smart_tv</code></td></tr>
+<tr><td>Any monitor or TV + a mini PC</td><td>Chrome in kiosk mode against the web build</td><td class="nw"><code>kiosk_browser</code></td></tr>
+<tr><td>A spare Android tablet</td><td>Same APK, portrait orientation, often wall-mounted at a counter</td><td class="nw"><code>tablet</code></td></tr>
+<tr><td>The till’s own second screen</td><td>A view inside the running POS app</td><td class="nw"><code>till_second_screen</code></td></tr>
+<tr><td>LED wall behind a sending controller</td><td>Stick or mini PC into the controller’s HDMI. The controller is invisible to us</td><td class="nw"><code>kiosk_browser</code></td></tr>
+</tbody>
+</table></div>
+<div class="note"><ion-icon name="cube-outline"></ion-icon><div><b>No manufacturing, and no reselling in v1.</b> The established products in this category all white-label OEM sticks and flash their own launcher; that is a distribution business, not a software one. If Koomzo ever bundles hardware it is a pre-provisioned off-the-shelf stick — the module must never assume it. <b>Every capability on this page has to work on a panel the tenant already bought.</b></div></div>
+
+<h2>Attention rules</h2>
+<p class="lead">Three, per the platform rule: computed from the event stream, gated by the same capabilities as the screens they sit on, individually toggleable, and silent when nothing is wrong.</p>
+<div class="tbl"><table>
+<thead><tr><th>Rule</th><th>Fires when</th><th>Lands on</th></tr></thead>
+<tbody>
+<tr><td class="nw"><code>signage.player_offline</code></td><td>No heartbeat beyond the tenant’s tolerance</td><td>Screens</td></tr>
+<tr><td class="nw"><code>signage.stale_cache</code></td><td>A player has not fetched the current published version</td><td>Screens</td></tr>
+<tr><td class="nw"><code>signage.takeover_open</code></td><td>An override with no end time is still running</td><td>Screens · every site in scope</td></tr>
+</tbody>
+</table></div>
+
+<h2>Open questions</h2>
+<p class="lead">Five of the seven are now settled. Each resolution is recorded with the reason, because the reasons are what a later maintainer will need.</p>
+<div class="ol">
+  <div class="q"><b>Board rendering — resolved: payload, with a declared fallback.</b> Hardware-agnostic is the whole strategy, so the player declares its capabilities at pairing and a panel that cannot do web fonts or CSS Grid asks for a server-rendered image of the same board. One board definition, two render paths, chosen by the device rather than by the author.</div>
+  <div class="q"><b>Cache ceiling — resolved: refuse at author time.</b> The player reports <code>cache_bytes</code> in every heartbeat, so publish can compute the weight against the thinnest player in scope and block with a real number. Silently dropping a video means the operator’s campaign did not run and nobody was told.</div>
+  <div class="q"><b>Till second screen — resolved: Retail keeps it, signage fills the idle gap.</b> A customer-facing display needs sub-second reactivity for ring-ups, tax and tender; routing that through a manifest poll would be latency for no gain. The POS drives the screen during a sale and hands rendering to an embedded player after N idle seconds, reclaiming it the instant an item is scanned.</div>
+  <div class="q"><b>Touch screens — resolved: dropped.</b> Self-service ordering and check-in need state machines, a payment gateway and a printer. A general-purpose interaction builder inside a playback engine is a fragile abstraction with two owners; Restaurant and Salon kiosks keep their own. Signage stays a passive renderer, and the freed slot became <code>interactive</code> = idle handover.</div>
+  <div class="q"><b>Is proof of play a commercial feature or fleet assurance?</b> It only earns its Full-tier place if tenants sell space on their screens. If not, it is uptime reporting and belongs beside the health list.</div>
+  <div class="q"><b>Multi-site conflict story.</b> Does a branch manager editing a group loop fork it, or is a per-player override the only permitted local write?</div>
+  <div class="q"><b>Naming — resolved: <em>playlist</em> in the interface, <code>loop</code> in the schema.</b> Every manager who has met a screen already knows the word playlist; the engine is genuinely cyclic and the code should say so. One-to-one mapping, documented, and no user-facing string ever says loop.</div>
+  <div class="q"><b>Does the idle-handover timeout belong to signage or to the register?</b> It reads as a signage behaviour, but the screen is Retail-owned — so the toggle probably sits in register settings with signage supplying only the playlist.</div>
+</div>
+
+<h2>What comes next</h2>
+<p>The registry and rail are in place, so the module is already resolvable by Home, Apps and Setup: a Lite tenant sees Screens, Playlists, Media and Boards and nothing else. Next build is the Signage page itself on the shared shell — Screens as the landing view with a live fleet list, then Boards, since the price-board binding is the thing no competitor has. Then the player node: pairing screen, playback engine, and the filesystem cache, which is where the real engineering risk sits.</p>
+
+</div>
+</body>
+</html>

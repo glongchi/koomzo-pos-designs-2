@@ -4,23 +4,23 @@
 
 /* ---------------- CHARGE / TENDER ---------------- */
 function ChargeSheet({ total, onDone, onClose, orderNo }) {
-  const [tender, setTender] = useState('momo');
-  const [paid, setPaid] = useState(false);
   const [room, setRoom] = useState(null);
   /* Charge to room only exists when the capability is on AND a hotel is
      actually publishing occupied rooms. No hotel, no tender. */
   const canRoom = !!(window.KZFolio && KZFolio.available() && window.KZ && KZ.on('restaurant', 'roomcharge'));
   const guestRooms = canRoom ? KZFolio.rooms() : [];
-  const tenders = window.KZ_LOCALE.tenderList
-    .concat([{ id: 'loyalty', label: 'Loyalty', icon: 'star-outline' }])
-    .concat(canRoom ? [{ id: 'room', label: 'Charge to room', icon: 'bed-outline' }] : []);
+  /* phases, tenders array and persistence all come from kz/kz-charge.jsx */
+  const ch = window.useCharge(total, { ticketNo: orderNo, extras: { loyalty: true, room: canRoom, split: true }, onDone: onDone });
+  const T = ch.T, P = ch.P;
+  const tenders = ch.list;
+  const tender = ch.tender, setTender = ch.setTender, paid = ch.paid;
   const blocked = tender === 'room' && !room;
   const settle = () => {
     if (tender === 'room') {
       KZFolio.post({ stayId: room.stayId, no: room.no, kind: 'fnb', amount: total, ccy: 'XAF',
-        desc: 'Restaurant · order #' + (orderNo || '—'), src: 'Lodge Restaurant', ref: orderNo });
+        desc: 'Restaurant · order ' + (orderNo || '—'), src: 'Lodge Restaurant', ref: orderNo });
     }
-    setPaid(true);
+    ch.request();
   };
   if (paid) {
     return (
@@ -32,10 +32,10 @@ function ChargeSheet({ total, onDone, onClose, orderNo }) {
               <h3 className="sheet__title">{tender === 'room' ? 'Charged to the room' : 'Payment Successful'}</h3>
               <p className="sheet__sub">{money(total)} · {tender === 'room'
                 ? 'Room ' + room.no + ' · ' + room.guest + ' — settles at checkout'
-                : tenders.find((x) => x.id === tender).label}</p>
+                : T.label((ch.tenders[ch.tenders.length - 1] || {}).id)}</p>
             </div>
             <div className="sheet__actions">
-              <button className="btn-fill accent" style={{ flex: 1 }} onClick={onDone}>New Order</button>
+              <button className="btn-fill accent" style={{ flex: 1 }} onClick={ch.finish}>New Order</button>
             </div>
           </div>
         </div>
@@ -47,9 +47,19 @@ function ChargeSheet({ total, onDone, onClose, orderNo }) {
       <div className="sheet" onClick={(e) => e.stopPropagation()}>
         <div className="sheet__pad">
           <h3 className="sheet__title">Charge Order</h3>
-          <p className="sheet__sub">{orderNo ? 'Order #' + orderNo + ' · ' : ''}Select a payment method to tender.</p>
-          <div className="sheet__display">{money(total)}</div>
-          <div className="tenders">
+          <p className="sheet__sub">{orderNo ? 'Order ' + window.KZ_TICKET.short(orderNo) + ' · ' : ''}
+            {ch.tenders.length ? money(ch.balance) + ' still to take' : 'Select a payment method to tender.'}</p>
+          <div className="sheet__display">{money(ch.take)}</div>
+          {ch.phase === P.PENDING && (
+            <div style={{ border: '1px solid #e8d6a8', background: 'var(--kz-warning-wash)', borderRadius: 'var(--kz-radius)', padding: '14px 15px', marginBottom: 16 }}>
+              <div style={{ font: '700 13px var(--kz-font-sans)', display: 'flex', alignItems: 'center', gap: 7 }}>
+                <ion-icon name="phone-portrait-outline" style={{ color: '#8a6414', fontSize: 16 }}></ion-icon>
+                Requested · {T.label(tender)}</div>
+              <p style={{ margin: '5px 0 0', font: '400 12.5px/1.55 var(--kz-font-sans)', color: 'var(--kz-muted)' }}>{T.pendingCopy(tender)}</p>
+              <div style={{ font: '700 26px var(--kz-font-num)', color: '#8a6414', marginTop: 8 }}>{Math.max(0, ch.left)}s</div>
+            </div>
+          )}
+          <div className="tenders" style={ch.phase === P.PENDING ? { display: 'none' } : null}>
             {tenders.map((t) => (
               <button key={t.id} className={'tender' + (tender === t.id ? ' sel' : '')} onClick={() => setTender(t.id)}>
                 <ion-icon name={t.icon}></ion-icon>{t.label}
@@ -72,9 +82,9 @@ function ChargeSheet({ total, onDone, onClose, orderNo }) {
             </div>
           )}
           <div className="sheet__actions">
-            <button className="btn-ghost" onClick={onClose}>Cancel</button>
-            <button className="btn-fill" disabled={blocked} style={blocked ? { opacity: .45 } : null} onClick={settle}>
-              {tender === 'room' ? (room ? 'Charge to ' + room.no : 'Pick a room') : 'Validate ' + money(total)}</button>
+            <button className="btn-ghost" onClick={ch.busy ? ch.cancel : onClose}>{ch.busy ? 'Cancel request' : 'Cancel'}</button>
+            <button className="btn-fill" disabled={blocked || ch.busy} style={blocked || ch.busy ? { opacity: .45 } : null} onClick={settle}>
+              {ch.busy ? 'Waiting…' : tender === 'room' ? (room ? 'Charge to ' + room.no : 'Pick a room') : T.cta(tender, ch.take)}</button>
           </div>
         </div>
       </div>

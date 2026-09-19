@@ -1,7 +1,8 @@
 /* Koomzo Grocery — the till: weighing, PLU codes, age prompts, promotions, deposits. */
 const { useState, useMemo, useEffect } = React;
 const GR = window.GR;
-const xaf = (n) => (n < 0 ? '−' : '') + Math.abs(Math.round(n)).toLocaleString('fr-FR').replace(/\u202f|\u00a0|\s/g, '\u00a0') + '\u00a0F';
+/* one formatter, defined in kz/kz-locale.js — this module used to restate it */
+const xaf = window.money;
 const kg = (g) => (g / 1000).toFixed(3);
 const gate = (k) => !window.KZ || window.KZ.on('grocery', k);
 const itemOf = (id) => GR.items.find((i) => i.id === id);
@@ -95,7 +96,7 @@ function Basket({ api }) {
     <aside className="grbasket">
       <div className="grbasket__hd">
         <div style={{ minWidth: 0 }}>
-          <div className="t">Basket #{api.ticketNo}</div>
+          <div className="t" title={api.ticketNo}>Basket {window.KZ_TICKET.short(api.ticketNo)}</div>
           <div className="s">{api.lines.filter((l) => !l.dep).length} lines{api.member ? ' · ' + api.member.name : ''}</div>
         </div>
         <div className="sp" style={{ flex: 1 }}></div>
@@ -127,7 +128,7 @@ function Basket({ api }) {
         {gate('deposits') && T.deposits > 0 && <div className="grtot"><span>Deposits</span><div className="sp"></div><b>{xaf(T.deposits)}</b></div>}
         {T.promo > 0 && <div className="grtot save"><span>Offers</span><div className="sp"></div><b>−{xaf(T.promo)}</b></div>}
         {T.staff > 0 && <div className="grtot save"><span>Staff discount</span><div className="sp"></div><b>−{xaf(T.staff)}</b></div>}
-        <div className="grtot"><span>VAT {(GR.vat * 100).toFixed(2)}% included</span><div className="sp"></div><b>{xaf(T.vat)}</b></div>
+        <div className="grtot"><span>{window.KZ_POLICY.taxLabelFor('grocery')} included</span><div className="sp"></div><b>{xaf(T.vat)}</b></div>
         <div className="grtot grand"><span>Total</span><div className="sp"></div><b>{xaf(T.total)}</b></div>
       </div>
       <div className="grbasket__ft">
@@ -218,7 +219,7 @@ function AgeSheet({ it, api, onClose }) {
         <span className="htchip">CNI shown</span>
         <span className="htchip">Passport shown</span>
       </div>
-      <p className="kzp" style={{ marginTop: 12 }}>Recorded against {grUser(api.userId).name} and basket #{api.ticketNo}.</p>
+      <p className="kzp" style={{ marginTop: 12 }}>Recorded against {grUser(api.userId).name} and basket {window.KZ_TICKET.short(api.ticketNo)}.</p>
     </HtLikeSheet>
   );
 }
@@ -267,27 +268,42 @@ function CrateSheet({ api, onClose }) {
 /* ---------------- tender ---------------- */
 function GrTenderSheet({ api, onClose }) {
   const T = api.totals;
-  const [tender, setTender] = useState('cash');
+  /* the basket is not paid until the customer's wallet says so (spec §20) */
   const [done, setDone] = useState(null);
+  const c = window.useSingleCharge(T.total, {
+    onDone: (id) => {
+      /* money in, stock out — one commit point, and the basket's lines become
+         movements in the same ledger the Inventory module reads */
+      const res = window.KZ_SALES.sellFrom('grocery', {
+        ticketNo: api.ticketNo, locId: 'dt', actor: { kind: 'register', label: 'Caisse 1' },
+        customer: 'Walk-in', lines: lines.map((l) => ({ id: l.id, qty: l.qty })),
+      });
+      setDone({ no: api.ticketNo, total: T.total, tender: id, promo: T.promo + T.staff,
+        warn: window.KZ_SALES.negativeCopy(res.negatives) });
+    },
+  });
+  const tender = c.tender, setTender = c.setTender;
   if (done) return (
-    <HtLikeSheet title="Paid" sub={'Basket #' + done.no} onClose={onClose}
+    <HtLikeSheet title="Paid" sub={'Basket ' + window.KZ_TICKET.short(done.no)} onClose={onClose}
       foot={[<button key="n" className="btn primary" onClick={() => { api.finish(); onClose(); }}>New basket</button>]}>
       <div className="done" style={{ padding: '10px 0 6px' }}>
         <div className="done__ic"><ion-icon name="checkmark-outline"></ion-icon></div>
         <h4>{xaf(done.total)}</h4>
-        <p>{GR.tenders.find((t) => t.id === done.tender).name}{done.promo ? ' · ' + xaf(done.promo) + ' saved' : ''}</p>
+        <p>{window.KZ_TENDER.paidLine(done.tender, {})}{done.promo ? ' · ' + xaf(done.promo) + ' saved' : ''}</p>
+        {done.warn && <p style={{ color: 'var(--kz-discount)' }}>{done.warn}</p>}
       </div>
     </HtLikeSheet>
   );
   return (
-    <HtLikeSheet title="Take payment" sub={xaf(T.total) + ' · basket #' + api.ticketNo} onClose={onClose}
+    <HtLikeSheet title="Take payment" sub={xaf(T.total) + ' · basket ' + window.KZ_TICKET.short(api.ticketNo)} onClose={onClose}
       foot={[
-        <button key="c" className="btn" onClick={onClose}>Back</button>,
-        <button key="t" className="btn primary" style={{ background:'var(--kz-success)', borderColor:'var(--kz-success)' }}
-          onClick={() => setDone({ no: api.ticketNo, total: T.total, tender, promo: T.promo + T.staff })}>
-          <ion-icon name="checkmark-outline"></ion-icon>Take {xaf(T.total)}</button>,
+        <button key="c" className="btn" onClick={c.busy ? c.cancel : onClose}>{c.busy ? 'Cancel request' : 'Back'}</button>,
+        <button key="t" className="btn primary" disabled={c.busy} style={{ background:'var(--kz-success)', borderColor:'var(--kz-success)', opacity: c.busy ? .45 : 1 }}
+          onClick={c.request}>
+          <ion-icon name="checkmark-outline"></ion-icon>{c.cta()}</button>,
       ]}>
-      <div className="htchips">
+      <PushPending c={c} amount={T.total} />
+      <div className="htchips" style={c.busy ? { display: 'none' } : null}>
         {GR.tenders.map((t) => <button key={t.id} className={'htchip' + (tender === t.id ? ' on' : '')} onClick={() => setTender(t.id)}>
           <ion-icon name={t.icon}></ion-icon>{t.name}</button>)}
       </div>
@@ -298,8 +314,8 @@ function GrTenderSheet({ api, onClose }) {
         {T.staff > 0 && <div className="grtot save"><span>Staff discount</span><div className="sp"></div><b>−{xaf(T.staff)}</b></div>}
         <div className="grtot grand"><span>Total</span><div className="sp"></div><b>{xaf(T.total)}</b></div>
       </div>
-      {(tender === 'momo' || tender === 'orange') && <div className="note info" style={{ marginTop: 12 }}><ion-icon name="phone-portrait-outline"></ion-icon>
-        A request goes to the customer's phone. The basket closes on the operator's confirmation, not on the till saying so.</div>}
+      {window.KZ_TENDER.hint(tender) && <div className="note info" style={{ marginTop: 12 }}>
+        <ion-icon name={window.KZ_TENDER.hintIcon(tender)}></ion-icon>{window.KZ_TENDER.hint(tender)}</div>}
     </HtLikeSheet>
   );
 }

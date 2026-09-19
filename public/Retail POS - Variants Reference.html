@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Variants across retail profiles — Koomzo POS</title>
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.wrap{max-width:1180px;margin:0 auto;padding:38px 28px 64px}
+.hd{display:flex;align-items:center;gap:12px}
+.mark{width:38px;height:38px;border-radius:11px;background:var(--kz-primary);display:flex;align-items:center;justify-content:center;box-shadow:var(--kz-shadow-key);flex-shrink:0}
+.mark ion-icon{color:#fff;font-size:20px}
+h1{margin:0;font:700 25px var(--kz-font-sans);letter-spacing:-.02em}
+.sub{margin:5px 0 30px 50px;font:400 14px var(--kz-font-sans);color:var(--kz-muted);max-width:760px;text-wrap:pretty}
+h2{margin:0 0 4px;font:700 18px var(--kz-font-sans);letter-spacing:-.015em}
+.lead{margin:0 0 16px;font:400 13.5px/1.55 var(--kz-font-sans);color:var(--kz-muted);max-width:820px;text-wrap:pretty}
+section{margin-bottom:34px}
+.def{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);padding:22px 24px}
+.def .q{font:600 17px/1.5 var(--kz-font-sans);color:var(--kz-ink);letter-spacing:-.01em;text-wrap:pretty}
+.def .q b{color:var(--kz-primary)}
+.tests{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:18px}
+.test{background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:10px;padding:13px 15px}
+.test .t{display:flex;align-items:center;gap:7px;font:700 12.5px var(--kz-font-sans)}
+.test .t ion-icon{font-size:16px;color:var(--kz-primary)}
+.test p{margin:6px 0 0;font:400 12.5px/1.5 var(--kz-font-sans);color:var(--kz-muted)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.box{border-radius:10px;padding:14px 16px}
+.box.yes{background:var(--kz-success-wash);border:1px solid #bfe4cd}
+.box.no{background:var(--kz-discount-wash);border:1px solid #f6cec1}
+.box .t{display:flex;align-items:center;gap:7px;font:700 12.5px var(--kz-font-sans);margin-bottom:8px}
+.box.yes .t{color:#1f7a45}.box.no .t{color:#b9411f}
+.box ul{margin:0;padding-left:17px;display:flex;flex-direction:column;gap:5px}
+.box li{font:400 12.5px/1.45 var(--kz-font-sans);color:var(--kz-ink-2)}
+.box li b{font-weight:600}
+.tbl{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+.scrollx{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:1020px}
+th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--kz-border);vertical-align:top}
+thead th{background:var(--kz-surface-2);font:600 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap;position:sticky;top:0}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--kz-surface-2)}
+.prof{display:flex;align-items:flex-start;gap:10px;min-width:170px}
+.pic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pic ion-icon{font-size:17px}
+.pn{font:700 13.5px var(--kz-font-sans);letter-spacing:-.005em}
+.pt{margin-top:2px;font:600 10.5px var(--kz-font-sans);color:var(--kz-muted-3);letter-spacing:.04em;text-transform:uppercase}
+.pt.new{color:var(--kz-primary)}
+td .ax{font:600 13px var(--kz-font-sans);color:var(--kz-ink-2);line-height:1.5}
+td .ex{font:400 12.5px/1.5 var(--kz-font-sans);color:var(--kz-muted);max-width:300px;text-wrap:pretty}
+td .ex b{font-weight:600;color:var(--kz-ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.c{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:var(--kz-radius-sm);font:600 10.5px var(--kz-font-sans);white-space:nowrap;background:var(--kz-surface-2);border:1px solid var(--kz-border);color:var(--kz-muted)}
+.c ion-icon{font-size:12px}
+.c.p{background:var(--kz-primary-wash);border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.c.i{background:var(--kz-info-wash);border-color:#c3d8f6;color:#2c5da8}
+.c.w{background:var(--kz-warning-wash);border-color:#f0dcae;color:#8a6414}
+.c.g{background:var(--kz-success-wash);border-color:#bfe4cd;color:#1f7a45}
+.dep{font:700 11px var(--kz-font-sans);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.dep ion-icon{font-size:14px}
+.dep.hi{color:var(--kz-primary)}.dep.md{color:#2c5da8}.dep.lo{color:var(--kz-muted-3)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px}
+.card .n{display:flex;align-items:center;gap:8px;font:700 13.5px var(--kz-font-sans)}
+.card .n ion-icon{font-size:17px;color:var(--kz-primary)}
+.card p{margin:7px 0 0;font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+.card code{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 5px;color:var(--kz-ink-2)}
+.note{display:flex;gap:10px;padding:14px 16px;border-radius:10px;background:var(--kz-info-wash);border:1px solid #c3d8f6;font:400 13px/1.55 var(--kz-font-sans);color:#27548f;margin-top:14px}
+.note ion-icon{font-size:19px;flex-shrink:0;color:var(--kz-info)}
+.note b{font-weight:700}
+@media(max-width:720px){.split{grid-template-columns:1fr}.wrap{padding:26px 16px 48px}.sub{margin-left:0}}
+</style>
+  <script src="kz/kz-locale.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hd"><div class="mark"><ion-icon name="git-branch-outline"></ion-icon></div><h1>Variants across retail profiles</h1></div>
+<p class="sub">A working definition of “variant” for the Koomzo register, and how the concept changes shape in each business type. This is the reference for the overrides-layer build (profile presets + per-feature toggles).</p>
+
+<section>
+<h2>What a variant is, practically</h2>
+<p class="lead">Merchants and vendors use the word loosely. For POS purposes only one definition matters, because only one has consequences at the moment of the tap.</p>
+<div class="def">
+<div class="q">A <b>variant</b> is a sellable, separately-stocked version of one product concept that shares its name, price logic and reporting line — but must be identified before it can enter the ticket.</div>
+<div class="tests">
+<div class="test"><div class="t"><ion-icon name="cube-outline"></ion-icon>It has its own stock</div><p>Medium Sand is in or out of stock independently of Large Black. If stock is shared, it isn’t a variant.</p></div>
+<div class="test"><div class="t"><ion-icon name="pricetag-outline"></ion-icon>It has its own barcode/SKU</div><p>Each variant scans to a unique code. Scanning bypasses the picker entirely — the code already resolves the choice.</p></div>
+<div class="test"><div class="t"><ion-icon name="albums-outline"></ion-icon>It reports as one product</div><p>The merchant wants to see “Linen Shirt: 48 sold”, then break it down by size — not 15 unrelated products.</p></div>
+<div class="test"><div class="t"><ion-icon name="hand-left-outline"></ion-icon>It blocks the sale until chosen</div><p>The cashier cannot complete the line without picking. That’s what earns a variant its own step in the UI.</p></div>
+</div>
+<div class="split">
+<div class="box yes"><div class="t"><ion-icon name="checkmark-circle-outline"></ion-icon>Variants</div><ul>
+<li><b>Size × colour</b> — Linen Shirt · M · Sand</li>
+<li><b>Volume/pack</b> — Shampoo 100 ml / 300 ml / 1 L</li>
+<li><b>Strength × form</b> — Ibuprofen 200 mg tablet / 400 mg capsule</li>
+<li><b>Capacity × finish</b> — Phone 128 GB Graphite</li>
+<li><b>Length/gauge</b> — Cable 1.5 mm² / 2.5 mm²</li>
+</ul></div>
+<div class="box no"><div class="t"><ion-icon name="close-circle-outline"></ion-icon>Not variants — different mechanisms</div><ul>
+<li><b>Weight</b> — 0.842 kg is a measured quantity, not a version → scale step</li>
+<li><b>Serial number</b> — identifies one unit, not a version → serial capture</li>
+<li><b>Modifiers</b> — oat milk, gift wrap: price add-ons with no stock → modifier step</li>
+<li><b>Batch / expiry / lot</b> — traceability on the same variant → lot capture</li>
+<li><b>Bundles &amp; kits</b> — a set of separate products → kit expansion</li>
+</ul></div>
+</div>
+<div class="note"><ion-icon name="bulb-outline"></ion-icon><span>Design consequence: the four right-hand mechanisms are often mislabelled “variants” in requirements documents. Keeping them separate is what lets one register serve every profile — each is an <b>independent toggle</b> that inserts its own step between tap and ticket, and a profile is just a preset combination of them.</span></div>
+</div>
+</section>
+
+<section>
+<h2>Variants by retail profile</h2>
+<p class="lead">Seven profiles — your six plus Pharmacy / Health, and three I’d add as commonly requested. “Depth” is how central variant handling is to the daily job, which determines whether the picker is a sheet, a matrix, or absent.</p>
+<div class="tbl scrollx"><table>
+<thead><tr><th>Profile</th><th>Variant axes</th><th>Typical example</th><th>Also needs</th><th>Depth</th><th>Register treatment</th></tr></thead>
+<tbody>
+
+<tr><td><div class="prof"><div class="pic" style="background:#e4f4ea"><ion-icon name="basket-outline" style="color:#2e9e5b"></ion-icon></div><div><div class="pn">Grocery &amp; Convenience</div><div class="pt">In scope</div></div></div></td>
+<td><div class="ax">Pack size · Flavour</div></td>
+<td><div class="ex"><b>Cola</b> — 330 ml can, 500 ml bottle, 6-pack. Sold as distinct scannable products.</div></td>
+<td><div class="chips"><span class="c i"><ion-icon name="speedometer-outline"></ion-icon>Weight</span><span class="c w"><ion-icon name="alert-circle-outline"></ion-icon>Age check</span><span class="c"><ion-icon name="calendar-outline"></ion-icon>Expiry</span></div></td>
+<td><span class="dep lo"><ion-icon name="remove-outline"></ion-icon>Low</span></td>
+<td><div class="ex">Barcode resolves everything. Variants exist in the catalog but the picker should <b>never appear</b> — flat keys only.</div></td></tr>
+
+<tr><td><div class="prof"><div class="pic" style="background:#e8f0fd"><ion-icon name="shirt-outline" style="color:#528cef"></ion-icon></div><div><div class="pn">Clothing &amp; Accessories</div><div class="pt">In scope</div></div></div></td>
+<td><div class="ax">Size × Colour <span style="color:var(--kz-muted-3)">(× Fit, × Length)</span></div></td>
+<td><div class="ex"><b>Straight Jean</b> — W30 · Indigo · Regular leg. One product, 60+ sellable cells.</div></td>
+<td><div class="chips"><span class="c p"><ion-icon name="swap-horizontal-outline"></ion-icon>Exchanges</span><span class="c"><ion-icon name="cube-outline"></ion-icon>Cross-store stock</span></div></td>
+<td><span class="dep hi"><ion-icon name="ellipse"></ion-icon>Core</span></td>
+<td><div class="ex">Two-axis <b>matrix</b> with out-of-stock cells struck through and on-hand counts. The defining screen of the profile.</div></td></tr>
+
+<tr><td><div class="prof"><div class="pic" style="background:#eceef2"><ion-icon name="construct-outline" style="color:#5d6573"></ion-icon></div><div><div class="pn">Hardware / General store</div><div class="pt">In scope</div></div></div></td>
+<td><div class="ax">Dimension · Gauge · Material · Pack qty</div></td>
+<td><div class="ex"><b>Wood screw</b> — 4×40 mm, box of 200, stainless. <b>Cable</b> — 2.5 mm², sold per metre.</div></td>
+<td><div class="chips"><span class="c i"><ion-icon name="resize-outline"></ion-icon>Cut to length</span><span class="c g"><ion-icon name="briefcase-outline"></ion-icon>Trade price</span></div></td>
+<td><span class="dep md"><ion-icon name="ellipse-outline"></ion-icon>Medium</span></td>
+<td><div class="ex">Long single-axis lists, not a grid. Best as a <b>searchable spec list</b> — “4×40” typed beats any tile.</div></td></tr>
+
+<tr><td><div class="prof"><div class="pic" style="background:#e7e8ec"><ion-icon name="hardware-chip-outline" style="color:#3a3f4d"></ion-icon></div><div><div class="pn">Electronics / Repair</div><div class="pt">In scope</div></div></div></td>
+<td><div class="ax">Capacity × Colour · Model year · Region</div></td>
+<td><div class="ex"><b>Earbuds</b> — Black, ANC model. <b>SSD</b> — 512 GB / 1 TB / 2 TB.</div></td>
+<td><div class="chips"><span class="c p"><ion-icon name="barcode-outline"></ion-icon>Serial</span><span class="c g"><ion-icon name="shield-checkmark-outline"></ion-icon>Warranty</span><span class="c"><ion-icon name="build-outline"></ion-icon>Service lines</span></div></td>
+<td><span class="dep md"><ion-icon name="ellipse-outline"></ion-icon>Medium</span></td>
+<td><div class="ex">Small grid, then <b>serial capture</b> as a second step. Variant identifies the model; serial identifies the unit.</div></td></tr>
+
+<tr><td><div class="prof"><div class="pic" style="background:#eeecf8"><ion-icon name="cut-outline" style="color:#6a61bf"></ion-icon></div><div><div class="pn">Salon retail add-ons</div><div class="pt">In scope</div></div></div></td>
+<td><div class="ax">Volume · Shade · Hair/skin type</div></td>
+<td><div class="ex"><b>Repair Shampoo</b> — 100 ml travel, 300 ml retail, 1 L back-bar.</div></td>
+<td><div class="chips"><span class="c p"><ion-icon name="calendar-outline"></ion-icon>Attach booking</span><span class="c"><ion-icon name="person-outline"></ion-icon>Stylist commission</span></div></td>
+<td><span class="dep lo"><ion-icon name="remove-outline"></ion-icon>Low</span></td>
+<td><div class="ex">Single-axis size sheet on an image tile. Never a matrix — the range is 2–3 options.</div></td></tr>
+
+<tr><td><div class="prof"><div class="pic" style="background:#f1ece2"><ion-icon name="nutrition-outline" style="color:#a07d4f"></ion-icon></div><div><div class="pn">Bakery / Deli</div><div class="pt">In scope</div></div></div></td>
+<td><div class="ax">Cut/slice style · Portion size</div></td>
+<td><div class="ex"><b>Roast Ham</b> — thin or thick sliced, per kg. <b>Loaf</b> — whole or half, sliced or not.</div></td>
+<td><div class="chips"><span class="c i"><ion-icon name="speedometer-outline"></ion-icon>Weight + tare</span><span class="c"><ion-icon name="pricetag-outline"></ion-icon>Label print</span></div></td>
+<td><span class="dep lo"><ion-icon name="remove-outline"></ion-icon>Low</span></td>
+<td><div class="ex">Mostly <b>modifiers, not variants</b> — no separate stock per slice style. Weight is the real second step.</div></td></tr>
+
+<tr><td><div class="prof"><div class="pic" style="background:#e4f4ea"><ion-icon name="medkit-outline" style="color:#2e9e5b"></ion-icon></div><div><div class="pn">Pharmacy / Health</div><div class="pt new">Adding now</div></div></div></td>
+<td><div class="ax">Strength × Form × Pack count</div></td>
+<td><div class="ex"><b>Ibuprofen</b> — 200 mg tablet ×16, 400 mg capsule ×32, 5% gel 50 g.</div></td>
+<td><div class="chips"><span class="c w"><ion-icon name="document-text-outline"></ion-icon>Rx / pharmacist sign-off</span><span class="c w"><ion-icon name="calendar-outline"></ion-icon>Batch &amp; expiry</span><span class="c"><ion-icon name="hand-left-outline"></ion-icon>Qty limits</span><span class="c i"><ion-icon name="medical-outline"></ion-icon>Insurance split</span></div></td>
+<td><span class="dep hi"><ion-icon name="ellipse"></ion-icon>Core</span></td>
+<td><div class="ex">Three-axis <b>structured picker</b> — strength first, never a colour grid. Generic-substitute suggestion sits alongside. The most regulated variant flow in the set.</div></td></tr>
+
+<tr><td><div class="prof"><div class="pic" style="background:#fbe9f0"><ion-icon name="flower-outline" style="color:#c2497e"></ion-icon></div><div><div class="pn">Beauty &amp; Cosmetics</div><div class="pt new">Suggested</div></div></div></td>
+<td><div class="ax">Shade × Finish · Size</div></td>
+<td><div class="ex"><b>Foundation</b> — shade 240 Warm, matte, 30 ml. Shade ranges run 40+ deep.</div></td>
+<td><div class="chips"><span class="c"><ion-icon name="color-palette-outline"></ion-icon>Testers</span><span class="c p"><ion-icon name="gift-outline"></ion-icon>GWP bundles</span></div></td>
+<td><span class="dep hi"><ion-icon name="ellipse"></ion-icon>Core</span></td>
+<td><div class="ex"><b>Swatch grid</b> — real shade chips, searchable by shade code. Text lists fail here; colour fidelity is the whole task.</div></td></tr>
+
+<tr><td><div class="prof"><div class="pic" style="background:#fbf2dd"><ion-icon name="paw-outline" style="color:#c98a20"></ion-icon></div><div><div class="pn">Pet &amp; Agri supply</div><div class="pt new">Suggested</div></div></div></td>
+<td><div class="ax">Bag weight · Life stage · Breed size</div></td>
+<td><div class="ex"><b>Dry food</b> — 2 kg / 7 kg / 15 kg, adult vs puppy.</div></td>
+<td><div class="chips"><span class="c i"><ion-icon name="speedometer-outline"></ion-icon>Loose weight</span><span class="c g"><ion-icon name="repeat-outline"></ion-icon>Subscription</span></div></td>
+<td><span class="dep md"><ion-icon name="ellipse-outline"></ion-icon>Medium</span></td>
+<td><div class="ex">Single-axis size sheet with price-per-kg shown, so staff can upsell the big bag.</div></td></tr>
+
+<tr><td><div class="prof"><div class="pic" style="background:#e8f0fd"><ion-icon name="glasses-outline" style="color:#528cef"></ion-icon></div><div><div class="pn">Optical / Eyewear</div><div class="pt new">Suggested</div></div></div></td>
+<td><div class="ax">Frame colour × Size · Lens index &amp; coating</div></td>
+<td><div class="ex"><b>Frame</b> — Tortoise, 52-18. <b>Lens</b> — 1.6 index, AR coated, configured per eye.</div></td>
+<td><div class="chips"><span class="c p"><ion-icon name="document-text-outline"></ion-icon>Prescription</span><span class="c"><ion-icon name="time-outline"></ion-icon>Made-to-order</span></div></td>
+<td><span class="dep hi"><ion-icon name="ellipse"></ion-icon>Core</span></td>
+<td><div class="ex">Frame variants are ordinary; lenses are a <b>configurator</b> whose price is computed, not looked up. The edge case that proves the toggle model.</div></td></tr>
+
+</tbody></table></div>
+</section>
+
+<section>
+<h2>What this means for the build</h2>
+<p class="lead">Reading down the “Also needs” column: no two profiles want the same set, but every cell is one of eight reusable steps. That is the architecture for the overrides layer.</p>
+<div class="cards">
+<div class="card"><div class="n"><ion-icon name="grid-outline"></ion-icon>Picker shape is a setting</div><p><code>none</code> · <code>single</code> · <code>matrix</code> · <code>swatch</code> · <code>configurator</code>. Grocery and fashion both have variants; only one should ever see a grid.</p></div>
+<div class="card"><div class="n"><ion-icon name="options-outline"></ion-icon>Axes are named per profile</div><p>The same UI renders “Size × Colour” or “Strength × Form × Pack”. Labels come from the profile; the component does not care.</p></div>
+<div class="card"><div class="n"><ion-icon name="layers-outline"></ion-icon>Steps compose in a fixed order</div><p>Age → Rx → variant → lot → serial → weight → modifiers. A profile enables a subset; order never changes, so cashiers build one muscle memory.</p></div>
+<div class="card"><div class="n"><ion-icon name="barcode-outline"></ion-icon>A scan always wins</div><p>If the barcode resolves to a variant, skip its step. This single rule is why a scan-first grocery lane and a matrix-heavy boutique can share one register.</p></div>
+</div>
+</section>
+
+</div>
+</body>
+</html>

@@ -452,3 +452,81 @@ a:hover{color:var(--kz-primary-shade)}
 .steps i{width:6px;height:6px;border-radius:999px;background:var(--kz-border-strong)}
 .steps i.on{background:var(--kz-primary);width:18px}
 .steps span{font:600 11px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;color:var(--kz-muted-3);margin-left:4px}
+
+/* ============================================================
+   PHONE COMPOSITIONS — sheet · bar · tab
+   Ported in when the Mobile register merged into Flex. A phone is the
+   PRIMARY register for many small shops in Central Africa, not a companion
+   screen, so every pattern carries the whole board: the qualifier chain, the
+   capability map, the approval step. None of them is a reduced register.
+   ============================================================ */
+.loyband{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 16px 0}
+.loyband>div{background:var(--kz-surface-2);border-radius:var(--kz-radius-sm);padding:8px 10px}
+.loyband .k{display:block;font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+.loyband .v{font:700 16px var(--kz-font-num);font-variant-numeric:tabular-nums}
+.loyband .v.up{color:var(--kz-success)}
+
+/* tab strip — the ticket as a second view, not an overlay */
+.tabstrip{display:none;gap:8px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--kz-border)}
+.tabstrip button{flex:1;height:42px;border:none;border-radius:10px;background:var(--kz-surface-2);display:flex;align-items:center;justify-content:center;gap:8px;font:600 14px var(--kz-font-sans);color:var(--kz-muted);transition:background .15s,color .15s}
+.tabstrip button ion-icon{font-size:18px}
+.tabstrip button.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.tabstrip .ct{min-width:20px;height:20px;padding:0 6px;border-radius:var(--kz-radius-pill);background:var(--kz-primary);color:#fff;display:flex;align-items:center;justify-content:center;font:700 11px var(--kz-font-num)}
+.board.tabs .tabstrip{display:flex}
+
+/* the bar pattern's summary gets a cart glyph with a live count */
+.dockbar .cartic{position:relative;width:46px;height:46px;border-radius:12px;background:var(--kz-primary-wash);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dockbar .cartic ion-icon{font-size:24px;color:var(--kz-primary)}
+.dockbar .cartic .ct{position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;padding:0 6px;border-radius:var(--kz-radius-pill);background:var(--kz-primary);color:#fff;font:700 12px var(--kz-font-num);display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+
+.boardscrim{position:absolute;inset:0;background:rgba(20,24,38,.45);z-index:44}
+
+@container (max-width:900px){
+  /* BAR — a persistent summary above the rail; the ticket opens over it */
+  .board.bar .dockbar{display:flex}
+  .board.bar .cat{padding-bottom:64px}
+  .board.bar .cart{position:absolute;left:0;right:0;top:auto;bottom:0;width:100%;height:88%;
+    border-left:none;border-top-left-radius:16px;border-top-right-radius:16px;
+    transform:translateY(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);visibility:hidden;z-index:45;
+    box-shadow:0 -10px 40px rgba(20,24,38,.22)}
+  .board.bar .cart.open{transform:none;visibility:visible}
+
+  /* SHEET — ONE surface: it peeks at the bottom and is pulled up */
+  .board.sheet .cat{padding-bottom:72px}
+  .board.sheet .dockbar{display:none}
+  .board.sheet .cart{position:absolute;left:0;right:0;top:auto;bottom:0;width:100%;height:88%;
+    border-left:none;border-top:1px solid var(--kz-border);border-top-left-radius:16px;border-top-right-radius:16px;
+    transform:translateY(calc(100% - 72px));transition:transform .24s cubic-bezier(.4,0,.2,1);z-index:45;
+    box-shadow:0 -10px 40px rgba(20,24,38,.14)}
+  .board.sheet .cart.open{transform:none;box-shadow:0 -10px 40px rgba(20,24,38,.22)}
+  .board.sheet .cart__head{padding-top:22px;cursor:pointer}
+  .board.sheet .cart::before{content:'';position:absolute;top:9px;left:50%;transform:translateX(-50%);width:44px;height:4px;border-radius:var(--kz-radius-pill);background:var(--kz-border-strong)}
+
+  /* TABS — two full views, no overlay at all */
+  /* pin the rows: two in-flow children in a definite-height grid would
+     otherwise share the slack and balloon the strip to ~142px */
+  .board.tabs{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);align-content:start;position:relative}
+  .board.tabs .tabstrip{flex-shrink:0}
+  .board.tabs .dockbar{display:none}
+  .board.tabs .cart{position:static;width:100%;height:auto;min-height:0;border-left:none;transform:none;visibility:visible;box-shadow:none}
+  .board.tabs .cat{padding-bottom:0}
+}
+@container (max-width:640px){
+  /* the module rail sits at the bottom here, so every bottom surface clears it */
+  .board.bar .dockbar{bottom:58px}
+  .board.bar .cat{padding-bottom:126px}
+  .board.bar .cart,.board.sheet .cart{bottom:58px;height:calc(88% - 58px)}
+  .board.sheet .cat{padding-bottom:130px}
+  .boardscrim{inset:0 0 58px 0}
+  .board.tabs .cart,.board.tabs .cat{padding-bottom:58px}
+}
+/* tablet portrait stage */
+.stage.tabletp .rt-wrap{border-radius:20px;box-shadow:0 18px 60px rgba(20,24,38,.28);overflow:hidden;width:820px;max-width:100%;height:min(1180px,100%)}
+
+/* a sale that drove stock below zero — surfaced, never clamped */
+.stocktoast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;
+  background:var(--kz-ink);color:#fff;border-radius:var(--kz-radius);padding:12px 14px;box-shadow:var(--kz-shadow-lg);max-width:min(520px,92vw)}
+.stocktoast ion-icon{font-size:18px;color:var(--kz-warning);flex:none}
+.stocktoast span{font:500 13px/1.5 var(--kz-font-sans)}
+.stocktoast button{margin-left:4px;height:32px;padding:0 12px;border:none;border-radius:8px;background:rgba(255,255,255,.16);color:#fff;font:600 12.5px var(--kz-font-sans);flex:none}
+.stocktoast button:hover{background:rgba(255,255,255,.26)}

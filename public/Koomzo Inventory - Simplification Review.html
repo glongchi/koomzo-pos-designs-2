@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo Inventory — simplification review</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px 80px}
+.hd{display:flex;align-items:center;gap:12px}
+.mark{width:38px;height:38px;border-radius:11px;background:var(--kz-primary);display:grid;place-items:center;box-shadow:var(--kz-shadow-key);flex:none}
+.mark ion-icon{color:#fff;font-size:20px}
+h1{margin:0;font:700 26px var(--kz-font-sans);letter-spacing:-.02em}
+.sub{margin:6px 0 26px 50px;font:400 14px/1.6 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+h2{margin:40px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em}
+h3.sh{margin:22px 0 4px;font:700 15px var(--kz-font-sans)}
+.lead{margin:0 0 16px;font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:18px 20px;margin-bottom:12px}
+.card h3{margin:0 0 4px;font:700 15px var(--kz-font-sans)}
+.card p{margin:0;font-size:13.5px;line-height:1.65}
+.card p+p{margin-top:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:720px){.grid2,.grid3{grid-template-columns:1fr}}
+.tier{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:18px;display:flex;flex-direction:column;gap:8px}
+.tier.on{border:1.5px solid var(--kz-primary);background:var(--kz-primary-wash)}
+.tier .ic{width:38px;height:38px;border-radius:11px;background:var(--kz-surface-2);color:var(--kz-muted-2);display:grid;place-items:center}
+.tier.on .ic{background:var(--kz-primary);color:#fff}
+.tier .n{font:700 15px var(--kz-font-sans)}
+.tier .w{font:600 11px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+.tier .d{font:400 13px/1.6 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+.tier ul{margin:2px 0 0;padding-left:17px}
+.tier li{font:500 12.5px/1.7 var(--kz-font-sans);color:var(--kz-ink-2)}
+.flow{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:6px 20px}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--kz-border)}
+.step:last-child{border-bottom:none}
+.step .i{width:28px;height:28px;border-radius:999px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 12px var(--kz-font-num);flex:none}
+.step .t{font:700 13.5px var(--kz-font-sans)}
+.step .d{font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-muted);margin-top:3px;text-wrap:pretty}
+code{font:600 12.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:2px 6px;color:var(--kz-ink-2)}
+.note{display:flex;gap:11px;padding:14px 16px;border-radius:var(--kz-radius);background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-ink-2);margin:14px 0;text-wrap:pretty}
+.note.warn{background:var(--kz-warning-wash);border-color:#f0dcae}
+.note.warn ion-icon{color:#b8861f}
+.note ion-icon{font-size:19px;color:var(--kz-primary);flex:none;margin-top:2px}
+.note b{font-weight:700}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--kz-border);font:400 13px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700}
+.links{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.links a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;border-radius:10px;border:1px solid var(--kz-border-strong);background:#fff;font:600 13.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.links a.pri{background:var(--kz-primary);border-color:var(--kz-primary);color:#fff;box-shadow:var(--kz-shadow-key)}
+.kinds{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:720px){.kinds{grid-template-columns:1fr 1fr}}
+.kind{border-radius:var(--kz-radius);padding:13px 14px;border:1px solid var(--kz-border);background:#fff}
+.kind .kn{font:700 14px var(--kz-font-sans);display:flex;align-items:center;gap:7px}
+.kind .kn ion-icon{font-size:17px}
+.kind .kd{font:400 12.5px/1.6 var(--kz-font-sans);color:var(--kz-muted);margin-top:5px}
+.k-in .kn{color:#2f74d0}.k-in{background:var(--kz-info-wash)}
+.k-out .kn{color:var(--kz-discount)}.k-out{background:var(--kz-discount-wash)}
+.k-mv .kn{color:#b8861f}.k-mv{background:var(--kz-warning-wash)}
+.k-adj .kn{color:var(--kz-success)}.k-adj{background:var(--kz-success-wash)}
+.ph{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px;margin-bottom:10px;display:flex;gap:14px}
+.ph .pn{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font:700 13px var(--kz-font-num);flex:none}
+.ph.gate .pn{background:var(--kz-surface-2);color:var(--kz-muted-2)}
+.ph .pt{font:700 14.5px var(--kz-font-sans)}
+.ph .pd{font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-muted);margin-top:4px;text-wrap:pretty}
+.ph .pf{font:600 12px var(--kz-font-num);color:var(--kz-muted-3);margin-top:7px}
+.ask{counter-reset:q;margin:0;padding:0;list-style:none}
+.ask li{background:#fff;border:1px solid var(--kz-border);border-left:none;border-radius:var(--kz-radius);padding:15px 18px;margin-bottom:9px}
+.ask .qq{font:700 14px var(--kz-font-sans)}
+.ask .qa{font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-muted);margin-top:5px;text-wrap:pretty}
+.ask .qa b{color:var(--kz-primary);font-weight:700}
+.count{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.cbx{flex:1 1 150px;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:14px 16px}
+.cbx .cv{font:700 26px var(--kz-font-num);letter-spacing:-.02em;color:var(--kz-primary)}
+.cbx .cl{font:600 11px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);margin-top:3px}
+.cbx .cs{font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-muted);margin-top:6px}
+.foot{margin-top:44px;padding-top:18px;border-top:1px solid var(--kz-border);font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-muted-3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hd"><div class="mark"><ion-icon name="cube-outline"></ion-icon></div><h1>Inventory — simplification review &amp; work plan</h1></div>
+<p class="sub">A read of the 22 reference screens against what we have built, and a proposal for the shape the module should take. The goal set in the brief is simplicity and usability for non-technical operators — so the measure applied throughout is <b>how many decisions a shopkeeper must make before their first item is in stock</b>. Nothing here is implemented yet; this document is for your decisions.</p>
+
+<div class="links">
+<a class="pri" href="Koomzo POS - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Inventory as built</a>
+<a href="Koomzo Inventory - IA &amp; Integration.html"><ion-icon name="git-network-outline"></ion-icon>IA &amp; integration</a>
+<a href="Koomzo - Progressive Disclosure Approach.html"><ion-icon name="layers-outline"></ion-icon>Progressive disclosure</a>
+</div>
+
+<h2>1 · The verdict in one line</h2>
+<p class="lead">The reference app's <b>navigation model</b> is better than ours. Its <b>screen count</b> is much worse. Adopt the first, reject the second.</p>
+
+<div class="count">
+  <div class="cbx"><div class="cv">30</div><div class="cl">Reference destinations</div><div class="cs">10 top-level entries, 9 of them expanding into sub-menus. A four-item shop navigates the same tree as a distributor.</div></div>
+  <div class="cbx"><div class="cv">9</div><div class="cl">Ours today</div><div class="cs">Overview, Items, Stock, Buy, Counts, Move, Reports, Vendors, Setup — flat, but still eight decisions before the first task.</div></div>
+  <div class="cbx"><div class="cv">3</div><div class="cl">Proposed, Lite</div><div class="cs">Items, Stock, Setup. Five at Standard. Everything else is a capability that appears when switched on.</div></div>
+</div>
+
+<h3 class="sh">What their model gets right — adopt these four things</h3>
+<div class="grid2">
+  <div class="card"><h3>Verbs, not entities</h3><p><b>Stock In · Stock Out · Move Stock · Adjust Stock.</b> An operator does not think "I need to create a goods receipt document"; they think "stock arrived". Naming the menu after the action is the single biggest usability win in those screens, and it is why you responded to it.</p></div>
+  <div class="card"><h3>Every verb lands in one ledger</h3><p>Transactions is a single chronological list of everything the four verbs produced, in list–detail. The operator posts, then sees the posting appear. That closes the loop we currently leave open — our four verbs write to four different places.</p></div>
+  <div class="card"><h3>Colour carries the verb</h3><p>Blue in, coral out, amber move, green adjust — applied to the form title, the ledger row icon and the total. Learnable in one shift, and it maps cleanly onto tokens we already have (<code>--kz-info</code>, <code>--kz-discount</code>, <code>--kz-warning</code>, <code>--kz-success</code>).</p></div>
+  <div class="card"><h3>One "Partner" instead of two lists</h3><p>The same field names the supplier on a receipt and the customer on an issue. For a shop where the same wholesaler is sometimes a buyer, two separate contact books is an administrative tax with no payoff. Worth taking.</p></div>
+</div>
+
+<h3 class="sh">Where it is over-built — do not carry these</h3>
+<table>
+<tr><th>Observed</th><th>Cost to a non-technical user</th></tr>
+<tr><td><b>Four verbs are four separate screens</b> with near-identical forms</td><td>The forms differ by two rows out of eight. Four layouts to learn, four places for our styling to drift apart, four code paths to regress.</td></tr>
+<tr><td><b>Two ways to do the same job.</b> Stock In vs Purchases → Receive; Adjust Stock vs Inventory Count</td><td>The user cannot tell which is correct, so they pick the shorter one and the order stays open forever. This is the most damaging pattern in the set.</td></tr>
+<tr><td><b>Reports split into 5 screens</b> (Summary, Past Quantity, Inventory, Sales, Custom Analytics) — four of the five are empty states</td><td>Navigating to discover there is nothing to see. One screen with a report picker shows the same thing in one tap and never renders an empty shell.</td></tr>
+<tr><td><b>Data Center as a peer of daily work</b> — Items, Bundles, Locations, Attributes, Partners, Price Lists</td><td>Reference-data admin is a once-a-quarter job sitting permanently beside a ten-times-a-day job. It belongs in Setup.</td></tr>
+<tr><td><b>Item form carries five concerns in one scroll</b> — identity, custom attributes, pricing, photo, opening quantity — with a green <em>Generate</em> button competing against the blue <em>Save</em></td><td>A phone user scrolls past three sections they will never use to reach the quantity field, which is the only reason they opened the form. Two colours of primary button on one screen means neither reads as the primary.</td></tr>
+<tr><td><b>A completion meter and a help "?" on every title</b></td><td>Persistent chrome that does not change with the task. Ours already has a better home for this in Home.</td></tr>
+</table>
+
+<h2>2 · Proposal — the shape I recommend</h2>
+
+<h3 class="sh">2.1 · Navigation: five entries at Standard, three at Lite</h3>
+<p class="lead">The verb menu you liked, but the verbs live <em>inside</em> Stock as the actions that feed its ledger rather than as separate destinations. The operator still sees four clearly named buttons — they are just on one screen with the result.</p>
+<table>
+<tr><th>Entry</th><th>Holds</th><th>Lite</th><th>Standard</th><th>Pro</th></tr>
+<tr><td><b>Items</b></td><td>Catalogue, list–detail. Per-item stock by location in the pane.</td><td>●</td><td>●</td><td>●</td></tr>
+<tr><td><b>Stock</b></td><td>The ledger + four action buttons: <b>Stock in · Stock out · Move · Adjust</b>. Counts join as a fifth at Pro.</td><td>●</td><td>●</td><td>●</td></tr>
+<tr><td><b>Orders</b></td><td>Purchases · Sales · Returns as tabs on one screen, not three nav entries.</td><td>—</td><td>●</td><td>●</td></tr>
+<tr><td><b>Reports</b></td><td>One screen, report picker. Valuation, movement, low stock, turnover.</td><td>—</td><td>●</td><td>●</td></tr>
+<tr><td><b>Setup</b></td><td>Locations, reasons, partners, attributes, price lists, capability switches.</td><td>●</td><td>●</td><td>●</td></tr>
+</table>
+<div class="note"><ion-icon name="bulb-outline"></ion-icon><span><b>Overview / Vendors / Counts / Move as nav entries all retire.</b> Overview's numbers move to Home where the operator already starts. Vendors becomes Setup → Partners plus a tab in Orders. Counts and Move become actions on Stock. The rail goes from nine to five without losing a single capability — they change address, not existence.</span></div>
+
+<h3 class="sh">2.2 · One movement sheet with four presets</h3>
+<p class="lead">This is the core recommendation. The four verbs are one operation — a movement — differing only in where stock comes from, where it goes, and what the quantity column means.</p>
+<div class="kinds">
+  <div class="kind k-in"><div class="kn"><ion-icon name="arrow-down-outline"></ion-icon>Stock in</div><div class="kd">One location. Partner = supplier. Qty is <b>added</b>.</div></div>
+  <div class="kind k-out"><div class="kn"><ion-icon name="arrow-up-outline"></ion-icon>Stock out</div><div class="kd">One location. Partner = customer. Qty is <b>removed</b>.</div></div>
+  <div class="kind k-mv"><div class="kn"><ion-icon name="arrow-forward-outline"></ion-icon>Move</div><div class="kd">From → To. No partner. Two postings, one document.</div></div>
+  <div class="kind k-adj"><div class="kn"><ion-icon name="swap-vertical-outline"></ion-icon>Adjust</div><div class="kd">One location. Qty is the <b>new count</b>, not a delta. Reason required.</div></div>
+</div>
+<p>Everything else is shared: date (defaults to now), the item rows with on-hand shown beside each, the note field, Submit / Save draft. So the sheet is written once, takes a <code>kind</code>, and the header colour, the location control and the quantity column header switch on it. Four buttons on the Stock screen open it preset — the user experiences four tasks; we maintain one form.</p>
+<div class="note warn"><ion-icon name="warning-outline"></ion-icon><span><b>One thing their Adjust screen gets wrong and we should not repeat.</b> The quantity column is labelled "New Quantity" and takes an absolute figure, while Stock In's identical-looking column takes a delta. Same visual position, opposite meaning, no warning. Our sheet must label the column per kind <em>and</em> show the resulting on-hand inline (<code>12 → 9</code>) so the arithmetic is never in the operator's head. Their detail pane already does this well — <code>0 → −100</code>; the entry form should too.</span></div>
+
+<h3 class="sh">2.3 · The Stock screen</h3>
+<div class="flow">
+  <div class="step"><div class="i">1</div><div><div class="t">Header: location picker, date range, four action buttons</div><div class="d">Stock in · Stock out · Move · Adjust. On a phone these collapse into one <b>New movement</b> split button whose menu is the four verbs — the 44px targets stay honest.</div></div></div>
+  <div class="step"><div class="i">2</div><div><div class="t">Body: the ledger, list–detail</div><div class="d">Rows read as the reference ones do — verb + tint, when &amp; who, <code>3 items / 123</code>, partner, first item name, From/To chip. Our existing <code>.mdgrid</code>/<code>.mdpane</code> contract handles the mobile push.</div></div></div>
+  <div class="step"><div class="i">3</div><div><div class="t">Detail: the document, with before → after per line</div><div class="d">Header in the verb's colour, the four facts (location, date, partner, reference), then the lines with <b>On hand</b> and <b>Change</b> columns and a signed total. Footer actions pinned.</div></div></div>
+  <div class="step"><div class="i">4</div><div><div class="t">A post selects its own document</div><div class="d">Submit closes the sheet, the new row appears at the top of the ledger already selected, and the toast names what was written. The operator sees the consequence of the button without navigating.</div></div></div>
+</div>
+
+<h3 class="sh">2.4 · The item form — your restriction, made concrete</h3>
+<p class="lead">You asked that the item form be restricted to regular stock items, with bundles and services authored elsewhere. Agreed, and the mechanism matters: <b>remove the Type selector entirely</b> rather than hiding options inside it.</p>
+<div class="grid2">
+  <div class="card"><h3>New item — the whole form</h3><p>Photo · <b>Name</b> · <b>Sell price</b> · Cost · <b>Opening quantity</b> + location · Barcode (scan or generate). Six fields, no scroll on a phone, one primary button.</p><p>SKU is generated silently and shown as a quiet line under the name, editable behind <em>Edit identity</em>. A shopkeeper naming their first item should not have to learn what a SKU is.</p></div>
+  <div class="card"><h3>What appears later, and only when earned</h3><p>Reorder point, par level and supplier appear once <b>Purchasing</b> is on. Attributes appear once an attribute is defined in Setup. Lot and expiry appear once <b>Lot tracking</b> is on. Each is a section that materialises, not a disabled field.</p><p>This is the <code>IV_CAPS</code> / <code>IV_LITE</code> spine we already have — the form should read it rather than render everything and hide.</p></div>
+</div>
+<p><b>Services, bundles and non-stock get their own entry points.</b> <code>Add item ▾</code> on the Items header: the button itself adds a stock item; the caret offers <em>Service</em>, <em>Bundle</em>, <em>Non-stock</em> — each only present if its capability is on, so a Lite shop sees a plain button with no caret at all. A Type dropdown forces every user to read four options and choose; a split button lets 95% tap and never learn the other three exist.</p>
+
+<h3 class="sh">2.5 · Tier map</h3>
+<div class="grid3">
+  <div class="tier on"><div class="ic"><ion-icon name="leaf-outline"></ion-icon></div><div class="w">Tier 1</div><div class="n">Lite</div><div class="d">A market stall or single shop. One location, no orders, no counts.</div><ul><li>Items (stock only)</li><li>Stock in / out / adjust</li><li>The ledger</li><li>Setup: reasons</li></ul></div>
+  <div class="tier"><div class="ic"><ion-icon name="storefront-outline"></ion-icon></div><div class="w">Tier 2</div><div class="n">Standard</div><div class="d">Two or more locations and a supplier relationship.</div><ul><li>+ Move stock</li><li>+ Locations</li><li>+ Orders (purchases, sales, returns)</li><li>+ Low stock alerts</li><li>+ Reports</li></ul></div>
+  <div class="tier"><div class="ic"><ion-icon name="business-outline"></ion-icon></div><div class="w">Tier 3</div><div class="n">Pro</div><div class="d">Stock is audited and costed, not just tracked.</div><ul><li>+ Counts &amp; cycle programmes</li><li>+ Bundles, services</li><li>+ Attributes, price lists</li><li>+ Lots &amp; serials</li><li>+ Shared inventory link</li></ul></div>
+</div>
+<div class="note"><ion-icon name="key-outline"></ion-icon><span><b>Tiering must be a capability flag, never a removed route.</b> We learned this in the master–detail regression: a screen that is not rendered during a change is a screen nobody verifies. One flag read in one place, every screen asks the same question — which is exactly what <code>window.KZ.on('inventory', cap)</code> already does.</span></div>
+
+<h2>3 · Screen-by-screen calls</h2>
+<table>
+<tr><th>Reference screen</th><th>Our call</th></tr>
+<tr><td>Item List + detail pane (locations breakdown)</td><td><b>Keep as is, adopt the pane.</b> Their right pane — item header, then <em>2 locations</em> with a per-location quantity — is better than our current pane's density. Take that block.</td></tr>
+<tr><td>New Item (SKU / Attributes / Pricing / Starting Quantity)</td><td><b>Rebuild to 6 fields.</b> §2.4. Attributes out to a capability, SKU auto, Type selector deleted.</td></tr>
+<tr><td>Stock In · Stock Out · Move Stock · Adjust Stock</td><td><b>Collapse to one sheet, four presets.</b> §2.2. Keep the colour coding and the item-row search with on-hand beside each result — that search row is genuinely good.</td></tr>
+<tr><td>Transactions</td><td><b>Becomes the Stock screen body.</b> §2.3. Adopt the row anatomy and the <em>On hand → Change</em> detail columns verbatim in structure, in our type and colour.</td></tr>
+<tr><td>Purchases / Sales / Returns (three entries, status tabs each)</td><td><b>One Orders screen, three tabs.</b> Keep their status tab rail (All / Draft / Ordered / Partially received / Received) — it is the right filter model for documents with a lifecycle.</td></tr>
+<tr><td>New Purchase Order (supplier, price list, currency, items, order no., dates, custom fields, memo)</td><td><b>Halve it.</b> Supplier, items, expected date, memo. Currency follows the tenant; price list, order number and custom fields are Pro, collapsed.</td></tr>
+<tr><td>Low Stock Alerts · Inventory Link · Inventory Count ("Other Features")</td><td><b>Retire the group.</b> "Other Features" is not a category — it is what is left over. Low stock → Reports. Count → Stock action. Inventory Link → Setup.</td></tr>
+<tr><td>Reports: Summary, Past Quantity, Inventory, Sales, Custom Analytics</td><td><b>One screen, report picker.</b> Their <em>Past Quantity</em> idea — stock as at a chosen date — is worth keeping as a report, not a destination.</td></tr>
+<tr><td>Data Center: Items, Bundles, Locations, Attributes, Partners, Price Lists</td><td><b>Into Setup.</b> Their Locations screen and the small New Location modal (name + memo) are the right weight — copy that restraint.</td></tr>
+</table>
+
+<h2>4 · Work plan</h2>
+<p class="lead">Five phases, each ending in something you can look at. Phases 1–2 are the ones that matter; 3–5 are tidying that becomes easy once the spine is right. Per the stabilisation prompt, each phase opens by writing down the callers of what it touches — <code>.mdgrid</code>/<code>.mdpane</code> are consumed by MRP, Retail Flex, Products v2 and Catalog, so an Inventory change is never only an Inventory change.</p>
+
+<div class="ph gate"><div class="pn"><ion-icon name="chatbubble-ellipses-outline"></ion-icon></div><div><div class="pt">Phase 0 — this document</div><div class="pd">Your decisions on §5. No code. Nothing below starts until the six answers exist, because §2.1 and §2.5 are assumptions until you confirm them.</div><div class="pf">Output: agreed IA + tier map</div></div></div>
+
+<div class="ph"><div class="pn">1</div><div><div class="pt">Navigation collapse &amp; tier map</div><div class="pd">Rewrite <code>NAV</code> to five entries; move Overview's tiles to Home; fold Vendors into Setup and Orders; extend <code>IV_CAPS</code> / <code>IV_LITE</code> to carry the three tiers. No screen is redesigned — screens change address only, so the diff is reviewable and reversible.</div><div class="pf">iv-app.jsx · iv-data.js · caller check: kz-caps.js consumers</div></div></div>
+
+<div class="ph"><div class="pn">2</div><div><div class="pt">The movement sheet and the Stock ledger</div><div class="pd">One sheet with four presets replaces the Receive and Adjust sheets and adds Out and Move; Stock becomes ledger list–detail with the four action buttons and the before→after columns. This is the phase that delivers the usability change you asked for — and the largest blast radius, since it retires two existing sheets.</div><div class="pf">iv-sheets-ops.jsx · iv-stock.jsx · iv-store.js · iv-data.js</div></div></div>
+
+<div class="ph"><div class="pn">3</div><div><div class="pt">Item form split</div><div class="pd">Six-field stock-item form; <code>Add item ▾</code> split button; separate service, bundle and non-stock sheets behind their capabilities; attributes and lot sections materialise rather than hide.</div><div class="pf">iv-sheets-items.jsx · iv-items.jsx</div></div></div>
+
+<div class="ph"><div class="pn">4</div><div><div class="pt">Orders consolidation</div><div class="pd">Purchases, Sales and Returns as tabs on one screen with the status rail. Halve the purchase-order form. Returns is new — it does not exist in our build today.</div><div class="pf">iv-buy.jsx · new: returns</div></div></div>
+
+<div class="ph"><div class="pn">5</div><div><div class="pt">Reports as one screen, Setup as one home</div><div class="pd">Report picker replacing the report list; Data Center content lands in Setup alongside locations, reasons and the capability switches. Low stock becomes a report, not a page.</div><div class="pf">iv-app.jsx · reports · setup</div></div></div>
+
+<h2>5 · Six decisions I need from you</h2>
+<ol class="ask">
+<li><div class="qq">Do the four verbs stay as nav entries, or become buttons on Stock?</div><div class="qa">You said you liked the simplistic menu of Stock In / Out / Move / Adjust. My recommendation is <b>buttons on the Stock screen, not rail entries</b> — same four words, same prominence, but the operator sees the ledger update. If you would rather keep them in the rail, say so: it costs four rail slots and I will design for it.</div></li>
+<li><div class="qq">Is stock allowed in without a purchase order?</div><div class="qa">Our <code>ACTIONS.md</code> says yes — two legitimate arrival paths. The reference app agrees. But it is the pattern behind "two ways to do the same job", so the mitigation is that <b>Stock in offers to attach an open order</b> when one exists for that partner. <b>Confirm both paths stay.</b></div></li>
+<li><div class="qq">One Partner list, or separate suppliers and customers?</div><div class="qa">Recommend <b>one list with role tags</b>. Cheaper to maintain, and a partner who both supplies and buys is common in this market. Cost: purchase and sales reporting must filter by role rather than by table.</div></li>
+<li><div class="qq">Where do Counts live?</div><div class="qa">Recommend <b>a fifth verb on Stock at Pro tier</b>, with cycle programmes in Setup. The alternative is its own entry — defensible, because a count is a multi-day job with its own state, unlike the other four which post instantly.</div></li>
+<li><div class="qq">Is Move Stock in Lite?</div><div class="qa">Recommend <b>no</b> — Lite is one location, so Move has nothing to move between, and it would be a button that always errors. It arrives with the second location, automatically.</div></li>
+<li><div class="qq">Excel import — everywhere, or only Items?</div><div class="qa">The reference app puts <em>Import from Excel</em> on every form. Recommend <b>Items and Stock in only</b>. Import on an adjustment form is how a mis-mapped column silently rewrites a hundred quantities.</div></li>
+</ol>
+
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><span><b>On the reference app generally.</b> What I have taken from those screens is structural — the verb vocabulary, the one-ledger model, the row anatomy, the before→after columns. The visual execution stays entirely Koomzo: purple primary, <code>#f4f6f9</code> canvas, Ionicons, 10px radii, our type scale and our tabular figures. The result should read as Koomzo solving the same problem, not as a reskin.</span></div>
+
+<div class="foot">Prepared for review · no implementation has begun · September 2026</div>
+
+</div>
+</body>
+</html>

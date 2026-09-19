@@ -152,6 +152,7 @@ function MemberSheet({ mid, api, onClose }) {
         <StateTag state={m.state} />
       </div>
 
+      <PushPending c={c} amount={p.price} />
       <div className="gmfields">
         <div className="gmf"><label>Plan</label><div className="btn" style={{ justifyContent:'flex-start' }}>{plan.name} · {xaf(plan.price)} / {plan.cycle}</div></div>
         <div className="gmf"><label>Access</label><div className="btn" style={{ justifyContent:'flex-start' }}>{plan.zones.map((z) => GM.zoneNames[z]).join(', ')} · {plan.hours === 'any' ? 'any hour' : plan.hours}</div></div>
@@ -227,6 +228,7 @@ function FreezeSheet({ mid, api, onClose }) {
         A freeze pushes the renewal date out by the same number of days. Access is refused while it stands,
         and the wallet balance is untouched.
       </div>
+      <PushPending c={c} amount={p.price} />
       <div className="gmfields">
         <div className="gmf"><label>Days</label>
           <select value={days} onChange={(e) => setDays(Number(e.target.value))}>
@@ -264,6 +266,7 @@ function TransferSheet({ mid, api, onClose }) {
         The club charges a transfer fee and records who authorised it. The wallet, session packages and
         locker stay with the original member — only paid-for time moves.
       </div>
+      <PushPending c={c} amount={p.price} />
       <div className="gmfields">
         <div className="gmf"><label>Transfer to</label>
           <select value={to} onChange={(e) => setTo(e.target.value)}>
@@ -291,14 +294,17 @@ function NewMemberSheet({ seed, api, onClose }) {
   const [phone, setPhone] = useState('');
   const [plan, setPlan] = useState('std');
   const [co, setCo] = useState('');
-  const [tender, setTender] = useState('momo');
   const p = planOf(plan);
+  /* the joining fee is a real payment on a real rail */
+  const c = window.useSingleCharge(p.price, { onDone: () => { api.addMember({ name, phone, plan, co, tender: c.tender }); onClose(); } });
+  const tender = c.tender, setTender = c.setTender;
   return (
     <GmSheet wide title="New member" sub="Phone and a plan is enough — the rest can wait" onClose={onClose}
       foot={<><button className="btn" onClick={onClose}>Cancel</button><div className="sp" style={{ flex: 1 }}></div>
-        <button className="btn primary" disabled={!name.trim() || !phone.trim()}
-          onClick={() => { api.addMember({ name, phone, plan, co, tender }); onClose(); }}>
-          <ion-icon name="checkmark-outline"></ion-icon>Join {co ? 'on a company seat' : 'and take ' + xaf(p.price)}</button></>}>
+        <button className="btn primary" disabled={!name.trim() || !phone.trim() || c.busy} style={c.busy ? { opacity: .45 } : null}
+          onClick={co ? () => { api.addMember({ name, phone, plan, co, tender: 'tab' }); onClose(); } : c.request}>
+          <ion-icon name="checkmark-outline"></ion-icon>{c.busy ? 'Waiting…' : 'Join ' + (co ? 'on a company seat' : 'and take ' + xaf(p.price))}</button></>}>
+      <PushPending c={c} amount={p.price} />
       <div className="gmfields">
         <div className="gmf"><label>Full name</label><input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Nadège Fotso" /></div>
         <div className="gmf"><label>Phone</label><input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="6 55 19 79 85" /></div>

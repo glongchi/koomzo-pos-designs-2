@@ -22,6 +22,8 @@ function GymCapGate({ view, onView }) {
 }
 
 function GymApp() {
+  /* the juice bar and pro shop, adopted into the one ledger */
+  useEffect(() => { window.KZ_SALES.adopt('gym', 'ap', GM.bar); }, []);
   const [t, setTweak] = useTweaks(GM_TWEAKS);
   const [view, setView] = useState(t.start);
   const [members, setMembers] = useState(GM.members);

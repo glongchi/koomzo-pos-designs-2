@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo MRP — IA &amp; market fit</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.wrap{max-width:860px;margin:0 auto;padding:40px 24px 72px}
+.hd{display:flex;align-items:center;gap:12px}
+.mark{width:38px;height:38px;border-radius:11px;background:var(--kz-primary);display:grid;place-items:center;box-shadow:var(--kz-shadow-key);flex:none}
+.mark ion-icon{color:#fff;font-size:20px}
+h1{margin:0;font:700 26px var(--kz-font-sans);letter-spacing:-.02em}
+.sub{margin:6px 0 30px 50px;font:400 14px/1.6 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+h2{margin:36px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em}
+.lead{margin:0 0 16px;font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:18px 20px;margin-bottom:12px}
+.card h3{margin:0 0 4px;font:700 15px var(--kz-font-sans)}
+.card p{margin:0;font-size:13.5px;line-height:1.65}
+.card p+p{margin-top:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:720px){.grid2,.grid3{grid-template-columns:1fr}}
+.tier{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:18px;display:flex;flex-direction:column;gap:8px}
+.tier.on{border:1.5px solid var(--kz-primary);background:var(--kz-primary-wash)}
+.tier .ic{width:38px;height:38px;border-radius:11px;background:var(--kz-surface-2);color:var(--kz-muted-2);display:grid;place-items:center}
+.tier.on .ic{background:var(--kz-primary);color:#fff}
+.tier .n{font:700 15px var(--kz-font-sans)}
+.tier .w{font:600 11px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+.tier .d{font:400 13px/1.6 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+.tier ul{margin:2px 0 0;padding-left:17px}
+.tier li{font:500 12.5px/1.7 var(--kz-font-sans);color:var(--kz-ink-2)}
+.flow{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:6px 20px}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--kz-border)}
+.step:last-child{border-bottom:none}
+.step .i{width:28px;height:28px;border-radius:999px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 12px var(--kz-font-num);flex:none}
+.step .t{font:700 13.5px var(--kz-font-sans)}
+.step .d{font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-muted);margin-top:3px;text-wrap:pretty}
+code{font:600 12.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:2px 6px;color:var(--kz-ink-2)}
+.note{display:flex;gap:11px;padding:14px 16px;border-radius:var(--kz-radius);background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-ink-2);margin:14px 0;text-wrap:pretty}
+.note ion-icon{font-size:19px;color:var(--kz-primary);flex:none;margin-top:2px}
+.note b{font-weight:700}
+.note.warn{background:var(--kz-warning-wash);border-color:#efdcae}
+.note.warn ion-icon{color:#c98a20}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--kz-border);font:400 13px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700}
+.links{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.links a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;border-radius:10px;border:1px solid var(--kz-border-strong);background:#fff;font:600 13.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.links a.pri{background:var(--kz-primary);border-color:var(--kz-primary);color:#fff;box-shadow:var(--kz-shadow-key)}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tg{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:var(--kz-radius-pill);background:var(--kz-surface-2);border:1px solid var(--kz-border);font:600 11.5px var(--kz-font-sans);color:var(--kz-muted-2)}
+.tg.on{background:var(--kz-primary-wash);border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hd"><div class="mark"><ion-icon name="hammer-outline"></ion-icon></div><h1>MRP — information architecture &amp; Central African fit</h1></div>
+<p class="sub">A manufacturing tier for Koomzo, designed for the plants that actually exist between Douala and Yaoundé: agro-processing and packing operations where yield, import lead time and power availability decide the schedule. Same data model as Inventory — one catalogue, one quantity, one purchasing queue.</p>
+
+<div class="links">
+<a class="pri" href="Koomzo POS - MRP.html"><ion-icon name="hammer-outline"></ion-icon>MRP module</a>
+<a href="Koomzo MRP - Shop Floor.html"><ion-icon name="phone-portrait-outline"></ion-icon>Shop floor (phone)</a>
+<a href="Koomzo POS - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Inventory module</a>
+<a href="Koomzo Inventory - IA &amp; Integration.html"><ion-icon name="git-network-outline"></ion-icon>Inventory IA</a>
+</div>
+
+<h2>The one design decision</h2>
+<p class="lead">MRP is not a second system bolted beside stock — it is three new objects on top of the Inventory model.</p>
+<div class="flow">
+  <div class="step"><div class="i">1</div><div><div class="t">Part = the Item you already have</div><div class="d">A cocoa bean, a jar, a WIP tote of liquor and a finished spread jar are all Items with a quantity. MRP adds a <code>kind</code> (raw / wip / packaging / finished) and a <code>source</code> (local / import). Nothing is duplicated, so a finished jar can carry <b>Show in POS</b> the day it comes off the line.</div></div></div>
+  <div class="step"><div class="i">2</div><div><div class="t">BOM = an Item that knows how it is made</div><div class="d">Components, a <b>yield</b>, and optional <b>co-products</b>. This is the difference between a retail recipe and a process plant: 1 000 kg of beans leaves as 800 kg of nibs plus 180 kg of shell, so the BOM plans the input and credits the co-product before unit cost.</div></div></div>
+  <div class="step"><div class="i">3</div><div><div class="t">Work order = the document that moves stock</div><div class="d">Like a purchase order or a transfer, it posts movements onto the same stock card the store sees. Output, scrap, lot, material picked, energy hours — all captured against the order, which is what makes job costing possible without a second ledger.</div></div></div>
+  <div class="step"><div class="i">4</div><div><div class="t">Planning run reads demand, writes suggestions</div><div class="d">Firm contracts plus forecast, netted against on-hand, allocated and incoming. It never posts anything: it produces <b>suggested purchases</b> that drop into the existing purchase-order screen and <b>suggested work orders</b> a planner approves.</div></div></div>
+</div>
+
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><div><b>Nothing new in the register.</b> POS keeps reading the item channel layer built for Inventory. A manufactured good is visible at the till because its Item says so — not because MRP pushed anything.</div></div>
+
+<h2>Tiers</h2>
+<p class="lead">Off / Lite / Full, exactly as Inventory does it. Same tables at every tier, so a workshop that grows into a plant migrates nothing.</p>
+<div class="grid3">
+  <div class="tier"><div class="ic"><ion-icon name="close-circle-outline"></ion-icon></div><div class="w">Tier 0</div><div class="n">Off</div><div class="d">Buy and sell. Retailers, salons, restaurants — MRP never appears in the rail.</div></div>
+  <div class="tier"><div class="ic"><ion-icon name="git-network-outline"></ion-icon></div><div class="w">Tier 1</div><div class="n">Lite</div><div class="d">A bakery, soap workshop or juice bottler that just needs “build 200 of these”.</div>
+    <ul><li>BOMs with a yield</li><li>Work orders + output logging</li><li>Lot numbers</li></ul></div>
+  <div class="tier on"><div class="ic"><ion-icon name="layers-outline"></ion-icon></div><div class="w">Tier 2</div><div class="n">Full</div><div class="d">A processing plant with contracts, imports and a shift pattern.</div>
+    <ul><li>Planning run + shortages</li><li>Routings, work centres, capacity</li><li>Quality gates, traceability</li><li>Job costing &amp; yield variance</li></ul></div>
+</div>
+
+<h2>Screen map</h2>
+<table>
+<tr><th>Screen</th><th>Answers</th><th>Primary user</th></tr>
+<tr><td><b>Plan</b></td><td>What is short, by when, and is it a buy or a build?</td><td>Planner / buyer</td></tr>
+<tr><td><b>Orders</b></td><td>What is released, running, blocked, done — and how much scrap?</td><td>Production supervisor</td></tr>
+<tr><td><b>BOMs</b></td><td>What goes in, what comes out, what does a unit cost?</td><td>Process engineer</td></tr>
+<tr><td><b>Floor</b> (phone)</td><td>What do I run next, and what did I just produce?</td><td>Operator</td></tr>
+<tr><td><b>Materials</b></td><td>Coverage, real lead time, where each part is used.</td><td>Buyer / storekeeper</td></tr>
+<tr><td><b>Capacity</b></td><td>Which centre is the bottleneck, and which hours are grid hours?</td><td>Plant manager</td></tr>
+<tr><td><b>Quality</b></td><td>Did the batch conform, and where did that lot go?</td><td>QA / export compliance</td></tr>
+<tr><td><b>Costs</b></td><td>Standard vs actual by material, labour, energy, overhead.</td><td>Finance / GM</td></tr>
+</table>
+
+<h2>Built for the Central African constraint set</h2>
+<p class="lead">Four things about a Douala plant that generic MRP UIs handle badly, and how these screens answer them.</p>
+<div class="grid2">
+  <div class="card"><h3>Import lead time is the real planning parameter</h3><p>Every part carries a supplier lead time <i>plus</i> a port buffer (18 d Douala, 14 d Kribi). The plan shows landed lead time against the need date and says so out loud when it cannot make it — with the three real options: air-freight the gap, cut the batch, substitute a local grade.</p></div>
+  <div class="card"><h3>Power decides the schedule, so it is on screen</h3><p>Work centres declare grid / generator tolerance and the day is drawn as a grid window and a generator window. Generator hours cost about 38% more, so the extra lands on the job as an energy variance rather than disappearing into monthly overhead.</p></div>
+  <div class="card"><h3>Connectivity drops, work does not</h3><p>The floor phone stamps the lot locally and queues every action. Offline is a permanent chip and a banner with a count, never a toast that vanishes — an operator must be able to trust that a shift of logging is not lost.</p></div>
+  <div class="card"><h3>Yield variance is the margin</h3><p>Bean moisture, press residual fat, over-dosed sugar: each is a fraction of a percent that decides whether a run made money. Actual yield sits beside standard on every closed job, with the reason written in plain language.</p></div>
+</div>
+<div class="tagrow">
+  <span class="tg on">XAF · F CFA, no minor unit</span><span class="tg on">FR / EN interface</span><span class="tg on">Port buffer on imports</span>
+  <span class="tg on">Grid vs generator hours</span><span class="tg on">Offline-first floor</span><span class="tg on">Co-products &amp; yield</span><span class="tg on">Lot genealogy</span>
+</div>
+
+<h2>Where Koomzo sits against the vendors reviewed</h2>
+<p class="lead">Read against your MRPeasy / Odoo Manufacturing / Digit comparison, the gap Koomzo occupies is narrow and defensible.</p>
+<table>
+<tr><th></th><th>MRPeasy</th><th>Odoo Manufacturing</th><th>Koomzo MRP</th></tr>
+<tr><td><b>Entry point</b></td><td>Dedicated MRP; stock and sales live elsewhere</td><td>40-app suite; manufacturing is one module of many</td><td>The POS and stock the shop already runs — manufacturing is a switch, not a project</td></tr>
+<tr><td><b>Setup effort</b></td><td>2–6 weeks self-service, CSV templates</td><td>Months, usually with an integrator</td><td>Tier up from Lite in an afternoon; the catalogue is already there</td></tr>
+<tr><td><b>Floor device</b></td><td>Browser kiosk</td><td>Tablet MES app</td><td>The phone the supervisor already owns, offline-first, in French</td></tr>
+<tr><td><b>Local reality</b></td><td>Generic lead times; no port or power model</td><td>Configurable, but you configure it</td><td>Port buffer and generator hours are first-class fields</td></tr>
+<tr><td><b>Ceiling</b></td><td>Deep discrete MRP, weaker on process co-products</td><td>Deepest: PLM, ECO, CMMS, full quality</td><td>Deliberately stops below PLM and CMMS — process yield, not engineering change</td></tr>
+</table>
+<div class="note warn"><ion-icon name="alert-circle-outline"></ion-icon><div><b>Where Koomzo should not compete.</b> Engineering change orders, CAD-linked PLM, finite-capacity scheduling and preventive-maintenance planning are Odoo's ground. If a prospect needs those, the honest answer is Odoo with an integrator — and Koomzo staying the POS. Two more open gaps, same as MRPeasy: OHADA-compliant statements (export the ledger to the accounting package) and a local ERP-grade payroll.</div></div>
+
+<h2>Who this fits in Cameroon</h2>
+<p class="lead">From your sector list, the shortlist where <i>this specific</i> design lands — process plants with recipes, yields, lots and import exposure — rather than heavy discrete industry.</p>
+<div class="grid2">
+  <div class="card"><h3>Strong fit today</h3><p>Cocoa transformation and confectionery · soap, detergent and cosmetics blending · juice, water and beverage bottling · dairy and bouillon-style food processing · bakery and flour-based groups · palm-oil and shea processing · plastics with resin/regrind ratios.</p><p>All share: a recipe with a yield, co-products, lot traceability for an export buyer, and imported inputs with long landed lead times.</p></div>
+  <div class="card"><h3>Needs more than this tier</h3><p>Steel and aluminium (multi-level WIP through rolling mills, furnace scheduling) · sawmilling and veneer (log-to-grade conversion with per-log variability, kiln cycles, FLEGT documents) · cement (continuous process with spares-driven maintenance) · textiles (loom scheduling, dye-lot management).</p><p>Each needs one heavier subsystem — finite scheduling, grade conversion, or CMMS — before it is honest to sell.</p></div>
+</div>
+
+<h2>Rollout shape</h2>
+<div class="flow">
+  <div class="step"><div class="i">1</div><div><div class="t">Weeks 1–2 · Parts and BOMs</div><div class="d">Load the catalogue with kinds and units, then the recipes with real yields taken from last quarter's actuals — not the design spec. Yield accuracy is what makes every later number credible.</div></div></div>
+  <div class="step"><div class="i">2</div><div><div class="t">Weeks 3–4 · Lite live on the floor</div><div class="d">Work orders and output logging only, on phones, in French. One line, one shift, one supervisor. The metric is whether logging survives a power cut, not whether the plan is clever.</div></div></div>
+  <div class="step"><div class="i">3</div><div><div class="t">Weeks 5–8 · Full tier</div><div class="d">Turn on the planning run once supplier lead times and port buffers are entered honestly. Quality gates and traceability follow, driven by whichever export buyer audits first.</div></div></div>
+  <div class="step"><div class="i">4</div><div><div class="t">Quarter 2 · Costing review rhythm</div><div class="d">A weekly variance meeting on four numbers: material, energy, scrap, yield. Nothing else in the module changes behaviour as fast.</div></div></div>
+</div>
+
+<div class="note"><ion-icon name="bulb-outline"></ion-icon><div><b>Open questions worth deciding before build.</b> Subcontracting (send liquor out for pressing) is modelled in the capability list but has no screen yet. Preventive maintenance is deliberately absent. And costing currently rolls standard vs actual per job — a moving-average valuation for OHADA reporting is a separate decision with the accountant.</div></div>
+
+</div>
+</body>
+</html>

@@ -29,7 +29,10 @@ function SalonApp() {
   const [clock, setClock] = useState({ in: 532, brk: false, brkMin: 0 });
   const [services, setServices] = useState(SL.services);
   const [ticket, setTicket] = useState({ lines: [], client: null, apptId: null });
-  const [ticketNo, setTicketNo] = useState(1082);
+  /* the salon's retail shelf, adopted into the one ledger */
+  useEffect(() => { window.KZ_SALES.adopt('salon', 'up', SL.products); }, []);
+  /* composed at the chair: LOC-REG-SESSION-SEQ, immutable once issued */
+  const [ticketNo, setTicketNo] = useState(() => window.KZ_TICKET.compose({ loc: 'DLA1', reg: 'S1', seq: 1082 }));
   const [cartOpen, setCartOpen] = useState(false);
   const [held, setHeld] = useState(0);
   const [narrow, setNarrow] = useState(false);
@@ -68,7 +71,7 @@ function SalonApp() {
   const totals = useMemo(() => {
     const gross = ticket.lines.reduce((s, l) => s + l.price * l.qty, 0);
     const net = ticket.lines.reduce((s, l) => s + l.price * l.qty * (1 - l.disc / 100), 0);
-    const tax = Math.round(net * SL.tax);
+    const tax = window.KZ_POLICY.taxFor('salon', net);
     return { gross: Math.round(gross), net: Math.round(net), discount: Math.round(gross - net), tax, total: Math.round(net) + tax };
   }, [ticket]);
   const finished = appts.filter((a) => a.status === 'done' && !a.paid);
@@ -106,7 +109,7 @@ function SalonApp() {
     finishSale: (grand, tip, method) => {
       if (ticket.apptId) setAppts((c) => c.map((a) => a.id === ticket.apptId ? { ...a, paid: true } : a));
       setTicket({ lines: [], client: null, apptId: null });
-      setTicketNo((n) => n + 1);
+      setTicketNo((n) => window.KZ_TICKET.next(n));
       say(money(grand) + ' taken by ' + tenderLabel(method));
     },
     fromAppt: (a) => {
@@ -185,7 +188,7 @@ function SalonApp() {
   };
   const titles = {
     today: [SL.shop, SL.today + ' · ' + me.name + ' · ' + me.role],
-    register: [SL.shop, 'Register · ticket #' + ticketNo + (held ? ' · ' + held + ' held' : '')],
+    register: [SL.shop, 'Register · ticket ' + window.KZ_TICKET.short(ticketNo) + (held ? ' · ' + held + ' held' : '')],
     services: [SL.shop, 'Services · price list'],
     calendar: [SL.shop, 'Appointments · ' + SL.today],
     tasks: [SL.shop, 'Tasks · ' + openTasks + ' open today'],

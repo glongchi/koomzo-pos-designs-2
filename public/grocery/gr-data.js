@@ -80,10 +80,6 @@ window.GR = {
     { id:'u1', name:'Chantal Mbezele', first:'Chantal', role:'Owner',   init:'CM', pin:'1140' },
     { id:'u2', name:'Alain Tchouta',   first:'Alain',   role:'Cashier', init:'AT', pin:'4417' },
   ],
-  tenders: [
-    { id:'cash',   name:'Cash',         icon:'cash-outline' },
-    { id:'momo',   name:'MTN MoMo',     icon:'phone-portrait-outline' },
-    { id:'orange', name:'Orange Money', icon:'phone-portrait-outline' },
-    { id:'card',   name:'Card',         icon:'card-outline' },
-  ],
+  /* the platform list, plus the card a co-op issues its members */
+  tenders: window.KZ_TENDER.named({ gift: true }),
 };

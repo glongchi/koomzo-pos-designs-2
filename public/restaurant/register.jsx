@@ -22,7 +22,7 @@ function Register() {
   const [charging, setCharging] = useState(false);
   const [splitting, setSplitting] = useState(false);
   const [noteFor, setNoteFor] = useState(null);
-  const [orderNo, setOrderNo] = useState(() => 1042);
+  const [orderNo, setOrderNo] = useState(() => window.KZ_TICKET.compose({ loc: 'DLA1', reg: 'R1', seq: 1042 }));
   const [mobilePane, setMobilePane] = useState('menu'); // phone: 'menu' | 'order'
 
   /* reset coursing when vertical changes; clear order */
@@ -124,7 +124,7 @@ function Register() {
     setCharging(false);
     if (flags.tables && activeTable) clearTable(activeTable);
     setOrder([]); setSelectedUid(null); setEditing(false); setActiveCourse(1); setActiveTable(null);
-    setOrderNo((n) => n + 1);
+    setOrderNo((n) => window.KZ_TICKET.next(n));
   };
 
   const selLine = order.find((o) => o.uid === selectedUid);
@@ -134,7 +134,7 @@ function Register() {
     <div className="screen">
       <div className="sbar">
         <span className="sbar__title">Register</span>
-        <span className="sbar__sub">Order #{orderNo}</span>
+        <span className="sbar__sub" title={orderNo}>Order {window.KZ_TICKET.short(orderNo)}</span>
         <div className="sbar__right">
           <VerticalSwitch />
           <span className="sbar__sync"><ion-icon name="wifi-outline"></ion-icon>Synced</span>

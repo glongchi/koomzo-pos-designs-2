@@ -14,14 +14,32 @@ function Seg({ tabs, value, onChange }) {
 }
 
 /* ================= SHIFT ================= */
-function ShiftView() {
+function ShiftView({ held, onResume, onVoid }) {
   const S = window.RX_SHIFT2;
   const [tab, setTab] = React.useState('overview');
+  /* decision 20.6 — a held ticket is goods off the shelf, or food already
+     eaten. The close lists every one and refuses to complete until each is
+     settled, voided or handed over. Money already taken on a part-tendered
+     ticket sits in storage (decision 20.2), so it is listed here too. */
+  const open = held || [];
+  const partial = React.useMemo(() => {
+    const out = [];
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (!k || k.indexOf('kz.tender.') !== 0) continue;
+        const v = JSON.parse(localStorage.getItem(k)) || [];
+        if (v.length) out.push({ no: k.slice(10), taken: window.KZ_TENDER.sum(v), n: v.length });
+      }
+    } catch (e) {}
+    return out;
+  }, []);
+  const toResolve = open.length + partial.length;
   const [den, setDen] = React.useState(() => S.denoms.map((d) => d.n));
   const [blind, setBlind] = React.useState(true);
   const counted = S.denoms.reduce((s, d, i) => s + d.v * den[i], 0);
   const expected = S.tenders[0].expected;
-  const diff = +(counted - expected).toFixed(2);
+  const diff = Math.round(counted - expected);
   const within = Math.abs(diff) <= S.tolerance;
   const peak = Math.max(...S.hourly.map((h) => h[1]));
   const bump = (i, k) => setDen((c) => c.map((n, j) => (j === i ? Math.max(0, n + k) : n)));
@@ -36,8 +54,44 @@ function ShiftView() {
         <div className="sp"></div>
         <span className="badge ok"><ion-icon name="ellipse" style={{ fontSize: 8 }}></ion-icon>Shift open</span>
         <button className="btn"><ion-icon name="print-outline"></ion-icon>X report</button>
-        <button className="btn primary desk-only"><ion-icon name="lock-closed-outline"></ion-icon>Close shift</button>
+        <button className="btn primary desk-only" disabled={toResolve > 0} style={toResolve ? { opacity: .45 } : null}
+          title={toResolve ? 'Resolve the open tickets first' : 'Count, then close'}>
+          <ion-icon name="lock-closed-outline"></ion-icon>Close shift</button>
       </div>
+
+      {toResolve > 0 && (
+        <div className="card" style={{ borderColor: 'var(--kz-warning)', background: 'var(--kz-warning-wash)', marginBottom: 14 }}>
+          <div className="card__t" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ion-icon name="alert-circle-outline" style={{ color: '#8a6414' }}></ion-icon>
+            To resolve before close · {toResolve}</div>
+          <div className="card__s" style={{ marginTop: 4 }}>
+            Settle, void or hand each one to the next shift. Auto-voiding silently turns unexplained
+            shrinkage into a clean report — which is the report an owner should never receive.</div>
+          <div style={{ marginTop: 12, display: 'grid', gap: 8 }}>
+            {partial.map((p) => (
+              <div className="trow" key={p.no} style={{ padding: '9px 0', borderBottom: '1px solid var(--kz-border)' }}>
+                <span className="k"><b>{window.KZ_TICKET.short(p.no)}</b> · part-tendered
+                  <span className="badge" style={{ marginLeft: 8 }}>{money(p.taken)} taken on {p.n}</span></span>
+                <span className="sp"></span>
+                <button className="btn" onClick={() => onResume && onResume({ no: p.no })}>Finish payment</button>
+              </div>
+            ))}
+            {open.map((t) => (
+              <div className="trow" key={t.id} style={{ padding: '9px 0', borderBottom: '1px solid var(--kz-border)' }}>
+                <span className="k"><b>{t.label}</b> · {t.who} · {t.items} items · {money(t.total)}</span>
+                <span className="sp"></span>
+                <button className="btn" onClick={() => onResume && onResume(t)}>Resume</button>
+                <button className="btn" style={{ marginLeft: 7 }} onClick={() => onVoid && onVoid(t)}>Hand over</button>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 9, marginTop: 14 }}>
+            <button className="btn danger" onClick={() => onVoid && onVoid('all')}>
+              <ion-icon name="trash-outline"></ion-icon>Void all · supervisor</button>
+          </div>
+          <div className="card__s" style={{ marginTop: 8 }}>Bulk void writes a reason against every ticket it touches.</div>
+        </div>
+      )}
 
       <Seg value={tab} onChange={setTab} tabs={[['overview', 'Overview'], ['count', 'Cash count'],
         ['moves', 'Movements', S.movements.length], ['exc', 'Exceptions', S.exceptions.reduce((s, e) => s + e.n, 0)]]} />
@@ -50,6 +104,11 @@ function ShiftView() {
               <div className="v" style={{ color: k.tone === 'bad' ? 'var(--kz-discount)' : k.tone === 'warn' ? '#a3761c' : 'var(--kz-ink)' }}>
                 {k.plain ? k.v : money(k.v)}
               </div>
+              {/* change 8 — a raw total tells an owner nothing; a share of net does */}
+              {/discount/i.test(k.k) && (
+                <div className="k" style={{ marginTop: 3 }}>
+                  {String(window.KZ_POLICY.leakage(Math.abs(k.v), (S.kpis[0] || {}).v || 0)).replace('.', ',')} % of net</div>
+              )}
             </div>
           ))}
         </div>
@@ -61,7 +120,7 @@ function ShiftView() {
             <div className="op-bd" style={{ paddingTop: 4 }}>
               {S.tenders.map((t) => {
                 const c = t.counted === null ? counted : t.counted;
-                const d = +(c - t.expected).toFixed(2);
+                const d = Math.round(c - t.expected);
                 return (
                   <div className="op-row" key={t.k}>
                     <div className="op-ic"><ion-icon name={t.ic}></ion-icon></div>
@@ -73,7 +132,7 @@ function ShiftView() {
                     </div>
                     <span style={{ minWidth: 62, justifyContent: 'center' }}
                       className={'risk ' + (d === 0 ? 'low' : Math.abs(d) <= S.tolerance ? 'watch' : 'high')}>
-                      {d === 0 ? 'Match' : (d > 0 ? '+' : '−') + money(Math.abs(d)).slice(1)}
+                      {d === 0 ? 'Match' : (d > 0 ? '+' : '−') + money(Math.abs(d))}
                     </span>
                   </div>
                 );
@@ -215,6 +274,9 @@ function ReturnsView() {
   const [q, setQ] = React.useState('');
   const [lines, setLines] = React.useState({});
   const [method, setMethod] = React.useState('original');
+  /* what came back through the door — resellable goes on the shelf, damaged is a loss */
+  const [condition, setCondition] = React.useState('resellable');
+  const [posted, setPosted] = React.useState(0);
   const r = R.find((x) => x.id === sel);
 
   const pick = (i, patch) => setLines((c) => ({ ...c, [i]: { qty: 1, reason: null, cond: 'resalable', ...(c[i] || {}), ...patch } }));
@@ -223,12 +285,13 @@ function ReturnsView() {
   const chosen = r ? Object.entries(lines).map(([i, v]) => ({ ...v, line: r.lines[i] })) : [];
   const goods = chosen.reduce((s, c) => s + c.line.price * c.qty, 0);
   const rate = r ? r.rate : 0;
-  const tax = +(goods * rate).toFixed(2);
-  const total = +(goods + tax).toFixed(2);
+  const tax = Math.round(goods * rate);
+  const total = Math.round(goods) + tax;
   const missingReason = chosen.some((c) => !c.reason);
-  const needsApproval = mode === 'noreceipt' || total > 100 || (r && r.expired);
+  /* a franc figure, not a dollar one: the ticket-level ceiling from the spec */
+  const needsApproval = mode === 'noreceipt' || total > 5000 || (r && r.expired);
 
-  const reset = () => { setSel(null); setLines({}); setMethod('original'); };
+  const reset = () => { setSel(null); setLines({}); setMethod('original'); setPosted(0); };
 
   return (
     <div className="view">
@@ -354,6 +417,21 @@ function ReturnsView() {
             </div>
 
             <div className="card">
+              <div className="card__t">Condition of the goods</div>
+              <div className="card__s">Resellable goes straight back on the shelf. Damaged also goes back — then straight out again as a loss, because the refund and the write-off are two different facts.</div>
+              <div className="methods">
+                {[['resellable', 'Resellable', 'Back on hand, available immediately'],
+                  ['damaged', 'Damaged or expired', 'Booked to shrinkage with a reason']].map(([k, nm, ds]) => (
+                  <button key={k} className={'method' + (condition === k ? ' on' : '')} onClick={() => setCondition(k)}>
+                    <ion-icon name={condition === k ? 'radio-button-on' : 'radio-button-off'}
+                      style={{ fontSize: 19, color: condition === k ? 'var(--kz-primary)' : 'var(--kz-muted-3)' }}></ion-icon>
+                    <div><div className="nm">{nm}</div><div className="ds">{ds}</div></div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="card">
               <div className="card__t">Where the money goes</div>
               <div className="card__s">Original tender is the default — it is the only method that closes the fraud loop.</div>
               <div className="methods">
@@ -374,11 +452,25 @@ function ReturnsView() {
               <ion-icon name="help-circle-outline"></ion-icon>Pick a reason on every line. Reason codes are what turn returns into a supplier-quality report instead of noise.</div>}
             {needsApproval && <div className="flagrow stop">
               <ion-icon name="key-outline"></ion-icon>{r.expired ? 'Outside the 30-day window.' : 'Refund over 36 000 F.'} Manager PIN required — the approver is stamped on the credit note.</div>}
+            {posted > 0 && <div className="flagrow ok">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+              Refunded · {posted} stock movement{posted === 1 ? '' : 's'} posted against {r.no}
+              {condition === 'damaged' ? ' — the returned goods went back on hand and straight out to shrinkage.' : ' — the goods are back on the shelf.'}</div>}
 
             <div className="actbar">
               <button className="btn" disabled={!total} onClick={() => setMethod('exchange')}>
                 <ion-icon name="swap-horizontal-outline"></ion-icon>Exchange</button>
-              <button className="btn primary" style={{ flex: 1, justifyContent: 'center' }} disabled={!total || missingReason}>
+              <button className="btn primary" style={{ flex: 1, justifyContent: 'center' }} disabled={!total || missingReason}
+                onClick={() => {
+                  /* a reversal is a NEW movement forward in time, referencing the
+                     original document — the sale row is never edited or deleted */
+                  const res = window.KZ_SALES.reverseSale({
+                    ticketNo: r.no, locId: window.RX_LOC,
+                    actor: { kind: 'register', label: 'Caisse 1' }, condition: condition,
+                    lines: chosen.map((c) => ({ id: c.id, qty: c.qty })),
+                  });
+                  setPosted(res.rows.length);
+                }}>
                 {needsApproval ? 'Approve & refund ' : 'Refund '}{money(total)}</button>
             </div>
           </div>

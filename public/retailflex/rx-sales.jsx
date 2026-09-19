@@ -158,7 +158,7 @@ function SalePane({ s, onRefund, onCustomer, onPrint, onClose }) {
             <div className="rcpt__tot">
               <div><span>Subtotal</span><b>{fmt(F.gross(s))}</b></div>
               {s.disc ? <div className="neg"><span>Discount</span><b>−{fmt(s.disc)}</b></div> : null}
-              <div><span>TVA ({String(+(s.rate * 100).toFixed(2)).replace('.', ',')} %)</span><b>{fmt(F.tax(s))}</b></div>
+              <div><span>{window.KZ_LOCALE.taxLabel(!s.rate)}</span><b>{fmt(F.tax(s))}</b></div>
               {s.tip ? <div><span>Tip</span><b>{fmt(s.tip)}</b></div> : null}
               <div className="big"><span>Total</span><b>{fmt(F.total(s))}</b></div>
               {refunded ? <div className="neg"><span>Refunded</span><b>−{fmt(refunded)}</b></div> : null}

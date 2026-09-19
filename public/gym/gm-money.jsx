@@ -86,7 +86,16 @@ function MoneyView({ api }) {
             </div>
           )}
           <button className="gmpaybtn" disabled={!lines.length}
-            onClick={() => { api.sell({ mid, lines, total, tender: tender || 'cash' }); setLines([]); }}>
+            onClick={() => {
+              api.sell({ mid, lines, total, tender: tender || 'cash' });
+              /* bar and pro-shop lines are ordinary stocked sales; memberships are not */
+              window.KZ_SALES.sellFrom('gym', {
+                ticketNo: 'GYM-' + Date.now().toString().slice(-8), locId: 'ap',
+                actor: { kind: 'register', label: 'Front desk' }, customer: m ? m.name : 'Walk-in',
+                lines: lines.map((l) => ({ id: l.id, qty: l.qty })),
+              });
+              setLines([]);
+            }}>
             <ion-icon name={tender === 'wallet' ? 'wallet-outline' : tender === 'tab' ? 'reader-outline' : 'cash-outline'}></ion-icon>
             {!m ? 'Take cash ' + xaf(total) : tender === 'wallet' ? 'Pay from wallet' : tender === 'tab' ? 'Charge to account' : 'Take payment'}
           </button>
@@ -101,13 +110,16 @@ function TopupSheet({ mid, api, onClose }) {
   const st = api.st;
   const [who, setWho] = useState(mid || '');
   const [amt, setAmt] = useState(20000);
-  const [tender, setTender] = useState('momo');
+  /* a top-up is money on a push rail but it is not a ticket — phases only */
+  const c = window.useSingleCharge(amt, { onDone: () => { api.topup(who, amt, c.tender); onClose(); } });
+  const tender = c.tender, setTender = c.setTender;
   const m = who ? memberOf(who) : null;
   return (
     <GmSheet title="Top up a wallet" sub="Money on the profile · spent at the bar, the spa or the shop" onClose={onClose}
       foot={<><button className="btn" onClick={onClose}>Cancel</button><div className="sp" style={{ flex: 1 }}></div>
-        <button className="btn primary" disabled={!who} onClick={() => { api.topup(who, amt, tender); onClose(); }}>
-          <ion-icon name="wallet-outline"></ion-icon>Add {xaf(amt)}</button></>}>
+        <button className="btn primary" disabled={!who || c.busy} style={c.busy ? { opacity: .45 } : null} onClick={c.request}>
+          <ion-icon name="wallet-outline"></ion-icon>{c.busy ? 'Waiting…' : 'Add ' + xaf(amt)}</button></>}>
+      <PushPending c={c} amount={amt} />
       <div className="gmfields">
         <div className="gmf"><label>Member</label>
           <select value={who} onChange={(e) => setWho(e.target.value)}>
@@ -134,8 +146,8 @@ function TopupSheet({ mid, api, onClose }) {
         <div className="gmsum">
           <div><span>Wallet now</span><b>{xaf(m.wallet)}</b></div>
           <div><span>After top-up</span><b style={{ color:'var(--kz-success)' }}>{xaf(m.wallet + amt)}</b></div>
-          {!api.online && (tender === 'momo' || tender === 'om') && (
-            <div><span>No network</span><b>Recorded now · the mobile-money confirmation is matched on sync</b></div>
+          {c.mode === 'attest' && (
+            <div><span>Offline</span><b>{window.KZ_TENDER.hint(tender)}</b></div>
           )}
         </div>
       )}
@@ -146,12 +158,14 @@ function TopupSheet({ mid, api, onClose }) {
 /* ---------- settle an account tab ---------- */
 function SettleTabSheet({ mid, api, onClose }) {
   const m = memberOf(mid);
-  const [tender, setTender] = useState('momo');
+  const c = window.useSingleCharge(m.tab, { onDone: () => { api.settleTab(mid, c.tender); onClose(); } });
+  const tender = c.tender, setTender = c.setTender;
   return (
     <GmSheet title="Settle the account" sub={m.name + ' · ' + xaf(m.tab) + ' outstanding'} onClose={onClose}
       foot={<><button className="btn" onClick={onClose}>Cancel</button><div className="sp" style={{ flex: 1 }}></div>
-        <button className="btn primary" onClick={() => { api.settleTab(mid, tender); onClose(); }}>
-          <ion-icon name="checkmark-circle-outline"></ion-icon>Settle {xaf(m.tab)}</button></>}>
+        <button className="btn primary" disabled={c.busy} style={c.busy ? { opacity: .45 } : null} onClick={c.request}>
+          <ion-icon name="checkmark-circle-outline"></ion-icon>{c.busy ? 'Waiting…' : 'Settle ' + xaf(m.tab)}</button></>}>
+      <PushPending c={c} amount={m.tab} />
       <div className="gmnote"><ion-icon name="information-circle-outline"></ion-icon>
         A VIP tab is settled at the end of the cycle. Anything unsettled after that is why the gate asks for a
         word at check-in — access is never cut without one.

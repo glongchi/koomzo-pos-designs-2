@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn()   { return request.auth != null; }
+    function org()        { return request.auth.token.orgId; }
+    function sameOrg(doc) { return signedIn() && doc.orgId == org(); }
+
+    // ---- Authoring: clients read/write their org's workflow drafts ----
+    match /workflows/{workflowId} {
+      allow read:  if sameOrg(resource.data);
+      allow create: if signedIn() && request.resource.data.orgId == org();
+      allow update: if sameOrg(resource.data) && request.resource.data.orgId == org();
+      allow delete: if sameOrg(resource.data);
+
+      // Published version snapshots are engine-written only (Admin SDK bypasses rules).
+      match /versions/{version} {
+        allow read:  if sameOrg(resource.data);
+        allow write: if false;
+      }
+    }
+
+    // ---- Connections: metadata readable; secrets live in Secret Manager ----
+    match /connections/{id} {
+      allow read:  if sameOrg(resource.data);
+      allow write: if false; // managed via callable Functions (OAuth flow)
+    }
+
+    // ---- Runtime collections: function-only writes ----
+    match /runs/{runId} {
+      allow read:  if sameOrg(resource.data);
+      allow write: if false;
+      match /steps/{execId} {
+        allow read:  if signedIn();
+        allow write: if false;
+      }
+    }
+    match /triggers/{id} {
+      allow read:  if sameOrg(resource.data);
+      allow write: if false;
+    }
+
+    // ---- Human tasks: assignee/org may read; completion goes through callables ----
+    match /tasks/{id} {
+      allow read:  if sameOrg(resource.data);
+      allow write: if false;
+    }
+  }
+}

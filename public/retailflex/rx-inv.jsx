@@ -3,14 +3,25 @@
    stock-aware Tile, and adds the embedded Stock screen.
    Stock control has three states — off, lite (a quantity per item), full (the module). */
 
-/* seed a believable on-hand per profile, deterministic from the SKU */
+/* The register used to hold its own stock map here and decrement it locally, which
+   meant the till's on-hand and the Inventory module's on-hand were two unconnected
+   numbers. Both now come from one ledger — kz/kz-stock.js. What survives is the
+   OPENING BALANCE: a believable quantity per product, deterministic from the SKU,
+   posted once per preset as a real movement. */
 const hash = (s) => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 997; return h; };
-window.RX_STOCK_SEED = (catalog) => {
+window.RX_LOC = 'dt';                       /* Akwa Boutique — where Caisse 1 stands */
+window.RX_SEED_QTY = (p) => {
+  const h = hash(p.sku || p.name);
+  return p.weighed ? Math.round(2 + (h % 40) / 3) : (h % 7 === 0 ? 0 : h % 34);
+};
+/* the view the register's screens want, derived from the ledger every time it moves */
+window.RX_STOCK_VIEW = (items) => {
   const m = {};
-  catalog.items.forEach((p) => {
-    const h = hash(p.sku);
-    const on = p.weighed ? +(2 + (h % 40) / 3).toFixed(1) : (h % 7 === 0 ? 0 : h % 34);
-    m[p.id] = { on, reorder: p.weighed ? 5 : 6, par: p.weighed ? 25 : 30, cost: +(p.price * 0.42).toFixed(2), show: true };
+  items.forEach((p) => {
+    const it = window.KZ_STOCK.item(p.id);
+    if (!it) return;
+    m[p.id] = { on: window.KZ_STOCK.onHand(it, window.RX_LOC), reorder: it.reorder || 0,
+      par: it.par || 0, cost: it.cost || 0, show: !it.pos || it.pos.show !== false };
   });
   return m;
 };
@@ -72,7 +83,7 @@ function CatalogGrid({ products, style, qtyFor, onAdd, heading, stock }) {
 }
 
 /* ================= the embedded Stock screen ================= */
-function InventoryView({ profile, catalog, stock, onStock, mode, onMode, onCreate, onCats }) {
+function InventoryView({ profile, catalog, stock, onCount, onShow, mode, onMode, onCreate, onCats }) {
   const [tab, setTab] = React.useState('items');
   const [q, setQ] = React.useState('');
   const [openId, setOpenId] = React.useState(null);
@@ -82,7 +93,12 @@ function InventoryView({ profile, catalog, stock, onStock, mode, onMode, onCreat
   const low = catalog.items.filter((p) => stock[p.id] && stock[p.id].on <= stock[p.id].reorder);
   const value = catalog.items.reduce((s, p) => s + (stock[p.id] ? stock[p.id].on * stock[p.id].cost : 0), 0);
   const hidden = catalog.items.filter((p) => stock[p.id] && !stock[p.id].show).length;
-  const set = (id, patch) => onStock((m) => ({ ...m, [id]: { ...m[id], ...patch } }));
+  /* the stepper posts a COUNT correction with a reason — a till gets no privileged
+     silent path to a quantity, so this is the same row the module's count screen writes */
+  const set = (id, patch) => {
+    if (patch.on !== undefined) onCount(id, patch.on);
+    if (patch.show !== undefined) onShow(id, patch.show);
+  };
   const open = openId && catalog.items.find((p) => p.id === openId);
 
   if (mode === 'off') return (
@@ -161,8 +177,8 @@ function InventoryView({ profile, catalog, stock, onStock, mode, onMode, onCreat
         </div>
         <div className="hint" style={{ marginTop: 12 }}><ion-icon name="information-circle-outline"></ion-icon>
           <span>{mode === 'lite'
-            ? <>Lite is deliberately one screen: <b>quantity</b> and <b>show in POS</b>. Every sale still decrements — you just never meet an order, a count, or a transfer.</>
-            : <>Quantities here are the same records the full module edits. The toggle on the right is what puts a product on the register grid.</>}</span></div>
+            ? <>Lite is deliberately one screen: <b>quantity</b> and <b>show in POS</b>. Every sale posts a movement and typing over a quantity posts a count — you just never meet an order or a transfer.</>
+            : <>These are the same records the full module edits, in the same ledger. The toggle on the right is what puts a product on the register grid.</>}</span></div>
       </>}
 
       {tab === 'recv' && (

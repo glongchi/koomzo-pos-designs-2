@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Register platform: module audit &amp; plan</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.sp{flex:1}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 14px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 16px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 6px 10px}
+.side a.nv{display:flex;align-items:center;gap:9px;min-height:34px;padding:6px 10px;border-radius:9px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a.nv ion-icon{font-size:15px;color:var(--kz-muted-3);flex:none}
+.side a.nv:hover{background:var(--kz-surface-2);color:var(--kz-ink)}
+.side a.nv.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.side a.nv.on ion-icon{color:var(--kz-primary)}
+.doc{padding:34px 34px 110px;max-width:1080px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.lede{margin:0 0 22px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:72ch;text-wrap:pretty}
+h2{margin:44px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em;scroll-margin-top:22px}
+h3{margin:26px 0 8px;font:700 15px var(--kz-font-sans)}
+.sub{margin:0 0 14px;font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-muted);max-width:74ch;text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:74ch;text-wrap:pretty}
+.mono{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 6px;color:var(--kz-ink-2);white-space:nowrap}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px}
+.card h4{margin:0 0 4px;font:700 14px var(--kz-font-sans);display:flex;align-items:center;gap:8px}
+.card h4 ion-icon{color:var(--kz-primary);font-size:16px}
+.card p{margin:0;font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-ink-2)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.tblwrap{overflow-x:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+.y{color:var(--kz-success);font-weight:700}
+.n{color:var(--kz-discount);font-weight:700}
+.p{color:#8a6414;font-weight:700}
+.gap{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:11px;overflow:hidden}
+.gap__h{display:flex;align-items:center;gap:11px;padding:12px 16px;background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.gap__h .num{width:26px;height:26px;border-radius:7px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none}
+.gap__h b{font:700 13.5px var(--kz-font-sans)}
+.gap__b{padding:13px 16px}
+.gap__b p{margin:0 0 9px;font-size:13.5px}
+.gap__b p:last-child{margin-bottom:0}
+.sev{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--kz-radius-pill)}
+.sev.bug{background:var(--kz-discount-wash);color:#b8401f}
+.sev.gp{background:var(--kz-warning-wash);color:#8a6414}
+.sev.ok{background:var(--kz-success-wash);color:#1f7a45}
+.sev.done{background:var(--kz-success-wash);color:#1f7a45}
+.banner{display:flex;gap:12px;background:var(--kz-success-wash);border:1px solid #bfe3cd;border-radius:var(--kz-radius);padding:15px 17px;margin-bottom:16px}
+.banner ion-icon{color:#1f7a45;font-size:19px;flex:none;margin-top:1px}
+.banner p{margin:0;font:400 13.5px/1.62 var(--kz-font-sans);color:var(--kz-ink-2)}
+.files{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.files span{font:600 11px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:6px;padding:3px 8px;color:var(--kz-ink-2)}
+.ba{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:var(--kz-border);border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-top:4px}
+.ba>div{background:#fff;padding:11px 13px}
+.ba .t{font:700 9.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:6px}
+.ba code{display:block;font:500 11.5px/1.7 var(--kz-font-num);white-space:pre-wrap;word-break:break-word;color:var(--kz-ink-2)}
+.ba .bad code{color:#b8401f}.ba .good code{color:#1f7a45}
+.note{display:flex;gap:10px;background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:13px 15px;margin-bottom:12px}
+.note ion-icon{color:var(--kz-primary);font-size:17px;flex:none;margin-top:1px}
+.note p{margin:0;font-size:13px;line-height:1.62}
+.note.warn{background:var(--kz-warning-wash);border-color:#e8d6a8}
+.note.warn ion-icon{color:#8a6414}
+.note.bad{background:var(--kz-discount-wash);border-color:#f2c4b4}
+.note.bad ion-icon{color:#b8401f}
+.ask{background:#fff;border:1px solid var(--kz-border-strong);border-radius:var(--kz-radius);padding:4px 18px}
+.ask__r{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--kz-border)}
+.ask__r:last-child{border-bottom:none}
+.ask__r .q{width:22px;height:22px;border-radius:6px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none;margin-top:1px}
+.ask__r div{font:400 13.5px/1.62 var(--kz-font-sans);color:var(--kz-ink-2)}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side">
+<div class="side__mark"><div class="ic"><ion-icon name="search"></ion-icon></div><b>koomzo · POS</b></div>
+<p class="side__v">Module audit · Sep 2026</p>
+<div class="side__g">Findings</div>
+<a class="nv" href="#verdict"><ion-icon name="alert-circle-outline"></ion-icon>Verdict</a>
+<a class="nv" href="#delivered"><ion-icon name="checkmark-done-circle-outline"></ion-icon>Delivered</a>
+<a class="nv" href="#matrix"><ion-icon name="grid-outline"></ion-icon>Conformance matrix</a>
+<a class="nv" href="#salon"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a class="nv" href="#gym"><ion-icon name="barbell-outline"></ion-icon>Gym</a>
+<a class="nv" href="#other"><ion-icon name="business-outline"></ion-icon>Hotel &amp; Grocery</a>
+<a class="nv" href="#resto"><ion-icon name="restaurant-outline"></ion-icon>Restaurant</a>
+<div class="side__g">Plan</div>
+<a class="nv" href="#g1"><ion-icon name="cash-outline"></ion-icon>1 · Three money formatters</a>
+<a class="nv" href="#g2"><ion-icon name="card-outline"></ion-icon>2 · Four tender lists</a>
+<a class="nv" href="#g3"><ion-icon name="calculator-outline"></ion-icon>3 · Salon's tax rate</a>
+<a class="nv" href="#g4"><ion-icon name="shield-outline"></ion-icon>4 · Two discount policies</a>
+<a class="nv" href="#g5"><ion-icon name="pricetag-outline"></ion-icon>5 · Ticket numbers</a>
+<a class="nv" href="#g6"><ion-icon name="phone-portrait-outline"></ion-icon>6 · Charge phases</a>
+<div class="side__g">Delivery</div>
+<a class="nv" href="#order"><ion-icon name="list-outline"></ion-icon>Order of work</a>
+<a class="nv" href="#leave"><ion-icon name="lock-closed-outline"></ion-icon>What stays module-own</a>
+<a class="nv" href="#decide"><ion-icon name="checkmark-done-outline"></ion-icon>The calls</a>
+</nav>
+
+<main class="doc">
+<p class="eb">Conformance audit · every module that takes money</p>
+<h1>Has the rest of the suite caught up? Mostly not.</h1>
+<p class="lede"><b>All six gaps are now closed — see <a href="#delivered">Delivered</a>.</b> As audited: only <b>Retail Flex</b> and <b>Restaurant &amp; Bar</b> read the register platform. Salon is close — it already reads the shared tender list — but still owns its own tax rate, its own discount threshold and a plain integer ticket number. Gym, Hotel and Grocery share nothing but the design tokens: three identical copies of one money formatter and three more tender lists. Six gaps, and one of them is a governance bug rather than a cosmetic one.</p>
+<div class="links">
+<a href="Koomzo Salon - Appointments, Tasks, Team.html"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a href="Koomzo Gym - Front Desk, Members &amp; Classes.html"><ion-icon name="barbell-outline"></ion-icon>Gym</a>
+<a href="Koomzo POS - Restaurant &amp; Bar.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant</a>
+<a href="Koomzo - Register Functional Spec.html"><ion-icon name="document-text-outline"></ion-icon>Register spec</a>
+<a href="Koomzo - Register Code Change Plan.html"><ion-icon name="git-pull-request-outline"></ion-icon>Change plan</a>
+</div>
+
+<h2 id="verdict">Verdict — as audited</h2>
+<div class="banner"><ion-icon name="information-circle-outline"></ion-icon><p><b>Everything from here to the end of the gaps describes the state <i>before</i> this work, in the past tense where it matters.</b> All six gaps are now closed — <a href="#delivered">Delivered</a> records what changed. The audit is kept because it is the reasoning, not because it is current.</p></div>
+<div class="note bad"><ion-icon name="warning-outline"></ion-icon><p><b>The one that actually mattered:</b> a tenant running a salon <i>and</i> a shop <b>had two different discount policies</b>. Flex enforced a 10 % line ceiling with a logged supervisor approval; Salon's register said "Discounts over 20% need a manager PIN" — as a sentence in the UI, with no approval step behind it, and the chips let a stylist apply 50 % in one tap. Same company, same owner, two answers, and only one of them auditable. <b>Fixed:</b> Salon's chips now derive from its own ceiling and anything above it opens a real approval.</p></div>
+<div class="g2">
+<div class="card"><h4><ion-icon name="checkmark-circle-outline"></ion-icon>Two modules conformed</h4><p>Flex and Restaurant already read all five platform files — tender list, phases, persistence, numbering, policy. The other four now do too.</p></div>
+<div class="card"><h4><ion-icon name="remove-circle-outline"></ion-icon>Salon was half-migrated</h4><p>It read <span class="mono">KZ_LOCALE.tenderList</span> and formatted money through the locale — then duplicated the tax rate, the threshold and the ticket number. All three are now the platform's.</p></div>
+<div class="card"><h4><ion-icon name="close-circle-outline"></ion-icon>Three shared nothing</h4><p>Gym, Hotel and Grocery each defined <span class="mono">xaf()</span> — the same function, three times — and each carried its own tender list. All three now read <span class="mono">window.money</span> and extend <span class="mono">KZ_TENDER</span>.</p></div>
+<div class="card"><h4><ion-icon name="bulb-outline"></ion-icon>But Gym already knows</h4><p>Gym is the only module outside the registers that handles an offline wallet payment: <i>"Recorded now · the mobile-money confirmation is matched on sync."</i> That is the attest path, described in copy but never modelled.</p></div>
+</div>
+
+<h2 id="delivered">Delivered</h2>
+<p class="sub">All six gaps are implemented. The audit below is kept as written — it is the reasoning — and this section records what changed and what the two configurable answers became.</p>
+<div class="banner"><ion-icon name="checkmark-done-circle-outline"></ion-icon><p><b>6 of 6 gaps in.</b> Salon, Gym, Hotel and Grocery now read the same platform as the two registers. Three copies of <span class="mono">xaf()</span> and four tender lists are gone; money is non-breaking suite-wide; and <span class="mono">kz-policy.js</span> gained per-module overrides so tax liability and the discount ceiling are settings rather than assumptions.</p></div>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:5%">#</th><th style="width:22%">Gap</th><th>What landed</th></tr></thead>
+<tbody>
+<tr><td><b>1</b></td><td>Three formatters</td><td>All three now <span class="mono">const xaf = window.money</span>. Hotel's non-breaking rule moved <i>into</i> <span class="mono">kz-locale.js</span> — grouping and the unit are now <span class="mono">\u00a0</span> suite-wide, so no figure wraps mid-number anywhere.</td></tr>
+<tr><td><b>2</b></td><td>Four tender lists</td><td><span class="mono">KZ_TENDER</span> gained <b>wallet</b>, <b>tab</b> and <b>gift</b>, a <span class="mono">lead</span> option to put an extra before the platform four, a <span class="mono">without</span> filter, and <span class="mono">named()</span> for screens wanting <span class="mono">{id,name,icon}</span>. Gym leads with wallet and tab; Salon drops card and adds the gift card; Hotel keeps its company account as <span class="mono">tab</span>; Grocery adds the co-op card. Every English <span class="mono">'Cash'</span> and <span class="mono">'Card'</span> is now <i>Espèces</i> and <i>Carte bancaire</i>.</td></tr>
+<tr><td><b>3</b></td><td>Salon's tax rate</td><td><span class="mono">SL.tax</span> deleted. Totals call <span class="mono">KZ_POLICY.taxFor('salon', net)</span>; the register and settings labels both call <span class="mono">taxLabelFor('salon')</span>. The literal <span class="mono">TVA (19,25 %)</span> string and the reformatted float are gone.</td></tr>
+<tr><td><b>4</b></td><td>Two discount policies</td><td>Salon's chips now come from <span class="mono">KZ_POLICY.discountSteps('salon')</span>, capped at its own ceiling. Anything above it opens the <span class="mono">ApprovalStep</span> — a reason and a named supervisor — and only then applies. The unenforced "manager PIN" sentence is replaced by the real ceiling copy.</td></tr>
+<tr><td><b>5</b></td><td>Ticket numbers</td><td><span class="mono">DLA1-S1-0916-1082</span> at the salon chair, <span class="mono">DLA1-G1-0916-4471</span> at the grocery till, short form in every tight header. Hotel's folio numbering deliberately untouched.</td></tr>
+<tr><td><b>6</b></td><td>Charge phases</td><td>New <span class="mono">useSingleCharge</span> + <span class="mono">PushPending</span> for money that is not a ticket. Wired into Salon's tender sheet, Grocery's basket, and Gym's top-up, tab settlement and joining fee. Internal instruments — wallet, tab, gift, loyalty — settle instantly and correctly skip the wait.</td></tr>
+</tbody></table></div>
+
+<h3>The two configurable answers</h3>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:24%">Question</th><th>How it is configured</th></tr></thead>
+<tbody>
+<tr><td><b>TVA liability</b></td><td><span class="mono">KZ_POLICY.modules[id].taxable</span>. <b>Gym ships <span class="mono">false</span></b> — deliberately, since nobody has confirmed the treatment, and a visible zero is easier to challenge than a silent 19,25 %. Set it <span class="mono">true</span> and every gym figure picks up the national rate with no other edit. Note the distinction the code carries: zero-rated is a rate of zero on a taxable supply, which is a different line on a return from a supply outside scope.</td></tr>
+<tr><td><b>Discount ceiling</b></td><td><span class="mono">KZ_POLICY.modules[id].lineDiscountPct</span>. <b>Salon 20 %</b> (service margins, and regulars), <b>Grocery 5 %</b> (thin margins, high volume), everything else the tenant base of 10 %. The chips a module offers are derived from its ceiling, so the UI can never present a discount the policy forbids.</td></tr>
+</tbody></table></div>
+
+<h3>Restaurant line discounts — decided: no</h3>
+<p>You said you didn't think so, and I agree, for a reason worth writing down: <b>comping a dish is not a discount.</b> A discount reprices a line before it is made. A comp happens after the kitchen has cooked it and the stock is gone — the money changes but the cost does not, and recording it as a discount would quietly understate food cost and overstate margin. It belongs as a <b>void-with-reason on a fired line</b>, which is a different object with a different audit trail, and it should be specified as that rather than bolted onto the discount path.</p>
+
+<h2 id="matrix">Conformance matrix — as audited</h2>
+<p class="sub">The state that prompted this work. Every row below is now green except the ones deliberately left alone.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:21%">Platform piece</th><th>Flex</th><th>Restaurant</th><th>Salon</th><th>Gym</th><th>Hotel</th><th>Grocery</th></tr></thead>
+<tbody>
+<tr><td><b>Money via locale</b></td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td><td class="n">Local <span class="mono">xaf()</span></td><td class="n">Local <span class="mono">xaf()</span></td><td class="n">Local <span class="mono">xaf()</span></td></tr>
+<tr><td><b><span class="mono">KZ_TENDER.list()</span></b></td><td class="y">Yes</td><td class="y">Yes</td><td class="p">Reads locale list directly</td><td class="n">Own list</td><td class="n">Own list</td><td class="n">Own list</td></tr>
+<tr><td><b>MoMo default</b></td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td><td>—</td><td>—</td></tr>
+<tr><td><b>Charge phases</b></td><td class="y">Yes</td><td class="y">Yes</td><td class="n">Boolean</td><td class="n">Instant</td><td class="n">Instant</td><td class="n">Instant</td></tr>
+<tr><td><b>Tenders array</b></td><td class="y">Yes</td><td class="y">Yes</td><td class="n">One string</td><td class="n">One string</td><td class="n">n/a</td><td class="n">One string</td></tr>
+<tr><td><b><span class="mono">KZ_LOCALE.tax()</span></b></td><td class="y">Yes</td><td class="y">Yes</td><td class="n"><span class="mono">SL.tax</span></td><td class="p">No tax modelled</td><td class="p">Own rate</td><td class="p">Own rate</td></tr>
+<tr><td><b><span class="mono">KZ_TICKET</span></b></td><td class="y">Yes</td><td class="y">Yes</td><td class="n"><span class="mono">#1047</span></td><td class="n">None</td><td class="p">Folio no.</td><td class="n">None</td></tr>
+<tr><td><b><span class="mono">KZ_POLICY</span></b></td><td class="y">Yes</td><td class="p">No line discounts</td><td class="n">Own 20 % rule</td><td>—</td><td>—</td><td class="n">None</td></tr>
+</tbody></table></div>
+
+<h2 id="salon">Salon — half-migrated, and the most urgent <span style="font:700 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--kz-muted-3);vertical-align:middle">· all fixed</span></h2>
+<p class="sub">It has a real register board (<span class="mono">sl-pos.jsx</span>), and its own header says it borrows Flex's shell classes. It should borrow the model too.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:30%">Found</th><th>Why it matters</th></tr></thead>
+<tbody>
+<tr><td><span class="mono">SL.tax: 0.1925</span> in <span class="mono">sl-data.js</span></td><td>A fifth copy of the national rate, after we removed the other four.</td></tr>
+<tr><td><span class="mono">sl-pos.jsx</span> prints <span class="mono">TVA (19,25 %)</span> as a literal string</td><td>If the rate ever moves, the totals change and the label does not.</td></tr>
+<tr><td><span class="mono">sl-settings.jsx</span> rebuilds the label from the float</td><td>The exact <span class="mono">String(+(SL.tax*100).toFixed(2)).replace('.',',')</span> pattern deleted from Flex.</td></tr>
+<tr><td>Discount chips <span class="mono">[0, 10, 20, 50]</span></td><td>50 % in one tap, no approval, no reason, no log. The warning about a manager PIN is copy, not a gate.</td></tr>
+<tr><td><span class="mono">Ticket #{ticketNo}</span>, <span class="mono">n + 1</span></td><td>Collides across devices exactly as the retail registers used to.</td></tr>
+<tr><td><span class="mono">const [done, setDone] = useState(false)</span></td><td>MoMo is the default tender and settlement is instant — a salon can mark a sale paid before the client has approved anything.</td></tr>
+</tbody></table></div>
+<div class="note"><ion-icon name="thumbs-up-outline"></ion-icon><p><b>Credit where due:</b> Salon's tender list is the best example in the suite of extending the platform properly — <span class="mono">KZ_LOCALE.tenderList.filter(t =&gt; t.id !== 'card')</span> plus a gift card, with the comment "the platform list, minus bank cards a salon does not take". That is the pattern the other modules should copy; it only needs to move to <span class="mono">KZ_TENDER.list()</span>.</p></div>
+
+<h2 id="gym">Gym — a different shape of money, same missing rails <span style="font:700 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--kz-muted-3);vertical-align:middle">· all fixed</span></h2>
+<p class="sub">Gym is not a register: it is a wallet, a tab and a bar till. That is a legitimate difference, and most of it should stay.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:30%">Found</th><th>Assessment</th></tr></thead>
+<tbody>
+<tr><td><span class="mono">xaf()</span> in <span class="mono">gm-parts.jsx</span></td><td><b>Fix.</b> Byte-identical to Hotel's and Grocery's. <span class="mono">window.money</span> already does this.</td></tr>
+<tr><td><span class="mono">GM.tenders</span> with wallet + tab</td><td><b>Fix the base, keep the extras.</b> Wallet and charge-to-account are real gym instruments; the other four entries — MoMo, Orange Money, <span class="mono">'Card'</span> and <span class="mono">'Cash'</span> — are English-labelled duplicates of the platform list.</td></tr>
+<tr><td>Offline wallet copy</td><td><b>Promote.</b> Gym already tells the operator the confirmation is matched on sync — that is <span class="mono">attest</span> mode. It should <i>be</i> attest mode, not a sentence.</td></tr>
+<tr><td>No tax anywhere</td><td><b>Question, not a defect.</b> Memberships and PT may or may not be TVA-liable. I am not going to invent a rate — see <a href="#decide">Your call</a>.</td></tr>
+<tr><td>Top-up / settle / sell commit instantly</td><td><b>Fix.</b> All three take MoMo by default. All three need the pending phase.</td></tr>
+<tr><td>Commission and payout maths</td><td><b>Leave alone.</b> Derived from signed sessions, rounds correctly, and is genuinely gym-specific.</td></tr>
+</tbody></table></div>
+
+<h2 id="other">Hotel &amp; Grocery — the cheap ones <span style="font:700 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--kz-muted-3);vertical-align:middle">· all fixed</span></h2>
+<p>Both defined the same <span class="mono">xaf()</span> and both carried their own tender list. Grocery's till also has no ticket numbering and no discount policy; Hotel's folio numbering is its own thing and should stay, because a folio is not a ticket — it is an account that accrues over several nights and settles once.</p>
+<p>Neither has a qualifier chain or a discount path, so they are three-line changes plus a tender-list swap. They are in the plan because leaving them is how the suite drifted in the first place.</p>
+
+<h2 id="resto">Restaurant — conforms, with one honest hole</h2>
+<p>Restaurant reads all five platform files. The one thing it lacks is a <b>line discount</b> path at all, so <span class="mono">KZ_POLICY</span> has nothing to govern there. That is a missing feature, not a conformance gap — but it means a server cannot discount a bill, which for a restaurant comping a dish is a real omission worth raising separately.</p>
+
+<h2 id="g1">Gap 1 · Three copies of one money formatter</h2>
+<div class="gap">
+<div class="gap__h"><span class="num">1</span><b>Delete <span class="mono">xaf()</span> three times</b><div class="sp"></div><span class="sev bug">Defect</span><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span></div>
+<div class="gap__b">
+<div class="files"><span>gym/gm-parts.jsx:6</span><span>hotel/ht-parts.jsx:6</span><span>grocery/gr-till.jsx:4</span></div>
+<p>The same line, three times, in three modules — and a fourth implementation already exists as <span class="mono">window.money</span>, which every register and the whole of Salon and Invoicing use.</p>
+<div class="ba">
+<div class="bad"><div class="t">Today · ×3</div><code>const xaf = (n) =&gt; (n &lt; 0 ? '−' : '') +
+  Math.abs(Math.round(n))
+  .toLocaleString('fr-FR')
+  .replace(/…/g,'\\u00a0') + '\\u00a0F';</code></div>
+<div class="good"><div class="t">Target</div><code>const xaf = window.money;
+// or replace the calls outright</code></div>
+</div>
+<p style="margin-top:10px">Hotel's copy carries a comment the others lack — that a currency figure must never wrap mid-number. That is a good rule and belongs in <span class="mono">kz-locale.js</span>, applied everywhere, rather than in one module's local helper.</p>
+</div>
+</div>
+
+<h2 id="g2">Gap 2 · Four more tender lists</h2>
+<div class="gap">
+<div class="gap__h"><span class="num">2</span><b>Extend the platform list instead of restating it</b><div class="sp"></div><span class="sev bug">Defect</span><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span></div>
+<div class="gap__b">
+<div class="files"><span>gym/gm-data.js:118</span><span>hotel/ht-data.js:215</span><span>grocery/gr-data.js:83</span><span>salon/sl-pos.jsx:198</span></div>
+<p>Each module lists cash, MoMo and Orange Money again — and all three label cash <span class="mono">'Cash'</span> where the platform says <span class="mono">Espèces</span>, with Gym also carrying <span class="mono">'Card'</span> for <span class="mono">Carte bancaire</span>. Same drift as the registers had.</p>
+<p>The fix is to teach <span class="mono">KZ_TENDER.list()</span> the remaining module extras — <b>wallet</b>, <b>tab</b>, <b>gift</b>, <b>folio</b> — alongside the loyalty, room and split it already knows, and have each module ask for what it takes. Salon's filter pattern is the model: start from the platform list, remove what the trade does not accept, add what it does.</p>
+</div>
+</div>
+
+<h2 id="g3">Gap 3 · Salon owns a national tax rate</h2>
+<div class="gap">
+<div class="gap__h"><span class="num">3</span><b>The fifth copy of 19,25 %</b><div class="sp"></div><span class="sev bug">Defect</span><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span></div>
+<div class="gap__b">
+<div class="files"><span>salon/sl-data.js:129</span><span>salon/sl-app.jsx:71</span><span>salon/sl-pos.jsx:129</span><span>salon/sl-settings.jsx:142</span></div>
+<p>Change 4 removed this from four places and missed Salon. Worse, the rate now exists in three forms inside one module: a float in the data, a literal string in the register totals, and a reformatted float in settings. <span class="mono">KZ_LOCALE.tax()</span> and <span class="mono">taxLabel()</span> replace all three.</p>
+<p>Salon's totals already round to whole francs, so no money changes — this is about there being one source.</p>
+</div>
+</div>
+
+<h2 id="g4">Gap 4 · Two discount policies in one company</h2>
+<div class="gap">
+<div class="gap__h"><span class="num">4</span><b>Salon says 20 % and does not enforce it</b><div class="sp"></div><span class="sev bug">Governance</span><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span></div>
+<div class="gap__b">
+<div class="files"><span>salon/sl-pos.jsx:179–186</span><span>kz/kz-policy.js</span></div>
+<div class="ba">
+<div class="bad"><div class="t">Today</div><code>{[0, 10, 20, 50].map(d =&gt; …)}
+{role !== 'manager' &amp;&amp; l.disc &gt; 20 &amp;&amp;
+  'Discounts over 20% need a
+   manager PIN at the register.'}</code></div>
+<div class="good"><div class="t">Target</div><code>KZ_POLICY.needsApproval('disc', d)
+  ? &lt;ApprovalStep …/&gt;
+  : apply(d)
+// chips capped at the ceiling</code></div>
+</div>
+<p style="margin-top:10px">Three things are wrong: the threshold disagrees with the platform's 10 %, the message is shown <i>after</i> the discount is already applied, and no PIN or approval is ever collected. The <span class="mono">ApprovalStep</span> component built for change 8 drops straight in — it already collects a reason and a named supervisor and is styled in the shell Salon borrows.</p>
+</div>
+</div>
+
+<h2 id="g5">Gap 5 · Ticket numbers</h2>
+<div class="gap">
+<div class="gap__h"><span class="num">5</span><b>Salon and Grocery still increment an integer</b><div class="sp"></div><span class="sev gp">Gap · decision 21.4</span><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span></div>
+<div class="gap__b">
+<div class="files"><span>salon/sl-app.jsx:109</span><span>salon/sl-pos.jsx:77,141,239</span><span>grocery/gr-till.jsx</span></div>
+<p>Same collision the registers had, same fix: <span class="mono">KZ_TICKET.compose({ loc, reg, seq })</span> with a register code per module — <span class="mono">S1</span> for the salon chair, <span class="mono">G1</span> for the grocery till — and <span class="mono">short()</span> in the tight header spots.</p>
+<p><b>Hotel is the exception.</b> A folio is not a ticket: it accrues across nights and settles once at checkout. Its own numbering stays, and the F&amp;B postings that land on it already carry the restaurant's full ticket number as a reference — which is the link that matters.</p>
+</div>
+</div>
+
+<h2 id="g6">Gap 6 · Charge phases outside the registers</h2>
+<div class="gap">
+<div class="gap__h"><span class="num">6</span><b>Four places still mark money taken before it is</b><div class="sp"></div><span class="sev gp">Gap · spec §20</span><span class="sev done"><ion-icon name="checkmark"></ion-icon> Done</span></div>
+<div class="gap__b">
+<div class="files"><span>salon/sl-pos.jsx · TenderSheet</span><span>gym/gm-money.jsx · sell / topup / settleTab</span><span>grocery/gr-till.jsx</span></div>
+<p>All of them default to MoMo and all of them commit on a click. On a push rail that is a claim the operator cannot make — the customer has not approved anything yet.</p>
+<p><span class="mono">useCharge</span> is reusable as-is for Salon, whose sheet is the same shape as a register's. Gym needs a lighter touch: a top-up is not a ticket, so it wants the phase machine without the tenders array — worth exposing a <span class="mono">useCharge</span> option for a single-capture flow rather than bending Gym into a ticket it does not have.</p>
+</div>
+</div>
+
+<h2 id="order">Order of work</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:15%">Stage</th><th style="width:30%">Gaps</th><th>Why here</th></tr></thead>
+<tbody>
+<tr><td><b>First</b></td><td>4 · discount policy</td><td>The only one with money and audit consequences today. A stylist can give away half a service with no record.</td></tr>
+<tr><td><b>Then · cheap</b></td><td>1 · formatters · 2 · tender lists · 3 · Salon's tax</td><td>Mostly deletion, no behaviour change, and they remove the drift that makes everything after this harder.</td></tr>
+<tr><td><b>Then</b></td><td>5 · ticket numbers</td><td>Changes the shape of a stored record, so better before real data than after.</td></tr>
+<tr><td><b>Last</b></td><td>6 · charge phases</td><td>The largest piece, and it needs the <span class="mono">useCharge</span> single-capture option designing rather than just wiring.</td></tr>
+</tbody></table></div>
+
+<h2 id="leave">What stays module-own</h2>
+<div class="g2">
+<div class="card"><h4><ion-icon name="wallet-outline"></ion-icon>Gym's wallet &amp; tab</h4><p>A prepaid balance and a house account are real instruments, not variants of cash. They extend the tender list; they do not move into it.</p></div>
+<div class="card"><h4><ion-icon name="cash-outline"></ion-icon>Salon's tips</h4><p>Tip on top of the taxed total, split to the stylists on the ticket. Correctly ordered and specific to the trade.</p></div>
+<div class="card"><h4><ion-icon name="bed-outline"></ion-icon>Hotel's folio</h4><p>An account that accrues and settles once. Different object, different numbering, already links to register tickets by reference.</p></div>
+<div class="card"><h4><ion-icon name="trophy-outline"></ion-icon>Gym's commissions</h4><p>Derived from signed sessions, never typed. Rounds correctly and has nothing to do with the register.</p></div>
+</div>
+
+<h2 id="decide">The calls, and how they went</h2>
+<div class="ask">
+<div class="ask__r"><span class="q">1</span><div><b>Answered: make it configurable.</b> <span class="mono">taxable</span> per module, shipping <span class="mono">false</span> for Gym until the treatment is confirmed. One line to flip.</div></div>
+<div class="ask__r"><span class="q">2</span><div><b>Answered: make it configurable.</b> The ceiling is now per module as well as per tenant — Salon 20 %, Grocery 5 %, base 10 %. The discount chips are derived from it, so the UI cannot offer what the policy forbids.</div></div>
+<div class="ask__r"><span class="q">3</span><div><b>Decided: no.</b> A comp is a void-with-reason on a fired line, not a discount — see <a href="#delivered">Delivered</a> for why recording it as a discount would understate food cost.</div></div>
+</div>
+</main>
+</div>
+<script>
+const links=[...document.querySelectorAll('.side a.nv')];
+const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('on'));const a=map.get(e.target.id);if(a)a.classList.add('on')}})},{rootMargin:'-10% 0px -80% 0px'});
+document.querySelectorAll('main h2[id]').forEach(h=>io.observe(h));
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Mobile into Flex · convergence plan</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.sp{flex:1}
+.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 14px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 16px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 6px 10px}
+.side a.nv{display:flex;align-items:center;gap:9px;min-height:34px;padding:6px 10px;border-radius:9px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a.nv ion-icon{font-size:15px;color:var(--kz-muted-3);flex:none}
+.side a.nv:hover{background:var(--kz-surface-2);color:var(--kz-ink)}
+.side a.nv.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.side a.nv.on ion-icon{color:var(--kz-primary)}
+.doc{padding:34px 34px 110px;max-width:1060px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.lede{margin:0 0 22px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:72ch;text-wrap:pretty}
+h2{margin:44px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em;scroll-margin-top:22px}
+h3{margin:26px 0 8px;font:700 15px var(--kz-font-sans)}
+.sub{margin:0 0 14px;font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-muted);max-width:74ch;text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:74ch;text-wrap:pretty}
+.mono{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 6px;color:var(--kz-ink-2);white-space:nowrap}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px}
+.card h4{margin:0 0 4px;font:700 14px var(--kz-font-sans);display:flex;align-items:center;gap:8px}
+.card h4 ion-icon{color:var(--kz-primary);font-size:16px}
+.card p{margin:0;font-size:13px;line-height:1.65}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.tblwrap{overflow-x:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+td .y{color:var(--kz-success);font-weight:700}td .n{color:var(--kz-muted-3)}
+.step{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:11px;overflow:hidden}
+.step__h{display:flex;align-items:center;gap:11px;padding:12px 16px;background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.step__h .num{width:26px;height:26px;border-radius:7px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none}
+.step__h b{font:700 13.5px var(--kz-font-sans)}
+.step__b{padding:13px 16px}
+.step__b p{margin:0 0 9px;font-size:13.5px}
+.step__b p:last-child{margin-bottom:0}
+.tag{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--kz-radius-pill);background:var(--kz-primary-wash);color:var(--kz-primary)}
+.tag.keep{background:var(--kz-success-wash);color:#1f7a45}
+.tag.drop{background:var(--kz-discount-wash);color:#b8401f}
+.tag.new{background:var(--kz-info-wash);color:#2a63b8}
+.files{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.files span{font:600 11px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:6px;padding:3px 8px;color:var(--kz-ink-2)}
+.note{display:flex;gap:10px;background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:13px 15px;margin-bottom:12px}
+.note ion-icon{color:var(--kz-primary);font-size:17px;flex:none;margin-top:1px}
+.note p{margin:0;font-size:13px;line-height:1.62}
+.note.warn{background:var(--kz-warning-wash);border-color:#e8d6a8}
+.note.warn ion-icon{color:#8a6414}
+.comp{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:10px;margin-bottom:12px}
+.fr{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:12px}
+.fr__t{font:700 12.5px var(--kz-font-sans);margin-bottom:2px}
+.fr__d{font:400 11.5px/1.5 var(--kz-font-sans);color:var(--kz-muted-2);margin-bottom:9px}
+.fr svg{display:block;width:100%;height:auto;border-radius:6px;border:1px solid var(--kz-border)}
+.ask{background:#fff;border:1px solid var(--kz-border-strong);border-radius:var(--kz-radius);padding:4px 18px}
+.ask__r{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--kz-border)}
+.ask__r:last-child{border-bottom:none}
+.ask__r .q{width:22px;height:22px;border-radius:6px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none;margin-top:1px}
+.ask__r div{font:400 13.5px/1.62 var(--kz-font-sans);color:var(--kz-ink-2)}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side">
+<div class="side__mark"><div class="ic"><ion-icon name="git-merge"></ion-icon></div><b>koomzo · POS</b></div>
+<p class="side__v">Mobile → Flex · plan</p>
+<div class="side__g">The case</div>
+<a class="nv" href="#why"><ion-icon name="help-circle-outline"></ion-icon>Why this is one register</a>
+<a class="nv" href="#four"><ion-icon name="phone-portrait-outline"></ion-icon>The four compositions</a>
+<a class="nv" href="#delta"><ion-icon name="git-compare-outline"></ion-icon>What Flex already has</a>
+<div class="side__g">The work</div>
+<a class="nv" href="#s1"><ion-icon name="color-palette-outline"></ion-icon>1 · Layout CSS</a>
+<a class="nv" href="#s2"><ion-icon name="cube-outline"></ion-icon>2 · Order bar &amp; tab strip</a>
+<a class="nv" href="#s3"><ion-icon name="options-outline"></ion-icon>3 · The tweak</a>
+<a class="nv" href="#s4"><ion-icon name="sparkles-outline"></ion-icon>4 · Loyalty band</a>
+<a class="nv" href="#s5"><ion-icon name="trash-outline"></ion-icon>5 · Retire mobile/</a>
+<a class="nv" href="#s6"><ion-icon name="document-text-outline"></ion-icon>6 · Spec §20</a>
+<div class="side__g">Judgement</div>
+<a class="nv" href="#drop"><ion-icon name="close-circle-outline"></ion-icon>What does not move</a>
+<a class="nv" href="#risk"><ion-icon name="warning-outline"></ion-icon>Risks</a>
+<a class="nv" href="#decide"><ion-icon name="checkmark-done-outline"></ion-icon>The calls</a>
+</nav>
+
+<main class="doc">
+<p class="eb">Convergence plan · delivered</p>
+<h1>Mobile into Flex: one register, four compositions</h1>
+<p class="lede">The Mobile register is a fourth parallel implementation, not a view of the others — its own catalogue, its own components, its own stylesheet. But its three phone patterns for the live order are real design work that Flex does not have. This plan moves those patterns into Flex as layout options, retires <span class="mono">mobile/</span>, and makes the spec's §9 and §17 true instead of aspirational.</p>
+<div class="links">
+<a href="Koomzo POS - Retail Flex.html"><ion-icon name="options-outline"></ion-icon>Retail Flex</a>
+<a href="Koomzo - Phone Compositions.html"><ion-icon name="phone-portrait-outline"></ion-icon>Phone compositions</a>
+<a href="Koomzo - Register Functional Spec.html"><ion-icon name="document-text-outline"></ion-icon>Register spec</a>
+<a href="Koomzo - Register Code Change Plan.html"><ion-icon name="git-pull-request-outline"></ion-icon>Change plan</a>
+</div>
+
+<h2 id="why">Why this is one register</h2>
+<p class="sub">The same argument as change 11, one layer up.</p>
+<div class="g2">
+<div class="card"><h4><ion-icon name="layers-outline"></ion-icon>The money layer is already shared</h4><p>After the last round, Mobile reads the same tender list, charge phases, ticket numbering, tax function and discount policy as the other three. Nothing about payment is duplicated any more.</p></div>
+<div class="card"><h4><ion-icon name="copy-outline"></ion-icon>The board layer still is</h4><p><span class="mono">MTile</span>, <span class="mono">MCatalog</span>, <span class="mono">MTicket</span>, <span class="mono">MLine</span>, <span class="mono">MEditor</span>, <span class="mono">MOrderPanel</span> shadow Flex's <span class="mono">Tile</span>, <span class="mono">CatalogGrid</span>, <span class="mono">Cart</span>, <span class="mono">CartLine</span>, <span class="mono">KeypadSheet</span>. Two of everything.</p></div>
+<div class="card"><h4><ion-icon name="warning-outline"></ion-icon>And it costs capability</h4><p>Mobile has no presets, no capability map and no qualifier chain. A phone cannot age-check, take an Rx sign-off, pick a variant, choose a batch, capture a serial or weigh anything — the exact chain the spec calls invariant.</p></div>
+<div class="card"><h4><ion-icon name="ribbon-outline"></ion-icon>But it earned something</h4><p>Three genuinely different answers to "where does the live ticket live on a 390 px screen". Flex has one answer — a side drawer. That exploration is what we keep.</p></div>
+</div>
+
+<h2 id="four">The four compositions</h2>
+<p class="sub">Reading your "four" as the four device classes in the spec's §17 — which is what the register must actually survive. The three phone patterns then become a choice <i>within</i> the phone composition, not three more compositions.</p>
+<div class="comp">
+<div class="fr"><div class="fr__t">Laptop / counter</div><div class="fr__d">Docked cart, keyboard-first</div>
+<svg viewBox="0 0 160 100" aria-hidden="true"><rect width="160" height="100" fill="#f4f6f9"/><rect x="0" y="0" width="16" height="100" fill="#fff" stroke="#e9ecee"/><rect x="16" y="0" width="144" height="12" fill="#fff" stroke="#e9ecee"/><g fill="#fff" stroke="#e9ecee"><rect x="22" y="18" width="26" height="24" rx="3"/><rect x="52" y="18" width="26" height="24" rx="3"/><rect x="82" y="18" width="26" height="24" rx="3"/><rect x="22" y="48" width="26" height="24" rx="3"/><rect x="52" y="48" width="26" height="24" rx="3"/><rect x="82" y="48" width="26" height="24" rx="3"/></g><rect x="114" y="12" width="46" height="88" fill="#fff" stroke="#6a61bf"/><rect x="120" y="86" width="34" height="9" rx="4" fill="#6a61bf"/></svg></div>
+<div class="fr"><div class="fr__t">Tablet landscape</div><div class="fr__d">Two-pane, touch targets up</div>
+<svg viewBox="0 0 160 100" aria-hidden="true"><rect width="160" height="100" fill="#f4f6f9"/><rect x="0" y="0" width="160" height="12" fill="#fff" stroke="#e9ecee"/><g fill="#fff" stroke="#e9ecee"><rect x="8" y="20" width="32" height="28" rx="3"/><rect x="44" y="20" width="32" height="28" rx="3"/><rect x="8" y="54" width="32" height="28" rx="3"/><rect x="44" y="54" width="32" height="28" rx="3"/></g><rect x="100" y="12" width="60" height="88" fill="#fff" stroke="#6a61bf"/><rect x="108" y="86" width="44" height="10" rx="5" fill="#6a61bf"/></svg></div>
+<div class="fr"><div class="fr__t">Tablet portrait</div><div class="fr__d">Drawer over a scrim</div>
+<svg viewBox="0 0 160 100" aria-hidden="true"><rect width="160" height="100" fill="#f4f6f9"/><rect x="0" y="0" width="160" height="12" fill="#fff" stroke="#e9ecee"/><g fill="#fff" stroke="#e9ecee"><rect x="8" y="20" width="30" height="26" rx="3"/><rect x="42" y="20" width="30" height="26" rx="3"/><rect x="8" y="52" width="30" height="26" rx="3"/></g><rect x="78" y="12" width="82" height="88" fill="rgba(20,24,38,.45)"/><rect x="96" y="12" width="64" height="88" fill="#fff" stroke="#6a61bf"/><rect x="104" y="86" width="48" height="10" rx="5" fill="#6a61bf"/></svg></div>
+<div class="fr"><div class="fr__t">Phone</div><div class="fr__d">Sheet · bar · tab — a tweak</div>
+<svg viewBox="0 0 160 100" aria-hidden="true"><rect width="160" height="100" fill="#f4f6f9"/><rect x="48" y="0" width="64" height="100" fill="#fff" stroke="#e9ecee"/><rect x="52" y="4" width="56" height="8" fill="#f9fafb"/><g fill="#fff" stroke="#e9ecee"><rect x="54" y="18" width="24" height="20" rx="3"/><rect x="82" y="18" width="24" height="20" rx="3"/><rect x="54" y="42" width="24" height="20" rx="3"/><rect x="82" y="42" width="24" height="20" rx="3"/></g><rect x="48" y="68" width="64" height="32" rx="6" fill="#fff" stroke="#6a61bf"/><rect x="72" y="72" width="16" height="2.5" rx="1.2" fill="#d8dce2"/><rect x="56" y="86" width="48" height="9" rx="4.5" fill="#6a61bf"/></svg></div>
+</div>
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><p>If you meant four <i>patterns</i> rather than four devices, the difference is only whether the side <b>drawer</b> survives as a phone option alongside sheet / bar / tab. My read: it shouldn't — a side drawer on a 390 px screen is a worse sheet. It stays the tablet-portrait answer, where it is correct.</p></div>
+
+<h2 id="delta">What Flex already has, and what it needs</h2>
+<p class="sub">Flex's container queries already do more than the spec credits it with. The delta is smaller than it looks.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:22%">Piece</th><th style="width:30%">Flex today</th><th>Needs</th></tr></thead>
+<tbody>
+<tr><td><b>Two-pane board</b></td><td class="y">Yes — <span class="mono">.board</span> grid <span class="mono">1fr 380px</span>, tightening to 340px in the tablet band</td><td>Nothing.</td></tr>
+<tr><td><b>Side drawer</b></td><td class="y">Yes — <span class="mono">.cart.aside</span> slide-over plus a <span class="mono">.dockbar</span> summary</td><td>Nothing. Becomes the tablet-portrait composition.</td></tr>
+<tr><td><b>Bar pattern</b></td><td>Partly — <span class="mono">.dockbar</span> is a summary bar with a total and a Charge button</td><td>Mobile's richer treatment: a cart glyph with a live count badge, two-line total, taller thumb target.</td></tr>
+<tr><td><b>Sheet pattern</b></td><td class="n">No — the cart slides from the <i>right</i>, never up from the bottom</td><td>A bottom-sheet composition with a grab handle, over a scrim, rising to ~88 % height.</td></tr>
+<tr><td><b>Tab pattern</b></td><td class="n">No</td><td>A tab strip switching catalogue / order as full views, with a count badge on the order tab.</td></tr>
+<tr><td><b>Phone rail</b></td><td class="y">Yes — the module rail already becomes a bottom tab bar under 640 px</td><td>Coexistence rules so the rail, the tab strip and the order bar never stack into each other.</td></tr>
+<tr><td><b>Loyalty band</b></td><td class="n">No</td><td>Mobile's "points won / new balance" pair, shown when a customer is attached. Worth keeping.</td></tr>
+<tr><td><b>Device preview</b></td><td class="y">Yes — a <span class="mono">device</span> tweak with desktop / tablet / phone</td><td>A fourth value so tablet portrait and landscape are separable.</td></tr>
+</tbody></table></div>
+
+<h2 id="s1">Step 1 · Layout CSS</h2>
+<div class="step">
+<div class="step__h"><span class="num">1</span><b>Three new compositions in rx.css</b><div class="sp"></div><span class="tag new">New CSS</span></div>
+<div class="step__b">
+<div class="files"><span>retailflex/rx.css</span></div>
+<p>Add <span class="mono">.board.sheet</span>, <span class="mono">.board.bar</span> and <span class="mono">.board.tabs</span> beside the existing <span class="mono">.board.drawer</span>, porting the geometry from <span class="mono">mkit.css</span> — <span class="mono">.m-sheet</span> (bottom sheet + grab handle + scrim), <span class="mono">.m-orderbar</span> (72 px bar, 46 px cart glyph, 48 px go button) and <span class="mono">.m-tabs</span> (40 px segmented strip).</p>
+<p>Translated into Flex's class names, so the cart stays <span class="mono">.cart</span> and the ticket lines stay <span class="mono">.line</span> — no second vocabulary enters the file. All three are container-query-scoped so they only apply at phone width, and the bottom offsets account for the rail already sitting at the bottom under 640 px.</p>
+</div>
+</div>
+
+<h2 id="s2">Step 2 · Order bar and tab strip</h2>
+<div class="step">
+<div class="step__h"><span class="num">2</span><b>Upgrade DockBar, add TabStrip</b><div class="sp"></div><span class="tag">Components</span></div>
+<div class="step__b">
+<div class="files"><span>retailflex/rx-parts.jsx</span></div>
+<p><span class="mono">DockBar</span> gains the cart glyph and count badge from <span class="mono">MOrderBar</span> — it already takes <span class="mono">count</span>, it just doesn't show it. A new <span class="mono">TabStrip</span> component renders the catalogue / order pair with the badge.</p>
+<p>The <span class="mono">Cart</span> component itself is unchanged: it already renders head, customer row, lines, totals and the pay bar, and it is what the sheet, the drawer and the tab view all show. One ticket component, four places to put it.</p>
+</div>
+</div>
+
+<h2 id="s3">Step 3 · The tweak</h2>
+<div class="step">
+<div class="step__h"><span class="num">3</span><b>Layout becomes composition, device gains a value</b><div class="sp"></div><span class="tag">Tweaks</span></div>
+<div class="step__b">
+<div class="files"><span>retailflex/rx-app.jsx</span></div>
+<p>Today: <span class="mono">layout: right | drawer</span> and <span class="mono">device: desktop | tablet | phone</span>.</p>
+<p>After: <span class="mono">device: desktop | tabletL | tabletP | phone</span>, and a <span class="mono">phoneOrder: sheet | bar | tab</span> tweak that appears only when device is phone — exactly Mobile's control, in Flex's panel. <span class="mono">layout</span> keeps <i>cart right</i> / <i>cart drawer</i> for the desk and tablet cases, because that is a real preference a shop has at a counter.</p>
+<p>The board class then composes as <span class="mono">board + (phone ? phoneOrder : layout)</span>, and the existing transient-state reset on device change comes across from <span class="mono">m-app</span> so switching pattern never leaves a sheet half-open.</p>
+</div>
+</div>
+
+<h2 id="s4">Step 4 · Loyalty band</h2>
+<div class="step">
+<div class="step__h"><span class="num">4</span><b>Points won / new balance</b><div class="sp"></div><span class="tag keep">Keep from Mobile</span></div>
+<div class="step__b">
+<div class="files"><span>retailflex/rx-parts.jsx</span><span>retailflex/rx.css</span></div>
+<p>Mobile shows the points a ticket earns and the resulting balance as the order grows. Flex has loyalty as a capability and a customer row, but never shows the number. Port the band into <span class="mono">Cart</span>, shown when the loyalty feature is on <i>and</i> a customer is attached — which is stricter than Mobile, where it shows for walk-ins too and means nothing.</p>
+</div>
+</div>
+
+<h2 id="s5">Step 5 · Retire mobile/</h2>
+<div class="step">
+<div class="step__h"><span class="num">5</span><b>Delete the tree, keep the link honest</b><div class="sp"></div><span class="tag drop">Retire</span></div>
+<div class="step__b">
+<div class="files"><span>mobile/m-app.jsx</span><span>mobile/m-components.jsx</span><span>mobile/mkit.css</span><span>Koomzo POS - Mobile.html</span></div>
+<p><b>As built:</b> the three source files and <span class="mono">Koomzo POS - Mobile.html</span> are deleted outright — no redirect stub, per your answer. The one inbound reference, the Home launcher tile, now points at <span class="mono">Koomzo POS - Retail Flex.html?device=phone</span>, so "Mobile Register" on the home screen opens the phone composition of the real register.</p>
+</div>
+</div>
+
+<h2 id="s6">Step 6 · The spec gains a section</h2>
+<div class="step">
+<div class="step__h"><span class="num">6</span><b>§20 · One register, four compositions</b><div class="sp"></div><span class="tag new">New section</span></div>
+<div class="step__b">
+<div class="files"><span>Koomzo - Register Functional Spec.html</span></div>
+<p>You left this to me, so: a <b>new section</b> rather than a rewrite of §9. The existing §9 stays as the Mobile module's record — it describes what was built and why the phone patterns exist — and the new section states the resolved architecture: one register, four device compositions, three phone patterns as a tenant choice, and the rule that follows from it.</p>
+<p>Three smaller edits go with it: §5's capability matrix loses the Mobile column and gains a compositions row; §9's heading is marked <i>merged into Flex</i>; and §17's device table gets the phone-pattern choice named rather than implied. The four-module framing in the opening lede becomes three.</p>
+</div>
+</div>
+
+<h2 id="drop">What does not move</h2>
+<p class="sub">Deliberate losses, each with a reason — this is the part of a convergence worth arguing about.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:26%">Dropped</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><b><span class="mono">KZ_PRODUCTS</span> / <span class="mono">KZ_CATEGORIES</span></b></td><td>Mobile's generic catalogue. Flex's per-preset catalogues are richer and carry the qualifier flags (weighed, variants, serial, Rx, lot) that make the entry chain work. Keeping both is the duplication we are removing.</td></tr>
+<tr><td><b><span class="mono">MTile</span>, <span class="mono">MLine</span>, <span class="mono">MTicket</span>, <span class="mono">MOrderPanel</span></b></td><td>Straight duplicates of Flex components. Flex's versions already handle variants, batches, serials and weights on a line; Mobile's cannot.</td></tr>
+<tr><td><b><span class="mono">MEditor</span></b></td><td>Mobile's inline numpad. Flex's <span class="mono">KeypadSheet</span> does the same job and now carries the discount ceiling and the approval step, which Mobile's does not.</td></tr>
+<tr><td><b>The device switcher chrome</b></td><td>Mobile's scaled device stage with a phone / tablet / tablet toolbar. Flex already scales to a device preset through its own tweak; two preview mechanisms is one too many.</td></tr>
+<tr><td><b><span class="mono">+/−</span> numpad key</b></td><td>A negative quantity is not a thing on a ticket — a return is a return. It was never right.</td></tr>
+</tbody></table></div>
+
+<h2 id="risk">Risks</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:26%">Risk</th><th>Handling</th></tr></thead>
+<tbody>
+<tr><td><b>Bottom-chrome collision</b></td><td>Under 640 px Flex already puts the module rail at the bottom (58 px) and the dockbar above it. A sheet, a tab strip and an order bar all want that space. Each composition gets explicit offsets, and I will screenshot all three at 390 px before calling it done.</td></tr>
+<tr><td><b>The qualifier chain on a phone</b></td><td>Flex's sheets become bottom sheets under 640 px already, so the chain should work — but it has never run at phone width with a real preset. Pharmacy (Rx → variant → batch) is the worst case and the one I will test.</td></tr>
+<tr><td><b>Losing the demo value of Mobile</b></td><td>Mobile's page is a presentation artifact: three phone patterns side by side in a device frame. Inside Flex they become one tweak you change to compare. If showing them together matters, that is a canvas of three Flex frames, and worth saying now rather than after the delete.</td></tr>
+<tr><td><b>Tweak-state churn</b></td><td>Renaming <span class="mono">device</span> values invalidates any saved tweak state on the Flex page. Harmless, but the page will open at its defaults once.</td></tr>
+</tbody></table></div>
+
+<h2 id="decide">The calls, and how they went</h2>
+<div class="note" style="margin-bottom:14px"><ion-icon name="checkmark-done-outline"></ion-icon><p><b>All six steps are in.</b> The loyalty band was the fourth call and went my way too: it shows only when a customer is attached, since for a walk-in the points belong to nobody.</p></div>
+<div class="ask">
+<div class="ask__r"><span class="q">1</span><div><b>Decided for you: no.</b> The drawer stays tablet-portrait only; the phone gets bar / sheet / tab. Four compositions, not five.</div></div>
+<div class="ask__r"><span class="q">2</span><div><b>Answered: yes.</b> Built as <a href="Koomzo - Phone Compositions.html">Phone compositions</a> — three live Flex frames pinned to bar, sheet and tab by URL, so they stay real rather than becoming screenshots.</div></div>
+<div class="ask__r"><span class="q">3</span><div><b>Answered: delete it outright.</b> Done — and the Home launcher was repointed so nothing dead-ends.</div></div>
+</div>
+</main>
+</div>
+<script>
+const links=[...document.querySelectorAll('.side a.nv')];
+const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('on'));const a=map.get(e.target.id);if(a)a.classList.add('on')}})},{rootMargin:'-10% 0px -80% 0px'});
+document.querySelectorAll('main h2[id]').forEach(h=>io.observe(h));
+</script>
+</body>
+</html>

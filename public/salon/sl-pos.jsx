@@ -74,7 +74,7 @@ function RegisterView({ api }) {
 
       <aside className={'cart' + (api.cartOpen ? ' open' : '')}>
         <div className="cart__head">
-          <div className="cart__no">Ticket #{api.ticketNo}<small>{tk.lines.length ? tk.lines.length + ' line' + (tk.lines.length > 1 ? 's' : '') : 'Empty'}</small></div>
+          <div className="cart__no" title={api.ticketNo}>Ticket {window.KZ_TICKET.short(api.ticketNo)}<small>{tk.lines.length ? tk.lines.length + ' line' + (tk.lines.length > 1 ? 's' : '') : 'Empty'}</small></div>
           <div className="sp"></div>
           {!!tk.lines.length && <button className="icbtn" onClick={api.clearTicket}><ion-icon name="trash-outline"></ion-icon></button>}
           <button className="icbtn drawer-only" onClick={() => api.setCartOpen(false)}><ion-icon name="chevron-forward-outline"></ion-icon></button>
@@ -126,7 +126,7 @@ function RegisterView({ api }) {
         <div className="totals">
           <div className="trow"><span className="k">Subtotal</span><span className="v">{money(T.net)}</span></div>
           {!!T.discount && <div className="trow"><span className="k">Discounts</span><span className="v" style={{ color: 'var(--kz-discount)' }}>−{money(T.discount)}</span></div>}
-          <div className="trow"><span className="k">TVA (19,25 %)</span><span className="v">{money(T.tax)}</span></div>
+          <div className="trow"><span className="k">{window.KZ_POLICY.taxLabelFor('salon')}</span><span className="v">{money(T.tax)}</span></div>
           <div className="trow big"><span className="k">Total</span><span className="v">{money(T.total)}</span></div>
         </div>
         <div className="paybar">
@@ -138,7 +138,7 @@ function RegisterView({ api }) {
 
       {!api.cartOpen && (
         <div className="dockbar">
-          <div className="sum">{money(T.total)}<small>{tk.lines.length} line{tk.lines.length === 1 ? '' : 's'} · Ticket #{api.ticketNo}</small></div>
+          <div className="sum">{money(T.total)}<small>{tk.lines.length} line{tk.lines.length === 1 ? '' : 's'} · Ticket {window.KZ_TICKET.short(api.ticketNo)}</small></div>
           <button className="go" onClick={() => api.setCartOpen(true)}><ion-icon name="receipt-outline"></ion-icon>Ticket</button>
         </div>
       )}
@@ -149,7 +149,26 @@ function RegisterView({ api }) {
 }
 
 function LineSheet({ l, api, onClose }) {
+  /* change 8 / gap 4 — under the salon's ceiling a stylist acts freely; above
+     it, a named supervisor approves with a reason, and both names are kept */
+  const [ask, setAsk] = React.useState(null);
   if (!l) return null;
+  if (ask) return (
+    <div className="scrim" onClick={onClose}>
+      <div className="sheet" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet__head">
+          <div><h3>Supervisor approval</h3><p>{l.name} · {ask.value} % off</p></div>
+          <div className="sp"></div>
+          <button className="icbtn" onClick={onClose}><ion-icon name="close-outline"></ion-icon></button>
+        </div>
+        <div className="sheet__body">
+          <ApprovalStep kind="disc" value={ask.value} moduleId="salon"
+            onCancel={() => setAsk(null)}
+            onApprove={() => { api.setLineDisc(ask.uid, ask.value); setAsk(null); onClose(); }} />
+        </div>
+      </div>
+    </div>
+  );
   return (
     <div className="scrim" onClick={onClose}>
       <div className="sheet" onClick={(e) => e.stopPropagation()}>
@@ -176,14 +195,15 @@ function LineSheet({ l, api, onClose }) {
           <div>
             <span className="lbl">Discount</span>
             <div className="opts" style={{ marginTop: 8 }}>
-              {[0, 10, 20, 50].map((d) => (
-                <button key={d} className={'opt' + (l.disc === d ? ' on' : '')} onClick={() => api.setLineDisc(l.uid, d)}>{d ? d + '%' : 'None'}</button>
+              {window.KZ_POLICY.discountSteps('salon').concat([50]).filter((d, i, a) => a.indexOf(d) === i).map((d) => (
+                <button key={d} className={'opt' + (l.disc === d ? ' on' : '')}
+                  onClick={() => window.KZ_POLICY.needsApproval('disc', d, null, 'salon')
+                    ? setAsk({ kind: 'disc', value: d, uid: l.uid })
+                    : api.setLineDisc(l.uid, d)}>{d ? d + '%' : 'None'}</button>
               ))}
             </div>
           </div>
-          {api.role !== 'manager' && l.disc > 20 && (
-            <div className="note"><ion-icon name="lock-closed-outline"></ion-icon>Discounts over 20% need a manager PIN at the register.</div>
-          )}
+          <div className="note"><ion-icon name="shield-checkmark-outline"></ion-icon>{window.KZ_POLICY.ceilingCopy('disc', 'salon')}</div>
         </div>
         <div className="sheet__foot">
           <button className="btn danger" onClick={() => { api.removeLine(l.uid); onClose(); }}><ion-icon name="trash-outline"></ion-icon>Remove</button>
@@ -195,18 +215,29 @@ function LineSheet({ l, api, onClose }) {
 }
 
 /* the platform list, minus bank cards a salon does not take, plus gift cards */
-const SL_TENDERS = window.KZ_LOCALE.tenderList
-  .filter((t) => t.id !== 'card')
-  .map((t) => [t.id, t.label, t.icon])
-  .concat([['gift', 'Carte cadeau', 'gift-outline']]);
-const tenderLabel = (v) => (SL_TENDERS.find((t) => t[0] === v) || [, '—'])[1];
+const SL_TENDERS = window.KZ_TENDER.list({ gift: true, without: ['card'] });
+const tenderLabel = (v) => window.KZ_TENDER.label(v);
 
 function TenderSheet({ api, onClose }) {
   const T = api.totals;
   const [tip, setTip] = useState(0);
-  const [method, setMethod] = useState('momo');
-  const [done, setDone] = useState(false);
   const tipAmt = tip;
+  /* a salon takes MoMo by default, so settlement waits on the client's own
+     handset — the phase machine is the platform's (spec §20) */
+  const c = window.useSingleCharge(T.total + tipAmt, {
+    onDone: () => {
+      /* only retail lines move stock. A service moves nothing itself — its back-bar
+         consumption is posted separately when the appointment completes, and
+         double-posting it here would halve the salon's true service margin. */
+      window.KZ_SALES.sellFrom('salon', {
+        ticketNo: api.ticketNo, locId: 'up', actor: { kind: 'user', label: api.staffName || 'Salon' },
+        customer: api.ticket.client || 'Walk-in',
+        lines: api.ticket.lines.filter((l) => l.kind === 'product').map((l) => ({ id: l.id, qty: l.qty || 1 })),
+      });
+    },
+  });
+  const method = c.tender, setMethod = c.setTender;
+  const done = c.done;
   const grand = T.total + tipAmt;
   const svcStaff = [...new Set(api.ticket.lines.filter((l) => l.kind === 'service' && l.staff).map((l) => l.staff))];
 
@@ -236,11 +267,12 @@ function TenderSheet({ api, onClose }) {
     <div className="scrim" onClick={onClose}>
       <div className="sheet" onClick={(e) => e.stopPropagation()}>
         <div className="sheet__head">
-          <div><h3>Take payment</h3><p>{api.ticket.client || 'Walk-in'} · Ticket #{api.ticketNo}</p></div>
+          <div><h3>Take payment</h3><p>{api.ticket.client || 'Walk-in'} · Ticket {window.KZ_TICKET.short(api.ticketNo)}</p></div>
           <div className="sp"></div>
           <button className="icbtn" onClick={onClose}><ion-icon name="close-outline"></ion-icon></button>
         </div>
         <div className="sheet__body">
+          <PushPending c={c} amount={grand} />
           {api.settings.tips && (
           <div>
             <span className="lbl">Tip {svcStaff.length ? '· to ' + svcStaff.map((s) => staffOf(s).first).join(' & ') : ''}</span>
@@ -256,9 +288,9 @@ function TenderSheet({ api, onClose }) {
           <div>
             <span className="lbl">Method</span>
             <div className="tenders" style={{ marginTop: 8 }}>
-              {SL_TENDERS.map(([v, l, ic]) => (
-                <button key={v} className={'tender' + (method === v ? ' on' : '')} onClick={() => setMethod(v)}>
-                  <ion-icon name={ic}></ion-icon>{l}
+              {SL_TENDERS.map((t) => (
+                <button key={t.id} className={'tender' + (method === t.id ? ' on' : '')} onClick={() => setMethod(t.id)}>
+                  <ion-icon name={t.icon}></ion-icon>{t.label}
                 </button>
               ))}
             </div>
@@ -271,9 +303,10 @@ function TenderSheet({ api, onClose }) {
           </div>
         </div>
         <div className="sheet__foot">
-          <button className="btn" onClick={onClose}>Back</button>
-          <button className="btn primary" style={{ background: 'var(--kz-success)', borderColor: 'var(--kz-success)', boxShadow: '0 6px 14px rgba(46,158,91,.28)' }}
-            onClick={() => setDone(true)}><ion-icon name="checkmark-outline"></ion-icon>Charge {money(grand)}</button>
+          <button className="btn" onClick={c.busy ? c.cancel : onClose}>{c.busy ? 'Cancel request' : 'Back'}</button>
+          <button className="btn primary" disabled={c.busy}
+            style={{ background: 'var(--kz-success)', borderColor: 'var(--kz-success)', boxShadow: '0 6px 14px rgba(46,158,91,.28)', opacity: c.busy ? .45 : 1 }}
+            onClick={c.request}><ion-icon name="checkmark-outline"></ion-icon>{c.cta()}</button>
         </div>
       </div>
     </div>

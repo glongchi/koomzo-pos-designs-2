@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Koomzo — Responsive Views</title>
+<meta name="design_doc_mode" content="canvas">
+<style>
+body{margin:0;background:#e9ecf2;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+a{color:#6a61bf;text-decoration:none}a:hover{color:#574fa6}
+.lbl{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.tag{background:#6a61bf;color:#fff;font:700 11px/1 -apple-system,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:7px 10px;border-radius:6px}
+.t{font:600 18px/1.3 -apple-system,sans-serif;color:#141826}
+.d{font:400 14px/1.4 -apple-system,sans-serif;color:#676f88}
+iframe{border:0;display:block;background:#f4f6f9}
+.dev{border-radius:34px;border:8px solid #141826;overflow:hidden;box-shadow:0 12px 32px rgba(20,24,38,.14);background:#141826}
+.pad{border-radius:26px;border:10px solid #141826;overflow:hidden;box-shadow:0 12px 32px rgba(20,24,38,.14);background:#141826}
+.win{border-radius:12px;overflow:hidden;box-shadow:0 12px 32px rgba(20,24,38,.14);background:#fff}
+.bar{height:34px;background:#fff;border-bottom:1px solid #e9ecee;display:flex;align-items:center;gap:7px;padding:0 12px}
+.dot{width:10px;height:10px;border-radius:999px}
+.sec{font:600 11px/1.2 -apple-system,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#858a9b}
+</style>
+</head>
+<body>
+<div style="position:absolute;left:60px;top:56px;width:760px">
+  <div class="sec">Koomzo · responsive</div>
+  <div style="font:700 32px/1.15 -apple-system,sans-serif;letter-spacing:-.02em;color:#141826;margin:14px 0 12px">One form, two layouts</div>
+  <div style="font:400 15px/1.6 -apple-system,sans-serif;color:#676f88">Below 1000px the page is an <b>app screen, not a landing page</b>: slim logo bar, the whole form in one scroll under two section labels, and the primary action docked in the thumb zone so the keyboard never buries it. Two short reassurance lines carry the pitch; the rest sits behind a quiet <b>How it works</b> link. From 1000px the purple panel returns beside the same single form, and the reassurance block drops out because the panel already says it.</div>
+</div>
+
+<div style="position:absolute;left:60px;top:320px">
+  <div class="lbl"><span class="tag">Signup · Mobile</span><span class="t">390 × 844</span><span class="d">Single form · docked CTA</span></div>
+  <div class="dev" style="width:406px;height:860px"><iframe src="Koomzo - Signup &amp; Platform Pitch.html" style="width:390px;height:844px" title="Signup mobile"></iframe></div>
+</div>
+
+<div style="position:absolute;left:540px;top:320px">
+  <div class="lbl"><span class="tag">Signup · Tablet</span><span class="t">834 × 1112</span><span class="d">Centred 600px column</span></div>
+  <div class="pad" style="width:854px;height:1132px"><iframe src="Koomzo - Signup &amp; Platform Pitch.html" style="width:834px;height:1112px" title="Signup tablet"></iframe></div>
+</div>
+
+<div style="position:absolute;left:1460px;top:320px">
+  <div class="lbl"><span class="tag">Signup · Desktop</span><span class="t">1440 × 900</span><span class="d">Split panel · same form</span></div>
+  <div class="win" style="width:1440px">
+    <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span></div>
+    <iframe src="Koomzo - Signup &amp; Platform Pitch.html" style="width:1440px;height:900px" title="Signup desktop"></iframe>
+  </div>
+</div>
+
+<div style="position:absolute;left:60px;top:1580px;width:760px">
+  <div class="sec">Login</div>
+  <div style="font:700 26px/1.2 -apple-system,sans-serif;letter-spacing:-.02em;color:#141826;margin:12px 0 10px">Same shell, two fields</div>
+  <div style="font:400 15px/1.6 -apple-system,sans-serif;color:#676f88">Phone number and password, with <b>Forgot password?</b> tucked right-aligned under the field and one offline reassurance line on small screens only. Same slim logo bar, same docked action, same purple panel from 1000px — so signup and login read as one product, not two pages.</div>
+</div>
+
+<div style="position:absolute;left:60px;top:1800px">
+  <div class="lbl"><span class="tag">Login · Mobile</span><span class="t">390 × 844</span></div>
+  <div class="dev" style="width:406px;height:860px"><iframe src="Koomzo - Login.html" style="width:390px;height:844px" title="Login mobile"></iframe></div>
+</div>
+
+<div style="position:absolute;left:540px;top:1800px">
+  <div class="lbl"><span class="tag">Login · Tablet</span><span class="t">834 × 1112</span></div>
+  <div class="pad" style="width:854px;height:1132px"><iframe src="Koomzo - Login.html" style="width:834px;height:1112px" title="Login tablet"></iframe></div>
+</div>
+
+<div style="position:absolute;left:1460px;top:1800px">
+  <div class="lbl"><span class="tag">Login · Desktop</span><span class="t">1440 × 900</span></div>
+  <div class="win" style="width:1440px">
+    <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span></div>
+    <iframe src="Koomzo - Login.html" style="width:1440px;height:900px" title="Login desktop"></iframe>
+  </div>
+</div>
+
+<div style="position:absolute;left:60px;top:3060px;width:760px">
+  <div class="sec">Introduction walkthrough</div>
+  <div style="font:700 26px/1.2 -apple-system,sans-serif;letter-spacing:-.02em;color:#141826;margin:12px 0 10px">Seven screens, skippable</div>
+  <div style="font:400 15px/1.6 -apple-system,sans-serif;color:#676f88">Platform overview on full purple (every module and its icon) · what Koomzo is · Form Builder · Process Orchestrator · Modules on the same engine · Phone-first and offline · Progressive disclosure with AI next. Copy stacks above the visual on phones and sits beside it from 860px. Arrow keys and the dot rail both navigate.</div>
+</div>
+
+<div style="position:absolute;left:60px;top:3280px">
+  <div class="lbl"><span class="tag">Tour · Mobile</span><span class="t">390 × 844</span></div>
+  <div class="dev" style="width:406px;height:860px"><iframe src="Koomzo - Introduction Walkthrough.html" style="width:390px;height:844px" title="Walkthrough mobile"></iframe></div>
+</div>
+
+<div style="position:absolute;left:540px;top:3280px">
+  <div class="lbl"><span class="tag">Tour · Tablet</span><span class="t">834 × 1112</span></div>
+  <div class="pad" style="width:854px;height:1132px"><iframe src="Koomzo - Introduction Walkthrough.html" style="width:834px;height:1112px" title="Walkthrough tablet"></iframe></div>
+</div>
+
+<div style="position:absolute;left:1460px;top:3280px">
+  <div class="lbl"><span class="tag">Tour · Desktop</span><span class="t">1440 × 900</span></div>
+  <div class="win" style="width:1440px">
+    <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span></div>
+    <iframe src="Koomzo - Introduction Walkthrough.html" style="width:1440px;height:900px" title="Walkthrough desktop"></iframe>
+  </div>
+</div>
+</body>
+</html>

@@ -3,7 +3,8 @@
 const { useState, useMemo, useEffect, useRef } = React;
 
 const GM = window.GM;
-const xaf = (n) => (n < 0 ? '−' : '') + Math.abs(Math.round(n)).toLocaleString('fr-FR').replace(/\u202f|\u00a0|\s/g, '\u00a0') + '\u00a0F';
+/* one formatter, defined in kz/kz-locale.js — this module used to restate it */
+const xaf = window.money;
 const planOf = (id) => GM.plans.find((p) => p.id === id) || GM.plans[0];
 const memberOf = (id) => GM.members.find((m) => m.id === id);
 const staffOf = (id) => GM.staff.find((s) => s.id === id) || GM.staff[0];

@@ -263,15 +263,28 @@ function AgeSheet({ product, step, onClose, onConfirm }) {
 function KeypadSheet({ line, onClose, onApply }) {
   const [mode, setMode] = React.useState('qty');
   const [buf, setBuf] = React.useState('');
-  const stored = mode === 'qty' ? String(line.qty) : mode === 'disc' ? String(line.disc) : line.price.toFixed(2);
+  const [ask, setAsk] = React.useState(null);
+  const stored = mode === 'qty' ? String(line.qty) : mode === 'disc' ? String(line.disc) : String(Math.round(line.price));
   const shown = buf === '' ? stored : buf;
-  const key = (k) => setBuf((b) => k === 'back' ? (b === '' ? stored : b).slice(0, -1)
-    : k === '.' ? (b.includes('.') ? b : (b || '0') + '.') : b + k);
+  const key = (k) => setBuf((b) => k === 'back' ? (b === '' ? stored : b).slice(0, -1) : b + k);
+  const val = () => mode === 'qty' ? (parseFloat(shown) || 0) : Math.round(parseFloat(shown) || 0);
+  /* change 8 — under the ceiling the cashier acts freely; above it, a supervisor */
+  const apply = () => {
+    const v = val();
+    if (window.KZ_POLICY.needsApproval(mode, v)) return setAsk({ kind: mode, value: v });
+    onApply(mode, v);
+  };
+  if (ask) return (
+    <Sheet title="Supervisor approval" sub={line.name + ' · ' + (ask.kind === 'price' ? 'price override ' + money(ask.value) : ask.value + ' % off')} onClose={onClose}>
+      <ApprovalStep kind={ask.kind} value={ask.value} onCancel={() => setAsk(null)}
+        onApprove={() => onApply(ask.kind, ask.value)} />
+    </Sheet>
+  );
   return (
     <Sheet title={line.name} sub="Adjust the selected line" onClose={onClose}
       foot={<>
         <button className="btn" onClick={onClose}>Cancel</button>
-        <button className="btn primary" onClick={() => onApply(mode, parseFloat(shown) || 0)}>Apply</button>
+        <button className="btn primary" onClick={apply}>Apply</button>
       </>}>
       <div className="opts" style={{ marginTop: 0 }}>
         {[['qty', 'Quantity'], ['price', 'Price'], ['disc', 'Discount %']].map(([m, l]) => (
@@ -279,9 +292,11 @@ function KeypadSheet({ line, onClose, onApply }) {
         ))}
       </div>
       <div className="display"><small>{mode === 'qty' ? 'Quantity' : mode === 'price' ? 'Unit price' : 'Line discount'}</small>{shown || '0'}</div>
+      {mode !== 'qty' && <div className="note info" style={{ marginBottom: 10 }}>
+        <ion-icon name="shield-checkmark-outline"></ion-icon>{window.KZ_POLICY.ceilingCopy(mode)}</div>}
       <div className="keypad">
         {['1','2','3','4','5','6','7','8','9'].map((k) => <button key={k} onClick={() => key(k)}>{k}</button>)}
-        <button onClick={() => key('.')}>.</button>
+        <button onClick={() => key('00')}>00</button>
         <button onClick={() => key('0')}>0</button>
         <button onClick={() => key('back')}><ion-icon name="backspace-outline"></ion-icon></button>
       </div>
@@ -318,49 +333,27 @@ function CustomerSheet({ onClose, onPick }) {
 }
 
 /* ---------- tender ---------- */
-function TenderSheet({ total, onClose, onDone }) {
-  const [tender, setTender] = React.useState('card');
-  const [cash, setCash] = React.useState(0);
-  const [paid, setPaid] = React.useState(false);
-  const change = Math.max(0, cash - total);
-  const notes = [total, Math.ceil(total / 5) * 5, Math.ceil(total / 10) * 10, Math.ceil(total / 20) * 20]
-    .filter((v, i, a) => a.indexOf(v) === i);
-  if (paid) return (
-    <Sheet title="" onClose={onDone} foot={<>
-      <button className="btn" onClick={onDone}><ion-icon name="print-outline"></ion-icon>Print receipt</button>
-      <button className="btn primary" onClick={onDone}>New order</button></>}>
-      <div className="done">
-        <div className="done__ic"><ion-icon name="checkmark-outline"></ion-icon></div>
-        <h4>Paid {money(total)}</h4>
-        <p>{tender === 'cash' ? `Change due ${money(change)}` : 'Approved · Card ····4417'}</p>
-      </div>
-      <button className="btn wide"><ion-icon name="mail-outline"></ion-icon>Email receipt to customer</button>
+function TenderSheet({ total, ticketNo, onClose, onDone, onPaid }) {
+  /* model, persistence and copy all live in kz/kz-charge.jsx + kz/kz-tender.js */
+  const ch = window.useCharge(total, { ticketNo: ticketNo, extras: { loyalty: true, split: true }, onDone: onDone, onPaid: onPaid });
+  if (ch.paid) return (
+    <Sheet title="" onClose={ch.finish} foot={<>
+      <button className="btn" onClick={ch.finish}><ion-icon name="print-outline"></ion-icon>Print receipt</button>
+      <button className="btn primary" onClick={ch.finish}>New order</button></>}>
+      <ChargePaidBody ch={ch} total={total} />
     </Sheet>
   );
   return (
-    <Sheet title={`Charge ${money(total)}`} sub="Choose how the customer is paying" onClose={onClose}
+    <Sheet title={`Charge ${money(total)}`}
+      sub={ch.tenders.length ? `${money(ch.balance)} still to take` : 'Choose how the customer is paying'}
+      onClose={onClose}
       foot={<>
         <button className="btn" onClick={onClose}>Back</button>
-        <button className="btn primary" style={{ background: 'var(--kz-success)', borderColor: 'var(--kz-success)', boxShadow: '0 6px 14px rgba(46,158,91,.28)' }}
-          onClick={() => setPaid(true)}>{tender === 'cash' ? 'Tender cash' : 'Take payment'}</button>
+        <button className="btn primary" disabled={ch.busy}
+          style={{ background: 'var(--kz-success)', borderColor: 'var(--kz-success)', boxShadow: '0 6px 14px rgba(46,158,91,.28)', opacity: ch.busy ? .45 : 1 }}
+          onClick={ch.request}>{ch.busy ? 'Waiting for the customer…' : window.KZ_TENDER.cta(ch.tender, ch.take)}</button>
       </>}>
-      <div className="tenders">
-        {window.KZ_LOCALE.tenderList.map((t) => [t.id, t.label, t.icon]).concat([['split', 'Split payment', 'git-branch-outline']]).map(([id, l, ic]) => (
-          <button key={id} className={'tender' + (tender === id ? ' on' : '')} onClick={() => setTender(id)}>
-            <ion-icon name={ic}></ion-icon>{l}
-          </button>
-        ))}
-      </div>
-      {tender === 'cash' && (
-        <>
-          <div className="display"><small>Cash tendered</small>{money(cash)}</div>
-          <div className="quickcash">{notes.map((n) => <button key={n} onClick={() => setCash(n)}>{money(n)}</button>)}</div>
-          <div className="trow"><span className="k">Change due</span>
-            <span className="v" style={{ font: '700 18px var(--kz-font-num)', color: change ? 'var(--kz-success)' : 'var(--kz-muted)' }}>{money(change)}</span></div>
-        </>
-      )}
-      {tender === 'card' && <div className="note info"><ion-icon name="card-outline"></ion-icon>Waiting for the terminal — ask the customer to tap, insert or swipe.</div>}
-      {tender === 'split' && <div className="note info"><ion-icon name="git-branch-outline"></ion-icon>Take a first amount, then the balance on another tender.</div>}
+      <ChargeBody ch={ch} />
     </Sheet>
   );
 }
@@ -626,53 +619,7 @@ function CustomersView({ onPick }) {
   );
 }
 
-function ShiftView() {
-  const s = window.RX_SHIFT;
-  const net = s.lines.reduce((a, l) => a + l.v, 0);
-  const counted = s.counted.notes + s.counted.coin;
-  const diff = counted - s.expectedCash;
-  return (
-    <div className="view">
-      <div className="view__head">
-        <div><h2>Shift & cash drawer</h2><p>{s.register} · opened {s.opened} · {s.cashier}</p></div>
-        <div className="sp"></div>
-        <button className="btn"><ion-icon name="print-outline"></ion-icon>X report</button>
-        <button className="btn primary"><ion-icon name="lock-closed-outline"></ion-icon>Close shift</button>
-      </div>
-      <div className="kpis">
-        <div className="kpi"><div className="k">Net sales</div><div className="v">{money(net)}</div></div>
-        <div className="kpi"><div className="k">Transactions</div><div className="v">64</div></div>
-        <div className="kpi"><div className="k">Average ticket</div><div className="v">{money(net / 64)}</div></div>
-        <div className="kpi"><div className="k">Opening float</div><div className="v">{money(s.float)}</div></div>
-      </div>
-      <div className="cards" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))' }}>
-        <div className="card">
-          <div className="card__t">Takings by tender</div>
-          <div style={{ marginTop: 10 }}>
-            {s.lines.map((l) => (
-              <div className="trow" key={l.k} style={{ padding: '7px 0', borderBottom: '1px solid var(--kz-border)' }}>
-                <span className="k">{l.k}</span><span className="v">{money(l.v)}</span></div>
-            ))}
-          </div>
-          <div className="card__row"><span className="card__t">Net</span><span className="v">{money(net)}</span></div>
-        </div>
-        <div className="card">
-          <div className="card__t">Cash count</div>
-          <div className="card__s">Count the drawer before closing.</div>
-          <div style={{ marginTop: 12, display: 'grid', gap: 8 }}>
-            <div className="trow"><span className="k">Notes</span><span className="v">{money(s.counted.notes)}</span></div>
-            <div className="trow"><span className="k">Coin</span><span className="v">{money(s.counted.coin)}</span></div>
-            <div className="trow"><span className="k">Expected in drawer</span><span className="v">{money(s.expectedCash)}</span></div>
-          </div>
-          <div className="card__row"><span className="card__t">Over / short</span>
-            <span className="v" style={{ color: diff === 0 ? 'var(--kz-success)' : 'var(--kz-discount)' }}>{money(diff)}</span></div>
-          <button className="btn wide" style={{ marginTop: 12 }}><ion-icon name="cash-outline"></ion-icon>Cash drop / paid out</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+/* ShiftView lives in rx-ops.jsx — Flex has the richer close screen */
 Object.assign(window, { Sheet, VariantSheet, RxSheet, LotSheet, ModifierSheet, ScaleSheet, SerialSheet, AgeSheet,
-  KeypadSheet, CustomerSheet, TenderSheet, SetupView, TicketsView, ReturnsView, CustomersView, ShiftView,
+  KeypadSheet, CustomerSheet, TenderSheet, SetupView, TicketsView, ReturnsView, CustomersView,
   STEP_ORDER, STEP_LABEL });

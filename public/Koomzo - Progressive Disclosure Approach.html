@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Progressive Disclosure as Product Architecture</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.wrap{max-width:880px;margin:0 auto;padding:44px 24px 80px}
+.hd{display:flex;align-items:center;gap:12px}
+.mark{width:38px;height:38px;border-radius:11px;background:var(--kz-primary);display:grid;place-items:center;box-shadow:var(--kz-shadow-key);flex:none}
+.mark ion-icon{color:#fff;font-size:20px}
+h1{margin:0;font:700 27px var(--kz-font-sans);letter-spacing:-.02em;text-wrap:balance}
+.eyebrow{font:600 11px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px 50px}
+.sub{margin:8px 0 34px 50px;font:400 14.5px/1.65 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty;max-width:62ch}
+h2{margin:40px 0 6px;font:700 20px var(--kz-font-sans);letter-spacing:-.02em}
+h2 .n{font:700 13px var(--kz-font-num);color:var(--kz-primary);margin-right:9px}
+.lead{margin:0 0 16px;font:400 13.5px/1.65 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty;max-width:66ch}
+p{font:400 14px/1.72 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty;max-width:70ch}
+p b{font-weight:700;color:var(--kz-ink)}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:18px 20px;margin-bottom:12px}
+.card h3{margin:0 0 5px;font:700 15px var(--kz-font-sans)}
+.card p{margin:0;font-size:13.5px;line-height:1.65}
+.card p+p{margin-top:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+@media (max-width:760px){.g2,.g4{grid-template-columns:1fr}}
+.tier{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px;display:flex;flex-direction:column;gap:7px}
+.tier .w{font:700 10.5px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3)}
+.tier .n{font:700 16px var(--kz-font-sans)}
+.tier .d{font:400 12.5px/1.6 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+.tier .who{font:600 11.5px var(--kz-font-sans);color:var(--kz-primary);margin-top:auto;padding-top:8px;border-top:1px solid var(--kz-border)}
+.tier.t0{border-top:3px solid var(--kz-border-strong)}
+.tier.t1{border-top:3px solid var(--kz-success)}
+.tier.t2{border-top:3px solid var(--kz-primary)}
+.tier.t3{border-top:3px solid var(--kz-indigo)}
+.rule{display:flex;gap:13px;padding:15px 0;border-bottom:1px solid var(--kz-border)}
+.rule:last-child{border-bottom:none}
+.rule .i{width:28px;height:28px;border-radius:8px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 12px var(--kz-font-num);flex:none}
+.rule .t{font:700 13.5px var(--kz-font-sans)}
+.rule .d{font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-muted);margin-top:3px;text-wrap:pretty}
+.rules{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:4px 20px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-bottom:12px}
+th,td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700}
+td .mono{font:600 12px var(--kz-font-num)}
+.ok{color:var(--kz-success);font-weight:700}
+.no{color:var(--kz-muted-3)}
+.note{display:flex;gap:11px;padding:14px 16px;border-radius:var(--kz-radius);background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);font:400 13.5px/1.68 var(--kz-font-sans);color:var(--kz-ink-2);margin:16px 0;text-wrap:pretty}
+.note ion-icon{font-size:19px;color:var(--kz-primary);flex:none;margin-top:2px}
+.note b{font-weight:700}
+.note.warn{background:var(--kz-warning-wash);border-color:#f0dcae}
+.note.warn ion-icon{color:#a3761c}
+.pull{border-left:3px solid var(--kz-primary);padding:4px 0 4px 18px;margin:22px 0;font:500 16px/1.6 var(--kz-font-sans);color:var(--kz-ink);text-wrap:pretty;max-width:60ch}
+ul{margin:10px 0;padding-left:20px}
+li{font:400 13.5px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty;max-width:68ch}
+li b{font-weight:700;color:var(--kz-ink)}
+.links{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.links a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;border-radius:10px;border:1px solid var(--kz-border-strong);background:#fff;font:600 13.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.links a.pri{background:var(--kz-primary);border-color:var(--kz-primary);color:#fff;box-shadow:var(--kz-shadow-key)}
+.phase{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--kz-border)}
+.phase:last-child{border-bottom:none}
+.phase .tag{font:700 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:#fff;background:var(--kz-primary);border-radius:var(--kz-radius-pill);padding:5px 11px;height:24px;flex:none}
+.phase .tag.b{background:var(--kz-muted-2)}
+.phase h4{margin:0 0 4px;font:700 14px var(--kz-font-sans)}
+.phase p{margin:0;font-size:13px;line-height:1.65}
+</style>
+  <script src="kz/kz-locale.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hd"><div class="mark"><ion-icon name="layers-outline"></ion-icon></div><h1>Progressive disclosure as product architecture</h1></div>
+<p class="eyebrow">Koomzo Suite · UX approach</p>
+<p class="sub">A single codebase that presents itself as a different product to a one-person kiosk and to a twelve-store chain — without forking the product, splitting the SKU, or asking the small merchant to grow into an interface they did not order.</p>
+
+<div class="links">
+<a class="pri" href="Koomzo POS - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex · Setup → Screens</a>
+<a href="Koomzo POS - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Inventory · Lite / Full</a>
+<a href="Koomzo Inventory - IA &amp; Integration.html"><ion-icon name="document-text-outline"></ion-icon>Inventory IA</a>
+</div>
+
+<h2><span class="n">01</span>The problem this solves</h2>
+<p class="lead">Vertical software fails at both ends of the market, usually for opposite reasons.</p>
+<div class="g2">
+  <div class="card"><h3>Built for the large customer</h3><p>The small merchant meets a shift-reconciliation screen on day one, cannot find the Charge button behind four back-office tabs, and abandons during trial. The product is judged complicated before it is judged capable.</p></div>
+  <div class="card"><h3>Built for the small customer</h3><p>The growing merchant hits a ceiling — no purchase orders, no multi-location, no accountability trail — and migrates to a competitor at exactly the moment their account became valuable. Churn arrives disguised as success.</p></div>
+</div>
+<p>The industry's usual answer is <b>editions</b>: separate builds, separate price cards, separate codebases that drift apart. Editions solve the pricing problem and create an engineering one. Every feature must be written twice, tested twice, and documented twice; upgrading a customer is a migration project.</p>
+
+<div class="pull">Koomzo's position: one product, one data model, one build — and a <b>configurable surface</b>. Capability is always present. Only its <em>visibility</em> is configured.</div>
+
+<h2><span class="n">02</span>The principle</h2>
+<div class="rules">
+  <div class="rule"><div class="i">1</div><div><div class="t">Capability is universal; surface is configured</div><div class="d">Every install ships every feature. Setup decides which screens, fields and steps the operator ever meets. Nothing is compiled out, licensed separately, or absent from the schema.</div></div></div>
+  <div class="rule"><div class="i">2</div><div><div class="t">Hiding is never destructive</div><div class="d">Turning a capability off hides its UI and stops its prompts. It does not delete records, break references, or rewrite history. Turning it back on reveals data that was accumulating all along.</div></div></div>
+  <div class="rule"><div class="i">3</div><div><div class="t">A named tier is a starting point, not a cage</div><div class="d">Tiers seed a configuration. The merchant then adjusts any single switch. A configuration that matches no tier is legitimate and labelled <b>Custom</b> — never an error state.</div></div></div>
+  <div class="rule"><div class="i">4</div><div><div class="t">One core is never optional</div><div class="d">Each module has an irreducible spine that cannot be hidden — the register in POS, items in Inventory, the appointment book in Salon. It guarantees the app is always operable, whatever else is off.</div></div></div>
+  <div class="rule"><div class="i">5</div><div><div class="t">Off means off everywhere</div><div class="d">A hidden capability disappears from the rail, the ticket, the search results, the reports, the keyboard shortcuts and the onboarding checklist. A single hidden screen leaking one orphaned button is the failure mode that destroys trust in the whole mechanism.</div></div></div>
+  <div class="rule"><div class="i">6</div><div><div class="t">The escalation is visible, not hidden</div><div class="d">When a merchant needs something that is switched off, the empty state names the capability and offers the switch — not a support ticket. Discovery is designed; it does not depend on curiosity.</div></div></div>
+  <div class="rule"><div class="i">7</div><div><div class="t">Configuration is an admin act, not a user act</div><div class="d">Setup lives behind a role. A cashier cannot simplify their own till, and cannot complicate it either. Configuration is stable across a shift.</div></div></div>
+</div>
+
+<h2><span class="n">03</span>The four-tier ladder</h2>
+<p class="lead">Every module expresses the same ladder. The names are constant across the suite so a merchant who learns it once in POS recognises it in Inventory, Salon and Restaurant.</p>
+<div class="g4">
+  <div class="tier t0"><span class="w">Tier 0</span><span class="n">Off</span><span class="d">The module is not part of this business. It is absent from navigation entirely.</span><span class="who">Not applicable</span></div>
+  <div class="tier t1"><span class="w">Tier 1</span><span class="n">Lite</span><span class="d">One screen, the irreducible job. No documents, no approvals, no reconciliation.</span><span class="who">Owner-operator</span></div>
+  <div class="tier t2"><span class="w">Tier 2</span><span class="n">Mid</span><span class="d">The daily loop with accountability: who did it, when, and against what record.</span><span class="who">Small team, one site</span></div>
+  <div class="tier t3"><span class="w">Tier 3</span><span class="n">Full</span><span class="d">Documents, multi-site, approvals, valuation, analytics. Every switch available.</span><span class="who">Multi-site operator</span></div>
+</div>
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><span>The tier is a <b>preset over the same switch matrix</b>, not a separate build. Selecting <b>Mid</b> writes a set of booleans; the merchant is then free to turn one of them off and land on Custom. This is why the ladder costs nothing to maintain.</span></div>
+
+<h2><span class="n">04</span>Applied across the suite</h2>
+<p class="lead">The same mechanism, module by module. Each row is what the merchant actually sees at that tier.</p>
+<table>
+<tr><th>Module</th><th>Irreducible core</th><th>Lite</th><th>Mid</th><th>Full</th></tr>
+<tr><td><b>Retail POS</b></td><td>Register</td><td>Sell &amp; sales history</td><td>+ tickets, returns, customers</td><td>+ shift &amp; drawer, categories, multi-lane</td></tr>
+<tr><td><b>Inventory</b></td><td>Items</td><td>Quantity per item</td><td>+ movement log, reorder points</td><td>+ purchase orders, counts, transfers, valuation, multi-location</td></tr>
+<tr><td><b>Salon</b></td><td>Appointment book</td><td>Book &amp; take payment</td><td>+ team, services authoring, tasks</td><td>+ timesheet, commission, back-bar consumption, kiosk &amp; queue display</td></tr>
+<tr><td><b>Restaurant</b></td><td>Order entry</td><td>Take orders, one screen</td><td>+ floor plan, course firing</td><td>+ kitchen display stations, expo, all-day, self-serve kiosk</td></tr>
+<tr><td><b>Queue</b></td><td>Call next</td><td>One lane, call next</td><td>+ multiple lanes, categories</td><td>+ supervise, SLA reporting, wall display themes</td></tr>
+<tr><td><b>Invoicing</b></td><td>Issue invoice</td><td>Invoice &amp; mark paid</td><td>+ customers, recurring, reminders</td><td>+ approvals, credit notes, statements, ageing</td></tr>
+</table>
+<p>Two cross-cutting layers ride the same mechanism and must be built once, centrally, rather than per module:</p>
+<ul>
+<li><b>Role visibility</b> — a capability may be on for the business but off for this role. Roles subtract; they never add.</li>
+<li><b>Device visibility</b> — a capability may be on for the business but irrelevant on this device. A kitchen tablet and a back-office laptop show different subsets of an identical configuration.</li>
+</ul>
+<div class="note warn"><ion-icon name="warning-outline"></ion-icon><span><b>Resolution order matters and must be one function.</b> Effective visibility = <span class="mono">module tier</span> → <span class="mono">capability switch</span> → <span class="mono">role</span> → <span class="mono">device</span>, each able only to subtract. Implemented in one place, every screen agrees; implemented per screen, the orphaned-button bug returns forever.</span></div>
+
+<h2><span class="n">05</span>Why this is a commercial position, not just a UX one</h2>
+<div class="g2">
+  <div class="card"><h3>Time to first value</h3><p>A merchant can be selling in minutes because the interface they meet contains nothing they must first understand. Trial-to-paid is decided in the first session, and the first session is the one we control most tightly.</p></div>
+  <div class="card"><h3>Training cost falls out of the product</h3><p>Training scope equals visible surface. A Lite install has almost nothing to teach; onboarding is a walkthrough, not a course. Support volume tracks surface area, not licence count.</p></div>
+  <div class="card"><h3>Expansion instead of migration</h3><p>Growth is a toggle, not a project — no export, no re-keying, no data loss, no second contract. The upgrade conversation is about value, not risk.</p></div>
+  <div class="card"><h3>One codebase, one truth</h3><p>Features are written, tested and documented once. Tiers are data. The engineering cost of serving four market segments is the cost of a switch matrix.</p></div>
+  <div class="card"><h3>Packaging stays flexible</h3><p>Because tiers are data, commercial packaging can be re-cut — by tier, by module, by seat — without an engineering release.</p></div>
+  <div class="card"><h3>The demo tells the truth</h3><p>Sales can show the exact surface a given prospect will get, then reveal the ceiling above it in the same session. No mock environments, no "that comes in Enterprise".</p></div>
+</div>
+
+<h2><span class="n">06</span>Design obligations</h2>
+<p class="lead">Progressive disclosure fails in predictable ways. These are the obligations that prevent each one.</p>
+<div class="rules">
+  <div class="rule"><div class="i"><ion-icon name="eye-off-outline"></ion-icon></div><div><div class="t">No orphaned affordances</div><div class="d">Every button, badge, filter and menu entry declares which capability it depends on. If that capability is off, the affordance is not rendered — not disabled, not greyed, not present.</div></div></div>
+  <div class="rule"><div class="i"><ion-icon name="git-branch-outline"></ion-icon></div><div><div class="t">Redirect, never dead-end</div><div class="d">If the operator is standing on a screen that becomes hidden, they land on the module core, not on a blank frame or an error.</div></div></div>
+  <div class="rule"><div class="i"><ion-icon name="search-outline"></ion-icon></div><div><div class="t">Setup is searchable and reversible</div><div class="d">A merchant looking for "returns" must find the switch by that word. Every switch shows its consequence in plain language before it is flipped, and can be flipped back.</div></div></div>
+  <div class="rule"><div class="i"><ion-icon name="bulb-outline"></ion-icon></div><div><div class="t">Empty states sell the next tier</div><div class="d">"This register sells from a fixed product list — enable Lite when you need quantities" teaches the ladder at the exact moment of need. Every off capability owns one such state.</div></div></div>
+  <div class="rule"><div class="i"><ion-icon name="pricetag-outline"></ion-icon></div><div><div class="t">Vocabulary is constant</div><div class="d">Off / Lite / Mid / Full mean the same thing in every module. A capability keeps its name in Setup, in the rail, in the docs and in the invoice.</div></div></div>
+  <div class="rule"><div class="i"><ion-icon name="git-compare-outline"></ion-icon></div><div><div class="t">Changes are logged</div><div class="d">Configuration is auditable: who turned what on, and when. It explains why last month's report has a column this month's does not.</div></div></div>
+</div>
+
+<h2><span class="n">07</span>Rollout plan</h2>
+<p class="lead">Retail POS and Inventory already implement this. The work is to extract the mechanism, then apply it module by module.</p>
+<div class="rules">
+  <div class="phase"><span class="tag">Phase 1</span><div><h4>Extract the capability service</h4><p>One shared registry: capability keys, human names, descriptions, dependencies, tier presets, and the single resolver that folds tier → switch → role → device into one visibility answer. Everything downstream reads it; nothing re-implements it. Ship with the existing POS and Inventory maps as its first two consumers.</p></div></div>
+  <div class="phase"><span class="tag">Phase 2</span><div><h4>Standardise the Setup surface</h4><p>One Setup pattern reused by every module: tier picker, searchable capability list with plain-language consequences, and a live preview of the resulting navigation. Merchants configure a fifth module the way they configured the first.</p></div></div>
+  <div class="phase"><span class="tag">Phase 3</span><div><h4>Audit every module for orphans</h4><p>Mechanical sweep: each interactive element declares its capability dependency or is explicitly marked core. This is where the mechanism earns trust, and where it is cheapest to get wrong.</p></div></div>
+  <div class="phase"><span class="tag">Phase 4</span><div><h4>Salon, Restaurant, Queue, Invoicing</h4><p>Apply the ladder module by module, in that order — Salon first because its Lite case (a single stylist) is the largest untapped segment and the clearest test of the model.</p></div></div>
+  <div class="phase"><span class="tag">Phase 5</span><div><h4>Onboarding derived from configuration</h4><p>The setup wizard asks about the business, not the software — headcount, sites, whether returns are accepted, whether stock is counted — and writes the switch matrix. The resulting checklist covers only visible surface, so it is always short and always finishable.</p></div></div>
+  <div class="phase"><span class="tag b">Phase 6</span><div><h4>Instrument and tune the ladder</h4><p>Measure which capabilities merchants turn on, in what order, and how long after signup. That data re-cuts the tier presets — the ladder should reflect observed behaviour, not our original guess.</p></div></div>
+</div>
+
+<h2><span class="n">08</span>Open questions — resolved</h2>
+<p class="lead">All five are now answered in the companion document, with mechanics and the engineering consequences of each choice.</p>
+<div class="links" style="margin:0 0 18px"><a class="pri" href="Koomzo - Progressive Disclosure Decisions.html"><ion-icon name="git-merge-outline"></ion-icon>Read the decisions</a></div>
+<ul>
+<li><b>Tier naming in the commercial layer.</b> Does <em>Lite / Mid / Full</em> appear on the price card, or stay an internal shape with pricing cut by module and seat?</li>
+<li><b>Who may configure.</b> Owner-only, or a delegated manager role — and is Setup available on a phone, or deliberately desktop-only to keep it a considered act?</li>
+<li><b>Downgrade behaviour.</b> Hiding a capability that already holds records — open purchase orders, an unreconciled shift — needs a defined resolution, not a silent hide.</li>
+<li><b>Reporting continuity.</b> When a capability is turned on mid-period, reports gain a dimension mid-series. Do we backfill, annotate, or segment?</li>
+<li><b>Default tier at signup.</b> Start everyone at Lite and let them climb, or infer a tier from the signup questionnaire and risk starting too complex?</li>
+</ul>
+
+</div>
+</body>
+</html>

@@ -115,14 +115,9 @@ window.GM = {
     { id:'b9', name:'Day locker key',       price:1500, cat:'shop' },
     { id:'b10', name:'Guest day pass',      price:15000, cat:'shop' },
   ],
-  tenders: [
-    { id:'wallet', name:'Member wallet', icon:'wallet-outline' },
-    { id:'tab',    name:'Charge to account', icon:'reader-outline' },
-    { id:'momo',   name:'MTN MoMo',     icon:'phone-portrait-outline' },
-    { id:'om',     name:'Orange Money', icon:'phone-portrait-outline' },
-    { id:'card',   name:'Card',         icon:'card-outline' },
-    { id:'cash',   name:'Cash',         icon:'cash-outline' },
-  ],
+  /* the platform list, with the two instruments a club actually runs on in
+     front — nobody carries cash on the workout floor. See kz/kz-tender.js. */
+  tenders: window.KZ_TENDER.named({ lead: ['wallet', 'tab'] }),
 
   /* wallet movements, newest last */
   wallet: [

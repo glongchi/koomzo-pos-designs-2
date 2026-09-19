@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Functional Specification (deck)</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+:root{--type-mega:118px;--type-title:64px;--type-subtitle:44px;--type-body:34px;--type-small:28px;--type-micro:24px;--pad-top:96px;--pad-bottom:80px;--pad-x:104px;--gap-title:48px;--gap-item:26px}
+deck-stage:not(:defined){visibility:hidden}
+*{box-sizing:border-box}
+body{margin:0;background:#20242e;font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+section{color:var(--kz-ink);background:var(--kz-bg);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);display:flex;flex-direction:column}
+section.dark{background:var(--kz-primary);color:#fff}
+section.ink{background:#181c28;color:#fff}
+h1,h2,h3,p,ul,ol,li{margin:0}
+.eb{font:700 var(--type-micro)/1 var(--kz-font-sans);letter-spacing:.14em;text-transform:uppercase;color:var(--kz-primary)}
+.dark .eb,.ink .eb{color:rgba(255,255,255,.68)}
+.t{font:700 var(--type-title)/1.1 var(--kz-font-sans);letter-spacing:-.025em;margin-top:20px}
+.sub{font:400 var(--type-body)/1.5 var(--kz-font-sans);color:var(--kz-muted);max-width:44ch;margin-top:22px}
+.dark .sub,.ink .sub{color:rgba(255,255,255,.8)}
+.body{font:400 var(--type-small)/1.55 var(--kz-font-sans);color:var(--kz-ink-2)}
+.fill{flex:1}
+.rule{height:1px;background:var(--kz-border);margin:var(--gap-title) 0}
+/* cover */
+.cover{justify-content:center}
+.cover .mark{display:flex;align-items:center;gap:22px;margin-bottom:60px}
+.cover .mark .ic{width:82px;height:82px;border-radius:24px;background:#fff;display:grid;place-items:center}
+.cover .mark .ic ion-icon{font-size:44px;color:var(--kz-primary)}
+.cover .mark b{font:700 42px var(--kz-font-sans);letter-spacing:-.02em;color:#fff}
+.cover h1{font:700 var(--type-mega)/1.02 var(--kz-font-sans);letter-spacing:-.035em;max-width:20ch}
+.cover .meta{display:flex;gap:52px;margin-top:64px}
+.cover .meta div{font:600 var(--type-small)/1.4 var(--kz-font-sans);color:rgba(255,255,255,.72)}
+.cover .meta div b{display:block;font:700 var(--type-body) var(--kz-font-sans);color:#fff;margin-bottom:6px}
+/* grids */
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);padding:32px 30px}
+.card h3{font:700 var(--type-small)/1.25 var(--kz-font-sans);letter-spacing:-.01em;margin-bottom:12px}
+.card p{font:400 var(--type-micro)/1.5 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+.card .ci{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin-bottom:20px;background:var(--kz-primary-wash)}
+.card .ci ion-icon{font-size:28px;color:var(--kz-primary)}
+/* numbered list */
+.nl{display:flex;flex-direction:column;gap:var(--gap-item)}
+.nl .row{display:flex;gap:26px;align-items:flex-start}
+.nl .n{width:52px;height:52px;flex:none;border-radius:14px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font:700 var(--type-micro) var(--kz-font-num)}
+.nl .tx{font:400 var(--type-small)/1.45 var(--kz-font-sans);color:var(--kz-ink-2);max-width:62ch;text-wrap:pretty}
+.nl .tx b{font-weight:700;color:var(--kz-ink)}
+/* pipeline */
+.pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:stretch}
+.pipe .st{background:#fff;border:1px solid var(--kz-border);border-right:none;padding:34px 30px}
+.pipe .st:first-child{border-radius:var(--kz-radius-lg) 0 0 var(--kz-radius-lg)}
+.pipe .st:last-child{border-right:1px solid var(--kz-border);border-radius:0 var(--kz-radius-lg) var(--kz-radius-lg) 0}
+.pipe .st .k{font:700 var(--type-micro) var(--kz-font-num);color:var(--kz-primary);margin-bottom:14px}
+.pipe .st h3{font:700 var(--type-small) var(--kz-font-sans);margin-bottom:10px}
+.pipe .st p{font:400 24px/1.45 var(--kz-font-sans);color:var(--kz-muted)}
+/* module tiles */
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+.tile{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);padding:22px 20px;display:flex;flex-direction:column;gap:14px}
+.tile .ti{width:46px;height:46px;border-radius:13px;display:grid;place-items:center}
+.tile .ti ion-icon{font-size:25px}
+.tile b{font:700 var(--type-micro)/1.2 var(--kz-font-sans);letter-spacing:-.01em}
+.tile span{font:500 24px/1.3 var(--kz-font-sans);color:var(--kz-muted-2);margin-top:auto}
+/* table */
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);overflow:hidden}
+th{background:var(--kz-surface-2);text-align:left;padding:18px 26px;font:700 24px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);border-bottom:1px solid var(--kz-border)}
+td{padding:20px 26px;border-bottom:1px solid var(--kz-border);font:400 var(--type-micro)/1.45 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+td code{font:600 24px var(--kz-font-num);color:var(--kz-primary)}
+.mono{font:600 var(--type-micro) var(--kz-font-num)}
+.mw{width:26%}
+/* stat */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.stat{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);padding:34px 30px}
+.stat .v{font:700 76px/1 var(--kz-font-num);letter-spacing:-.03em;color:var(--kz-primary)}
+.stat .l{font:500 var(--type-micro)/1.4 var(--kz-font-sans);color:var(--kz-muted);margin-top:14px}
+.ink .stat{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+.ink .stat .v{color:#fff}
+.ink .stat .l{color:rgba(255,255,255,.66)}
+/* quote */
+.q{font:700 52px/1.35 var(--kz-font-sans);letter-spacing:-.02em;max-width:24ch}
+.qa{font:500 var(--type-small) var(--kz-font-sans);color:rgba(255,255,255,.6);margin-top:38px}
+/* open questions */
+.oq{display:flex;flex-direction:column;gap:18px}
+.oq .row{background:#fff;border:1px solid var(--kz-border);border-left:none;border-radius:var(--kz-radius-lg);padding:26px 30px;display:flex;gap:24px;align-items:flex-start}
+.oq .row ion-icon{font-size:30px;color:var(--kz-warning);flex:none;margin-top:2px}
+.oq .row p{font:400 var(--type-micro)/1.45 var(--kz-font-sans);color:var(--kz-ink-2)}
+.oq .row p b{display:block;font:700 var(--type-small) var(--kz-font-sans);color:var(--kz-ink);margin-bottom:6px}
+/* two column split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.kv{display:flex;flex-direction:column;gap:20px}
+.kv .r{display:flex;gap:20px;align-items:baseline}
+.kv .r .k{font:700 var(--type-micro) var(--kz-font-num);color:var(--kz-primary);width:150px;flex:none}
+.kv .r .v{font:400 var(--type-micro)/1.45 var(--kz-font-sans);color:var(--kz-ink-2)}
+@media (prefers-reduced-motion:no-preference){[data-deck-active] .t,[data-deck-active] .sub,[data-deck-active] .eb{animation:fu .45s both}[data-deck-active] .sub{animation-delay:.06s}}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<deck-stage width="1920" height="1080">
+
+<section class="dark cover" data-label="Cover">
+<div class="mark"><div class="ic"><ion-icon name="document-text"></ion-icon></div><b>Koomzo</b></div>
+<h1>Functional Specification</h1>
+<div class="meta">
+<div><b>Version 1.1</b>28 August 2026</div>
+<div><b>Owner</b>Design → Backend handoff</div>
+<div><b>Scope</b>13 modules and the workspace shell</div>
+</div>
+</section>
+
+<section data-label="Purpose">
+<p class="eb">Purpose</p>
+<h2 class="t">Written from the interface inward</h2>
+<p class="sub">Every screen states what it reads, what it writes, and which rules hold even when a client misbehaves — so services can be built against it without guessing.</p>
+<div class="rule"></div>
+<div class="g3">
+<div class="card"><div class="ci"><ion-icon name="albums-outline"></ion-icon></div><h3>One source of truth</h3><p>The document renders from data. Adding a module or refining a screen is a data edit, not a layout edit.</p></div>
+<div class="card"><div class="ci"><ion-icon name="git-commit-outline"></ion-icon></div><h3>Contract, not wishlist</h3><p>Entities, rules, events and endpoints per module. Open questions are named rather than assumed away.</p></div>
+<div class="card"><div class="ci"><ion-icon name="pulse-outline"></ion-icon></div><h3>Living to ship</h3><p>Nothing here is final until its module ships. Sections mature as modules are designed and refined.</p></div>
+</div>
+</section>
+
+<section data-label="Design goals">
+<p class="eb">Platform</p>
+<h2 class="t">Design goals</h2>
+<p class="sub">These hold for every module. A module that violates one is wrong, not innovative.</p>
+<div class="rule"></div>
+<div class="g3">
+<div class="card"><h3>One shell, one rail, every module</h3><p>A module fills the surface it is given and lands on its own core screen. Learning one module's navigation is learning all of them.</p></div>
+<div class="card"><h3>One product, one data model</h3><p>Every install ships every capability. Setup decides what the operator meets — nothing is compiled out or licensed separately.</p></div>
+<div class="card"><h3>The transaction is sacred</h3><p>No plan limit, sync failure or configuration change may block a sale, a kitchen ticket or an appointment. Degrade reporting; never interrupt trade.</p></div>
+<div class="card"><h3>Nothing changes state silently</h3><p>Every quantity, tender and configuration change is an appended record with an actor and a timestamp. Corrections are new records.</p></div>
+<div class="card"><h3>Modules compose, never duplicate</h3><p>A new trade is a new configuration of existing objects plus the few it genuinely lacks. Two modules may never own the same object.</p></div>
+<div class="card"><h3>Attention is computed, never pushed</h3><p>Badges and counts are projections of the event stream. If nothing is waiting, nothing is shown.</p></div>
+</div>
+</section>
+
+<section data-label="Capability resolution">
+<p class="eb">Platform</p>
+<h2 class="t">Capability resolution</h2>
+<p class="sub">Effective visibility passes through four stages. Each stage may only subtract — implemented once, server-side, and mirrored by the client.</p>
+<div class="rule"></div>
+<div class="pipe">
+<div class="st"><div class="k">01</div><h3>Plan ceiling</h3><p>What the tenant's plan can ever expose. Overage notifies; it never blocks a sale.</p></div>
+<div class="st"><div class="k">02</div><h3>Tier &amp; switch</h3><p>off · lite · mid · full, plus per-capability switches the operator sets in Setup.</p></div>
+<div class="st"><div class="k">03</div><h3>Role</h3><p>owner · manager · staff, immutable for the session.</p></div>
+<div class="st"><div class="k">04</div><h3>Device</h3><p>Register, KDS, kiosk, display, tablet, phone. Some capabilities are device-scoped.</p></div>
+</div>
+<div class="fill"></div>
+<p class="body">A hidden capability must reject its own endpoints with <span class="mono">409 CAPABILITY_DISABLED</span> — not merely be unreachable in the UI.</p>
+</section>
+
+<section data-label="Platform rules">
+<p class="eb">Platform</p>
+<h2 class="t">Rules the server enforces</h2>
+<div class="rule"></div>
+<div class="nl">
+<div class="row"><span class="n">1</span><span class="tx"><b>Winding, not off.</b> A capability holding open obligations cannot go straight to off. Documents go to <span class="mono">winding</span>; money is hard-blocked until reconciled or a variance is recorded with an owner PIN and reason.</span></div>
+<div class="row"><span class="n">2</span><span class="tx"><b>History is annotated, never invented.</b> <span class="mono">enabled_from</span> is set once and never cleared. Reports start a series where the data actually starts.</span></div>
+<div class="row"><span class="n">3</span><span class="tx"><b>Every write is idempotent.</b> Writes carry a client-generated key; replays return the original result, not a duplicate.</span></div>
+<div class="row"><span class="n">4</span><span class="tx"><b>No floats on the wire.</b> Money and quantity are integers in minor units. Zero-decimal currencies carry an exponent of 0 — the minor unit is the franc.</span></div>
+<div class="row"><span class="n">5</span><span class="tx"><b>One posting, never a copy.</b> A charge raised in one module and settled in another is a single posting with a source module; the originating document stays immutable.</span></div>
+</div>
+</section>
+
+<section data-label="Attention counters">
+<p class="eb">Platform</p>
+<h2 class="t">Badges are projections, not notifications</h2>
+<div class="rule"></div>
+<div class="split">
+<div class="kv">
+<div class="r"><span class="k">Derived</span><span class="v">A count of work waiting on the signed-in person today, on that screen. Absent at zero, capped at 99+.</span></div>
+<div class="r"><span class="k">Event-driven</span><span class="v">A domain event names the rules it dirties; the projector recomputes only those. Folding the same event twice changes nothing.</span></div>
+<div class="r"><span class="k">Resolved first</span><span class="v">If the capability behind a rule is off, locked or out of role, the rule is never evaluated and no counter is returned.</span></div>
+<div class="r"><span class="k">Scoped</span><span class="v">A housekeeper's count is her own rooms; a manager's is the property's. Two people on one rail may see different numbers.</span></div>
+<div class="r"><span class="k">Never the route</span><span class="v">Anything countable must also be reachable by navigating. A badge is an accelerator, not a channel.</span></div>
+</div>
+<div>
+<table>
+<thead><tr><th class="mw">Endpoint</th><th>Contract</th></tr></thead>
+<tbody>
+<tr><td><code>/v1/attention</code></td><td>Every counter visible to the caller, already resolved and scoped. Also on bootstrap, so a cold start paints badges.</td></tr>
+<tr><td><code>/v1/attention/stream</code></td><td>Server-sent <b>attention.changed</b>. The client patches one counter; it never re-polls the set.</td></tr>
+<tr><td><code>/v1/attention/rules</code></td><td>The catalogue with each rule's enabled state — drives the Setup toggles.</td></tr>
+<tr><td><code>/v1/attention/recompute</code></td><td>Admin-only cold rebuild from the event log. Must produce identical counts.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="ink" data-label="Section — Modules">
+<div class="fill"></div>
+<p class="eb">Part two</p>
+<h2 class="t">The modules</h2>
+<p class="sub">Thirteen sections plus the workspace shell. Each states its purpose, its entities, then one block per screen.</p>
+<div class="fill"></div>
+</section>
+
+<section data-label="Module map">
+<p class="eb">Coverage</p>
+<h2 class="t">Module map</h2>
+<div class="rule"></div>
+<div class="tiles">
+<div class="tile"><div class="ti" style="background:#eeecf8"><ion-icon name="storefront-outline" style="color:#6a61bf"></ion-icon></div><b>Retail POS</b><span>Register</span></div>
+<div class="tile"><div class="ti" style="background:#e8f0fd"><ion-icon name="cube-outline" style="color:#528cef"></ion-icon></div><b>Inventory</b><span>Catalogue &amp; ledger</span></div>
+<div class="tile"><div class="ti" style="background:#fbeaf2"><ion-icon name="cut-outline" style="color:#c2497e"></ion-icon></div><b>Salon</b><span>Appointment book</span></div>
+<div class="tile"><div class="ti" style="background:#fdeae4"><ion-icon name="restaurant-outline" style="color:#ec603a"></ion-icon></div><b>Restaurant</b><span>Order &amp; kitchen</span></div>
+<div class="tile"><div class="ti" style="background:#e4f4ea"><ion-icon name="people-outline" style="color:#2e9e5b"></ion-icon></div><b>Queue</b><span>Waiting</span></div>
+<div class="tile"><div class="ti" style="background:#ececfb"><ion-icon name="document-text-outline" style="color:#4b4ad9"></ion-icon></div><b>Invoicing</b><span>Pay later</span></div>
+<div class="tile"><div class="ti" style="background:#e2f2f4"><ion-icon name="bed-outline" style="color:#0f8f9e"></ion-icon></div><b>Hotel</b><span>Room rack</span></div>
+<div class="tile"><div class="ti" style="background:#f7edda"><ion-icon name="basket-outline" style="color:#b4791c"></ion-icon></div><b>Grocery</b><span>Weigh &amp; PLU</span></div>
+<div class="tile"><div class="ti" style="background:#e5f2ef"><ion-icon name="clipboard-outline" style="color:#2f8f7d"></ion-icon></div><b>Forms</b><span>Structured facts</span></div>
+<div class="tile"><div class="ti" style="background:#f0e9fe"><ion-icon name="git-network-outline" style="color:#8a5cf6"></ion-icon></div><b>Automations</b><span>When / then</span></div>
+<div class="tile"><div class="ti" style="background:#f4e6fa"><ion-icon name="tv-outline" style="color:#8d3fb0"></ion-icon></div><b>Signage</b><span>Customer screens</span></div>
+<div class="tile"><div class="ti" style="background:#f7e6e5"><ion-icon name="barbell-outline" style="color:#b5453f"></ion-icon></div><b>Gym &amp; Wellness</b><span>The gate</span></div>
+<div class="tile"><div class="ti" style="background:#eceef1"><ion-icon name="grid-outline" style="color:#5d6573"></ion-icon></div><b>Workspace shell</b><span>The frame</span></div>
+</div>
+<div class="fill"></div>
+<p class="body">Every module in this specification is built. Status in the document reflects the front end, not the service behind it.</p>
+</section>
+
+<section data-label="Composition">
+<p class="eb">Principle</p>
+<h2 class="t">Modules compose; they never duplicate</h2>
+<p class="sub">A new trade is a new configuration of existing objects plus the few it genuinely lacks.</p>
+<div class="rule"></div>
+<table>
+<thead><tr><th class="mw">Module</th><th>What it owns</th><th>What it borrows</th></tr></thead>
+<tbody>
+<tr><td><b>Hotel</b></td><td>Rooms, stays, folios, rates, statutory guest register, night audit</td><td>The Restaurant module posts to the folio; Retail rings up the shop. No register of its own.</td></tr>
+<tr><td><b>Grocery</b></td><td>Weighing, PLU codes, age prompts, promotions, waste</td><td>The Retail register and the Inventory catalogue. Not a second till.</td></tr>
+<tr><td><b>Signage</b></td><td>Players, loops, layouts, proof of play</td><td>Prices, menu lines and queue tickets read live from the module that already holds them.</td></tr>
+<tr><td><b>Gym &amp; Wellness</b></td><td>Members, plans, admission, classes, lockers, equipment</td><td>The bar sells through Retail; commissions settle through the shared payroll objects.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section data-label="Low-code engines">
+<p class="eb">Foundations</p>
+<h2 class="t">Two engines under every module</h2>
+<div class="rule"></div>
+<div class="g2">
+<div class="card"><div class="ci" style="background:#e5f2ef"><ion-icon name="clipboard-outline" style="color:#2f8f7d"></ion-icon></div>
+<h3>Forms</h3>
+<p>One authoring surface for every question a business asks itself — opening checks, incident reports, wholesale applications — and one place the answers land. Multi-step logic, authored data sources with schema and offline policy, and two parent-child rules: visibility and option filtering. Hidden fields save no answer.</p></div>
+<div class="card"><div class="ci" style="background:#f0e9fe"><ion-icon name="git-network-outline" style="color:#8a5cf6"></ion-icon></div>
+<h3>Automations</h3>
+<p>The rules a business would otherwise keep in somebody's head: when this happens, do that — authored as recipes, watched as runs. The irreducible job is seeing what runs by itself and being able to stop it; branching, webhooks and human approval steps switch on with scale.</p></div>
+</div>
+<div class="fill"></div>
+<p class="body">Both engines read the same event stream every module emits, so a new trigger costs a rule rather than a service.</p>
+</section>
+
+<section data-label="Signage">
+<p class="eb">Module</p>
+<h2 class="t">Signage</h2>
+<p class="sub">The public-facing surface of everything Koomzo already knows — menu boards, price screens, now-serving walls and notice boards.</p>
+<div class="rule"></div>
+<div class="split">
+<div class="kv">
+<div class="r"><span class="k">Owns</span><span class="v">Players, loops, layouts, schedules and proof of play.</span></div>
+<div class="r"><span class="k">Owns none of</span><span class="v">Prices, queue state or menu lines. Those are read live from the module that holds them.</span></div>
+<div class="r"><span class="k">Plays from cache</span><span class="v">A dead line never blanks a screen. The player renders its last good payload and reconciles on reconnect.</span></div>
+<div class="r"><span class="k">Seven screens</span><span class="v">Screens is the core and can never be hidden; every other view is a capability, so the rail is derived.</span></div>
+</div>
+<div class="stats" style="grid-template-columns:1fr 1fr">
+<div class="stat"><div class="v">7</div><div class="l">Screens in the module rail</div></div>
+<div class="stat"><div class="v">0</div><div class="l">Objects duplicated from other modules</div></div>
+<div class="stat"><div class="v">3</div><div class="l">Gym boards: tarifs, cours, occupancy</div></div>
+<div class="stat"><div class="v">∞</div><div class="l">Cache-first playback through an outage</div></div>
+</div>
+</div>
+</section>
+
+<section data-label="Gym">
+<p class="eb">Module</p>
+<h2 class="t">Gym &amp; Wellness</h2>
+<p class="sub">A members' club is a gate and a schedule. The irreducible job is the gate: is this person allowed in, right now.</p>
+<div class="rule"></div>
+<div class="g4">
+<div class="card"><h3>Front desk</h3><p>Offline-first admission. Member state is cached, one resolver decides, renewals get a grace period, and refusals queue locally.</p></div>
+<div class="card"><h3>Members &amp; plans</h3><p>Billing cycles, freezes and packages. Admission is append-only; occupancy and balance are projections.</p></div>
+<div class="card"><h3>Classes</h3><p>Timetable, capacity and trainer assignment, with commissions settling on the shared objects.</p></div>
+<div class="card"><h3>Assets</h3><p>Lockers by bank — prefix plus range, retired or active. Equipment tracks service intervals and overdue status.</p></div>
+</div>
+<div class="fill"></div>
+<p class="body">A telecom outage never locks a paying member out. The device decides; the server reconciles.</p>
+</section>
+
+<section class="ink" data-label="Cameroon first">
+<p class="eb">Market</p>
+<h2 class="t">Built for Cameroon and West Africa first</h2>
+<p class="sub">Defaults, not localisations bolted on later.</p>
+<div class="rule" style="background:rgba(255,255,255,.14)"></div>
+<div class="stats">
+<div class="stat"><div class="v">XAF</div><div class="l">Zero-decimal currency. Clients read the exponent and never divide by 100.</div></div>
+<div class="stat"><div class="v">MoMo</div><div class="l">Mobile money is a first-class tender beside cash, settling asynchronously on callback.</div></div>
+<div class="stat"><div class="v">EN / FR</div><div class="l">Language toggle that persists across pages and devices.</div></div>
+<div class="stat"><div class="v">Phone</div><div class="l">Phone as identity and as a legitimate primary device — no SMS gate at signup.</div></div>
+</div>
+</section>
+
+<section class="dark" data-label="Quote — transaction">
+<div class="fill"></div>
+<p class="q">No plan limit, sync failure or configuration change may block a sale, a kitchen ticket, or an appointment.</p>
+<p class="qa">Design goal 5 — the transaction is sacred</p>
+<div class="fill"></div>
+</section>
+
+<section data-label="Offline">
+<p class="eb">Behaviour</p>
+<h2 class="t">Offline is the normal case</h2>
+<p class="sub">Registers, kitchen displays, kiosks and the gym gate keep working through an outage and reconcile on reconnect.</p>
+<div class="rule"></div>
+<div class="g3">
+<div class="card"><div class="ci"><ion-icon name="cloud-offline-outline"></ion-icon></div><h3>Decide on the device</h3><p>Cached state plus one resolver, so admission and tender do not wait on a round trip.</p></div>
+<div class="card"><div class="ci"><ion-icon name="repeat-outline"></ion-icon></div><h3>Queue and replay</h3><p>Writes carry a client-generated idempotency key. Replays return the original result.</p></div>
+<div class="card"><div class="ci"><ion-icon name="shield-checkmark-outline"></ion-icon></div><h3>Server stays authoritative</h3><p>The client mirrors the rules for responsiveness; the server re-resolves and enforces on every write.</p></div>
+</div>
+</section>
+
+<section data-label="Contract surface">
+<p class="eb">Handoff</p>
+<h2 class="t">The contract surface</h2>
+<p class="sub">What the backend implements against, before any module screen is opened.</p>
+<div class="rule"></div>
+<table>
+<thead><tr><th class="mw">Surface</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td><b>Entities</b></td><td>Tenant, Site, User, Device, Capability state, Attention rule, Attention counter, Config change — plus module-specific objects in each section.</td></tr>
+<tr><td><b>Rules</b></td><td>Invariants that must hold regardless of client behaviour. The client mirrors them; the server owns them.</td></tr>
+<tr><td><b>Events</b></td><td><code>capability.changed</code> · <code>capability.retired</code> · <code>plan.changed</code> · <code>profile.applied</code> · <code>usage.threshold</code> · <code>attention.changed</code></td></tr>
+<tr><td><b>Endpoints</b></td><td><code>/v1/bootstrap</code> returns tenant, sites, user, device, resolved capability map and attention counters in one call.</td></tr>
+<tr><td><b>Screens</b></td><td>Each names its states, interactions, reads and writes — the four things a service needs to be built without guessing.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section data-label="Open questions">
+<p class="eb">Before build</p>
+<h2 class="t">Open questions</h2>
+<div class="rule"></div>
+<div class="oq">
+<div class="row"><ion-icon name="alert-circle-outline"></ion-icon><p><b>Turnstile hardware scope</b>Does the gym gate drive physical hardware in v1, or does the front desk stay the only enforcement point?</p></div>
+<div class="row"><ion-icon name="alert-circle-outline"></ion-icon><p><b>Rotating or static member QR</b>A static code is offline-trivial and shareable; a rotating one needs a clock the device may not have.</p></div>
+<div class="row"><ion-icon name="alert-circle-outline"></ion-icon><p><b>Capacity at the gate</b>Hard refusal when a class or floor is full, or a receptionist hold that a manager can release?</p></div>
+<div class="row"><ion-icon name="alert-circle-outline"></ion-icon><p><b>Mobile-money priority</b>Which providers integrate first, and does settlement confirmation arrive by callback or by poll?</p></div>
+</div>
+</section>
+
+<section class="dark" data-label="Next">
+<div class="fill"></div>
+<p class="eb">Next</p>
+<h2 class="t">Close the questions, then build the services</h2>
+<p class="sub">The specification is stable enough to implement against. Each module section is independently buildable; the platform resolver and the event bus are the shared prerequisites.</p>
+<div class="fill"></div>
+<p class="body" style="color:rgba(255,255,255,.66)">Koomzo — Functional Specification v1.1 · 28 August 2026</p>
+</section>
+
+</deck-stage>
+<script src="deck-stage.js"></script>
+</body>
+</html>

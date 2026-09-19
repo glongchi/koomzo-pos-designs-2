@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Functional Specification</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.sp{flex:1}
+.shell{display:grid;grid-template-columns:238px 1fr;min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+/* --- sidebar --- */
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 16px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 18px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 7px}
+.side button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;height:36px;padding:0 10px;border:none;background:none;border-radius:9px;font:600 13px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side button ion-icon{font-size:16px;color:var(--kz-muted-2);flex:none}
+.side button:hover{background:var(--kz-surface-2)}
+.side button.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.side button.on ion-icon{color:var(--kz-primary)}
+.side button .st{margin-left:auto;font:700 8.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;color:var(--kz-muted-3);background:var(--kz-surface-2);border-radius:var(--kz-radius-pill);padding:2px 6px}
+.side button .st.built{background:var(--kz-success-wash);color:#1f7a45}
+/* --- main --- */
+.doc{padding:34px 34px 90px;max-width:1000px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.doc .eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.doc .lede{margin:0 0 26px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:70ch;text-wrap:pretty}
+.doc h2{margin:38px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em}
+.doc h2:first-of-type{margin-top:26px}
+.doc h3{margin:24px 0 8px;font:700 15px var(--kz-font-sans)}
+.doc .sub{margin:0 0 14px;font:400 13px/1.6 var(--kz-font-sans);color:var(--kz-muted);max-width:70ch;text-wrap:pretty}
+.doc p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:72ch;text-wrap:pretty}
+.mono{font:600 12px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:2px 6px;color:var(--kz-ink-2)}
+/* cards */
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px;margin-bottom:10px}
+.card h4{margin:0 0 4px;font:700 14px var(--kz-font-sans)}
+.card p{margin:0;font-size:13px;line-height:1.65}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:760px){.g2{grid-template-columns:1fr}}
+/* numbered rules */
+.rules{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:4px 18px}
+.rule{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--kz-border)}
+.rule:last-child{border-bottom:none}
+.rule .n{width:22px;height:22px;border-radius:6px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none;margin-top:1px}
+.rule .t{font:400 13.5px/1.62 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+/* tables */
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-bottom:12px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+td code{font:600 11.5px var(--kz-font-num);color:var(--kz-primary)}
+.tw1{width:30%}.tw2{width:14%}
+/* entity block */
+.ent{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:11px;overflow:hidden}
+.ent__h{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border)}
+.ent__h b{font:700 13.5px var(--kz-font-sans)}
+.ent__h .k{font:600 11px var(--kz-font-num);color:var(--kz-primary);background:#fff;border:1px solid var(--kz-primary-tint);border-radius:5px;padding:2px 7px}
+.ent__f{display:grid;grid-template-columns:minmax(160px,1.1fr) 92px 1.6fr;gap:10px;padding:9px 16px;border-bottom:1px solid var(--kz-border)}
+.ent__f:last-child{border-bottom:none}
+.ent__f .a{font:600 12.5px var(--kz-font-num);color:var(--kz-ink)}
+.ent__f .b{font:600 11px var(--kz-font-sans);letter-spacing:.03em;text-transform:uppercase;color:var(--kz-muted-3)}
+.ent__f .c{font:400 12px/1.5 var(--kz-font-sans);color:var(--kz-muted);text-wrap:pretty}
+@media (max-width:640px){.ent__f{grid-template-columns:1fr;gap:2px}}
+.ent__n{padding:10px 16px;background:var(--kz-primary-wash);border-top:1px solid var(--kz-primary-tint);font:400 12.5px/1.6 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+/* screen block */
+.scr{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:11px;overflow:hidden}
+.scr__h{display:flex;align-items:center;gap:9px;padding:13px 16px;border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.scr__h b{font:700 14px var(--kz-font-sans)}
+.scr__h .r{font:600 11px var(--kz-font-num);color:var(--kz-muted-2);background:var(--kz-surface-2);border-radius:5px;padding:3px 7px}
+.scr__h .tag{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;border-radius:var(--kz-radius-pill);padding:3px 8px;background:var(--kz-indigo-wash);color:var(--kz-indigo)}
+.scr__job{padding:12px 16px;font:500 13.5px/1.6 var(--kz-font-sans);color:var(--kz-ink);border-bottom:1px solid var(--kz-border);text-wrap:pretty}
+.scr__grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media (max-width:760px){
+  .scr__grid{grid-template-columns:1fr}
+  .scr__c{border-right:none}
+  .scr__grid>.scr__c:nth-last-child(-n+2){border-bottom:1px solid var(--kz-border)}
+  .scr__grid>.scr__c:last-child{border-bottom:none}
+}
+.scr__c{padding:13px 16px;border-right:1px solid var(--kz-border);border-bottom:1px solid var(--kz-border)}
+.scr__c:nth-child(even){border-right:none}
+.scr__grid>.scr__c:nth-last-child(-n+2){border-bottom:none}
+.scr__t{font:700 9.5px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.scr__t ion-icon{font-size:12px}
+.scr__c ul{margin:0;padding-left:16px}
+.scr__c li{font:400 12.5px/1.62 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.scr__c li+li{margin-top:3px}
+.scr__c .none{font:400 12.5px var(--kz-font-sans);color:var(--kz-muted-3)}
+/* events + endpoints */
+.ep{display:flex;gap:11px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--kz-border)}
+.ep:last-child{border-bottom:none}
+.ep .m{font:700 10px var(--kz-font-sans);letter-spacing:.04em;border-radius:5px;padding:3px 7px;flex:none;min-width:52px;text-align:center}
+.ep .m.GET{background:var(--kz-info-wash);color:#3b6cbb}
+.ep .m.POST{background:var(--kz-success-wash);color:#1f7a45}
+.ep .m.PATCH{background:var(--kz-warning-wash);color:#8a6414}
+.ep .p{font:600 12.5px var(--kz-font-num);color:var(--kz-ink)}
+.ep .n{font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-muted);flex:1;min-width:180px;text-wrap:pretty}
+@media (max-width:640px){.ep{flex-wrap:wrap}}
+.open{background:var(--kz-warning-wash);border:1px solid #f0dcae;border-radius:var(--kz-radius);padding:14px 18px}
+.open .t{font:700 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:#8a6414;margin-bottom:8px}
+.open ul{margin:0;padding-left:18px}
+.open li{font:400 13px/1.65 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.open li+li{margin-top:5px}
+.mhero{display:flex;align-items:flex-start;gap:13px;margin-bottom:20px}
+.mhero .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;flex:none}
+.mhero h1{margin:0}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+</style>
+  <script src="kz/kz-locale.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script src="spec/spec-data.js"></script>
+<script type="text/babel">
+const { useState } = React;
+
+const Rules = ({ items }) => (
+  <div className="rules">
+    {items.map((r, i) => <div className="rule" key={i}><span className="n">{i + 1}</span><span className="t">{r}</span></div>)}
+  </div>
+);
+
+const Entities = ({ items }) => items.map((e) => (
+  <div className="ent" key={e.name}>
+    <div className="ent__h"><b>{e.name}</b><span className="k">{e.key}</span></div>
+    {e.fields.map(([a, b, c], i) => (
+      <div className="ent__f" key={i}><span className="a">{a}</span><span className="b">{b}</span><span className="c">{c}</span></div>
+    ))}
+    {e.notes && <div className="ent__n">{e.notes}</div>}
+  </div>
+));
+
+const Col = ({ t, icon, items }) => (
+  <div className="scr__c">
+    <div className="scr__t"><ion-icon name={icon}></ion-icon>{t}</div>
+    {items && items.length ? <ul>{items.map((x, i) => <li key={i}>{x}</li>)}</ul> : <span className="none">—</span>}
+  </div>
+);
+
+const Screens = ({ items }) => items.map((s) => (
+  <div className="scr" key={s.name}>
+    <div className="scr__h">
+      <b>{s.name}</b>
+      <span className="r">{s.route}</span>
+      <div className="sp"></div>
+      <span className="tag">{s.role}</span>
+      <span className="tag" style={{ background: 'var(--kz-surface-2)', color: 'var(--kz-muted-2)' }}>{s.device}</span>
+    </div>
+    <div className="scr__job">{s.job}</div>
+    <div className="scr__grid">
+      <Col t="States" icon="layers-outline" items={s.states} />
+      <Col t="Interactions" icon="hand-left-outline" items={s.interactions} />
+      <Col t="Reads" icon="download-outline" items={s.reads} />
+      <Col t="Writes" icon="cloud-upload-outline" items={s.writes} />
+    </div>
+  </div>
+));
+
+const Events = ({ items }) => (
+  <table>
+    <thead><tr><th className="tw1">Event</th><th className="tw2">When</th><th>Payload</th></tr></thead>
+    <tbody>{items.map((e) => (
+      <tr key={e.name}><td><code>{e.name}</code></td><td>{e.when}</td><td>{e.payload}</td></tr>
+    ))}</tbody>
+  </table>
+);
+
+const Endpoints = ({ items }) => (
+  <div className="rules">
+    {items.map((e, i) => (
+      <div className="ep" key={i}>
+        <span className={'m ' + e.m}>{e.m}</span>
+        <span className="p">{e.path}</span>
+        <span className="n">{e.note}</span>
+      </div>
+    ))}
+  </div>
+);
+
+function Platform() {
+  const P = SPEC_PLATFORM, M = SPEC_META;
+  return (
+    <div className="doc">
+      <p className="eb">Version {M.version} · updated {M.updated}</p>
+      <h1>Koomzo — Functional Specification</h1>
+      <p className="lede">{M.intro}</p>
+      <div className="links">
+        <a href="Koomzo - Control Centre.html"><ion-icon name="options-outline"></ion-icon>Control Centre</a>
+        <a href="Koomzo - Progressive Disclosure Approach.html"><ion-icon name="layers-outline"></ion-icon>UX approach</a>
+        <a href="Koomzo - Progressive Disclosure Decisions.html"><ion-icon name="git-merge-outline"></ion-icon>Decisions</a>
+      </div>
+
+      <h2>Design goals</h2>
+      <p className="sub">These hold for every module. A module that violates one is wrong, not innovative.</p>
+      <div className="g2">{P.goals.map((g) => (
+        <div className="card" key={g.t}><h4>{g.t}</h4><p>{g.d}</p></div>
+      ))}</div>
+
+      <h2>Platform entities</h2>
+      <p className="sub">Shared by every module. Module-specific entities live in each module's section.</p>
+      <Entities items={P.entities} />
+
+      <h2>Platform rules</h2>
+      <p className="sub">Server-enforced invariants. The client mirrors them for responsiveness; the server is authoritative.</p>
+      <Rules items={P.rules} />
+
+      <h2>Platform events</h2>
+      <Events items={P.events} />
+
+      <h2>Platform endpoints</h2>
+      <Endpoints items={P.endpoints} />
+
+      <h2>How to read a module section</h2>
+      <p className="sub">Each module states its purpose, its entities, then one block per screen. A screen block answers four questions the backend needs: what states it can be in, what the operator can do, what it reads, and what it writes. Rules are invariants that must hold regardless of client behaviour. Open questions are genuinely unresolved and should be closed before that module's service is built.</p>
+    </div>
+  );
+}
+
+function Module({ m }) {
+  return (
+    <div className="doc">
+      <div className="mhero">
+        <div className="ic" style={{ background: m.tint + '1a', color: m.tint }}><ion-icon name={m.icon}></ion-icon></div>
+        <div>
+          <p className="eb">Module · {m.status}</p>
+          <h1>{m.name}</h1>
+        </div>
+      </div>
+      <p className="lede">{m.oneLine}</p>
+      <p>{m.purpose}</p>
+
+      <h2>Entities</h2>
+      <Entities items={m.entities} />
+
+      <h2>Screens</h2>
+      <p className="sub">{m.screens.length} screens. Role is the minimum role that may open it; device lists where it is available.</p>
+      <Screens items={m.screens} />
+
+      <h2>Rules</h2>
+      <Rules items={m.rules} />
+
+      <h2>Events</h2>
+      <Events items={m.events} />
+
+      <h2>Endpoints</h2>
+      <Endpoints items={m.endpoints} />
+
+      <h2>Open questions</h2>
+      <div className="open">
+        <div className="t">To close before build</div>
+        <ul>{m.open.map((q, i) => <li key={i}>{q}</li>)}</ul>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [sel, setSel] = useState('platform');
+  const m = SPEC_MODULES.find((x) => x.id === sel);
+  return (
+    <div className="shell">
+      <nav className="side">
+        <div className="side__mark"><div className="ic"><ion-icon name="document-text"></ion-icon></div><b>Functional spec</b></div>
+        <div className="side__v">v{SPEC_META.version} · {SPEC_META.updated}</div>
+        <div className="side__g">Platform</div>
+        <button className={sel === 'platform' ? 'on' : ''} onClick={() => { setSel('platform'); window.scrollTo(0, 0); }}>
+          <ion-icon name="globe-outline"></ion-icon>Overview &amp; goals</button>
+        <div className="side__g">Modules</div>
+        {SPEC_MODULES.map((x) => (
+          <button key={x.id} className={sel === x.id ? 'on' : ''} onClick={() => { setSel(x.id); window.scrollTo(0, 0); }}>
+            <ion-icon name={x.icon}></ion-icon>{x.name}
+            <span className={'st' + (x.status === 'built' ? ' built' : '')}>{x.status === 'built' ? 'built' : 'design'}</span>
+          </button>
+        ))}
+        <div className="side__g">Elsewhere</div>
+        <button onClick={() => { location.href = 'Koomzo - Control Centre.html'; }}>
+          <ion-icon name="options-outline"></ion-icon>Control Centre</button>
+      </nav>
+      {sel === 'platform' ? <Platform /> : <Module m={m} />}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

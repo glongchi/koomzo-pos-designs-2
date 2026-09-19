@@ -12,7 +12,10 @@ function GroceryApp() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [view, setView] = useState(t.start);
   const [lines, setLines] = useState([]);
-  const [ticketNo, setTicketNo] = useState(4471);
+  /* the shop's shelf, adopted into the one ledger */
+  useEffect(() => { window.KZ_SALES.adopt('grocery', 'dt', GR.items); }, []);
+  /* composed at the till: LOC-REG-SESSION-SEQ, immutable once issued (spec 21.4) */
+  const [ticketNo, setTicketNo] = useState(() => window.KZ_TICKET.compose({ loc: 'DLA1', reg: 'G1', seq: 4471 }));
   const [member, setMember] = useState(null);
   const [dated, setDated] = useState(GR.dated);
   const [waste, setWaste] = useState(GR.waste);
@@ -82,7 +85,7 @@ function GroceryApp() {
     hold: () => { if (!lines.length) return; setHeld((h) => h + 1); setLines([]); setMember(null); say('Basket held'); },
     setMember: (m) => { setMember(m); if (m) say(m.name + ' attached' + (m.staff ? ' · staff discount applies' : '')); },
     refundDeposit: (n) => { push({ ref:'crate', name: n + ' crates returned', price: -200 * n, dep: true }); say(xaf(n * 200) + ' deposit refunded'); },
-    finish: () => { setLines([]); setMember(null); setTicketNo((n) => n + 1); },
+    finish: () => { setLines([]); setMember(null); setTicketNo((n) => window.KZ_TICKET.next(n)); },
     openPlu: () => setSheet({ k:'plu' }),
     openMember: () => setSheet({ k:'member' }),
     openCrates: () => setSheet({ k:'crate' }),

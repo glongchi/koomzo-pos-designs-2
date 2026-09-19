@@ -145,19 +145,31 @@ function CartLine({ o, sel, onSelect, onQty }) {
   );
 }
 
-function Cart({ cls, orderNo, items, customer, totals, profile, features, modules, selUid, onSelect, onQty, onClear, onHold,
-                onCustomer, onQuick, onPay, onClose }) {
+function Cart({ cls, orderNo, locked, items, customer, totals, profile, features, modules, selUid, onSelect, onQty, onClear, onHold,
+                onCustomer, onQuick, onPay, onClose, onHead }) {
   const M = modules || {};
   const count = items.reduce((s, o) => s + (o.weighed ? 1 : o.qty), 0);
   return (
     <aside className={cls}>
-      <div className="cart__head">
-        <div className="cart__no">Order #{orderNo}<small>{count} item{count === 1 ? '' : 's'} · Anita Ndongo</small></div>
+      <div className="cart__head" onClick={onHead ? (e) => { if (e.target.closest('button')) return; onHead(); } : null}>
+        <div className="cart__no">Order {window.KZ_TICKET.short(orderNo)}<small>{orderNo} · {count} item{count === 1 ? '' : 's'}</small></div>
         <div className="sp"></div>
         {M.tickets !== false && <button className="icbtn" title="Hold ticket" onClick={onHold}><ion-icon name="pause-outline"></ion-icon></button>}
         <button className="icbtn" title="Void order" onClick={onClear}><ion-icon name="trash-outline"></ion-icon></button>
         {onClose && <button className="icbtn" title="Close" onClick={onClose}><ion-icon name="close-outline"></ion-icon></button>}
-      </div>
+</div>
+      {locked && (
+        <div className="note info" style={{ margin: '10px 12px 0' }}>
+          <ion-icon name="lock-closed-outline"></ion-icon>Part-tendered — the total is frozen. Finish the payment, or hand it to a supervisor.</div>
+      )}
+      {features.loyalty && M.customers !== false && customer && items.length > 0 && (
+        /* what this ticket earns — only with a customer attached, since for a
+           walk-in the number belongs to nobody */
+        <div className="loyband">
+          <div><span className="k">Points won</span><span className="v up">+{Math.round(totals.total / 100)}</span></div>
+          <div><span className="k">New balance</span><span className="v">{(customer.points || 0) + Math.round(totals.total / 100)}</span></div>
+        </div>
+      )}
       {features.loyalty && M.customers !== false && (
         <button className="custrow" onClick={onCustomer}>
           <ion-icon name={customer ? 'person-circle-outline' : 'person-add-outline'}></ion-icon>
@@ -176,7 +188,7 @@ function Cart({ cls, orderNo, items, customer, totals, profile, features, module
       <div className="totals">
         <div className="trow"><span className="k">Subtotal</span><span className="v">{money(totals.net)}</span></div>
         {totals.discount > 0 && <div className="trow"><span className="k">Discounts</span><span className="v" style={{ color: 'var(--kz-discount)' }}>−{money(totals.discount)}</span></div>}
-        <div className="trow"><span className="k">TVA ({String(+(profile.tax * 100).toFixed(2)).replace('.', ',')} %)</span><span className="v">{money(totals.tax)}</span></div>
+        <div className="trow"><span className="k">{window.KZ_LOCALE.taxLabel(profile.zeroRated)}</span><span className="v">{money(totals.tax)}</span></div>
         <div className="trow big"><span className="k">Total</span><span className="v">{money(totals.total)}</span></div>
       </div>
       <div className="paybar">
@@ -191,10 +203,27 @@ function Cart({ cls, orderNo, items, customer, totals, profile, features, module
 function DockBar({ total, count, onOpen }) {
   return (
     <div className="dockbar">
-      <div className="sum">{money(total)}<small>{count} item{count === 1 ? '' : 's'} in ticket</small></div>
-      <button className="go" onClick={onOpen}><ion-icon name="cart-outline"></ion-icon>Review & pay</button>
+      <div className="cartic">
+        <ion-icon name="cart-outline"></ion-icon>
+        {count > 0 && <span className="ct">{count}</span>}
+      </div>
+      <div className="sum">{money(total)}<small>{count === 0 ? 'No items yet' : count + ' item' + (count === 1 ? '' : 's') + ' in ticket'}</small></div>
+      <button className="go" disabled={!count} style={!count ? { opacity: .45 } : null} onClick={onOpen}>
+        <ion-icon name="receipt-outline"></ion-icon>Review &amp; pay</button>
     </div>
   );
 }
 
-Object.assign(window, { RX_NAV, Rail, TopBar, EntryBar, Cats, Tile, CatalogGrid, CartLine, Cart, DockBar });
+/* the ticket as a second view — for one-thumb use where an overlay is in the way */
+function TabStrip({ view, onView, count }) {
+  return (
+    <div className="tabstrip">
+      <button className={view === 'catalog' ? 'on' : ''} onClick={() => onView('catalog')}>
+        <ion-icon name="grid-outline"></ion-icon>Catalogue</button>
+      <button className={view === 'order' ? 'on' : ''} onClick={() => onView('order')}>
+        <ion-icon name="receipt-outline"></ion-icon>Ticket{count > 0 && <span className="ct">{count}</span>}</button>
+    </div>
+  );
+}
+
+Object.assign(window, { RX_NAV, Rail, TopBar, EntryBar, Cats, Tile, CatalogGrid, CartLine, Cart, DockBar, TabStrip });

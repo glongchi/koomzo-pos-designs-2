@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Register Functional Specification</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.sp{flex:1}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 14px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 16px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 6px 10px}
+.side a.nv{display:flex;align-items:center;gap:9px;height:34px;padding:0 10px;border-radius:9px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a.nv ion-icon{font-size:15px;color:var(--kz-muted-3);flex:none}
+.side a.nv:hover{background:var(--kz-surface-2);color:var(--kz-ink)}
+.side a.nv.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.side a.nv.on ion-icon{color:var(--kz-primary)}
+.doc{padding:34px 34px 110px;max-width:1040px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.lede{margin:0 0 22px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:72ch;text-wrap:pretty}
+h2{margin:44px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em;scroll-margin-top:22px}
+h3{margin:26px 0 8px;font:700 15px var(--kz-font-sans)}
+.sub{margin:0 0 14px;font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-muted);max-width:74ch;text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:74ch;text-wrap:pretty}
+.mono{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 6px;color:var(--kz-ink-2)}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px}
+.card h4{margin:0 0 4px;font:700 14px var(--kz-font-sans);display:flex;align-items:center;gap:8px}
+.card h4 ion-icon{color:var(--kz-primary);font-size:16px}
+.card p{margin:0;font-size:13px;line-height:1.65}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.rules{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:4px 18px}
+.rule{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--kz-border)}
+.rule:last-child{border-bottom:none}
+.rule .n{width:22px;height:22px;border-radius:6px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none;margin-top:1px}
+.rule .t{font:400 13.5px/1.62 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.tblwrap{overflow-x:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+td .y{color:var(--kz-success);font-weight:700}td .n{color:var(--kz-muted-3)}
+.mod{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:11px;overflow:hidden}
+.mod__h{display:flex;align-items:center;gap:11px;padding:13px 16px;background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.mod__h .ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex:none}
+.mod__h .ic ion-icon{font-size:15px}
+.mod__h b{font:700 14px var(--kz-font-sans)}
+.mod__h .f{font:500 11px var(--kz-font-num);color:var(--kz-muted-2)}
+.tag{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--kz-radius-pill);background:var(--kz-primary-wash);color:var(--kz-primary)}
+.mod__job{padding:13px 16px 0;font:400 13.5px/1.6 var(--kz-font-sans);color:var(--kz-ink-2);text-wrap:pretty}
+.mod__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--kz-border);margin-top:14px;border-top:1px solid var(--kz-border)}
+.col{background:#fff;padding:13px 16px}
+.col__t{display:flex;align-items:center;gap:7px;font:700 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:8px}
+.col__t ion-icon{font-size:13px}
+.col ul{margin:0;padding-left:16px}
+.col li{font:400 12.5px/1.6 var(--kz-font-sans);color:var(--kz-ink-2);margin-bottom:4px;text-wrap:pretty}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:14px 16px;margin-bottom:12px}
+.st{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 11px;border-radius:var(--kz-radius-pill);background:var(--kz-surface-2);border:1px solid var(--kz-border);font:600 12px var(--kz-font-sans);color:var(--kz-ink-2)}
+.st ion-icon{font-size:14px;color:var(--kz-muted-2)}
+.st.key{background:var(--kz-primary-wash);border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.st.key ion-icon{color:var(--kz-primary)}
+.st.money{background:var(--kz-success-wash);border-color:#bfe3cd;color:#1f7a45}
+.st.money ion-icon{color:#1f7a45}
+.st.opt{border-style:dashed;color:var(--kz-muted-2)}
+.ar{color:var(--kz-muted-3);font:600 13px var(--kz-font-sans)}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.note{display:flex;gap:10px;background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:13px 15px;margin-bottom:12px}
+.note ion-icon{color:var(--kz-primary);font-size:17px;flex:none;margin-top:1px}
+.note p{margin:0;font-size:13px;line-height:1.62;color:var(--kz-ink-2)}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side">
+<div class="side__mark"><div class="ic"><ion-icon name="storefront"></ion-icon></div><b>koomzo · POS</b></div>
+<p class="side__v">Register spec · v0.9 · Sep 2026</p>
+<div class="side__g">Foundations</div>
+<a class="nv" href="#scope"><ion-icon name="document-text-outline"></ion-icon>Scope</a>
+<a class="nv" href="#context"><ion-icon name="earth-outline"></ion-icon>Business context</a>
+<a class="nv" href="#concepts"><ion-icon name="cube-outline"></ion-icon>Core concepts</a>
+<a class="nv" href="#lifecycle"><ion-icon name="git-commit-outline"></ion-icon>Ticket lifecycle</a>
+<div class="side__g">Across modules</div>
+<a class="nv" href="#matrix"><ion-icon name="grid-outline"></ion-icon>Capability matrix</a>
+<a class="nv" href="#retail"><ion-icon name="pricetags-outline"></ion-icon>Retail</a>
+<a class="nv" href="#flex"><ion-icon name="options-outline"></ion-icon>Retail Flex</a>
+<a class="nv" href="#resto"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a class="nv" href="#mobile"><ion-icon name="phone-portrait-outline"></ion-icon>Mobile &amp; Tablet <small style="opacity:.6">· merged</small></a>
+<div class="side__g">Shared behaviour</div>
+<a class="nv" href="#entry"><ion-icon name="barcode-outline"></ion-icon>Item entry chain</a>
+<a class="nv" href="#pricing"><ion-icon name="calculator-outline"></ion-icon>Pricing &amp; tax</a>
+<a class="nv" href="#tender"><ion-icon name="card-outline"></ion-icon>Tender &amp; settlement</a>
+<a class="nv" href="#fulfil"><ion-icon name="flame-outline"></ion-icon>Fulfilment routing</a>
+<a class="nv" href="#session"><ion-icon name="cash-outline"></ion-icon>Session &amp; drawer</a>
+<a class="nv" href="#rules"><ion-icon name="shield-checkmark-outline"></ion-icon>Invariants</a>
+<div class="side__g">Delivery</div>
+<a class="nv" href="#disclosure"><ion-icon name="layers-outline"></ion-icon>Capability model</a>
+<a class="nv" href="#responsive"><ion-icon name="resize-outline"></ion-icon>Device rules</a>
+<a class="nv" href="#roles"><ion-icon name="people-outline"></ion-icon>Roles</a>
+<a class="nv" href="#converged"><ion-icon name="git-merge-outline"></ion-icon>One register, four compositions</a>
+<a class="nv" href="#momo"><ion-icon name="card-outline"></ion-icon>Mobile money mechanics</a>
+<a class="nv" href="#open"><ion-icon name="checkmark-done-outline"></ion-icon>Decisions &amp; rationale</a>
+</nav>
+
+<main class="doc">
+<p class="eb">Functional specification · high level</p>
+<h1>The Register, across Koomzo modules</h1>
+<p class="lede">Two register surfaces ship in Koomzo today — <b>Retail Flex</b> and <b>Restaurant &amp; Bar</b>. They are not two products: they are one transaction model wearing two shells, each shaped by how its trade identifies a ticket, how it fulfils it, and how it gets paid. Flex renders itself in four device compositions, the phone one of them. This document states the shared model, the business process around it, and what each shell adds or removes. §6 and §9 are kept as the record of the two registers that merged in — see <a href="#converged">§20</a>.</p>
+<div class="links">
+<a href="Koomzo POS - Retail Flex.html"><ion-icon name="options-outline"></ion-icon>Retail Flex</a>
+<a href="Koomzo POS - Restaurant &amp; Bar.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a href="Koomzo - Phone Compositions.html"><ion-icon name="phone-portrait-outline"></ion-icon>Phone compositions</a>
+<a href="Koomzo - Register and Inventory Integration.html"><ion-icon name="git-network-outline"></ion-icon>Register ↔ Inventory</a>
+<a href="Koomzo - Mobile Convergence Plan.html"><ion-icon name="git-merge-outline"></ion-icon>Convergence plan</a>
+<a href="Koomzo - Functional Specification.html"><ion-icon name="document-text-outline"></ion-icon>Platform spec</a>
+</div>
+
+<h2 id="scope">1 · Scope</h2>
+<p class="sub">What this document covers, and the one sentence every register answers to.</p>
+<div class="note"><ion-icon name="flag-outline"></ion-icon><p><b>The register's job:</b> turn a customer's intent into a priced, taxed, paid and recorded transaction — in the fewest taps the trade allows, on the device the operator already holds, whether or not the network is up.</p></div>
+<div class="g2">
+<div class="card"><h4><ion-icon name="checkmark-circle-outline"></ion-icon>In scope</h4><p>Item entry, ticket construction, pricing and tax, holds and splits, tender and settlement, fulfilment handoff, session and drawer close, and the differences between the four module shells.</p></div>
+<div class="card"><h4><ion-icon name="close-circle-outline"></ion-icon>Out of scope</h4><p>Catalogue authoring, stock replenishment, procurement, payroll, accounting postings, and the Kitchen Display / Floor Plan / Kiosk screens — referenced here only where the register hands off to them.</p></div>
+</div>
+
+<h2 id="context">2 · Business context</h2>
+<p class="sub">Every Koomzo tenant is Cameroonian or West African. That is a functional constraint, not a localisation detail.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:24%">Constraint</th><th>Consequence for the register</th></tr></thead>
+<tbody>
+<tr><td><b>Currency XAF</b></td><td>No minor unit. Every amount is a whole franc, grouped with a space — <span class="mono">12 500 FCFA</span> long form, <span class="mono">12 500 F</span> in dense tables and tiles. A decimal point in a price is a defect. Cash rounding is meaningful: the smallest coin in circulation is 5 F.</td></tr>
+<tr><td><b>TVA 19,25 %</b></td><td>One national, single-rated tax. There is no per-city sales tax and no tax-group picker at the till. Zero-rated trades (fresh food, some pharmacy lines) are a profile property, not a per-line choice by the cashier.</td></tr>
+<tr><td><b>Mobile money first</b></td><td>The tender list is ordered <b>MTN MoMo · Orange Money · Espèces · Carte bancaire</b>. Card is the fourth option, not the default. Customer-account credit and (in hospitality) room charge extend the list.</td></tr>
+<tr><td><b>Unreliable connectivity</b></td><td>The register must ring, price, hold and tender offline, then reconcile. Sequence numbers are issued locally; the server is authoritative on conflict.</td></tr>
+<tr><td><b>Shared, mixed devices</b></td><td>One phone can be a full register; the same tenant may run a tablet on the floor and a laptop at the counter. Layout adapts; the transaction model does not.</td></tr>
+<tr><td><b>Operator literacy &amp; turnover</b></td><td>Copy is terse, imperative and label-driven; destructive actions are colour-coded coral and require a role. A new cashier must be productive in one shift.</td></tr>
+</tbody></table></div>
+
+<h2 id="concepts">3 · Core concepts</h2>
+<p class="sub">The vocabulary the four shells share. Where a trade uses a different word for the same object, both are listed.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:20%">Concept</th><th>Definition &amp; business meaning</th></tr></thead>
+<tbody>
+<tr><td><b>Register / Till</b></td><td>A named selling point (<span class="mono">Caisse 1</span>, <span class="mono">Lane 1</span>) bound to a location, a cash drawer and a device. Sales, sequence numbers and the drawer count all belong to it.</td></tr>
+<tr><td><b>Session / Shift</b></td><td>One cashier's period on one register: opening float → sales → cash drops → count → close. Nothing is sold outside an open session.</td></tr>
+<tr><td><b>Ticket / Order / Bill</b></td><td>The unit of sale. Retail calls it a ticket, hospitality an order or a bill. Carries a number, an owner (operator), an optional customer, an optional identity (table, tab, room) and its lines.</td></tr>
+<tr><td><b>Line</b></td><td>One product at one qualified configuration: quantity, unit price (possibly overridden), line discount, and qualifiers — variant, batch, serial, weight, modifiers, notes, course, station.</td></tr>
+<tr><td><b>Qualifier step</b></td><td>A question the register must answer before an item can join the ticket: age check, prescription sign-off, variant, batch/expiry, serial, weight, add-ons. Which steps exist is a capability, not code.</td></tr>
+<tr><td><b>Hold / Park</b></td><td>An open ticket set aside so the operator can serve someone else. Retail parks to a hold list; hospitality parks implicitly against a table or a named tab.</td></tr>
+<tr><td><b>Fire / Send</b></td><td>Hospitality only: committing part of a ticket to production. Fired lines leave the cashier's control and appear on the kitchen or bar display.</td></tr>
+<tr><td><b>Course</b></td><td>A firing group within one ticket (1st, 2nd, 3rd…) so a kitchen paces a table rather than cooking everything at once.</td></tr>
+<tr><td><b>Cover / Guest</b></td><td>Headcount on a table. Drives per-guest splits, service charge and the average-cover figures management reads.</td></tr>
+<tr><td><b>Tender</b></td><td>One payment instrument applied to a ticket. A ticket may need several tenders; it is paid only when the tendered sum reaches the total.</td></tr>
+<tr><td><b>Split</b></td><td>Dividing one ticket — by guest, by line, or by amount — into several settlements. It does not create several tickets in the sales history.</td></tr>
+<tr><td><b>Return / Exchange</b></td><td>A ticket derived from an earlier receipt: selected lines come back, money or replacement goods go out, stock is restocked.</td></tr>
+<tr><td><b>Receipt</b></td><td>The customer-facing record: printed, emailed, or shown. It is also the key that makes a return possible.</td></tr>
+<tr><td><b>X / Z report</b></td><td>X = mid-shift read, no reset. Z = close: takings by tender, expected cash, counted cash, over/short.</td></tr>
+</tbody></table></div>
+
+<h2 id="lifecycle">4 · Ticket lifecycle</h2>
+<p class="sub">One state machine covers all four modules. Hospitality inserts the <b>fired</b> transition; retail skips it.</p>
+<div class="flow">
+<span class="st key"><ion-icon name="add-circle-outline"></ion-icon>New</span><span class="ar">→</span>
+<span class="st"><ion-icon name="create-outline"></ion-icon>Open</span><span class="ar">→</span>
+<span class="st opt"><ion-icon name="pause-outline"></ion-icon>Held</span><span class="ar">→</span>
+<span class="st opt"><ion-icon name="send-outline"></ion-icon>Fired</span><span class="ar">→</span>
+<span class="st"><ion-icon name="git-branch-outline"></ion-icon>Tendering</span><span class="ar">→</span>
+<span class="st money"><ion-icon name="checkmark-circle-outline"></ion-icon>Paid</span><span class="ar">→</span>
+<span class="st"><ion-icon name="receipt-outline"></ion-icon>Closed</span>
+</div>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:15%">State</th><th style="width:36%">Meaning</th><th>Allowed transitions</th></tr></thead>
+<tbody>
+<tr><td><b>New</b></td><td>Session open, no lines. The screen shows the catalogue and an empty ticket.</td><td>Add line → Open. Abandon → discarded, no record.</td></tr>
+<tr><td><b>Open</b></td><td>Has lines. Fully editable: quantity, price override, discount, notes, removal.</td><td>Hold, fire, void (with role), tender.</td></tr>
+<tr><td><b>Held</b></td><td>Parked on this register — retail hold list, table, or named tab. Survives the operator serving someone else.</td><td>Resume → Open. Void (role). Holds do not survive a Z close unresolved.</td></tr>
+<tr><td><b>Fired</b></td><td>Part or all of the ticket is in production. Fired lines are no longer freely editable; changing one is a void-and-refire event the kitchen sees.</td><td>Fire further courses, add lines, tender.</td></tr>
+<tr><td><b>Tendering</b></td><td>Total is frozen; tenders are being applied. Partial settlement is legal.</td><td>Back to Open if nothing captured. Paid when the balance reaches zero.</td></tr>
+<tr><td><b>Paid</b></td><td>Balance zero. Receipt available; stock and loyalty committed; table released.</td><td>Refund / exchange against the receipt.</td></tr>
+<tr><td><b>Closed</b></td><td>Immutable, in sales history, counted in the session's Z report.</td><td>Reprint, refund — never edit.</td></tr>
+</tbody></table></div>
+
+<h2 id="matrix">5 · What differs across modules</h2>
+<p class="sub">The register is the core of each module and is never hideable. Everything below it is configuration.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:20%">Dimension</th><th>Retail Flex</th><th>Restaurant &amp; Bar</th></tr></thead>
+<tbody>
+<tr><td><b>Primary operator</b></td><td>Cashier, or the owner who is also the cashier</td><td>Server, bartender</td></tr>
+<tr><td><b>Ticket identity</b></td><td>Ticket number</td><td>Table, covers, or named tab</td></tr>
+<tr><td><b>Entry mode</b></td><td>Preset-seeded and editable live: scan / grid / search</td><td>Grid + search on menu</td></tr>
+<tr><td><b>Qualifier steps</b></td><td>Full chain, toggled: age, Rx, variant, batch, serial, weight, add-ons — on every device including the phone</td><td>Notes, allergen tags, course</td></tr>
+<tr><td><b>Fulfilment</b></td><td>Sold at the counter · optional <i>Prepare</i> capability routes a line to a station</td><td class="y">Fire to kitchen / bar by station and course</td></tr>
+<tr><td><b>Split</b></td><td>Share of the balance, then a real tender per share</td><td class="y">Split by guest, then tender</td></tr>
+<tr><td><b>Service charge</b></td><td class="n">No</td><td class="y">Optional, on table &amp; tab orders</td></tr>
+<tr><td><b>Stock behaviour</b></td><td>Off / Lite / Full — a tenant switch</td><td>Recipe depletion (menu-level)</td></tr>
+<tr><td><b>Sibling screens</b></td><td>Tickets, sales, stock, categories, returns, customers, shift, capability setup</td><td>+ floor plan, kitchen display, kiosk</td></tr>
+<tr><td><b>Compositions</b></td><td><b>Four:</b> docked two-pane (laptop, tablet landscape), drawer (tablet portrait), and phone — where the ticket lives in a <b>bar</b>, a <b>sheet</b> or a <b>tab</b>, as a tenant choice</td><td>Order left, menu right; phone tabs</td></tr>
+</tbody></table></div>
+
+<h2 id="retail">6 · Retail register <span style="font:700 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--kz-muted-3);vertical-align:middle">· merged into Flex</span></h2>
+<p class="sub">Profile-preset register. The shop's trade is picked once at setup and the register comes out shaped.</p>
+<div class="mod">
+<div class="mod__h"><div class="ic" style="background:#eeecf8;color:#6a61bf"><ion-icon name="pricetags-outline"></ion-icon></div><b>Register</b><span class="f">retail/ · retired</span><div class="sp"></div><span class="tag">Cashier</span><span class="tag" style="background:var(--kz-surface-2);color:var(--kz-muted-2)">Desktop · Tablet · Phone</span></div>
+<p class="mod__job">One board, six business profiles — Grocery &amp; Convenience, Clothing, Hardware, Electronics/Repair, Salon add-ons, Bakery/Deli. A profile sets the entry mode, the tile style, which qualifier modules appear, the tax treatment and the four quick-action keys. The operator can still override anything afterwards; the profile only decides the starting shape.</p>
+<div class="mod__grid">
+<div class="col"><div class="col__t"><ion-icon name="layers-outline"></ion-icon>States</div><ul><li>Empty ticket · catalogue browsing</li><li>Line selected → keypad sheet</li><li>Qualifier sheet open (weight, variant, serial, age)</li><li>Ticket held · resumed from hold list</li><li>Tendering · paid · receipt</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="hand-left-outline"></ion-icon>Interactions</div><ul><li>Scan, search by SKU, or tap a tile</li><li>Step quantity; keypad for qty / price / discount</li><li>Attach a customer for loyalty</li><li>Hold, clear, quick actions</li><li>Charge → tender sheet</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="download-outline"></ion-icon>Reads</div><ul><li>Profile &amp; its module flags</li><li>Catalogue, categories, SKUs, prices</li><li>On-hand at this store and warehouse</li><li>Customer &amp; loyalty balance</li><li>Held tickets on this register</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="cloud-upload-outline"></ion-icon>Writes</div><ul><li>Ticket, lines, discounts, overrides</li><li>Hold / resume / void events</li><li>Tender captures, receipt</li><li>Stock movements; serial → warranty</li><li>Loyalty accrual, age-check approvals</li></ul></div>
+</div>
+</div>
+
+<h3>Profiles and what each one turns on</h3>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:21%">Profile</th><th style="width:13%">Entry</th><th>Modules</th><th>Business reason</th></tr></thead>
+<tbody>
+<tr><td><b>Grocery &amp; Convenience</b></td><td>Scan-first</td><td>Weight, age check, loyalty</td><td>Queue speed; loose produce priced per kilo; alcohol is restricted.</td></tr>
+<tr><td><b>Clothing &amp; Accessories</b></td><td>Grid-first</td><td>Variants, loyalty</td><td>Size × colour is the product; exchanges are routine.</td></tr>
+<tr><td><b>Hardware / General</b></td><td>Search-first</td><td>Weight, cut-to-length</td><td>Deep SKU range sold by each, box or metre.</td></tr>
+<tr><td><b>Electronics / Repair</b></td><td>Search-first</td><td>Variants, serials</td><td>Warranty attaches to a serial at the moment of sale.</td></tr>
+<tr><td><b>Salon add-ons</b></td><td>Grid-first</td><td>Variants, bookings, loyalty</td><td>Retail attaches to a stylist and an appointment.</td></tr>
+<tr><td><b>Bakery / Deli</b></td><td>Scan-first</td><td>Weight with tare</td><td>Counter sales weighed in front of the customer.</td></tr>
+</tbody></table></div>
+
+<h2 id="flex">7 · Retail Flex register</h2>
+<p class="sub">Same board; the preset becomes editable data instead of a fixed mode. This is the configuration story for a growing business.</p>
+<div class="mod">
+<div class="mod__h"><div class="ic" style="background:#e8f0fd;color:#528cef"><ion-icon name="options-outline"></ion-icon></div><b>Register + capability map</b><span class="f">Koomzo POS - Retail Flex.html</span><div class="sp"></div><span class="tag">Cashier · Owner</span><span class="tag" style="background:var(--kz-surface-2);color:var(--kz-muted-2)">Desktop · Tablet · Phone</span></div>
+<p class="mod__job">A preset seeds an editable feature map; the register reads only that map. Choosing "Pharmacy" writes Rx sign-off, variants, batch and age into the map — the owner can then switch any of them off without leaving the preset. Adds nine trades (pharmacy, beauty, and others), three rail "fits" (Solo shop, Lite, Full) that decide which sibling screens exist, and a three-way stock switch (Off / Lite / Full).</p>
+<div class="mod__grid">
+<div class="col"><div class="col__t"><ion-icon name="layers-outline"></ion-icon>States</div><ul><li>Preset clean · <b>modified</b> (map diverges from preset)</li><li>Step chain in progress — step <i>n</i> of <i>m</i></li><li>Stock hidden lines (out of stock, mode-dependent)</li><li>Rail reduced by fit or by capability switches</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="hand-left-outline"></ion-icon>Interactions</div><ul><li>Pick preset; toggle individual features</li><li>Choose variant picker: none / single / matrix / config</li><li>Switch sibling screens on and off</li><li>Create a product mid-sale; set stock mode</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="download-outline"></ion-icon>Reads</div><ul><li>Preset defaults; tenant capability registry</li><li>Catalogue + stock per product at this till</li><li>Sales history for lookups and refunds</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="cloud-upload-outline"></ion-icon>Writes</div><ul><li>Feature-map overrides per tenant</li><li>Capability switches (shared with Control Centre)</li><li>Ticket, lot/serial/Rx captures, stock counts</li></ul></div>
+</div>
+</div>
+<div class="note"><ion-icon name="bulb-outline"></ion-icon><p><b>Why two retail files exist.</b> Retail proves the preset idea; Flex proves presets are only data. For the product, Flex is the direction of travel — Retail's fixed profiles should collapse into Flex's editable map, leaving one retail register.</p></div>
+
+<h2 id="resto">8 · Restaurant &amp; Bar register</h2>
+<p class="sub">Order entry, not checkout. Payment is the last of several events, and it may happen an hour after the food.</p>
+<div class="mod">
+<div class="mod__h"><div class="ic" style="background:#fdeae4;color:#ec603a"><ion-icon name="restaurant-outline"></ion-icon></div><b>Order entry</b><span class="f">Koomzo POS - Restaurant &amp; Bar.html</span><div class="sp"></div><span class="tag">Server · Bartender</span><span class="tag" style="background:var(--kz-surface-2);color:var(--kz-muted-2)">Tablet · Phone</span></div>
+<p class="mod__job">One register configured by vertical — Restaurant (tables, covers, courses, kitchen), Bar (tables and named tabs, no courses), Retail (neither). The order panel leads and the menu follows, because a server's question is "what is on table 7", not "what is in the catalogue". Lines carry a station, allergen tags, a note and a course; firing sends only the unfired lines of one course to that station's display.</p>
+<div class="mod__grid">
+<div class="col"><div class="col__t"><ion-icon name="layers-outline"></ion-icon>States</div><ul><li>No table bound → Pick table</li><li>Open · partly fired · fully fired</li><li>Course 1…5 active; per-course fire state</li><li>Split view by guest; note / allergen sheet</li><li>Charging · paid · table released</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="hand-left-outline"></ion-icon>Interactions</div><ul><li>Bind a table from the floor plan; set covers</li><li>Name a bar tab; add course; fire a course</li><li>Tap a line → live numpad (qty / price / discount)</li><li>Add note or allergen tag to a line</li><li>Split by guest; charge; release the table</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="download-outline"></ion-icon>Reads</div><ul><li>Vertical config &amp; flags; menu by category</li><li>Floor plan, table state, covers, server</li><li>Station map; allergen dictionary</li><li>Occupied hotel rooms, when folio is published</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="cloud-upload-outline"></ion-icon>Writes</div><ul><li>Order, lines, courses, notes, tags</li><li>Kitchen tickets per station on fire</li><li>Table state; covers; service charge</li><li>Tender, or a posting to a room folio</li></ul></div>
+</div>
+</div>
+<h3>The hospitality process the register sits inside</h3>
+<div class="flow">
+<span class="st"><ion-icon name="people-outline"></ion-icon>Seat &amp; covers</span><span class="ar">→</span>
+<span class="st key"><ion-icon name="create-outline"></ion-icon>Take order</span><span class="ar">→</span>
+<span class="st"><ion-icon name="send-outline"></ion-icon>Fire course</span><span class="ar">→</span>
+<span class="st"><ion-icon name="flame-outline"></ion-icon>Kitchen / bar</span><span class="ar">→</span>
+<span class="st"><ion-icon name="restaurant-outline"></ion-icon>Serve</span><span class="ar">→</span>
+<span class="st opt"><ion-icon name="add-outline"></ion-icon>Re-order</span><span class="ar">→</span>
+<span class="st"><ion-icon name="git-branch-outline"></ion-icon>Split</span><span class="ar">→</span>
+<span class="st money"><ion-icon name="card-outline"></ion-icon>Settle</span><span class="ar">→</span>
+<span class="st"><ion-icon name="refresh-outline"></ion-icon>Release table</span>
+</div>
+
+<h2 id="mobile">9 · Mobile &amp; Tablet register <span style="font:700 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--kz-muted-3);vertical-align:middle">· merged into Flex</span></h2>
+<p class="sub">Kept as the record of what this module was, and why the three phone patterns exist. Its layouts now live inside Flex — see <a href="#converged">§20</a>.</p>
+<div class="mod">
+<div class="mod__h"><div class="ic" style="background:#e4f4ea;color:#2e9e5b"><ion-icon name="phone-portrait-outline"></ion-icon></div><b>Adaptive register</b><span class="f">mobile/ · retired</span><div class="sp"></div><span class="tag">Any operator</span><span class="tag" style="background:var(--kz-surface-2);color:var(--kz-muted-2)">Phone · Tablet ⵧ ▭</span></div>
+<p class="mod__job">One transaction model composed three ways for the phone — live order as a bottom <b>sheet</b>, a persistent summary <b>bar</b>, or a second <b>tab</b> — plus a tablet drawer in portrait and a true two-pane board in landscape. The live numpad edits quantity, price or discount on the selected line in place; a loyalty band shows points won and the new balance as the ticket grows.</p>
+<div class="mod__grid">
+<div class="col"><div class="col__t"><ion-icon name="layers-outline"></ion-icon>States</div><ul><li>Catalogue only · order bar visible · order open</li><li>Line selected + numpad mode (qty / price / disc)</li><li>Charging · paid</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="hand-left-outline"></ion-icon>Interactions</div><ul><li>Tap tile to add; step or swipe to remove</li><li>Open order sheet / switch to order tab</li><li>Numpad, discount, reward, refund</li><li>Charge → tender → new order</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="download-outline"></ion-icon>Reads</div><ul><li>Catalogue &amp; categories; loyalty base</li><li>Device class &amp; chosen order pattern</li></ul></div>
+<div class="col"><div class="col__t"><ion-icon name="cloud-upload-outline"></ion-icon>Writes</div><ul><li>Ticket &amp; lines; tender; loyalty accrual</li></ul></div>
+</div>
+</div>
+<p><b>Functional consequence.</b> Because the phone must work, no register feature may depend on a hover state, a second monitor, or a permanently visible cart. Anything that cannot be reached in a bottom sheet is not a register feature — it belongs on a sibling screen.</p>
+
+<h2 id="entry">10 · Item entry chain</h2>
+<p class="sub">Between "tap a product" and "a line exists" sits a fixed-order chain of optional questions. Order is invariant; the active subset is configuration.</p>
+<div class="flow">
+<span class="st key"><ion-icon name="hand-left-outline"></ion-icon>Tap / scan</span><span class="ar">→</span>
+<span class="st opt">Age</span><span class="ar">→</span><span class="st opt">Rx</span><span class="ar">→</span>
+<span class="st opt">Variant</span><span class="ar">→</span><span class="st opt">Batch</span><span class="ar">→</span>
+<span class="st opt">Serial</span><span class="ar">→</span><span class="st opt">Weight</span><span class="ar">→</span>
+<span class="st opt">Add-ons</span><span class="ar">→</span>
+<span class="st money"><ion-icon name="receipt-outline"></ion-icon>Line on ticket</span>
+</div>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:14%">Step</th><th style="width:30%">Question</th><th>Rule</th></tr></thead>
+<tbody>
+<tr><td><b>Age</b></td><td>Is the customer old enough?</td><td>Fires only on restricted products. Two outcomes: <b>ID verified</b> (recorded on the receipt) or <b>refuse sale</b> (line never created).</td></tr>
+<tr><td><b>Rx</b></td><td>Who prescribed this, and was advice given?</td><td>Pharmacy only. Sign-off is stored against the line for audit.</td></tr>
+<tr><td><b>Variant</b></td><td>Which size, colour, strength, pack?</td><td>Skipped when a scan already resolved the exact variant. Picker style is a tenant choice: single list, size × colour matrix, or a configurator.</td></tr>
+<tr><td><b>Batch</b></td><td>Which lot, and does it expire first?</td><td>FEFO default. Expiry travels to the receipt and the stock ledger.</td></tr>
+<tr><td><b>Serial</b></td><td>Which unit is leaving the shop?</td><td>Warranty starts at sale and is registered against the serial.</td></tr>
+<tr><td><b>Weight</b></td><td>How much is on the scale?</td><td>Live read or keyed, with tare. Quantity <i>is</i> the weight; price is per kilo.</td></tr>
+<tr><td><b>Add-ons</b></td><td>Cut, wrap, extras?</td><td>Modifiers may add to the line price; they print on the ticket and on production tickets.</td></tr>
+</tbody></table></div>
+
+<h2 id="pricing">11 · Pricing, discount &amp; tax</h2>
+<div class="rules">
+<div class="rule"><span class="n">1</span><span class="t">Line net = unit price (override if set) × quantity × (1 − line discount %). The override is recorded separately from the catalogue price so margin reporting stays honest.</span></div>
+<div class="rule"><span class="n">2</span><span class="t">Discount is entered as a percentage on a line, or as an amount at ticket level. Both are capped at 100 %; a negative total is impossible.</span></div>
+<div class="rule"><span class="n">3</span><span class="t">Service charge (hospitality, table and tab orders only) is applied to the ticket net before tax, at a tenant-set rate.</span></div>
+<div class="rule"><span class="n">4</span><span class="t">TVA is computed on net + service charge at the national rate, and rounded to the whole franc. Zero-rated profiles compute zero — the cashier never picks a tax rate.</span></div>
+<div class="rule"><span class="n">5</span><span class="t">Total = net + service + tax, always a whole franc. Cash change is computed against notes and coins that actually circulate.</span></div>
+<div class="rule"><span class="n">6</span><span class="t">Price overrides and above-threshold discounts are privileged actions: they are logged with the operator, the reason where captured, and appear in the shift report.</span></div>
+</div>
+
+<h2 id="tender">12 · Tender &amp; settlement</h2>
+<p class="sub">Choosing how the customer pays is one sheet, ordered the way a Cameroonian counter actually takes money.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:20%">Tender</th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td><b>MTN MoMo · Orange Money</b></td><td>Default pair. Operator confirms the customer's transfer against the displayed amount; reference is stored on the ticket.</td></tr>
+<tr><td><b>Espèces (cash)</b></td><td>Quick-cash keys for the total and the next round note; change due is shown large. Drawer opens; the amount counts toward the expected cash at close.</td></tr>
+<tr><td><b>Carte bancaire</b></td><td>Waits for the terminal; approval and last four digits land on the receipt.</td></tr>
+<tr><td><b>Loyalty / customer account</b></td><td>Applies a balance or bills a house account. Requires an attached customer.</td></tr>
+<tr><td><b>Charge to room</b></td><td>Exists only when the capability is on <i>and</i> a hotel is publishing occupied rooms. Posts to the guest folio and settles at checkout — the register takes no money.</td></tr>
+<tr><td><b>Split</b></td><td>Take a first amount on one tender, the balance on another. Hospitality splits by guest first, then tenders each share.</td></tr>
+</tbody></table></div>
+<p><b>After payment:</b> print, email, or skip the receipt; the ticket closes, stock and loyalty commit, the table releases, the ticket number increments, and the register returns to an empty ticket. Failure at any point leaves the ticket in <b>Tendering</b> with captured tenders intact — never in a half-paid limbo.</p>
+
+<h2 id="fulfil">13 · Fulfilment routing</h2>
+<p class="sub">Only hospitality fulfils; the model is worth stating because grocery counters and salons will need the same routing later.</p>
+<div class="g2">
+<div class="card"><h4><ion-icon name="git-network-outline"></ion-icon>Station, not screen</h4><p>Every menu item declares a station — grill, fryer, cold, braise, sauce pot, dessert, bar, counter. Firing routes lines to the display that owns that station, colour-coded so a cook reads their own work only.</p></div>
+<div class="card"><h4><ion-icon name="layers-outline"></ion-icon>Course, not batch</h4><p>Lines are grouped into courses. Firing a course sends its unfired lines and marks them fired; later courses wait for the server's call, so a table is paced rather than flooded.</p></div>
+<div class="card"><h4><ion-icon name="wine-outline"></ion-icon>Bar is immediate</h4><p>Bar lines are not held for coursing — drinks go as soon as they are rung, which is why bar lines are excluded from the kitchen send.</p></div>
+<div class="card"><h4><ion-icon name="alert-circle-outline"></ion-icon>Notes carry weight</h4><p>Allergen tags and line notes travel with the production ticket. An allergen tag is a safety instruction, not a preference, and is never truncated on the kitchen display.</p></div>
+</div>
+
+<h2 id="session">14 · Session, drawer &amp; audit</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:20%">Step</th><th>What happens</th></tr></thead>
+<tbody>
+<tr><td><b>Open session</b></td><td>Cashier, register and opening float recorded. No sale is possible without it.</td></tr>
+<tr><td><b>During the shift</b></td><td>Every ticket, void, discount override, refund and cash drop is stamped with the operator. An X report reads takings so far without resetting.</td></tr>
+<tr><td><b>Cash drop / paid out</b></td><td>Money leaving the drawer mid-shift is recorded so the expected figure stays true.</td></tr>
+<tr><td><b>Count &amp; close</b></td><td>Notes and coin counted, compared with expected cash; over/short shown in coral when non-zero. Held tickets must be resolved before close.</td></tr>
+<tr><td><b>Z report</b></td><td>Net sales, transactions, average ticket, takings by tender, over/short — the figure the owner reads and the auditor asks for.</td></tr>
+</tbody></table></div>
+
+<h2 id="rules">15 · Invariants</h2>
+<p class="sub">Server-enforced. The client mirrors them for speed; the server decides.</p>
+<div class="rules">
+<div class="rule"><span class="n">1</span><span class="t">The register is the core of its module and can never be switched off. Every other screen in the module is a capability that can be hidden.</span></div>
+<div class="rule"><span class="n">2</span><span class="t">A plain line merges with an identical plain line; a line carrying a variant, batch, serial, weight or modifier never merges — it is a distinct unit of sale.</span></div>
+<div class="rule"><span class="n">3</span><span class="t">Setting a line's quantity to zero removes the line. There is no zero-quantity line on a ticket.</span></div>
+<div class="rule"><span class="n">4</span><span class="t">A barcode scan that resolves to an exact variant skips the variant question. Asking again is a defect.</span></div>
+<div class="rule"><span class="n">5</span><span class="t">A fired line cannot be silently edited. Changing it emits a void-and-refire the production display sees.</span></div>
+<div class="rule"><span class="n">6</span><span class="t">A hospitality order cannot be fired without a table or a named tab — the kitchen must know where the food goes.</span></div>
+<div class="rule"><span class="n">7</span><span class="t">A paid ticket is immutable. Corrections are refunds or exchanges against the receipt, never edits.</span></div>
+<div class="rule"><span class="n">8</span><span class="t">Amounts are whole francs everywhere — display, storage and print. Fractional currency is invalid input.</span></div>
+<div class="rule"><span class="n">9</span><span class="t">Ticket numbers are unique per register per session, issued locally so that an offline till keeps selling, and reconciled on sync.</span></div>
+<div class="rule"><span class="n">10</span><span class="t">Every subtractive action — void, refund, price override, above-threshold discount — is attributed to an operator and appears in the session report.</span></div>
+<div class="rule"><span class="n">11</span><span class="t">Touch targets on any register surface are at least 44 px. The register is used with thumbs, in a hurry.</span></div>
+</div>
+
+<h2 id="disclosure">16 · Capability model</h2>
+<p class="sub">How the same register serves a one-person kiosk and a multi-lane store without becoming two products.</p>
+<div class="g2">
+<div class="card"><h4><ion-icon name="lock-closed-outline"></ion-icon>Core is fixed</h4><p>Each module declares one core screen that is never hideable — Register for Retail, Order entry for Restaurant, Till for Grocery. It is the reason the module exists.</p></div>
+<div class="card"><h4><ion-icon name="toggle-outline"></ion-icon>Everything else is a capability</h4><p>Sales history, stock, returns, customers, categories, shift, floor plan, course firing: each is switchable per tenant, and the register reads the switches rather than knowing about them.</p></div>
+<div class="card"><h4><ion-icon name="albums-outline"></ion-icon>Fits are shortcuts</h4><p>Solo shop, Lite and Full are named bundles of those switches, so an owner picks a shape in one tap and adjusts later. A deviation is shown as "modified", not hidden.</p></div>
+<div class="card"><h4><ion-icon name="trending-up-outline"></ion-icon>Growth is a switch</h4><p>Adding stock control, a second lane or course firing never means migrating to another product — it means turning something on. The ticket model is unchanged.</p></div>
+</div>
+
+<h2 id="responsive">17 · Device rules</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:18%">Device</th><th>Composition</th><th>Rule</th></tr></thead>
+<tbody>
+<tr><td><b>Phone</b></td><td>Catalogue fills the screen; the live ticket is a bottom sheet, a summary bar, or a second tab</td><td>One primary action visible at all times. The ticket is always one tap away, never more.</td></tr>
+<tr><td><b>Tablet portrait</b></td><td>Catalogue with a ticket drawer over a scrim</td><td>The drawer is dismissible; nothing is lost by closing it.</td></tr>
+<tr><td><b>Tablet landscape</b></td><td>True two-pane board: catalogue + docked ticket</td><td>Totals footer and the charge bar are pinned; the catalogue scrolls alone.</td></tr>
+<tr><td><b>Laptop / counter</b></td><td>Two-pane with a module rail, comfortable or compact density</td><td>Keyboard entry is first-class: digits and backspace drive the selected line; a scanner is a keyboard.</td></tr>
+</tbody></table></div>
+
+<h2 id="roles">18 · Roles</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:18%">Role</th><th>Can</th><th>Cannot</th></tr></thead>
+<tbody>
+<tr><td><b>Cashier / Server</b></td><td>Open a session, ring, hold, fire, tender, print, small discounts within threshold</td><td>Override prices above threshold, void a fired line, close another operator's session, change capabilities</td></tr>
+<tr><td><b>Supervisor</b></td><td>All of the above plus voids, refunds, price overrides, resolving abandoned holds</td><td>Change the tenant's capability map or tax treatment</td></tr>
+<tr><td><b>Manager</b></td><td>Close shifts, read reports, count and adjust the drawer, configure the register's profile and modules</td><td>—</td></tr>
+<tr><td><b>Owner</b></td><td>Everything, plus capability fits and the module map across locations</td><td>—</td></tr>
+</tbody></table></div>
+
+<h2 id="converged">19 · One register, four compositions</h2>
+<p class="sub">The resolved architecture. §6 and §9 describe two registers that no longer exist as code; this states what replaced them and the rule that follows.</p>
+<div class="note"><ion-icon name="git-merge-outline"></ion-icon><p><b>There is one retail register.</b> Retail's six fixed profiles became presets in Flex's editable capability map. The Mobile register's three phone patterns became layout options in the same board. What used to be three files is one register that renders itself four ways.</p></div>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:20%">Composition</th><th style="width:26%">Where the ticket lives</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><b>Laptop / counter</b></td><td>Docked pane, cart right</td><td>Both hands free and a keyboard present. Digits and backspace drive the selected line; a scanner is a keyboard.</td></tr>
+<tr><td><b>Tablet landscape</b></td><td>Docked pane, tightened</td><td>Same board, larger targets, narrower cart. The totals footer and charge bar stay pinned.</td></tr>
+<tr><td><b>Tablet portrait</b></td><td>Drawer over a scrim</td><td>Not enough width for two panes. The drawer is dismissible and nothing is lost by closing it.</td></tr>
+<tr><td><b>Phone</b></td><td><b>Bar</b>, <b>sheet</b> or <b>tab</b> — a tenant choice</td><td>There is no single right answer at 390 px, and the operator has a preference. Bar keeps the total visible; sheet keeps the reach shortest; tab gives the ticket the whole screen.</td></tr>
+</tbody></table></div>
+<h3>The rule this creates</h3>
+<div class="rules">
+<div class="rule"><span class="n">1</span><span class="t">A composition changes <b>where the ticket is</b> and nothing else. Same presets, same capability map, same qualifier chain, same tender model, same approval step, same ticket number. A phone is never a reduced register.</span></div>
+<div class="rule"><span class="n">2</span><span class="t">This matters more here than it would elsewhere: in this market a phone is frequently the <b>only</b> till in the business. A phone that cannot age-check a sale, take a pharmacy sign-off, choose a batch or weigh produce is not a lightweight register — it is a shop that cannot legally trade.</span></div>
+<div class="rule"><span class="n">3</span><span class="t">The side drawer is the tablet-portrait answer and is not offered on a phone, where it is simply a worse sheet.</span></div>
+<div class="rule"><span class="n">4</span><span class="t">No register feature may depend on a hover state, a second monitor, or a permanently visible cart — because in three of the four compositions the cart is not permanently visible. Anything that cannot be reached from a bottom sheet belongs on a sibling screen.</span></div>
+<div class="rule"><span class="n">5</span><span class="t">Hospitality keeps its own shell. Order entry leads with the order, not the catalogue, because a server's question is "what is on table 7" — that is a different composition problem, not a fifth option in this list.</span></div>
+</div>
+<p><a href="Koomzo - Phone Compositions.html">The three phone compositions side by side</a> · <a href="Koomzo - Mobile Convergence Plan.html">what moved and what was left behind</a></p>
+
+<h2 id="momo">20 · Mobile money mechanics</h2>
+<p class="sub">In West and Central Africa mobile money is the primary rail, so the register must model it as a real payment state machine — not as a cash-like instant tender. This section states the mechanics the tender sheet is built on; it is what makes decision 5 below answerable.</p>
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><p><b>The shape of the rail.</b> MTN MoMo's Collections product works by <b>push request</b>: Koomzo posts a <span class="mono">requestToPay</span> carrying the amount, currency, an <i>externalId</i> of our own and the payer's MSISDN; the payer is then asked to authorise the payment on their own handset, and the transaction sits in <b>PENDING</b> until they do. Koomzo learns the outcome two ways — a provider callback, or polling the transaction by its reference until it succeeds or fails. Orange Money and Airtel Money differ in wire format but not in shape; Airtel, for instance, reports pending as TIP/TI and success as TS.</p></div>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:22%">Consequence</th><th>Rule for the register</th></tr></thead>
+<tbody>
+<tr><td><b>Three tender modes, not one</b></td><td><b>Push</b> (register requests, customer approves on their phone — the target experience), <b>pull/attest</b> (customer pays a merchant code themselves, operator confirms), and <b>manual</b> (no integration; operator records the tender). A tenant may have only one of these live; the sheet shows what is provisioned.</td></tr>
+<tr><td><b>Pending is a first-class state</b></td><td>A push tender enters <b>Pending</b>, not Paid. The ticket stays in <b>Tendering</b> with a visible countdown and the amount locked. The operator may cancel and switch tender; they may not mark it paid by hand while a push is live.</td></tr>
+<tr><td><b>The reference is ours, not theirs</b></td><td>Koomzo generates the idempotency key and <i>externalId</i> before the request leaves the till. The provider's own transaction id is stored alongside when it arrives. This is why decision 5 goes the way it does.</td></tr>
+<tr><td><b>Timeouts are normal</b></td><td>Customers walk out of coverage, run out of balance, or ignore the prompt. Treat no answer inside the window as <b>expired</b> — a clean, non-scary outcome the operator can retry or replace, never an error dialog.</td></tr>
+<tr><td><b>Never double-charge on retry</b></td><td>Retry reuses the same idempotency key; a new attempt gets a new key and is a new tender line. An unknown outcome is resolved by status query, never by re-requesting.</td></tr>
+<tr><td><b>Refunds are a different product</b></td><td>Money going back out is a <b>disbursement</b> (transfer/deposit), with its own float, its own permissions and its own failure modes. A cash refund against a MoMo sale must be an explicit, role-gated tenant policy.</td></tr>
+<tr><td><b>Offline push is impossible</b></td><td>A push tender requires the network by definition. Offline, only attest and manual modes are offered, and each is queued for reconciliation — this is the single place where offline capability is genuinely reduced.</td></tr>
+<tr><td><b>Per-operator float matters</b></td><td>MoMo takings do not sit in the drawer. The Z report reconciles cash and each wallet separately; "expected cash" excludes wallet takings entirely.</td></tr>
+</tbody></table></div>
+<div class="flow">
+<span class="st key"><ion-icon name="send-outline"></ion-icon>Request sent</span><span class="ar">→</span>
+<span class="st" style="background:var(--kz-warning-wash);border-color:#e8d6a8;color:#8a6414"><ion-icon name="time-outline"></ion-icon>Pending · customer approves</span><span class="ar">→</span>
+<span class="st money"><ion-icon name="checkmark-circle-outline"></ion-icon>Succeeded</span>
+<span class="ar">/</span><span class="st opt"><ion-icon name="close-outline"></ion-icon>Declined</span>
+<span class="ar">/</span><span class="st opt"><ion-icon name="hourglass-outline"></ion-icon>Expired</span>
+<span class="ar">/</span><span class="st opt"><ion-icon name="help-outline"></ion-icon>Unknown → query</span>
+</div>
+
+<h2 id="open">21 · Decisions &amp; rationale</h2>
+<p class="sub">Recommendations for the seven open questions, decided for a West African market: thin margins, high staff turnover, intermittent networks, wallet-first money, and owners who read one number a day.</p>
+
+<h3>21.1 · Converge Retail and Retail Flex — yes</h3>
+<p><b>Decision:</b> ship <b>one</b> retail register. Flex's editable capability map becomes the model; Retail's six fixed profiles become first-run presets inside it. Retail's file stays as a reference until the merge lands, then retires.</p>
+<p><b>Why:</b> two retail registers means two of everything — two QA surfaces, two training paths, two sets of bugs — for a difference the shopkeeper never asked for. More importantly, a fixed profile is a growth trap: the shop that adds a pharmacy counter or starts weighing rice must change products rather than flip a switch. Presets get the one-tap setup Retail was protecting, without the lock-in. <b>Guardrail:</b> the capability editor is owner/manager-only, and deviations show as "modified" so support can always ask "which preset, and what changed?"</p>
+
+<h3>21.2 · Partial payment across a restart — persist it</h3>
+<p><b>Decision:</b> tenders are persisted the moment each one is captured. A restart mid-split resumes the ticket in <b>Tendering</b> with captured tenders intact and the balance shown.</p>
+<p><b>Why:</b> the market makes this non-negotiable. Phones die, batteries are shared, power cuts are routine, and a split bill takes minutes, not seconds. Requiring a split to complete in one go means that a crash after the first 10 000 F has been physically taken leaves the operator with money and no record — the worst possible failure for trust. <b>Guardrail:</b> a ticket resumed with captured tenders cannot have its lines edited; the total is already frozen. A ticket left part-tendered at shift close is surfaced in the close flow as a required resolution (see 20.6).</p>
+
+<h3>21.3 · Discount threshold — per tenant, in two numbers, defaulted low</h3>
+<p><b>Decision:</b> two tenant-level settings — a <b>line discount ceiling</b> (default <b>10 %</b>) and a <b>ticket discount ceiling</b> (default <b>5 % or 5 000 F, whichever is lower</b>). Under the ceiling: cashier acts freely. Over it: supervisor approval on the spot, with a reason picked from a short list. Price override is <i>always</i> above the line — never a cashier action.</p>
+<p><b>Why:</b> the threshold must be per tenant, because a hardware shop that negotiates every sale and a pharmacy that never discounts cannot share a number. It must not be per role, which would make a role change silently a pricing change and make audit impossible to reason about. Defaults are deliberately tight: discount leakage by cashiers is the most common margin loss in small West African retail, and it is far easier to loosen a limit than to recover money already given away. <b>Guardrail:</b> approvals are logged with both operators — who asked, who approved — and the shift report shows discount total as a percentage of net sales, which is the number an owner can actually act on.</p>
+
+<h3>21.4 · Offline ticket numbering — register prefix, never renumber</h3>
+<p><b>Decision:</b> every ticket number is composed at the till as <span class="mono">LOC-REG-SESSION-SEQ</span> (e.g. <span class="mono">DLA1-C2-0914-0037</span>), so collisions are structurally impossible and the server never renumbers. The server assigns a separate internal id for its own use.</p>
+<p><b>Why:</b> the printed number is the customer's claim on a return and the auditor's trail. If the server can renumber, a receipt in a customer's pocket stops matching the record — an unrecoverable support problem, and in a tax context, a real risk. A prefix costs nothing and needs no coordination, which is exactly right for tills that spend hours offline. <b>Guardrail:</b> the number is generated once and is immutable thereafter. Genuine duplicates (a restored device backup, say) are quarantined for a human to resolve, never silently merged.</p>
+
+<h3>21.5 · Mobile-money reference — system-generated, never typed</h3>
+<p><b>Decision:</b> Koomzo always generates the reference itself. The operator is <b>never</b> asked to type a transaction id. Three modes, in order of preference:</p>
+<div class="rules">
+<div class="rule"><span class="n">1</span><span class="t"><b>Push (integrated).</b> The register sends a payment request to the customer's number; they approve on their handset. The tender is Paid only on a confirmed success from the provider. Nothing to type, nothing to trust.</span></div>
+<div class="rule"><span class="n">2</span><span class="t"><b>Attest (no integration yet).</b> The customer pays the merchant code themselves and the operator confirms receipt against their own MoMo SMS. Koomzo records an <b>attested</b> tender — operator, amount, wallet, time — and optionally the last 4–6 digits of the customer's number. The last-4 field is <b>optional</b>; a full transaction id is not requested, because a hurried cashier will mistype it and a mistyped reference is worse than none.</span></div>
+<div class="rule"><span class="n">3</span><span class="t"><b>Manual.</b> Recorded like cash-out-of-drawer, reconciled from the wallet statement at close.</span></div>
+</div>
+<p><b>Why:</b> the question assumed a reference is something the operator supplies. On this rail it isn't — the initiating system owns the reference and the provider's id arrives with the confirmation. Asking for typed input adds keystrokes at the queue's worst moment and produces data nobody can reconcile. <b>Guardrail:</b> attested tenders are visibly marked as attested, are counted separately in the Z report, and are the tender type most worth a daily owner review — because attestation is, by construction, a statement of trust in the cashier.</p>
+
+<h3>21.6 · Unresolved holds at close — block, with one supervised escape</h3>
+<p><b>Decision:</b> the Z close <b>lists</b> every held or part-tendered ticket and will not complete until each is settled, voided, or transferred to the next shift. Bulk auto-void exists but is supervisor-only and writes a reason against every ticket it touches.</p>
+<p><b>Why:</b> a held ticket is either goods off the shelf or food already eaten. Auto-voiding silently turns unexplained shrinkage into a clean report, which is precisely the report an owner should not receive. Blocking makes the cashier resolve it while they still remember what happened — the only moment the information exists. <b>Guardrail:</b> transfer-to-next-shift keeps hospitality workable (a table still eating at shift change) and reassigns ownership explicitly, so the ticket always has exactly one responsible operator.</p>
+
+<h3>21.7 · Station routing beyond hospitality — one model, hidden by default</h3>
+<p><b>Decision:</b> keep the single station-and-course routing model; expose it to non-hospitality trades as a capability called <b>Prepare</b>, off by default. When on, a line whose product is marked prepared gets a prep ticket routed to its station; "prepare" is simply routing with one station and no courses.</p>
+<p><b>Why:</b> a separate "prepare" flag would be a second fulfilment model to build, test and explain, and the moment a bakery has both an oven and a juice counter, it needs the real one anyway. Hiding it by default protects the shop that sells only packaged goods from ever seeing the concept. <b>Guardrail:</b> the copy adapts to the trade — a salon sees "Send to stylist", a butcher "Send to counter" — but the object underneath is one kitchen ticket, so the production display is built once.</p>
+
+<h3>Suggested sequence</h3>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:16%">Priority</th><th>Decision</th><th>Reason for the ordering</th></tr></thead>
+<tbody>
+<tr><td><b>Before launch</b></td><td>21.4 numbering · 21.2 persisted tenders · 21.5 reference model</td><td>All three are data-shape decisions. Changing them after real receipts exist means migrating money records — do them once, now.</td></tr>
+<tr><td><b>Launch</b></td><td>21.3 discount ceilings · 21.6 close blocking</td><td>Policy and flow. Cheap to tune later, but the defaults must ship tight or early tenants will learn bad habits.</td></tr>
+<tr><td><b>After launch</b></td><td>21.1 register convergence · 21.7 Prepare capability</td><td>Both are consolidation work with no customer-visible loss. Worth doing deliberately rather than under launch pressure.</td></tr>
+</tbody></table></div>
+<p class="sub" style="margin-top:18px">Sources for the mobile-money mechanics in §20: MTN MoMo developer portal (Collections, Disbursement, Remittance) and the public Collections integration behaviour documented around <span class="mono">requestToPay</span>.</p>
+</main>
+</div>
+<script>
+const links=[...document.querySelectorAll('.side a.nv')];
+const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('on'));const a=map.get(e.target.id);if(a)a.classList.add('on')}})},{rootMargin:'-10% 0px -80% 0px'});
+document.querySelectorAll('main h2[id]').forEach(h=>io.observe(h));
+</script>
+</body>
+</html>
