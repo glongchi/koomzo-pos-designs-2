@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Recipes, bar pours and the depletion ladder</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.shell{display:grid;grid-template-columns:254px minmax(0,1fr);min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 14px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 16px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 6px 10px}
+.side a.nv{display:flex;align-items:center;gap:9px;min-height:34px;padding:6px 10px;border-radius:9px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a.nv ion-icon{font-size:15px;color:var(--kz-muted-3);flex:none}
+.side a.nv:hover{background:var(--kz-surface-2);color:var(--kz-ink)}
+.doc{padding:34px 34px 110px;max-width:1080px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.lede{margin:0 0 22px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:74ch;text-wrap:pretty}
+h2{margin:44px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em;scroll-margin-top:22px}
+h3{margin:26px 0 8px;font:700 15px var(--kz-font-sans)}
+.sub{margin:0 0 14px;font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-muted);max-width:76ch;text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:76ch;text-wrap:pretty}
+ul{max-width:76ch;padding-left:19px}li{font:400 13.5px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);margin-bottom:5px;text-wrap:pretty}
+.mono{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 6px;color:var(--kz-ink-2);white-space:nowrap}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px}
+.card h4{margin:0 0 5px;font:700 14px var(--kz-font-sans);display:flex;align-items:center;gap:8px}
+.card h4 ion-icon{color:var(--kz-primary);font-size:16px}
+.card p{margin:0;font:400 13px/1.65 var(--kz-font-sans)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-bottom:12px}
+.tblwrap{overflow-x:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+.y{color:var(--kz-success);font-weight:700}.n{color:var(--kz-discount);font-weight:700}
+.note{display:flex;gap:10px;background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:13px 15px;margin-bottom:12px}
+.note ion-icon{color:var(--kz-primary);font-size:17px;flex:none;margin-top:1px}
+.note p{margin:0;font-size:13px;line-height:1.62}
+.note.warn{background:var(--kz-warning-wash);border-color:#e8d6a8}
+.note.warn ion-icon{color:#8a6414}
+.note.bad{background:var(--kz-discount-wash);border-color:#f2c4b4}
+.note.bad ion-icon{color:#b8401f}
+.note.good{background:var(--kz-success-wash);border-color:#bfe3cd}
+.note.good ion-icon{color:#1f7a45}
+.rung{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:11px;overflow:hidden}
+.rung__h{display:flex;align-items:center;gap:11px;padding:12px 16px;background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.rung__h .num{width:26px;height:26px;border-radius:7px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none}
+.rung__h b{font:700 13.5px var(--kz-font-sans)}
+.rung__h .meta{font:500 11px var(--kz-font-num);color:var(--kz-muted-2)}
+.rung__b{padding:13px 16px}
+.rung__b p{margin:0 0 9px;font-size:13.5px}
+.rung__b p:last-child{margin-bottom:0}
+.tag{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--kz-radius-pill);white-space:nowrap}
+.tag.core{background:var(--kz-success-wash);color:#1f7a45}
+.tag.plus{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.tag.pro{background:var(--kz-warning-wash);color:#8a6414}
+.tag.no{background:var(--kz-surface-2);color:var(--kz-muted-3)}
+.code{display:block;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:13px 15px;font:500 11.5px/1.75 var(--kz-font-num);white-space:pre-wrap;word-break:break-word;color:var(--kz-ink-2);margin-bottom:12px;overflow-x:auto}
+.code b{color:var(--kz-primary);font-weight:700}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--kz-border);border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-bottom:12px}
+@media (max-width:640px){.ba{grid-template-columns:1fr}}
+.ba>div{background:#fff;padding:11px 13px}
+.ba .t2{font:700 9.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:6px}
+.ba code{display:block;font:500 11.5px/1.7 var(--kz-font-num);white-space:pre-wrap;word-break:break-word;color:var(--kz-ink-2)}
+.ba .bad code{color:#b8401f}.ba .good code{color:#1f7a45}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.ask{background:#fff;border:1px solid var(--kz-border-strong);border-radius:var(--kz-radius);padding:4px 18px}
+.ask__r{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--kz-border)}
+.ask__r:last-child{border-bottom:none}
+.ask__r .q{width:22px;height:22px;border-radius:6px;background:var(--kz-primary-wash);color:var(--kz-primary);display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none;margin-top:1px}
+.ask__r div{font:400 13.5px/1.62 var(--kz-font-sans);color:var(--kz-ink-2)}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side">
+<div class="side__mark"><div class="ic"><ion-icon name="restaurant-outline"></ion-icon></div><b>koomzo · POS</b></div>
+<p class="side__v">Recipes &amp; depletion · Sep 2026</p>
+<div class="side__g">Position</div>
+<a class="nv" href="#short"><ion-icon name="flash-outline"></ion-icon>The short answer</a>
+<a class="nv" href="#have"><ion-icon name="cube-outline"></ion-icon>What we already have</a>
+<a class="nv" href="#market"><ion-icon name="business-outline"></ion-icon>How others do it</a>
+<div class="side__g">The model</div>
+<a class="nv" href="#ladder"><ion-icon name="layers-outline"></ion-icon>The depletion ladder</a>
+<a class="nv" href="#r0"><ion-icon name="ellipse-outline"></ion-icon>0 · Off</a>
+<a class="nv" href="#r1"><ion-icon name="beer-outline"></ion-icon>1 · Direct</a>
+<a class="nv" href="#r2"><ion-icon name="wine-outline"></ion-icon>2 · Recipe</a>
+<a class="nv" href="#r3"><ion-icon name="flask-outline"></ion-icon>3 · Prep batch</a>
+<a class="nv" href="#r4"><ion-icon name="analytics-outline"></ion-icon>4 · Variance</a>
+<div class="side__g">Mechanics</div>
+<a class="nv" href="#when"><ion-icon name="time-outline"></ion-icon>When stock moves</a>
+<a class="nv" href="#units"><ion-icon name="resize-outline"></ion-icon>Units &amp; pours</a>
+<a class="nv" href="#mods"><ion-icon name="options-outline"></ion-icon>Modifiers</a>
+<a class="nv" href="#setup"><ion-icon name="sparkles-outline"></ion-icon>The setup story</a>
+<div class="side__g">Delivery</div>
+<a class="nv" href="#tiers"><ion-icon name="pricetags-outline"></ion-icon>Tier placement</a>
+<a class="nv" href="#plan"><ion-icon name="list-outline"></ion-icon>Build sequence</a>
+<a class="nv" href="#risk"><ion-icon name="alert-circle-outline"></ion-icon>Risks</a>
+<a class="nv" href="#decide"><ion-icon name="hand-left-outline"></ion-icon>Your call</a>
+</nav>
+
+<main class="doc">
+<p class="eb">Design note · Restaurant &amp; bar stock</p>
+<h1>Recipes, pours, and the depletion ladder</h1>
+<p class="lede">The worry was right: "define a recipe for every meal" is how restaurant inventory projects die. A chef will not enter 14 grams of bouillon cube per plate, and if the ladder starts there, nobody climbs it. But the answer is not to skip recipes — it is to make <b>four separate products</b> out of what other vendors sell as one, and let a venue stop at whichever rung pays for itself. Two useful facts shorten the work: Koomzo already has the recipe primitive (<span class="mono">type:'composite'</span> in Inventory, <span class="mono">MR.explode()</span> in MRP), and in a West/Central African bar the large majority of revenue is <b>bottled</b> — beer, water, soft drinks — which needs no recipe at all.</p>
+<div class="links">
+<a href="Koomzo - Register and Inventory Integration.html"><ion-icon name="git-network-outline"></ion-icon>Integration spec</a>
+<a href="Koomzo - Stock Posting Implementation Plan.html"><ion-icon name="cart-outline"></ion-icon>Stock posting plan</a>
+<a href="Koomzo POS - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Inventory module</a>
+<a href="Koomzo POS - Restaurant &amp; Bar.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+</div>
+
+<h2 id="short">1 · The short answer</h2>
+<p>Do not ship "restaurant recipes" as a feature. Ship a <b>depletion ladder</b> with four rungs, each independently switchable per item, each paying for itself before the next is offered:</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:9%">Rung</th><th style="width:20%">What it is</th><th style="width:26%">Setup cost to the venue</th><th>Typical share of a Douala bar-restaurant's revenue</th></tr></thead>
+<tbody>
+<tr><td><b>0</b></td><td>No stock link</td><td>None — the default</td><td>Everything, on day one</td></tr>
+<tr><td><b>1</b></td><td><b>Direct</b> — menu line <i>is</i> a stock item</td><td>One toggle per item. Beer, water, soft drinks, cigarettes, bottled wine</td><td><b>~60–75%</b> of bar revenue, and it is the stock that walks</td></tr>
+<tr><td><b>2</b></td><td><b>Recipe</b> — a line depletes components</td><td>2–5 minutes per drink or dish, once</td><td>Cocktails, spirits by the dose, the 10–15 highest-volume plates</td></tr>
+<tr><td><b>3</b></td><td><b>Prep batch</b> — make once, sell by the glass</td><td>One recipe + a morning "made 20 L" entry</td><td>Bissap, folleré, ginger, sauces, marinades</td></tr>
+<tr><td><b>4</b></td><td><b>Variance</b> — counted vs expected</td><td>A physical count, twice</td><td>Nothing directly; it is the report that justifies rungs 1–3</td></tr>
+</tbody></table></div>
+<div class="note good"><ion-icon name="checkmark-circle-outline"></ion-icon><p><b>The progressive-disclosure claim.</b> A venue that never leaves rung 1 still gets the single most valuable thing restaurant inventory offers in this market: it knows how many beers it should have. That is a complete, shippable product. Rungs 2–4 are opt-in depth, surfaced only once rung 1 is in use.</p></div>
+
+<h2 id="have">2 · What Koomzo already has (more than expected)</h2>
+<p>This is not a greenfield feature. Three of the four pieces exist:</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:24%">Piece</th><th style="width:20%">Where</th><th>State</th></tr></thead>
+<tbody>
+<tr><td><b>Recipe primitive</b></td><td><span class="mono">inventory/iv-data.js</span></td><td><span class="y">Exists.</span> <span class="mono">type:'composite'</span> with <span class="mono">recipe:[{id,qty}]</span>. The <span class="mono">composite</span> capability is already described as <i>"A sale depletes components, not the parent."</i></td></tr>
+<tr><td><b>Recipe editor UI</b></td><td><span class="mono">inventory/iv-items.jsx</span></td><td><span class="y">Exists.</span> A Recipe tab on composite items, with component cost roll-up and a <b>Buildable now</b> figure — already the right shape for a bar.</td></tr>
+<tr><td><b>Multi-level explode</b></td><td><span class="mono">mrp/mrp-data.js</span></td><td><span class="y">Exists.</span> <span class="mono">MR.explode()</span> recurses 4 deep, handles yield &lt; 100%, co-products, rolled cost. Rung 3 is this, renamed.</td></tr>
+<tr><td><b>Movement ledger</b></td><td><span class="mono">kz-stock.js</span></td><td><span class="y">Exists</span> as platform, with <span class="mono">kz-stock-sales.js</span> posting on paid for five modules.</td></tr>
+<tr><td><b>Restaurant ↔ Inventory link</b></td><td><span class="mono">restaurant/rdata.js</span></td><td><span class="n">Missing.</span> <span class="mono">RK_MENU</span> is a standalone catalogue — <span class="mono">{id,cat,name,price,station,tags}</span>. No item id, no unit, no recipe, no stock field. This is the entire gap.</td></tr>
+</tbody></table></div>
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><p>So the work is <b>not</b> "build a recipe system." It is: give a menu line an optional pointer into Inventory, and let that pointer resolve through machinery that already ships. That reframing is what keeps this small.</p></div>
+
+<h2 id="market">3 · What the other vendors do — and what to take</h2>
+<p class="sub">Four systems, four different bets on where to put the complexity.</p>
+<div class="g2">
+<div class="card"><h4><ion-icon name="cube-outline"></ion-icon>Odoo</h4><p>Uses its manufacturing <b>Kit BOM</b>: <span class="mono">Kit</span>-type bills of material generate ingredient stock moves at the point of sale with no manufacturing order in between<sup>1</sup>, while genuinely pre-made batches use a normal Manufacture BOM created in advance<sup>2</sup>. <b>Take:</b> the two-mode split — per-sale explosion vs. pre-made batch — is exactly rungs 2 and 3. <b>Leave:</b> routing a restaurant through a Manufacturing app.</p></div>
+<div class="card"><h4><ion-icon name="analytics-outline"></ion-icon>Toast</h4><p>Splits the product in two. The POS itself only does menu-item countdown and 86-ing — <i>"It knows nothing about ingredients, vendors, or ordering"</i><sup>3</sup>. Real recipes, counts and actual-vs-theoretical live in a separate paid back-office tier<sup>4</sup>, where theoretical consumption is <i>ingredient amount in a recipe × items sold</i><sup>5</sup>. Prep items deplete as themselves, not as their raw components<sup>6</sup>. <b>Take:</b> the tier split, and the prep-item rule — it is rung 3 in one sentence. <b>Leave:</b> the 2–3 day reporting lag<sup>7</sup>.</p></div>
+<div class="card"><h4><ion-icon name="beer-outline"></ion-icon>Loyverse</h4><p>The small-venue benchmark, and the closest to Koomzo's buyer. Its bar story is deliberately shallow: items you buy and sell are tracked directly; composed drinks need a simple ingredient list, and there is no variance engine. <b>Take:</b> the honesty of stopping early. Most of its bars only ever track bottles.</p></div>
+<div class="card"><h4><ion-icon name="storefront-outline"></ion-icon>Lightspeed</h4><p>Retail-first, with ingredient-level tracking positioned as an upper-tier / add-on concern rather than a day-one setup task. <b>Take:</b> never gate the register on inventory depth being configured.</p></div>
+</div>
+<div class="note"><ion-icon name="bulb-outline"></ion-icon><p><b>The consensus none of them state outright:</b> every one of these systems lets an operator sell profitably with <i>zero</i> recipes configured, and every one puts recipe depth behind a later tier. Koomzo's differentiator is not having recipes — it is making rung 1 so cheap to adopt (one toggle, no new screen) that a 6-table bar actually uses it.</p></div>
+
+<h2 id="ladder">4 · The depletion ladder</h2>
+<p class="sub">One field on a menu line decides everything: <span class="mono">stock</span>. Absent = rung 0. The register never changes behaviour; only what the adapter posts changes.</p>
+<span class="code"><b>// restaurant/rdata.js — the only schema change to RK_MENU</b>
+{ id:'be1', name:'33 Export 65cl', price:1000, station:'bar',
+  stock:{ mode:'direct', item:'bv12', qty:1 } }              <b>// rung 1</b>
+
+{ id:'co1', name:'Bissap Rhum', price:2500, station:'bar',
+  stock:{ mode:'recipe', lines:[
+    { item:'sp-rum', qty:4,  unit:'cl' },
+    { item:'pr-bis', qty:12, unit:'cl' },                    <b>// a prep item — rung 3</b>
+    { item:'gn-ice', qty:1,  unit:'scoop' } ] } }            <b>// rung 2</b>
+
+{ id:'mn2', name:'Poulet DG', price:4500, station:'grill',
+  stock:{ mode:'recipe', lines:[
+    { item:'fd-chk', qty:0.35, unit:'kg' },
+    { item:'fd-pla', qty:2,    unit:'pc' } ] } }</span>
+
+<div class="rung" id="r0">
+<div class="rung__h"><div class="num">0</div><b>Off — the menu is a price list</b><span class="tag core">Default · all tiers</span><span class="meta">setup: none</span></div>
+<div class="rung__b">
+<p>No <span class="mono">stock</span> key. The line sells, prints to its station, and posts nothing. <b>This must stay the default forever</b> — a new venue configures zero inventory to open its first ticket, and today's Restaurant module behaves exactly this way, so rung 0 is already shipped and already correct.</p>
+<p><b>86 / "rupture" still works here.</b> A manual out-of-stock toggle per menu item is a service tool, not an inventory feature, and belongs at rung 0. It is the single most-requested thing in a market where the fish finishes at 8pm.</p>
+</div></div>
+
+<div class="rung" id="r1">
+<div class="rung__h"><div class="num">1</div><b>Direct — the menu line <i>is</i> a stock item</b><span class="tag core">Core · with Inventory</span><span class="meta">setup: one toggle</span></div>
+<div class="rung__b">
+<p>Sell one <span class="mono">33 Export 65cl</span>, one bottle leaves stock. No recipe, no unit maths, no new concept. In Inventory this is an ordinary <span class="mono">type:'product'</span> item that gained <span class="mono">pos:true</span> — the mechanism Products v2 already uses to put an item on a register tile.</p>
+<p><b>Setup UX:</b> in the menu-item sheet, a single row — <i>Track stock</i> → item picker, pre-filtered to items whose name fuzzy-matches the menu line. For a drinks list this is a 20-item, five-minute job, and a <b>Match all</b> button should do most of it: bar catalogues and supplier invoices use the same names.</p>
+<p><b>Covers:</b> beer, soft drinks, water, bottled wine, cigarettes, packaged snacks, sachets. In a typical bar-restaurant this is the majority of units sold and nearly all of the shrinkage risk.</p>
+</div></div>
+
+<div class="rung" id="r2">
+<div class="rung__h"><div class="num">2</div><b>Recipe — one line depletes several components</b><span class="tag plus">Plus</span><span class="meta">setup: 2–5 min per item</span></div>
+<div class="rung__b">
+<p>The existing <span class="mono">composite</span> capability, reached from the menu item instead of the Inventory item. A cocktail is <span class="mono">4cl rum + 12cl bissap + 1 lime wedge</span>; a plate is <span class="mono">0.35kg chicken + 2 plantain</span>.</p>
+<p><b>The bar case is the easy one</b> and should lead the design. Spirits are poured in fixed doses — 4cl, 2cl for a shot — so a bottle is <span class="mono">unit:'cl'</span>, on-hand is 70cl per bottle, and the pour is one number. This is genuinely accurate. Food is the hard one: portions vary, and a venue that enters 0.35kg of chicken will find its variance report is mostly noise. So:</p>
+<p><b>Default food recipes to the "countable" components only.</b> When the operator adds a recipe to <span class="mono">Poulet DG</span>, pre-suggest the things that come in units — the chicken, the plantain — and leave oil, salt, bouillon and spice out entirely, with one line of copy: <i>"Track what you count. Leave out oil, salt and spices — they add work, not accuracy."</i> Toast's variance model rests on recipe accuracy<sup>5</sup>; a half-recipe that is right beats a full recipe that is invented.</p>
+<p><b>Reuse, do not rebuild:</b> the Recipe tab in <span class="mono">iv-items.jsx</span> is the editor. The menu sheet links to it. "Buildable now" becomes the bar's <i>"how many mojitos are left in the house"</i> number — already computed there as <span class="mono">min(floor(onHand / qty))</span>.</p>
+</div></div>
+
+<div class="rung" id="r3">
+<div class="rung__h"><div class="num">3</div><b>Prep batch — make 20 L in the morning, sell by the glass</b><span class="tag plus">Plus</span><span class="meta">setup: recipe + a daily entry</span></div>
+<div class="rung__b">
+<p>Bissap, folleré, ginger juice, palm-nut base, marinade, piment sauce, pounded cocoyam. An intermediate item with its own recipe and its own on-hand, made in a batch, then consumed by drinks and dishes. This is Odoo's pre-made-batch BOM<sup>2</sup> and Toast's prep item — where <i>the system depletes the stock of the prep item itself, rather than its individual raw components</i><sup>6</sup>.</p>
+<p>That rule matters and should be copied verbatim: selling a glass of bissap depletes <b>bissap</b>, not hibiscus and sugar. Raw components are consumed once, at <b>Make</b> time, by the person who made the batch. It keeps the sale one level deep and the maths obvious.</p>
+<p><b>The whole UI is one button.</b> On a prep item: <b>Make batch</b> → yield quantity → post. That is the entire manufacturing story a restaurant needs; <span class="mono">MR.explode()</span> already does the component side, including yield loss. No work orders, no routings, no MRP app.</p>
+<div class="note warn"><ion-icon name="warning-outline"></ion-icon><p><b>Spoilage.</b> Prep items expire — a batch of bissap is a two-day item. Depth beyond a <b>Discard rest</b> button (posting waste for the remainder at close) is out of scope for v1, but the button is not: without it, on-hand drifts upward forever and every rung above it becomes untrustworthy.</p></div>
+</div></div>
+
+<div class="rung" id="r4">
+<div class="rung__h"><div class="num">4</div><b>Variance — counted vs expected</b><span class="tag pro">Pro / later</span><span class="meta">setup: two physical counts</span></div>
+<div class="rung__b">
+<p>The report that pays for rungs 1–3: expected on-hand from the ledger, actual from a count, difference attributed to waste, over-pour or theft. Toast requires two completed counts plus product-mix mapping before it will show the analysis<sup>8</sup> — a genuine constraint, not a limitation to design around.</p>
+<p><b>Keep it out of v1</b>, but do one thing now: make the count screen and the movement ledger record enough to compute it later. Specifically, every posted movement needs <span class="mono">source</span> (sale · fire · make · waste · count) so the variance query is a grouping, not an archaeology project.</p>
+<p>For a bar, the one number worth previewing early is per-bottle: <i>expected 12 doses, poured 9.</i> That is the conversation an owner actually wants to have with a barman.</p>
+</div></div>
+
+<h2 id="when">5 · When stock moves — and the split that is already in the code</h2>
+<p>The fire-vs-pay question resolves cleanly once you notice that <span class="mono">register.jsx</span> already excludes bar items from firing: both <span class="mono">fireCourse()</span> and <span class="mono">sendAll()</span> filter on <span class="mono">station !== 'bar'</span>. Drinks never go to the kitchen. So the timing rule writes itself along a line the code already draws:</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:16%">What</th><th style="width:18%">Posts when</th><th style="width:20%">Adapter</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><b>Kitchen item</b><br><span class="mono">station ≠ bar</span></td><td><b>Fire</b></td><td><span class="mono">kz-stock-fire.js</span> <span class="tag no">new</span></td><td>Food is consumed when it is cooked. A table that walks out still ate the chicken. Fire time is also when the kitchen can react to a shortage.</td></tr>
+<tr><td><b>Bar item</b><br><span class="mono">station = bar</span></td><td><b>Paid</b></td><td><span class="mono">kz-stock-sales.js</span> <span class="tag core">exists</span></td><td>Bar items never fire — there is no fire event to hook. They behave exactly like a Retail Flex line, so they use the adapter that already ships.</td></tr>
+<tr><td><b>Voided after fire</b></td><td><b>Void</b></td><td>fire adapter</td><td>Posts <span class="mono">kind:'waste'</span>, <b>never</b> a reversal. The food was made and thrown away — that is the number the owner needs to see.</td></tr>
+<tr><td><b>Cancelled before fire</b></td><td>—</td><td>—</td><td>Nothing was consumed. Nothing posts.</td></tr>
+<tr><td><b>Prep batch made</b></td><td><b>Make</b></td><td><span class="mono">kz-stock.js</span></td><td>Components out, prep item in, at the moment the cook says so.</td></tr>
+</tbody></table></div>
+<div class="note bad"><ion-icon name="alert-circle-outline"></ion-icon><p><b>This lands on top of a live defect.</b> <span class="mono">clearTable()</span> (<span class="mono">store.jsx:97</span>) deletes every non-<span class="mono">done</span> ticket for a table, and <span class="mono">finishOrder()</span> calls it on payment — so food still cooking silently disappears. Once fire posts stock, that deletion becomes a stock bug as well as a service bug: consumed food with no record of where it went. <b>Fix the ticket lifecycle first</b> (cancel with a reason, not delete), then wire the adapter.</p></div>
+
+<h2 id="units">6 · Units, pours and the one conversion we allow</h2>
+<p>Unit conversion is where recipe systems bloat. Koomzo should permit exactly one level: a <b>purchase unit</b> and a <b>use unit</b>, with an integer or simple decimal factor set once on the item.</p>
+<div class="ba">
+<div class="bad"><div class="t2">Not this</div><code>density tables · custom UoM classes
+· per-recipe overrides · yield %
+on every line · nested conversions</code></div>
+<div class="good"><div class="t2">This</div><code>Rum        buy: bottle 70cl  use: cl
+Chicken    buy: kg          use: kg
+Plantain   buy: bunch (12)  use: pc
+Bissap     buy: —  make: L  use: cl</code></div>
+</div>
+<p>On-hand displays in the purchase unit (<i>8 bottles</i>), because that is how it is counted and ordered; recipes are written in the use unit (<i>4cl</i>), because that is how it is poured. The register shows neither. <span class="mono">iv-data.js</span> already carries <span class="mono">unit</span> per item with <span class="mono">'ml'</span>, <span class="mono">'sheet'</span>, <span class="mono">'pack'</span> in use — the shape exists; it needs the second field and the factor.</p>
+
+<h2 id="mods">7 · Modifiers — the trap to avoid in v1</h2>
+<p>"Extra cheese", "double shot", "no piment" each theoretically adjust a recipe. Odoo users hit this immediately<sup>9</sup>. Full modifier-to-recipe mapping multiplies setup cost by the number of modifiers and is the single fastest way to make rung 2 unaffordable.</p>
+<p><b>v1 rule:</b> a modifier may carry <b>its own direct stock line</b> (extra cheese = 1 × cheese slice) but may not edit the parent recipe. A "double" modifier multiplies only the lines that name the spirit. Anything more expressive waits for evidence that venues want it.</p>
+
+<h2 id="setup">8 · The setup story — where progressive disclosure actually lives</h2>
+<p class="sub">Rungs are worthless if the operator meets them all at once. The disclosure is in the sequence, not the feature list.</p>
+<div class="rung"><div class="rung__h"><b>Day 1 — open the till</b><span class="tag no">rung 0</span></div><div class="rung__b"><p>Menu, prices, stations, tickets. Inventory is not mentioned. Nothing about stock appears anywhere in Restaurant.</p></div></div>
+<div class="rung"><div class="rung__h"><b>Day 8 — Inventory is switched on</b><span class="tag core">rung 1</span></div><div class="rung__b"><p>One card appears on the Restaurant settings screen: <i>"Track your drinks stock — 24 of your menu lines look like items you buy. Match them?"</i> One screen, two columns, a Match-all button, done in five minutes. <b>No recipe concept is introduced.</b></p></div></div>
+<div class="rung"><div class="rung__h"><b>Week 4 — the first count</b><span class="tag core">rung 1 → value</span></div><div class="rung__b"><p>Counted 84 beers, expected 91. The seven-bottle gap is the entire business case, and it arrives before the operator has written a single recipe. <b>This is the moment the product earns rung 2</b>, and only here does the recipe prompt appear: <i>"Your cocktails aren't tracked. Add a recipe to the five you sell most?"</i></p></div></div>
+<div class="rung"><div class="rung__h"><b>Month 2+ — depth, on request</b><span class="tag plus">rungs 2–3</span></div><div class="rung__b"><p>Recipes on the top sellers. Prep batches when someone asks why bissap never runs out on paper. Food recipes last, on the 10–15 highest-volume plates — never as a "complete the menu" task, and never with a completeness meter, which would turn a good half-configured system into a guilt generator.</p></div></div>
+<div class="note"><ion-icon name="eye-off-outline"></ion-icon><p><b>Never show an unconfigured venue a recipe field.</b> The Recipe tab, the prep-item type and the variance report are all hidden until the rung below them is in active use — the same capability-gating <span class="mono">kz-caps.js</span> already performs for module tiers.</p></div>
+
+<h2 id="tiers">9 · Tier placement</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:26%">Capability</th><th style="width:14%">Lite</th><th style="width:14%">Plus</th><th style="width:14%">Pro</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>86 / out-of-stock toggle</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td>Service tool. Never gated — it costs nothing and every venue needs it.</td></tr>
+<tr><td>Direct stock link (rung 1)</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td>Requires Inventory, but must be in Lite: this <i>is</i> the small-venue value.</td></tr>
+<tr><td>Recipes (rung 2)</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td>Existing <span class="mono">composite</span> capability, already tiered this way.</td></tr>
+<tr><td>Prep batches (rung 3)</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td>One extra item type + a Make button.</td></tr>
+<tr><td>Variance / AvT (rung 4)</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td>Matches where Toast puts it<sup>4</sup>. Needs counts to mean anything.</td></tr>
+<tr><td>Recipe costing &amp; margin</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td>Roll-up already computed in <span class="mono">iv-items.jsx</span> and <span class="mono">MR.bomCost()</span>.</td></tr>
+</tbody></table></div>
+
+<h2 id="plan">10 · Build sequence</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:6%">#</th><th style="width:30%">Change</th><th style="width:24%">Files</th><th>Depends on</th></tr></thead>
+<tbody>
+<tr><td><b>1</b></td><td>Fix the ticket lifecycle — cancel with reason, never delete</td><td><span class="mono">restaurant/store.jsx</span>, <span class="mono">kitchen.jsx</span></td><td>Nothing. Blocks everything else.</td></tr>
+<tr><td><b>2</b></td><td>Fix the reload-recharge defect — session ticket sequence, validate loaded tenders, post folio after success</td><td><span class="mono">register.jsx</span>, <span class="mono">kz-charge.jsx</span>, <span class="mono">modals.jsx</span></td><td>Nothing. Money bug — ship first.</td></tr>
+<tr><td><b>3</b></td><td>Add <span class="mono">stock</span> to the menu schema; direct mode only</td><td><span class="mono">restaurant/rdata.js</span></td><td>—</td></tr>
+<tr><td><b>4</b></td><td>Bar items post on paid through the existing sales adapter</td><td><span class="mono">kz-stock-sales.js</span></td><td>3</td></tr>
+<tr><td><b>5</b></td><td><span class="mono">kz-stock-fire.js</span> — kitchen items post on fire, waste on post-fire void</td><td><span class="mono">kz-stock-fire.js</span> <span class="tag no">new</span></td><td>1, 3</td></tr>
+<tr><td><b>6</b></td><td>Match screen — menu lines ↔ inventory items, with Match all</td><td><span class="mono">restaurant/</span>, <span class="mono">inventory/</span></td><td>3</td></tr>
+<tr><td><b>7</b></td><td>Two-unit model + factor on items</td><td><span class="mono">iv-data.js</span>, <span class="mono">iv-items.jsx</span></td><td>—</td></tr>
+<tr><td><b>8</b></td><td>Recipe mode resolves through <span class="mono">composite</span>; reuse the Recipe tab</td><td><span class="mono">kz-stock.js</span>, <span class="mono">iv-items.jsx</span></td><td>5, 7</td></tr>
+<tr><td><b>9</b></td><td>Prep item type + Make batch button</td><td><span class="mono">iv-*</span>, borrow <span class="mono">MR.explode()</span></td><td>8</td></tr>
+<tr><td><b>10</b></td><td><span class="mono">source</span> on every movement; count screen records for variance</td><td><span class="mono">kz-stock.js</span></td><td>4, 5</td></tr>
+</tbody></table></div>
+<p>Items 1–6 are the shippable slice: the money bug is closed, the kitchen stops losing tickets, and a bar knows its bottle count. <b>Ship there and stop</b> until a real venue asks for rung 2.</p>
+
+<h2 id="risk">11 · Risks</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:28%">Risk</th><th style="width:10%">Severity</th><th>Mitigation</th></tr></thead>
+<tbody>
+<tr><td>Recipes entered once, never maintained; variance becomes noise and the feature is abandoned</td><td><b>High</b></td><td>Countable components only. No completeness meter. Variance reports per-item, so one bad recipe doesn't poison the report.</td></tr>
+<tr><td>Free pours make bar variance permanently negative</td><td>Med</td><td>Expected outcome, not a bug — surface it as <i>over-pour</i>, and let a venue mark an item "estimate only" to drop it from variance.</td></tr>
+<tr><td>Fire-time depletion makes on-hand go negative during service</td><td>Med</td><td>Existing platform rule holds: <b>zero stock warns, never blocks</b>. Service must never stop because a count is wrong.</td></tr>
+<tr><td>Prep-item spoilage inflates on-hand indefinitely</td><td>Med</td><td>Discard rest at close, in v1.</td></tr>
+<tr><td>Two catalogues drift — a menu line and its item renamed apart</td><td>Med</td><td>Link by id, show the item name in the menu sheet, flag orphans on the match screen.</td></tr>
+<tr><td>Restaurant becomes dependent on Inventory being configured</td><td><b>High</b></td><td>Rung 0 stays the default forever. No stock UI appears in Restaurant until Inventory is on.</td></tr>
+</tbody></table></div>
+
+<h2 id="decide">12 · Your call</h2>
+<div class="ask">
+<div class="ask__r"><div class="q">1</div><div><b>Is the ladder the right shape</b> — four rungs, rung 1 in Lite, recipes at Plus, variance at Pro? The alternative is recipes-or-nothing, which is what the market does and what you were right to be wary of.</div></div>
+<div class="ask__r"><div class="q">2</div><div><b>Fire-time for food, pay-time for bar</b> — confirmed? It follows the <span class="mono">station !== 'bar'</span> line already in the code, so it costs nothing structurally, but it means a walked table still shows consumption.</div></div>
+<div class="ask__r"><div class="q">3</div><div><b>Post-fire void posts waste, not a reversal.</b> This is the accounting-honest option and makes waste visible. Confirm you want the number visible — some owners would rather not see it.</div></div>
+<div class="ask__r"><div class="q">4</div><div><b>Ticket lifecycle:</b> cancel-with-reason replacing delete. Needed for stock integrity, but it changes what the kitchen sees during service — cancelled cards persist until acknowledged. Acceptable?</div></div>
+<div class="ask__r"><div class="q">5</div><div><b>Ship at step 6 and stop?</b> My recommendation. Rungs 2–3 are designed and cheap once 1–6 land, but building them before a venue asks risks a feature nobody configures.</div></div>
+<div class="ask__r"><div class="q">6</div><div><b>Does this go into the Ionic port as-is, or does the React source get fixed first?</b> Steps 1–2 are defects that exist in both codebases; steps 3–10 are new work that arguably should only be built once, in Angular.</div></div>
+</div>
+
+<h2>Sources</h2>
+<p class="sub">1, 2 · Odoo community forum, Kit BOM vs Manufacture BOM for POS restaurant sales. 3, 7 · LineNow, <i>Toast Inventory Management Explained</i>. 4, 5, 6, 8 · Toast / xtraCHEF support documentation on recipe costing, stock depletion and actual-vs-theoretical analysis. 9 · Odoo forum, selling products composed of inventory ingredients with modifiers. Loyverse and Lightspeed positioning from their published bar-POS and retail-POS product pages.</p>
+
+</main>
+</div>
+</body>
+</html>

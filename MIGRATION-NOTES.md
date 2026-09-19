@@ -51,6 +51,7 @@ Register and stock:
 - `Koomzo - Phone Compositions.html`
 - `Koomzo - Register and Inventory Integration.html`
 - `Koomzo - Stock Posting Implementation Plan.html`
+- `Koomzo - Recipe and Depletion Model.html`  *(new — restaurant fire-time depletion)*
 - `Koomzo - Mobile Convergence Plan.html`
 
 Inventory and products:
@@ -73,8 +74,8 @@ Some docs load `kz/kz-locale.js` and `spec/spec-data.js`, so they must stay at
 
 ## Known open items (not yet in code)
 
-1. Restaurant stock depletion is fire-time, not payment-time — spec written,
-   adapter not wired.
+1. Restaurant stock depletion is fire-time, not payment-time — spec written
+   (`Koomzo - Recipe and Depletion Model.html`), adapter not wired.
 2. Three seeded `kind:'sale'` rows in demo data must be dropped before anything
    sums the movement log.
 3. `IV.onHand()` duplicates the platform core and should collapse into `kz-stock.js`.
