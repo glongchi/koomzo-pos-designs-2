@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Guide utilisateur Koomzo — Stock</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="alternate" hreflang="en" href="Koomzo User Guide - Inventory.html" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="guide/guide.css" />
+<link rel="stylesheet" href="guide/anim.css" />
+<script>(function(){var b='https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons';var s=document.createElement('script');s.type='module';s.src=b+'.esm.js';document.head.appendChild(s);})();</script>
+</head>
+<body data-page="inventory">
+<header class="ug-top">
+<a class="ug-mark" data-page="hub" href="Koomzo Guide utilisateur.html"><div class="ic"><ion-icon name="book-outline"></ion-icon></div><b>Guide utilisateur Koomzo</b><span>Version 2 · octobre 2026</span></a>
+<nav class="ug-mods" aria-label="Guides par module">
+<a data-page="restaurant" href="Koomzo Guide utilisateur - Restaurant.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a data-page="hotel" href="Koomzo Guide utilisateur - Hotel.html"><ion-icon name="bed-outline"></ion-icon>Hôtel</a>
+<a data-page="retail" href="Koomzo Guide utilisateur - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+<a data-page="inventory" href="Koomzo Guide utilisateur - Inventory.html" class="on" aria-current="page"><ion-icon name="cube-outline"></ion-icon>Stock</a>
+<a data-page="signage" href="Koomzo Guide utilisateur - Signage.html"><ion-icon name="tv-outline"></ion-icon>Affichage</a>
+<a data-page="salon" href="Koomzo Guide utilisateur - Salon.html"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a data-page="gym" href="Koomzo Guide utilisateur - Gym.html"><ion-icon name="barbell-outline"></ion-icon>Salle de sport</a>
+<a data-page="queue" href="Koomzo Guide utilisateur - Queue.html"><ion-icon name="people-outline"></ion-icon>File d’attente</a>
+</nav>
+<div class="ug-lang" aria-label="Langue"><a data-lang-link="en" href="Koomzo User Guide - Inventory.html" hreflang="en">EN</a><b>FR</b></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Sommaire">
+<a class="side__back" data-page="hub" href="Koomzo Guide utilisateur.html#p1"><ion-icon name="arrow-back-outline"></ion-icon>Chapitres Plateforme</a>
+<div class="side__g">Stock</div>
+<a href="#iv"><ion-icon name="cube-outline"></ion-icon>1 · Est-ce pour moi ?</a>
+<a href="#iv-setup"><ion-icon name="construct-outline"></ion-icon>2 · Installation</a>
+<a href="#iv-day"><ion-icon name="sunny-outline"></ion-icon>3 · Une semaine</a>
+<a href="#iv-screens"><ion-icon name="albums-outline"></ion-icon>4 · Les écrans</a>
+<a class="sub" href="#v-items">Articles</a>
+<a class="sub" href="#v-stock">Mouvements</a>
+<a class="sub" href="#v-orders">Commandes</a>
+<a class="sub" href="#v-reports">Rapports</a>
+<a href="#iv-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · En cas de problème</a>
+<a href="#iv-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Aller plus loin</a>
+<a href="#iv-cards"><ion-icon name="id-card-outline"></ion-icon>Fiches du personnel</a>
+</nav>
+<main class="doc">
+
+<section id="top">
+<p class="eb">Guide de module</p>
+<h1>Stock</h1>
+<p class="lede">Un seul catalogue et un seul stock pour chaque module qui vend des articles — la caisse de la boutique, le bar, les produits techniques du salon, le bar à jus de la salle de sport. Chaque changement laisse une ligne lisible. Les chapitres communs sont dans les <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">chapitres Plateforme</a> ; comment les modules alimentent le stock est en <a data-page="hub" href="Koomzo Guide utilisateur.html#p7">P7</a>.</p>
+<div class="note"><ion-icon name="language-outline"></ion-icon><p>Les captures montrent la version anglaise du prototype. Les boutons sont donnés en français, avec le libellé anglais entre parenthèses quand c'est utile.</p></div>
+</section>
+
+<section id="iv" class="part first">
+<p class="eb">Stock · Partie 1</p>
+<h2>Est-ce pour moi ?</h2>
+<p class="sub">Activez le Stock quand vous voulez savoir ce que vous avez, ce que vous avez vendu et ce qui a disparu. Sans lui, la caisse vend quand même ; avec lui, chaque vente retire du stock.</p>
+<div class="grid3">
+<div class="card"><h4>Boutiques et pharmacies</h4><p>Quantité par article, réassort avant le rayon vide, lots et péremption.</p></div>
+<div class="card"><h4>Bars et restaurants</h4><p>Casiers et bouteilles ; plats qui consomment des ingrédients. Commencez par les boissons.</p></div>
+<div class="card"><h4>Salons et salles de sport</h4><p>Produits revendus, et couleur ou jus consommés en cabine ou au bar.</p></div>
+</div>
+<h3>Ce que vous avez à chaque niveau</h3>
+<div class="ladder">
+<div><h4><span class="tier lite">Lite</span>Savoir ce que vous avez</h4><ul><li>Articles : un seul catalogue</li><li>Quantité par article</li><li>Journal : chaque entrée et sortie</li></ul></div>
+<div><h4><span class="tier mid">Mid</span>Ne jamais manquer</h4><ul><li>Seuils et liste « à commander »</li><li>Répertoire des partenaires : fournisseurs et conditions</li><li>Prestations vendues au temps</li></ul></div>
+<div><h4><span class="tier full">Full</span>Maîtriser l'argent en stock</h4><ul><li>Bons de commande et réception</li><li>Inventaires avec écarts</li><li>Recettes et lots · péremption · numéros de série</li><li>Valorisation, marge, démarque</li><li>Plusieurs établissements et transferts</li></ul></div>
+</div>
+
+<h3>Le chemin d'un casier</h3>
+<p class="sub">Suivez la Castel 65 cl d'un bar d'Akwa : une commande reçue, deux caisses qui vendent, une alerte de réassort et l'inventaire du dimanche. Chaque étape laisse une ligne au journal.</p>
+<figure class="anim" data-ms="2700">
+<div class="anim__stage">
+<div class="iva">
+<div class="mcard">
+<div class="iva__it"><i><ion-icon name="beer-outline"></ion-icon></i><div><b>Castel 65 cl</b><div class="mk">Bar · objectif 56 · seuil 24</div></div></div>
+<div class="iva__q"><span id="iv-q">8</span> <small>bouteilles en stock</small></div>
+<div class="iva__bar"><b></b><em></em></div>
+<div class="iva__lg"><span>0</span><span>Seuil · 24</span><span>56</span></div>
+<p class="mchip" id="iv-st" style="margin:12px 0 0">Bas · à commander</p>
+</div>
+<div class="mcard">
+<div class="mk">Journal · cette semaine</div>
+<ul><li class="in"><span>Réception · PO-2216 · 2 casiers</span><span>+48</span></li><li class="out"><span>Vente · caisse du bar</span><span>−12</span></li><li class="out"><span>Vente · téléphone terrasse</span><span>−20</span></li><li><span>Seuil atteint</span><span>24</span></li><li class="out"><span>Inventaire · écart</span><span>−2</span></li><li><span>PO-2231 · 2 casiers · envoyé</span><span>+48 attendus</span></li></ul>
+</div>
+</div>
+</div>
+<ol class="anim__steps">
+<li data-set="pct=14 rows=0">Lundi matin : il reste 8 bouteilles. L'article affiche <b>Bas</b>.</li>
+<li data-set="pct=100 rows=1" data-put='{"#iv-q":"56","#iv-st":"En stock"}'>La livraison arrive. <b>Réceptionner</b> contre la commande : +48, et le prix de revient est mis à jour.</li>
+<li data-set="pct=79 rows=2" data-put='{"#iv-q":"44"}'>La caisse du bar vend 12 bouteilles. Chaque vente retire du stock aussitôt.</li>
+<li data-set="pct=43 rows=3" data-put='{"#iv-q":"24"}'>Le téléphone du serveur en terrasse en vend 20 — le même stock, sans double compte.</li>
+<li data-set="rows=4" data-put='{"#iv-st":"Seuil · sur la liste à commander"}'>Il en reste 24 : le seuil est franchi, l'article rejoint <b>À commander</b>.</li>
+<li data-set="pct=39 rows=5" data-put='{"#iv-q":"22","#iv-st":"Inventaire · 2 manquantes"}'>Inventaire du dimanche : 22 en rayon, pas 24. L'écart est enregistré avec un motif.</li>
+<li data-set="rows=6" data-put='{"#iv-st":"Commandé · attendu mardi"}'>Un geste transforme la suggestion en bon de commande au fournisseur.</li>
+</ol>
+</figure>
+</section>
+
+<section id="iv-setup" class="part">
+<p class="eb">Stock · Partie 2</p>
+<h2>Installation <span class="tier lite">Lite</span></h2>
+<p class="sub">Commencez par les articles qui comptent le plus — souvent les boissons, ou vos 50 meilleures ventes. Ajoutez le reste ensuite.</p>
+<ol class="steps">
+<li><div><b>Importez ou ajoutez les articles</b><span>Articles → Importer depuis un tableur, ou Ajouter : nom, référence ou code-barres, prix, coût, unité (pièce, casier, ml, kg).</span></div></li>
+<li><div><b>Choisissez ce qui est suivi</b><span>Suivez le stock des marchandises ; les prestations et les plats sans recette restent <i>Non suivis</i>.</span></div></li>
+<li><div><b>Saisissez ce que vous avez aujourd'hui</b><span>Mouvements → Inventaire. Le premier inventaire fixe le stock d'ouverture.</span></div></li>
+<li><div><b>Fixez les seuils</b><span>Le niveau où commander, et le niveau à atteindre. <span class="tier mid">Mid</span></span></div></li>
+<li><div><b>Ajoutez les fournisseurs</b><span>Commandes → Partenaires : téléphone, conditions, délai. <span class="tier mid">Mid</span></span></div></li>
+<li><div><b>Vendez un article et vérifiez</b><span>Passez-le en caisse ; le journal affiche la ligne de vente.</span></div></li>
+</ol>
+</section>
+
+<section id="iv-day" class="part">
+<p class="eb">Stock · Partie 3</p>
+<h2>Une semaine de stock</h2>
+<p class="sub">Le stock suit un rythme hebdomadaire, autour des ventes quotidiennes qui se font toutes seules.</p>
+<div class="tbl"><table>
+<thead><tr><th>Moment</th><th>Ce que vous faites</th><th>Écran</th><th>Niveau</th></tr></thead>
+<tbody>
+<tr><td><b>Chaque vente</b></td><td>Rien. La caisse, le bar ou le salon retire le stock tout seul.</td><td>—</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Une livraison</b></td><td>Réceptionnez contre la commande ; vérifiez quantités et coûts.</td><td><a href="#v-orders">Commandes</a></td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>Sans commande ? Entrée</b></td><td>Notez ce qui est arrivé, de qui, à quel coût.</td><td><a href="#v-stock">Mouvements</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Casse, cadeau, usage interne</b></td><td>Ajustez avec un motif : cassé, périmé, personnel, cadeau.</td><td>Mouvements</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Lundi · Commandes</b></td><td>Ouvrez À commander, acceptez la suggestion, envoyez le bon.</td><td>Commandes</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Dimanche · Inventaire</b></td><td>Comptez un rayon ou tout ; revoyez les écarts ; validez.</td><td>Mouvements → Inventaire</td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>Fin de mois</b></td><td>Valeur du stock, marge et démarque pour le propriétaire.</td><td><a href="#v-reports">Rapports</a></td><td><span class="tier full">Full</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="iv-screens" class="part">
+<p class="eb">Stock · Partie 4</p>
+<h2>Les écrans</h2>
+<p class="sub">La barre de gauche : Articles (Items), Mouvements (Stock), Commandes (Orders), Rapports (Reports), et Configuration en bas. Les captures montrent une entreprise avec une boutique et un salon, tous établissements confondus.</p>
+
+<h3 id="v-items">Articles <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/inv-items.jpg" alt="Articles" /><span class="pin" style="left:75.8%;top:5%">1</span><span class="pin" style="left:32.5%;top:28.7%">2</span><span class="pin" style="left:70%;top:28.7%">3</span><span class="pin" style="left:58%;top:58%">4</span><span class="pin" style="left:90%;top:47%">5</span><span class="pin" style="left:73%;top:18.3%">6</span><span class="pin" style="left:87%;top:18.3%">7</span></div>
+<ol class="callouts">
+<li><span><b>Établissement</b> — une boutique, ou toutes additionnées. <span class="tier full">Full</span></span></li>
+<li><span><b>Recherche</b> par nom, référence ou code-barres.</span></li>
+<li><span><b>Filtres</b> — type, catégorie, niveau de stock (bas, épuisé).</span></li>
+<li><span><b>En stock</b> — vert disponible, ambre bas, rouge épuisé. Les prestations affichent <i>Non suivi</i>.</span></li>
+<li><span><b>En caisse</b> — si la caisse peut le vendre. Les produits techniques restent hors caisse.</span></li>
+<li><span><b>Importer</b> depuis un tableur.</span></li>
+<li><span><b>Ajouter un article</b> — marchandise, prestation ou lot.</span></li>
+</ol>
+
+<h3 id="v-stock">Mouvements <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/inv-stock.jpg" alt="Journal du stock" /><span class="pin" style="left:14%;top:28.3%">1</span><span class="pin" style="left:62%;top:28.3%">2</span><span class="pin" style="left:29%;top:39%">3</span><span class="pin" style="left:54%;top:65.7%">4</span><span class="pin" style="left:91.8%;top:49.4%">5</span></div>
+<ol class="callouts">
+<li><span><b>Entrée, sortie, déplacement, ajustement</b> — chacun demande quoi, combien et pourquoi.</span></li>
+<li><span><b>Inventaire</b> (Count) — un rayon ou toute la boutique. <span class="tier full">Full</span></span></li>
+<li><span><b>Journal · En stock · En transit · Inventaires</b>.</span></li>
+<li><span><b>Une ligne par mouvement</b> — quoi, combien, d'où, quelle caisse, quand. Jamais modifiée.</span></li>
+<li><span><b>Exporter</b> pour le comptable.</span></li>
+</ol>
+
+<h3 id="v-orders">Commandes <span class="tier full">Full</span></h3>
+<div class="shot"><img src="guide/img/inv-orders.jpg" alt="Bons de commande" /><span class="pin" style="left:22%;top:18%">1</span><span class="pin" style="left:22%;top:39%">2</span><span class="pin" style="left:27%;top:51%">3</span><span class="pin" style="left:91.5%;top:62.4%">4</span><span class="pin" style="left:75.8%;top:28.5%">5</span><span class="pin" style="left:90.4%;top:28.5%">6</span></div>
+<ol class="callouts">
+<li><span><b>Achats et Partenaires</b> — les commandes, et ceux à qui vous achetez. <span class="tier mid">Mid</span></span></li>
+<li><span><b>Suggestions</b> — ce qui est sous le seuil, prêt à commander.</span></li>
+<li><span><b>Bon de commande</b> — fournisseur, lignes, échéance, montant.</span></li>
+<li><span><b>État</b> — brouillon, envoyé, reçu en partie, reçu.</span></li>
+<li><span><b>Réceptionner</b> (Receive) — cochez ce qui est arrivé ; les manquants restent ouverts.</span></li>
+<li><span><b>Nouvelle commande</b>.</span></li>
+</ol>
+
+<h3 id="v-reports">Rapports <span class="tier full">Full</span></h3>
+<div class="shot"><img src="guide/img/inv-reports.jpg" alt="Rapports de stock" /><span class="pin" style="left:35.7%;top:28.7%">1</span><span class="pin" style="left:18.6%;top:42.6%">2</span><span class="pin" style="left:17.9%;top:61%">3</span><span class="pin" style="left:36%;top:77.4%">4</span><span class="pin" style="left:52.4%;top:77.4%">5</span><span class="pin" style="left:80%;top:87%">6</span></div>
+<ol class="callouts">
+<li><span><b>Synthèse · Valorisation · Marge · Rotation · Démarque</b>.</span></li>
+<li><span><b>Valeur du stock</b> au coût, articles suivis, bas, épuisés, en commande.</span></li>
+<li><span><b>Démarque</b> — ce qui a disparu ce mois-ci, en francs.</span></li>
+<li><span><b>À surveiller</b> — sous l'objectif dans un établissement.</span></li>
+<li><span><b>Suggérer une commande</b> — transforme la liste en brouillon.</span></li>
+<li><span><b>Mouvements récents</b> — rien ne change le stock sans une ligne ici.</span></li>
+</ol>
+</section>
+
+<section id="iv-help" class="part">
+<p class="eb">Stock · Partie 5</p>
+<h2>En cas de problème</h2>
+<div class="qa">
+<div class="card"><h4><ion-icon name="remove-circle-outline"></ion-icon>Le stock affiche un nombre négatif.</h4><p>Un article a été vendu sans avoir été réceptionné. La vente n'est jamais bloquée. Saisissez la livraison oubliée, ou faites un inventaire de l'article.</p></div>
+<div class="card"><h4><ion-icon name="clipboard-outline"></ion-icon>L'inventaire ne correspond pas.</h4><p>Revoyez les écarts avant de valider : un gros écart vient souvent d'une livraison non saisie ou d'une vente sur le mauvais article. Validez avec un motif ; le propriétaire le voit dans Démarque.</p></div>
+<div class="card"><h4><ion-icon name="cube-outline"></ion-icon>Le fournisseur a livré moins que prévu.</h4><p>Ne réceptionnez que ce qui est arrivé. La commande reste <i>Reçue en partie</i> jusqu'au reste, ou jusqu'à ce que vous la clôturiez.</p></div>
+<div class="card"><h4><ion-icon name="calendar-outline"></ion-icon>Un lot périmé a été trouvé.</h4><p>Sortie avec le motif <i>Périmé</i>. Avec le suivi des lots, la caisse prévient avant de vendre un lot à date courte. <span class="tier full">Full</span></p></div>
+<div class="card"><h4><ion-icon name="cloud-offline-outline"></ion-icon>Deux caisses ont vendu la dernière bouteille hors ligne.</h4><p>Les deux ventes restent ; le stock affiche −1 jusqu'à la prochaine livraison ou au prochain inventaire. Rien n'est perdu à la synchronisation.</p></div>
+</div>
+</section>
+
+<section id="iv-more" class="part">
+<p class="eb">Stock · Partie 6</p>
+<h2>Aller plus loin</h2>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="layers-outline"></ion-icon><h4>Recettes et lots <span class="tier full">Full</span></h4><p>Un plat ou un coffret retire ses composants. Commencez par les boissons ; ajoutez les recettes plat par plat.</p></div>
+<div class="card ic-card"><ion-icon name="calendar-outline"></ion-icon><h4>Lots et péremption <span class="tier full">Full</span></h4><p>Numéro de lot et date de péremption à chaque réception. Pour les pharmacies et l'alimentaire.</p></div>
+<div class="card ic-card"><ion-icon name="barcode-outline"></ion-icon><h4>Numéros de série <span class="tier full">Full</span></h4><p>Chaque téléphone ou appareil identifié, avec sa garantie.</p></div>
+<div class="card ic-card"><ion-icon name="business-outline"></ion-icon><h4>Plusieurs établissements <span class="tier full">Full</span></h4><p>Un stock par boutique, un seul catalogue. Formule Professional.</p></div>
+<div class="card ic-card"><ion-icon name="git-compare-outline"></ion-icon><h4>Transferts <span class="soon"><ion-icon name="time-outline"></ion-icon>Disponible bientôt</span></h4><p>Déplacer du stock entre boutiques, avec une étape « en transit ». La synchronisation entre sites arrive.</p></div>
+<div class="card ic-card"><ion-icon name="stats-chart-outline"></ion-icon><h4>Valorisation et marge <span class="tier full">Full</span></h4><p>Valeur du stock au coût, marge par article, rotation.</p></div>
+</div>
+</section>
+
+<section id="iv-cards" class="part">
+<p class="eb">À imprimer et afficher</p>
+<h2>Fiches du personnel</h2>
+<div class="tasks">
+<div class="task"><b><ion-icon name="download-outline"></ion-icon> Réception d'une livraison</b><span>1. Commandes → ouvrir le bon → Réceptionner.<br />2. Comptez chaque ligne ; saisissez ce qui est arrivé.<br />3. Vérifiez le coût sur la facture.<br />4. Il manque ? Laissez ouvert.</span></div>
+<div class="task"><b><ion-icon name="clipboard-outline"></ion-icon> Inventaire de la semaine</b><span>1. Mouvements → Inventaire → choisir le rayon.<br />2. Comptez ; tapez ce que vous voyez, pas ce que vous attendez.<br />3. Revoyez les écarts avec le gérant.<br />4. Validez.</span></div>
+<div class="task"><b><ion-icon name="swap-vertical-outline"></ion-icon> Casse ou usage interne</b><span>1. Mouvements → Ajuster.<br />2. Article et quantité.<br />3. Motif : cassé, périmé, personnel, cadeau.<br />4. Enregistrez — c'est noté à votre nom.</span></div>
+</div>
+</section>
+
+<p class="foot">Guide utilisateur Koomzo · Stock · Version 2 · Les écrans montrés sont ceux du prototype Koomzo actuel. Les noms, articles et prix sont des exemples.</p>
+</main>
+
+</div>
+<script src="guide/guide.js"></script>
+<script src="guide/anim.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a61bf"/><text x="50" y="62" font-family="Arial,Helvetica,sans-serif" font-size="34" font-weight="700" fill="#fff" text-anchor="middle">FR</text></svg></template>
+</body>
+</html>

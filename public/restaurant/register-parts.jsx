@@ -47,7 +47,7 @@ function OrderContext({ vertical, flags, activeTable, tableState, guests, setGue
 }
 
 /* one order line */
-function OrderLine({ o, flags, selected, buffer, mode, unitWord, onSelect, onStep, onRemove }) {
+function OrderLine({ o, flags, selected, buffer, mode, unitWord, onSelect, onStep, onRemove, onVoid }) {
   const unit = o.priceOverride != null ? o.priceOverride : o.price;
   const lineTotal = unit * o.qty * (1 - o.discPct / 100);
   let qtyDisp = qtyStr(o.qty), unitDisp = money(unit), discDisp = o.discPct;
@@ -68,6 +68,10 @@ function OrderLine({ o, flags, selected, buffer, mode, unitWord, onSelect, onSte
         {o.discPct > 0 && <span className="oline__disc">−{discDisp}%</span>}
         <TagChips tags={o.tags} />
         {o.fired && <span className="oline__fired"><ion-icon name="flame"></ion-icon>Fired</span>}
+        {o.movedFrom && <span className="oline__moved"><ion-icon name="swap-horizontal-outline"></ion-icon>from {o.movedFrom}</span>}
+        {selected && o.fired && onVoid && (
+          <button className="oline__void" onClick={(e) => { e.stopPropagation(); onVoid(o); }}><ion-icon name="close-circle-outline"></ion-icon>Void</button>
+        )}
         {selected && !o.fired && (
           <span style={{ marginLeft: 'auto', display: 'flex', gap: 0 }} onClick={(e) => e.stopPropagation()}>
             <button className="octx__step" style={{ width: 30, height: 30, borderRadius: '8px 0 0 8px' }} onClick={() => o.qty <= 1 ? onRemove(o.uid) : onStep(o.uid, -1)}><ion-icon name={o.qty <= 1 ? 'trash-outline' : 'remove'}></ion-icon></button>
@@ -80,7 +84,7 @@ function OrderLine({ o, flags, selected, buffer, mode, unitWord, onSelect, onSte
   );
 }
 
-function OrderTicket({ order, flags, selectedUid, buffer, mode, unitWord, courseNums, courseName, onSelect, onStep, onRemove, onFire }) {
+function OrderTicket({ order, flags, selectedUid, buffer, mode, unitWord, courseNums, courseName, onSelect, onStep, onRemove, onFire, onVoid }) {
   if (order.length === 0) {
     return (
       <div className="oticket">
@@ -94,7 +98,7 @@ function OrderTicket({ order, flags, selectedUid, buffer, mode, unitWord, course
   if (!flags.courses) {
     return (
       <div className="oticket">
-        {order.map((o) => <OrderLine key={o.uid} o={o} flags={flags} selected={o.uid === selectedUid} buffer={buffer} mode={mode} unitWord={unitWord} onSelect={onSelect} onStep={onStep} onRemove={onRemove} />)}
+        {order.map((o) => <OrderLine key={o.uid} o={o} flags={flags} selected={o.uid === selectedUid} buffer={buffer} mode={mode} unitWord={unitWord} onSelect={onSelect} onStep={onStep} onRemove={onRemove} onVoid={onVoid} />)}
       </div>
     );
   }
@@ -111,7 +115,7 @@ function OrderTicket({ order, flags, selectedUid, buffer, mode, unitWord, course
               <span className="course-div__line"></span>
               {hasUnfired && <button className="oline__fired" style={{ cursor: 'pointer', background: 'var(--kz-ink)', color: '#fff' }} onClick={() => onFire(n)}><ion-icon name="flame"></ion-icon>Fire</button>}
             </div>
-            {items.map((o) => <OrderLine key={o.uid} o={o} flags={flags} selected={o.uid === selectedUid} buffer={buffer} mode={mode} unitWord={unitWord} onSelect={onSelect} onStep={onStep} onRemove={onRemove} />)}
+            {items.map((o) => <OrderLine key={o.uid} o={o} flags={flags} selected={o.uid === selectedUid} buffer={buffer} mode={mode} unitWord={unitWord} onSelect={onSelect} onStep={onStep} onRemove={onRemove} onVoid={onVoid} />)}
           </div>
         );
       })}

@@ -19,6 +19,7 @@ const courseOf = (name, menu) => {
 function stationProgress(t) {
   const map = {};
   t.items.forEach((it) => {
+    if (liveQty(it) === 0) return;
     const k = it.station || 'none';
     if (!map[k]) map[k] = { station: k, total: 0, done: 0 };
     map[k].total += 1;
@@ -47,47 +48,64 @@ function StationPills({ t }) {
   );
 }
 
-function KdsTicketCard({ t, now, warn, late, onBump, onRecall, onToggleItem }) {
+function KdsTicketCard({ t, now, warn, late, onBump, onRecall, onToggleItem, onAck, onAckCancel }) {
   const mins = elapsedMin(t.firedAt, now);
   const cls = slaClass(mins, warn, late);
-  const urgent = t.status !== 'done' && cls === 'late';
-  const warnish = t.status !== 'done' && cls === 'warn';
-  const fl = window.RK_FLOORS.find((f) => f.id === t.floor);
-  const tLabel = fl ? (fl.tables.find((x) => x.id === t.table)?.label || t.table) : t.table;
+  const cancelled = !!t.cancelled;
+  const urgent = !cancelled && t.status !== 'done' && cls === 'late';
+  const warnish = !cancelled && t.status !== 'done' && cls === 'warn';
+  const tLabel = t.table === 'T/A' ? 'Take-away' : tableLabel(t.table);
   const bumpLabel = t.status === 'cook' ? 'Mark Ready' : t.status === 'ready' ? 'Served' : 'Done';
   return (
-    <div className={'kcard' + (urgent ? ' urgent' : warnish ? ' warnish' : '')}>
+    <div className={'kcard' + (urgent ? ' urgent' : warnish ? ' warnish' : '') + (cancelled ? ' cancelled' : '')}>
+      {cancelled && <div className="kcard__cancel"><ion-icon name="ban-outline"></ion-icon>Cancelled · {t.cancelled.reason}</div>}
       <div className="kcard__top">
-        <span className="kcard__table"><ion-icon name="grid-outline" style={{ fontSize: 15, color: 'var(--kz-accent)' }}></ion-icon>Table {tLabel}<span className="no">#{t.no}</span></span>
+        <span className="kcard__table"><ion-icon name={t.table === 'T/A' ? 'bag-handle-outline' : 'grid-outline'} style={{ fontSize: 15, color: 'var(--kz-accent)' }}></ion-icon>{t.table === 'T/A' ? tLabel : 'Table ' + tLabel}<span className="no">#{t.no}</span></span>
         <span className="kcard__guests"><ion-icon name="people-outline"></ion-icon>{t.guests}</span>
         <span className={'kcard__timer ' + cls}><ion-icon name="time-outline"></ion-icon>{elapsedLabel(t.firedAt, now)}</span>
       </div>
+      {(t.movedFrom || t.takeawayFrom) && (
+        <div className="kcard__moved"><ion-icon name="swap-horizontal-outline"></ion-icon>{t.takeawayFrom ? 'Take-away · was Table ' + t.takeawayFrom : 'Moved from Table ' + t.movedFrom}</div>
+      )}
       <div className="kcard__server"><ion-icon name="person-outline"></ion-icon>{t.server}</div>
       <StationPills t={t} />
       <div className="kcard__items">
         {t.items.map((it, i) => {
           const st = window.RK_STATIONS[it.station] || window.RK_STATIONS.none;
+          const live = liveQty(it);
+          const vq = it.voidQty || 0;
+          const needAck = (vq > 0 && it.voidAck === false) || it.amendAck === false;
           return (
-            <div key={i} className={'kitem' + (it.done ? ' done' : '')} onClick={() => onToggleItem(t.id, i)} style={{ cursor: 'pointer' }}>
-              <span className="kitem__qty" style={{ background: st.wash, color: st.color }}>{it.qty}×</span>
+            <div key={i} className={'kitem' + (it.done ? ' done' : '') + (live === 0 ? ' voided' : '') + (needAck ? ' flag' : '')} onClick={() => live > 0 && !cancelled && onToggleItem(t.id, i)} style={{ cursor: 'pointer' }}>
+              <span className="kitem__qty" style={{ background: st.wash, color: st.color }}>{live === 0 ? it.qty : live}×</span>
               <div className="kitem__body">
                 <div className="kitem__name">
                   {it.name}
                   <span className="kstation"><i style={{ background: st.color }}></i>{st.label}</span>
                   {it.tags && it.tags.length > 0 && <TagChips tags={it.tags} size="k" />}
                 </div>
+                {vq > 0 && <div className="kitem__void"><ion-icon name="close-circle"></ion-icon>VOID {vq}{live > 0 ? ' — make ' + live : ''} · {it.voidReason}</div>}
+                {it.amendAck === false && <div className="kitem__amend"><ion-icon name="create-outline"></ion-icon>CHANGED</div>}
+                {it.movedTo && <div className="kitem__amend"><ion-icon name="arrow-forward-outline"></ion-icon>Serve to Table {it.movedTo}</div>}
                 {it.notes && <div className="kitem__note"><ion-icon name="alert-circle-outline"></ion-icon>{it.notes}</div>}
               </div>
-              {it.done && <ion-icon name="checkmark-circle" style={{ fontSize: 18, color: 'var(--kz-success)' }}></ion-icon>}
+              {needAck && <button className="kitem__ack" onClick={(e) => { e.stopPropagation(); onAck(t.id, it.uid); }}>Seen</button>}
+              {!needAck && it.done && live > 0 && <ion-icon name="checkmark-circle" style={{ fontSize: 18, color: 'var(--kz-success)' }}></ion-icon>}
             </div>
           );
         })}
       </div>
       <div className="kcard__foot">
-        <button className={'kcard__bump ' + t.status} onClick={() => onBump(t.id)}>
-          <ion-icon name={t.status === 'cook' ? 'checkmark-done-outline' : t.status === 'ready' ? 'walk-outline' : 'checkmark-outline'}></ion-icon>{bumpLabel}
-        </button>
-        <button className="kcard__recall" onClick={() => onRecall(t.id)} title="Recall"><ion-icon name="arrow-undo-outline"></ion-icon></button>
+        {cancelled ? (
+          <button className="kcard__bump cancelack" onClick={() => onAckCancel(t.id)}><ion-icon name="checkmark-outline"></ion-icon>Acknowledge &amp; remove</button>
+        ) : (
+          <>
+            <button className={'kcard__bump ' + t.status} onClick={() => onBump(t.id)}>
+              <ion-icon name={t.status === 'cook' ? 'checkmark-done-outline' : t.status === 'ready' ? 'walk-outline' : 'checkmark-outline'}></ion-icon>{bumpLabel}
+            </button>
+            <button className="kcard__recall" onClick={() => onRecall(t.id)} title="Recall"><ion-icon name="arrow-undo-outline"></ion-icon></button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -97,7 +115,7 @@ function KdsTicketCard({ t, now, warn, late, onBump, onRecall, onToggleItem }) {
 function StationBoard({ tickets, station, now, warn, late, onToggleItem, onBump, menu }) {
   const st = window.RK_STATIONS[station];
   const groups = tickets
-    .filter((t) => t.status !== 'done' && t.items.some((it) => it.station === station))
+    .filter((t) => tkActive(t) && t.items.some((it) => it.station === station && liveQty(it) > 0))
     .sort((a, b) => a.firedAt - b.firedAt)
     .map((t) => {
       const fl = window.RK_FLOORS.find((f) => f.id === t.floor);
@@ -160,9 +178,9 @@ function StationBoard({ tickets, station, now, warn, late, onToggleItem, onBump,
 /* ---------- All-day view: aggregated pending quantities ---------- */
 function AllDayBoard({ tickets, station, now }) {
   const rows = {};
-  tickets.filter((t) => t.status !== 'done').forEach((t) => {
+  tickets.filter(tkActive).forEach((t) => {
     t.items.forEach((it) => {
-      if (it.done) return;
+      if (it.done || liveQty(it) === 0) return;
       if (station !== 'all' && it.station !== station) return;
       const k = it.name;
       if (!rows[k]) rows[k] = { name: it.name, station: it.station, qty: 0, tickets: 0, oldest: t.firedAt, tags: it.tags };
@@ -208,7 +226,7 @@ function AllDayBoard({ tickets, station, now }) {
 }
 
 function Kitchen() {
-  const { tickets, now, bumpTicket, recallTicket, toggleItemDone, tweaks, counts, menu } = useSuite();
+  const { tickets, now, bumpTicket, recallTicket, toggleItemDone, tweaks, counts, menu, inServedLane, closeServed, ackItem, ackCancelled } = useSuite();
   const warn = tweaks.slaWarn ?? 6;
   const late = tweaks.slaLate ?? 10;
   const [floorFilter, setFloorFilter] = useState('all');
@@ -221,9 +239,9 @@ function Kitchen() {
     { id: 'ready', label: 'Ready' },
     { id: 'done', label: 'Served' },
   ];
-  const byLane = (id) => filtered.filter((t) => t.status === id).sort((a, b) => a.firedAt - b.firedAt);
-  const pendingAt = (k) => tickets.filter((t) => t.status !== 'done')
-    .reduce((s, t) => s + t.items.filter((it) => it.station === k && !it.done).length, 0);
+  const byLane = (id) => filtered.filter((t) => id === 'done' ? inServedLane(t) : (tkOpen(t) && t.status === id)).sort((a, b) => a.firedAt - b.firedAt);
+  const pendingAt = (k) => tickets.filter(tkActive)
+    .reduce((s, t) => s + t.items.filter((it) => it.station === k && !it.done && liveQty(it) > 0).length, 0);
 
   return (
     <div className="screen">
@@ -267,6 +285,7 @@ function Kitchen() {
                     <span className="klane__dot"></span>
                     <span className="klane__title">{lane.label}</span>
                     <span className="klane__n">{items.length}</span>
+                    {lane.id === 'done' && items.length > 0 && <button className="klane__closeall" onClick={() => closeServed(items.map((x) => x.id))}><ion-icon name="checkmark-done-outline"></ion-icon>Clear all</button>}
                   </div>
                   <div className="klane__scroll">
                     {items.length === 0 && (
@@ -274,7 +293,7 @@ function Kitchen() {
                     )}
                     {items.map((t) => (
                       <KdsTicketCard key={t.id} t={t} now={now} warn={warn} late={late}
-                        onBump={bumpTicket} onRecall={recallTicket} onToggleItem={toggleItemDone} />
+                        onBump={bumpTicket} onRecall={recallTicket} onToggleItem={toggleItemDone} onAck={ackItem} onAckCancel={ackCancelled} />
                     ))}
                   </div>
                 </div>

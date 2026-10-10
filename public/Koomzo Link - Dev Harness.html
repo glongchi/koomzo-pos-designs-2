@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo Link — dev harness</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:var(--kz-font-sans);color:var(--kz-ink);background:#e9ecf1;-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary)}a:hover{color:var(--kz-primary-shade)}
+button{font-family:inherit;cursor:pointer}
+.bar{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid var(--kz-border);padding:12px 18px;display:flex;flex-direction:column;gap:10px}
+.r{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px;font:700 15px var(--kz-font-sans);letter-spacing:-.01em;margin-right:8px}
+.brand i{width:30px;height:30px;border-radius:8px;background:var(--kz-primary);display:grid;place-items:center}.brand ion-icon{color:#fff;font-size:16px}
+.lb{font:700 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--kz-muted-3)}
+.b{height:34px;padding:0 12px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2);display:inline-flex;align-items:center;gap:6px}
+.b:hover{border-color:var(--kz-primary-tint)}
+.b.on{background:var(--kz-ink);border-color:var(--kz-ink);color:#fff}
+.b.pri{background:var(--kz-primary);border-color:var(--kz-primary);color:#fff}
+.b.warn.on{background:var(--kz-warning);border-color:var(--kz-warning);color:#3a2a05}
+.b.bad.on{background:var(--kz-discount);border-color:var(--kz-discount)}
+.b ion-icon{font-size:15px}
+.sep{width:1px;height:24px;background:var(--kz-border)}
+input[type=range]{accent-color:var(--kz-primary);width:110px}
+.mono{font:600 12px var(--kz-font-num);color:var(--kz-muted)}
+.grid{display:flex;flex-wrap:wrap;gap:18px;padding:18px;align-items:flex-start}
+.dev{display:flex;flex-direction:column;gap:6px}
+.dev .hd{display:flex;align-items:center;gap:6px;font:700 12.5px var(--kz-font-sans);color:#3b3f4c}
+.dev .hd span{flex:1}
+.dev iframe{border:none;border-radius:16px;background:#fff;box-shadow:var(--kz-shadow-lg)}
+.hint{font:400 12.5px/1.5 var(--kz-font-sans);color:var(--kz-muted);max-width:980px}
+</style>
+</head>
+<body>
+<div class="bar">
+<div class="r">
+<div class="brand"><i><ion-icon name="git-network"></ion-icon></i>Koomzo Link · dev harness</div>
+<span class="lb">Start from</span>
+<button class="b pri" data-preset="site"><ion-icon name="restaurant-outline"></ion-icon>Restaurant site, paired</button>
+<button class="b" data-preset="fresh"><ion-icon name="sparkles-outline"></ion-icon>Fresh devices (S1–S5)</button>
+<button class="b" id="add"><ion-icon name="add-outline"></ion-icon>Add a device</button>
+</div>
+<div class="r">
+<span class="lb">Network</span>
+<button class="b warn" id="net"><ion-icon name="cloud-offline-outline"></ion-icon>Internet down</button>
+<span class="mono">Slow link</span><input type="range" id="slow" min="0" max="1500" step="50" value="0" /><span class="mono" id="slowv">0 ms</span>
+<div class="sep"></div>
+<span class="lb">Connection</span>
+<button class="b" data-rung="1">1 · Wi-Fi</button><button class="b" data-rung="2">2 · Hotspot</button><button class="b" data-rung="3">3 · Direct</button><button class="b" data-rung="4">4 · Pairing only</button>
+</div>
+<div class="r">
+<span class="lb">Scenarios</span>
+<button class="b" data-sc="paid">Add to a paid table → S9</button>
+<button class="b" data-sc="twice">Pay one table twice → S9</button>
+<button class="b" data-sc="power">Main device power cut → S7</button>
+<button class="b" data-sc="queue">Queue calls → S10</button>
+<span class="mono" id="sclog"></span>
+</div>
+</div>
+<div class="grid" id="grid"></div>
+<p class="hint" style="padding:0 18px 24px">Each frame is one device running the real ports with mock providers: a local document store, an op log (groups, compaction, idempotency, versions) and a coordinator ↔ client link over BroadcastChannel. "Out of range" drops a device off the local network but it keeps working; "Off" is a power cut. Payment decisions use the mock manager PIN 1234.</p>
+<script>
+const SITE = 'site_comptoir';
+const PRESETS = {
+  site: [
+    { id: 'd_till', w: 420, h: 740, cfg: { name: 'Till 1', kind: 'till', module: 'restaurant', role: 'coordinator', siteId: SITE, siteName: 'Le Comptoir', coordinatorId: 'd_till', epoch: 1, approval: true, backupId: 'd_kitchen' } },
+    { id: 'd_blaise', w: 360, h: 740, cfg: { name: 'Phone Blaise', kind: 'server', module: 'restaurant', role: 'client', siteId: SITE, siteName: 'Le Comptoir', coordinatorId: 'd_till', epoch: 1 } },
+    { id: 'd_kitchen', w: 380, h: 740, cfg: { name: 'Kitchen tablet', kind: 'kitchen', module: 'restaurant', role: 'client', siteId: SITE, siteName: 'Le Comptoir', coordinatorId: 'd_till', epoch: 1 } },
+    { id: 'd_screen', w: 560, h: 330, cfg: { name: 'Now serving screen', kind: 'display', module: 'queue', role: 'client', siteId: SITE, siteName: 'Le Comptoir', coordinatorId: 'd_till', epoch: 1 } },
+  ],
+  fresh: [
+    { id: 'd_till', w: 420, h: 740, cfg: { name: 'Till 1', kind: 'till' } },
+    { id: 'd_blaise', w: 360, h: 740, cfg: { name: 'Phone Blaise', kind: 'server' } },
+    { id: 'd_screen', w: 560, h: 330, cfg: { name: 'Now serving screen', kind: 'display', module: 'queue' } },
+  ],
+};
+let devices = [];
+const dev = new BroadcastChannel('kzlink:dev');
+const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } };
+const sim = () => ({ internetDown: false, off: [], away: [], slowMs: 0, rung: 1, ...read('kzlink:sim', {}) });
+const setSim = (p) => { localStorage.setItem('kzlink:sim', JSON.stringify({ ...sim(), ...p })); paint(); };
+
+function reset(name) {
+  Object.keys(localStorage).filter((k) => k.startsWith('kzlink:')).forEach((k) => localStorage.removeItem(k));
+  devices = PRESETS[name].map((d) => ({ ...d }));
+  devices.forEach((d) => localStorage.setItem('kzlink:device:' + d.id, JSON.stringify({ deviceId: d.id, ...d.cfg })));
+  localStorage.setItem('kzlink:harness', JSON.stringify(devices));
+  render();
+}
+function frameSrc(id) {
+  const qs = new URLSearchParams(location.search);
+  qs.set('d', id); qs.set('n', Date.now());
+  return 'Koomzo Link - Device.html?' + qs.toString().replace(/&/g, '&amp;');
+}
+function render() {
+  // The frames below are the intended owners: hand each device over to them.
+  devices.forEach((d) => localStorage.setItem('kzlink:handoff:' + d.id, JSON.stringify({ at: Date.now() })));
+  const g = document.getElementById('grid');
+  g.innerHTML = '';
+  devices.forEach((d) => {
+    const el = document.createElement('div');
+    el.className = 'dev';
+    el.innerHTML = `<div class="hd"><span>${d.cfg.name} <span class="mono">${d.id}</span></span><button class="b" data-away="${d.id}">Out of range</button><button class="b bad" data-off="${d.id}"><ion-icon name="power-outline"></ion-icon>Off</button></div><iframe src="${frameSrc(d.id)}" width="${d.w}" height="${d.h}" title="${d.cfg.name}"></iframe>`;
+    g.appendChild(el);
+  });
+  paint();
+}
+function paint() {
+  const s = sim();
+  document.getElementById('net').classList.toggle('on', s.internetDown);
+  document.getElementById('slow').value = s.slowMs; document.getElementById('slowv').textContent = s.slowMs + ' ms';
+  document.querySelectorAll('[data-rung]').forEach((b) => b.classList.toggle('on', +b.dataset.rung === s.rung));
+  document.querySelectorAll('[data-away]').forEach((b) => b.classList.toggle('on', s.away.includes(b.dataset.away)));
+  document.querySelectorAll('[data-off]').forEach((b) => b.classList.toggle('on', s.off.includes(b.dataset.off)));
+}
+const toggleIn = (list, id) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.preset) reset(b.dataset.preset);
+  if (b.dataset.rung) setSim({ rung: +b.dataset.rung });
+  if (b.dataset.away) setSim({ away: toggleIn(sim().away, b.dataset.away) });
+  if (b.dataset.off) setSim({ off: toggleIn(sim().off, b.dataset.off) });
+  if (b.id === 'net') setSim({ internetDown: !sim().internetDown });
+  if (b.id === 'add') { const id = 'd_new' + (devices.length + 1); devices.push({ id, w: 360, h: 740, cfg: { name: 'New device ' + (devices.length + 1), kind: 'server' } }); localStorage.setItem('kzlink:device:' + id, JSON.stringify({ deviceId: id, name: 'New device', kind: 'server' })); localStorage.setItem('kzlink:harness', JSON.stringify(devices)); render(); }
+  if (b.dataset.sc) run(b.dataset.sc);
+});
+document.getElementById('slow').addEventListener('input', (e) => setSim({ slowMs: +e.target.value }));
+
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const cmd = (to, c, args) => dev.postMessage({ to, cmd: c, args });
+const log = (t) => { document.getElementById('sclog').textContent = t; };
+const SC = {
+  async paid() {
+    log('Till opens T7 and sends it…'); cmd('d_till', 'openTable', { table: 'T7', items: ['ndole', 'plantain'], send: true }); await wait(1800);
+    log('Phone Blaise goes out of range and adds 2 × Bissap…'); setSim({ away: [...new Set([...sim().away, 'd_blaise'])] }); await wait(400);
+    cmd('d_blaise', 'add', { table: 'T7', item: 'bissap', qty: 2 }); await wait(400);
+    log('Till takes cash for T7…'); cmd('d_till', 'pay', { table: 'T7', method: 'cash' }); await wait(1200);
+    log('Phone back in range — see Decisions on Till 1.'); setSim({ away: sim().away.filter((x) => x !== 'd_blaise') });
+  },
+  async twice() {
+    log('Till opens T12…'); cmd('d_till', 'openTable', { table: 'T12', items: ['dg', 'ndole'], send: true }); await wait(1800);
+    log('Phone out of range takes cash; Till takes MoMo…'); setSim({ away: [...new Set([...sim().away, 'd_blaise'])], internetDown: false }); await wait(400);
+    cmd('d_blaise', 'pay', { table: 'T12', method: 'cash' }); cmd('d_till', 'pay', { table: 'T12', method: 'momo' }); await wait(1200);
+    log('Phone back — both payments kept, see Decisions on Till 1.'); setSim({ away: sim().away.filter((x) => x !== 'd_blaise') });
+  },
+  async power() {
+    setSim({ off: [...new Set([...sim().off, 'd_till'])] });
+    log('Till 1 is off. Phones keep working. On Kitchen tablet (backup) → Network → Make this the main device.');
+  },
+  async queue() {
+    log('Issuing four tickets…'); cmd('d_till', 'issue', { series: 'A', n: 4 }); await wait(900);
+    cmd('d_till', 'callNext', { counter: 2 }); await wait(300);
+    cmd('d_till', 'publish', { message: 'Bienvenue · please keep your ticket' });
+    log('Now try "Out of range" on the screen — it keeps the last good update.');
+  },
+};
+async function run(name) { try { await SC[name](); } catch (e) { log(e.message); } }
+
+devices = read('kzlink:harness', null);
+if (!devices) reset('site'); else render();
+</script>
+</body>
+</html>

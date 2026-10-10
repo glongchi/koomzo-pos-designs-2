@@ -319,3 +319,48 @@
 .htchip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:var(--kz-radius-pill);border:1px solid var(--kz-border-strong);background:#fff;font:600 12px var(--kz-font-sans);color:var(--kz-ink-2)}
 .htchip.on{background:var(--kz-primary);border-color:var(--kz-primary);color:#fff}
 .htchip ion-icon{font-size:14px}
+
+/* ---------- booking form: stepper, arrival calendar, setup ---------- */
+.htfield2{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.htstep{display:inline-flex;align-items:center;gap:6px;flex:none}
+.htstep>button{width:44px;height:44px;border-radius:50%;border:1px solid var(--kz-border-strong);background:#fff;color:var(--kz-ink-2);display:grid;place-items:center;flex:none}
+.htstep>button ion-icon{font-size:18px}
+.htstep>button:hover:not(:disabled){background:var(--kz-primary-wash);border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.htstep>button:active:not(:disabled){transform:scale(.95)}
+.htstep>button:disabled{opacity:.35;cursor:not-allowed}
+.htstep__f{display:flex;align-items:center;gap:5px;height:44px;padding:0 12px;border-radius:var(--kz-radius);border:1px solid var(--kz-border-strong);background:#fff;min-width:64px}
+.htstep__f:focus-within{border-color:var(--kz-primary);box-shadow:0 0 0 3px var(--kz-primary-wash)}
+.htstep__f input{width:7ch;min-width:3ch;border:none;outline:none;background:transparent;text-align:center;font:700 15px var(--kz-font-num);font-variant-numeric:tabular-nums;color:var(--kz-ink)}
+.htstep__f span{font:600 11.5px var(--kz-font-sans);color:var(--kz-muted-2);white-space:nowrap}
+.htdep{display:flex;align-items:center;gap:6px;margin-top:8px;font:500 12.5px var(--kz-font-sans);color:var(--kz-muted)}
+.htdep ion-icon{font-size:15px}
+.htcal{margin-top:10px;width:100%;max-width:360px;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);box-shadow:var(--kz-shadow);padding:10px 12px 12px}
+.htcal__hd{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.htcal__hd b{font:700 14px var(--kz-font-sans);min-width:130px;text-align:center}
+.htcal__hd .sp{flex:1}
+.htcal__hd .icbtn:disabled{opacity:.35;cursor:not-allowed}
+.htcal__wd,.htcal__grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px}
+.htcal__wd span{text-align:center;font:700 10.5px var(--kz-font-sans);letter-spacing:.04em;text-transform:uppercase;color:var(--kz-muted-3);padding:4px 0}
+.htcal__d{position:relative;height:44px;border:0;border-radius:8px;background:transparent;font:600 13.5px var(--kz-font-num);color:var(--kz-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.htcal__d:hover:not(:disabled){background:var(--kz-surface-2)}
+.htcal__d.today{box-shadow:inset 0 0 0 1.5px var(--kz-primary)}
+.htcal__d.rng{background:var(--kz-primary-wash);color:var(--kz-primary-shade);border-radius:0}
+.htcal__d.on{background:var(--kz-primary);color:#fff;border-radius:8px}
+.htcal__d.dep{box-shadow:inset 0 0 0 1.5px var(--kz-primary-tint)}
+.htcal__d.dis{color:var(--kz-muted-3);cursor:not-allowed}
+.htcal__d.struck{text-decoration:line-through;color:var(--kz-discount);background:var(--kz-discount-wash)}
+.htcal__d .occ,.htcal__ft .occ{display:block;width:5px;height:5px;border-radius:50%}
+.occ.lo{background:var(--kz-success)}.occ.md{background:var(--kz-warning)}.occ.hi{background:var(--kz-discount)}
+.htcal__d.on .occ{box-shadow:0 0 0 1.5px #fff}
+.htcal__ft{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;padding-top:9px;border-top:1px solid var(--kz-border);font:500 11.5px var(--kz-font-sans);color:var(--kz-muted)}
+.htcal__ft span{display:inline-flex;align-items:center;gap:5px}
+.htcal__ft .sw{width:12px;height:12px;border-radius:3px}
+.htcal__ft .sw.rng{background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint)}
+.htcal__ft .sw.struck{background:var(--kz-discount-wash);border:1px solid var(--kz-discount)}
+.htcfg{display:flex;flex-direction:column;padding:0 16px 6px}
+.htcfg__row{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid var(--kz-border);flex-wrap:wrap;cursor:default}
+.htcfg__row>div:first-child{flex:1;min-width:220px;display:flex;flex-direction:column;gap:2px}
+.htcfg__row b{font:600 13.5px var(--kz-font-sans);color:var(--kz-ink)}
+.htcfg__row span{font:400 12.5px/1.45 var(--kz-font-sans);color:var(--kz-muted-2)}
+.htcfg__ck{width:20px;height:20px;accent-color:var(--kz-primary);cursor:pointer}
+@container (max-width:620px){.htcal{max-width:none}.htstep__f input{width:6ch}}

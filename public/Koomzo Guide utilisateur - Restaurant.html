@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Guide utilisateur Koomzo — Restaurant &amp; Bar</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="alternate" hreflang="en" href="Koomzo User Guide - Restaurant.html" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="guide/guide.css" />
+<link rel="stylesheet" href="guide/anim.css" />
+<script>(function(){var b='https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons';var s=document.createElement('script');s.type='module';s.src=b+'.esm.js';document.head.appendChild(s);})();</script>
+</head>
+<body data-page="restaurant">
+<header class="ug-top">
+<a class="ug-mark" data-page="hub" href="Koomzo Guide utilisateur.html"><div class="ic"><ion-icon name="book-outline"></ion-icon></div><b>Guide utilisateur Koomzo</b><span>Version 2 · octobre 2026</span></a>
+<nav class="ug-mods" aria-label="Guides par module">
+<a data-page="restaurant" href="Koomzo Guide utilisateur - Restaurant.html" class="on" aria-current="page"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a data-page="hotel" href="Koomzo Guide utilisateur - Hotel.html"><ion-icon name="bed-outline"></ion-icon>Hôtel</a>
+<a data-page="retail" href="Koomzo Guide utilisateur - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+<a data-page="inventory" href="Koomzo Guide utilisateur - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Stock</a>
+<a data-page="signage" href="Koomzo Guide utilisateur - Signage.html"><ion-icon name="tv-outline"></ion-icon>Affichage</a>
+<a data-page="salon" href="Koomzo Guide utilisateur - Salon.html"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a data-page="gym" href="Koomzo Guide utilisateur - Gym.html"><ion-icon name="barbell-outline"></ion-icon>Salle de sport</a>
+<a data-page="queue" href="Koomzo Guide utilisateur - Queue.html"><ion-icon name="people-outline"></ion-icon>File d’attente</a>
+</nav>
+<div class="ug-lang" aria-label="Langue"><a data-lang-link="en" href="Koomzo User Guide - Restaurant.html" hreflang="en">EN</a><b>FR</b></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Sommaire">
+<a class="side__back" data-page="hub" href="Koomzo Guide utilisateur.html#p1"><ion-icon name="arrow-back-outline"></ion-icon>Chapitres Plateforme</a>
+<div class="side__g">Restaurant &amp; Bar</div>
+<a href="#rk"><ion-icon name="restaurant-outline"></ion-icon>1 · Est-ce pour moi ?</a>
+<a href="#rk-setup"><ion-icon name="construct-outline"></ion-icon>2 · Installation</a>
+<a href="#rk-day"><ion-icon name="sunny-outline"></ion-icon>3 · Une journée de service</a>
+<a href="#rk-screens"><ion-icon name="albums-outline"></ion-icon>4 · Les écrans</a>
+<a class="sub" href="#s-register">Caisse</a>
+<a class="sub" href="#s-floor">Plan de salle</a>
+<a class="sub" href="#s-kitchen">Écran cuisine</a>
+<a class="sub" href="#s-kiosk">Borne</a>
+<a class="sub" href="#s-setup">Configuration</a>
+<a href="#rk-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · En cas de problème</a>
+<a href="#rk-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Aller plus loin</a>
+<a href="#rk-cards"><ion-icon name="id-card-outline"></ion-icon>Fiches du personnel</a>
+</nav>
+<main class="doc">
+
+<section id="top">
+<p class="eb">Guide de module</p>
+<h1>Restaurant &amp; Bar</h1>
+<p class="lede">Commandes, cuisine, salle et encaissement — maquis, restaurants, bars, snacks. Les chapitres communs — appareils, hors ligne, paiements — sont dans les <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">chapitres Plateforme</a>.</p>
+</section>
+
+<section id="rk" class="part first">
+<p class="eb">Restaurant &amp; Bar · Partie 1</p>
+<h2>Est-ce pour moi ?</h2>
+<p class="sub">Restaurant &amp; Bar convient à tout lieu où l'on mange ou boit — à table, au bar ou à emporter. La configuration propose un plan de départ pour chacun :</p>
+<div class="grid3">
+<div class="card"><h4>Maquis / petit restaurant</h4><p>Salle et terrasse. Le départ le plus courant.</p></div>
+<div class="card"><h4>Restaurant</h4><p>Salle, terrasse et comptoir de bar.</p></div>
+<div class="card"><h4>Bar / lounge</h4><p>Tabourets au bar et tables lounge.</p></div>
+<div class="card"><h4>Restaurant d'hôtel</h4><p>Restaurant, bar et service en chambre.</p></div>
+<div class="card"><h4>Snack / fast-food</h4><p>Commande au comptoir, quelques tables sur place.</p></div>
+<div class="card"><h4>Comptoir seulement</h4><p>Pas de tables — ardoises et tickets comptoir.</p></div>
+</div>
+<h3>Une journée chez Mama Ngono</h3>
+<p class="sub">Un maquis à Bonamoussadi, Douala : 8 tables en salle, 4 en terrasse. Mama tient la caisse ; Grace et Junior servent ; Paul cuisine ; une borne près de l'entrée ; un écran menu à la télé.</p>
+<div class="day">
+<div class="day__row"><span class="day__t">10:30</span><div class="day__b"><b>Ouverture</b><span>Mama allume la caisse — l'appareil principal. Les téléphones, la tablette cuisine et la borne se connectent seuls. Elle ouvre la caisse avec un fond de 20 000 F.</span></div></div>
+<div class="day__row"><span class="day__t">12:15</span><div class="day__b"><b>Le coup de feu du midi</b><span>Quatre clients s'installent à la table 4. Grace les place sur son téléphone, prend 2 Ndolé, 1 Poulet DG et les boissons, et appuie sur Envoyer. L'écran cuisine de Paul l'affiche avant qu'elle n'arrive en cuisine.</span></div></div>
+<div class="day__row"><span class="day__t">12:40</span><div class="day__b"><b>Un client change d'avis</b><span>Un client veut du Poisson braisé à la place du Ndolé. Grace annule le Ndolé avec un motif ; Paul le voit barré et appuie sur Vu.</span></div></div>
+<div class="day__row"><span class="day__t">13:05</span><div class="day__b"><b>La terrasse se remplit</b><span>Des amis rejoignent la table 4. Grace déplace le groupe en terrasse et regroupe deux tables. Les tickets cuisine suivent.</span></div></div>
+<div class="day__row"><span class="day__t">13:30</span><div class="day__b"><b>Coupure de courant</b><span>ENEO coupe ; la box 4G est sur batterie, la caisse sur sa batterie externe. Les commandes continuent de circuler entre les appareils. Le voyant indique <i>Pas d'internet · 8 en attente</i>.</span></div></div>
+<div class="day__row"><span class="day__t">13:50</span><div class="day__b"><b>L'addition</b><span>La table 4 demande l'addition. Deux paient en MoMo une fois internet revenu, le reste en espèces. Mama libère la table ; l'écran cuisine la retire aussi.</span></div></div>
+<div class="day__row"><span class="day__t">19:00</span><div class="day__b"><b>Le soir</b><span>La télé passe à la carte du bar. Un client commande à emporter sur la borne et paie au comptoir.</span></div></div>
+<div class="day__row"><span class="day__t">23:30</span><div class="day__b"><b>Fermeture</b><span>Mama vérifie que le voyant indique Synchronisé, regarde les annulations du jour et clôture la caisse. Le patron voit les ventes du jour sur son téléphone.</span></div></div>
+</div>
+</section>
+
+<section id="rk-setup" class="part">
+<p class="eb">Restaurant &amp; Bar · Partie 2</p>
+<h2>Installation <span class="tier lite">Lite</span></h2>
+<p class="sub">Environ une heure, une seule fois. À faire avant votre premier service.</p>
+<ol class="steps">
+<li><div><b>Premiers pas</b><span>Compte, établissement et personnel — voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">P1</a>.</span></div></li>
+<li><div><b>Choisissez un plan</b><span>Configuration → Plan de salle → <i>Partir d'un plan type</i>. Maquis (Salle + Terrasse) est le choix habituel. Indiquez le nombre de tables par zone.</span></div></li>
+<li><div><b>Ajoutez votre menu</b><span>Catégories (Entrées, Plats, Grillades, Boissons…), chaque plat avec son prix et le poste qui le prépare — grill, marmite, bar.</span></div></li>
+<li><div><b>Choisissez les paiements</b><span>Les espèces sont actives. Ajoutez MTN MoMo et Orange Money avec vos numéros marchands.</span></div></li>
+<li><div><b>Choisissez vos appareils</b><span>Un appareil pour commencer. Ajoutez téléphones, écran cuisine et borne plus tard — <a data-page="hub" href="Koomzo Guide utilisateur.html#p4">P4</a>.</span></div></li>
+<li><div><b>Faites une commande d'essai</b><span>Installez une table, commandez, envoyez, marquez prêt, encaissez et libérez. Vous êtes prêt à ouvrir.</span></div></li>
+</ol>
+</section>
+
+<section id="rk-day" class="part">
+<p class="eb">Restaurant &amp; Bar · Partie 3</p>
+<h2>Une journée de service</h2>
+<p class="sub">L'ordre réel d'un service, et l'écran utilisé à chaque moment.</p>
+<div class="tbl"><table>
+<thead><tr><th>Moment</th><th>Ce que vous faites</th><th>Écran</th><th>Niveau</th></tr></thead>
+<tbody>
+<tr><td><b>Avant l'ouverture</b></td><td>Allumez l'appareil principal. Vérifiez que chaque appareil est connecté et que le voyant indique Synchronisé.</td><td>Tous</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Les clients arrivent</b></td><td>Touchez une table libre, indiquez le nombre de couverts.</td><td><a href="#s-floor">Plan de salle</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Prendre la commande</b></td><td>Touchez les plats, ajoutez des notes (sans piment, allergies), appuyez sur Envoyer.</td><td><a href="#s-register">Caisse</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>En cuisine</b></td><td>Les commandes arrivent par poste. Appuyez sur Prêt, puis Servi.</td><td><a href="#s-kitchen">Cuisine</a></td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Entrées, puis plats</b></td><td>Envoyez le service 1 maintenant, lancez le service 2 quand la table est prête.</td><td>Caisse</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Un changement</b></td><td>Annulez un plat envoyé avec un motif ; ajoutez des plats à tout moment.</td><td>Caisse</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Changement de table</b></td><td>Déplacez le groupe, regroupez deux tables, ou passez quelques plats sur une autre addition.</td><td>Plan de salle · Caisse</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>L'addition</b></td><td>Demandez l'addition, partagez-la, encaissez MoMo et espèces.</td><td>Caisse</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Libérer la table</b></td><td>La table redevient libre et l'écran cuisine la retire.</td><td>Plan de salle</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Commande en libre-service</b></td><td>Les clients commandent à la borne ; paiement MoMo ou au comptoir.</td><td><a href="#s-kiosk">Borne</a></td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>Fermeture</b></td><td>Attendez « Synchronisé ». Regardez les annulations du jour. Clôturez la caisse.</td><td><a href="#s-setup">Configuration</a></td><td><span class="tier lite">Lite</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="rk-screens" class="part">
+<p class="eb">Restaurant &amp; Bar · Partie 4</p>
+<h2>Les écrans</h2>
+<p class="sub">La barre de gauche change d'écran : Commande (Order), Salle (Floor), Cuisine (Kitchen), Borne (Kiosk), Aujourd'hui (Today), et Configuration (Setup) en bas. Sur téléphone, les mêmes écrans s'empilent sur une colonne.</p>
+
+<h3 id="s-register">Caisse <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/register.jpg" alt="Écran caisse" /><span class="pin" style="left:12%;top:10.5%">1</span><span class="pin" style="left:30%;top:21.5%">2</span><span class="pin" style="left:20%;top:32%">3</span><span class="pin" style="left:52%;top:16.8%">4</span><span class="pin" style="left:68%;top:28%">5</span><span class="pin" style="left:15%;top:95%">6</span><span class="pin" style="left:26%;top:95%">7</span><span class="pin" style="left:91%;top:3.4%">8</span></div>
+<ol class="callouts">
+<li><span><b>Table</b> — choisissez d'abord la table, ou commencez sans table et choisissez-la à l'envoi.</span></li>
+<li><span><b>Lancer (Fire)</b> — envoie ce service en cuisine.</span></li>
+<li><span><b>La commande</b> — touchez une ligne pour changer la quantité, ajouter une note ou, une fois envoyée, l'<b>Annuler (Void)</b> avec un motif.</span></li>
+<li><span><b>Catégories</b> — Entrées, Plats, Grillades, Boissons…</span></li>
+<li><span><b>Plats</b> — touchez pour ajouter. Les étiquettes signalent végétarien, épicé, allergènes.</span></li>
+<li><span><b>Envoyer (Send)</b> — envoie en cuisine tout ce qui ne l'a pas encore été.</span></li>
+<li><span><b>Encaisser (Pay)</b> — espèces, MoMo, Orange Money ou partage.</span></li>
+<li><span><b>Voyant de synchronisation</b> — voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p3">P3</a>.</span></li>
+</ol>
+<div class="note"><ion-icon name="swap-horizontal-outline"></ion-icon><p><b>Déplacer (Move)</b>, au-dessus d'Envoyer, déplace tout le groupe, ou seulement les plats cochés — c'est ainsi qu'on partage une addition entre deux tables. <span class="tier mid">Mid</span></p></div>
+
+<h3 id="s-floor">Plan de salle <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/floor.jpg" alt="Plan de salle" /><span class="pin" style="left:19%;top:3.5%">1</span><span class="pin" style="left:36%;top:3.5%">2</span><span class="pin" style="left:76%;top:3.5%">3</span><span class="pin" style="left:20%;top:54%">4</span><span class="pin" style="left:27%;top:19%">5</span></div>
+<ol class="callouts">
+<li><span><b>Zones</b> — Salle, Terrasse, Bar. Vos propres noms, définis en Configuration.</span></li>
+<li><span><b>Liste ou plan</b> — la liste est plus simple sur téléphone ; le plan sur tablette.</span></li>
+<li><span><b>Couleurs</b> — vert installé, bleu commande en cours, ambre addition demandée, rouge à surveiller, blanc libre.</span></li>
+<li><span><b>Touchez une table</b> pour installer des clients, ouvrir sa commande, demander l'addition, la <b>Déplacer</b> ou la libérer.</span></li>
+<li><span><b>Pastille</b> — plats en cuisine pour cette table.</span></li>
+</ol>
+<div class="note warn"><ion-icon name="restaurant-outline"></ion-icon><p><b>Vous libérez une table alors que des plats cuisent encore ?</b> Koomzo demande : continuer en plat à emporter, marquer comme déjà servi, ou annuler. Rien ne disparaît de la cuisine sans décision.</p></div>
+
+<h3 id="s-kitchen">Écran cuisine <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/kitchen.jpg" alt="Écran cuisine" /><span class="pin" style="left:9%;top:10%">1</span><span class="pin" style="left:34%;top:16%">2</span><span class="pin" style="left:15%;top:23%">3</span><span class="pin" style="left:20%;top:38.5%">4</span><span class="pin" style="left:51%;top:35%">5</span><span class="pin" style="left:93%;top:10%">6</span><span class="pin" style="left:88%;top:3.5%">7</span></div>
+<ol class="callouts">
+<li><span><b>Colonnes</b> — À cuire, Prêt, Servi. La plus ancienne commande en premier.</span></li>
+<li><span><b>Minuteur</b> — passe à l'ambre, puis au rouge, quand une commande est en retard.</span></li>
+<li><span><b>Postes</b> — ce qu'il reste à préparer à chaque poste. <span class="tier full">Full</span></span></li>
+<li><span><b>Prêt (Mark Ready)</b> — le téléphone du serveur est prévenu.</span></li>
+<li><span><b>Servi (Served)</b> — le plat est parti en salle.</span></li>
+<li><span><b>Tout effacer (Clear all)</b> — vide la colonne Servi. Les tables payées s'effacent seules.</span></li>
+<li><span><b>Filtre par zone</b> — une cuisine pour la salle, une autre pour la terrasse.</span></li>
+</ol>
+<p class="sub">Un plat annulé apparaît barré avec <b>VOID</b> ; une note modifiée affiche <b>CHANGED</b>. Le cuisinier appuie sur <b>Vu (Seen)</b> pour que le serveur le sache.</p>
+
+<h3 id="s-kiosk">Borne <span class="tier full">Full</span></h3>
+<div class="shot"><img src="guide/img/kiosk.jpg" alt="Écran d'accueil de la borne" /><span class="pin" style="left:13%;top:2.8%">1</span><span class="pin" style="left:87%;top:2.8%">2</span><span class="pin" style="left:53%;top:35%">3</span><span class="pin" style="left:53%;top:62%">4</span></div>
+<ol class="callouts">
+<li><span><b>Aperçu personnel</b> — voir la borne telle qu'elle apparaît sur ordinateur, tablette ou téléphone.</span></li>
+<li><span><b>Démarrer le mode borne</b> — verrouille l'appareil : les écrans du personnel disparaissent.</span></li>
+<li><span><b>Pour sortir</b>, appuyez longuement sur le logo, puis saisissez le PIN du gérant.</span></li>
+<li><span><b>Sur place ou À emporter</b> — le client parcourt le menu, commande et paie en MoMo, ou paie au comptoir.</span></li>
+</ol>
+<p class="sub">Après 90 secondes sans contact, la borne vide le panier et revient à l'écran d'accueil.</p>
+
+<h3 id="s-setup">Configuration <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/setup-floor.jpg" alt="Éditeur du plan de salle" /><span class="pin" style="left:13%;top:10.5%">1</span><span class="pin" style="left:92%;top:10.5%">2</span><span class="pin" style="left:40%;top:50%">3</span><span class="pin" style="left:89%;top:47%">4</span></div>
+<ol class="callouts">
+<li><span><b>Zones</b> — ajouter, renommer, réordonner. <span class="tier mid">Mid</span></span></li>
+<li><span><b>Partir d'un plan type</b> — les plans de la Partie 1, avec le nombre de tables.</span></li>
+<li><span><b>Faites glisser les tables</b> sur tablette. Sur téléphone, modifiez-les en liste.</span></li>
+<li><span><b>Ajouter une table</b> — carrée, ronde, longue ou tabouret de bar. Indiquez son nom et ses places.</span></li>
+</ol>
+<div class="shot"><img src="guide/img/setup-rules.jpg" alt="Règles de service" /><span class="pin" style="left:42%;top:16.6%">1</span><span class="pin" style="left:42%;top:31.7%">2</span><span class="pin" style="left:44%;top:62%">3</span><span class="pin" style="left:42%;top:77%">4</span><span class="pin" style="left:42%;top:86.5%">5</span></div>
+<ol class="callouts">
+<li><span><b>Validation des annulations</b> — après le début de la cuisson, toujours, ou jamais. <span class="tier full">Full</span></span></li>
+<li><span><b>Le patron valide depuis son téléphone</b> quand aucun gérant n'est sur place. <span class="soon"><ion-icon name="time-outline"></ion-icon>Bientôt</span></span></li>
+<li><span><b>Les tickets servis</b> quittent la cuisine après 10 minutes.</span></li>
+<li><span><b>Le mode borne</b> peut aussi être démarré ici.</span></li>
+<li><span><b>Annulations du jour</b> — par motif et par serveur.</span></li>
+</ol>
+</section>
+
+<section id="rk-help" class="part">
+<p class="eb">Restaurant &amp; Bar · Partie 5</p>
+<h2>En cas de problème</h2>
+<div class="qa">
+<div class="card"><h4><ion-icon name="flash-off-outline"></ion-icon>Le courant a sauté en plein service.</h4><p>Continuez sur batterie. Chaque commande est déjà enregistrée. Au retour du courant, rouvrez l'application — les tables ouvertes reviennent telles quelles.</p></div>
+<div class="card"><h4><ion-icon name="cloud-offline-outline"></ion-icon>Pas d'internet, et un client veut payer en MoMo.</h4><p>Prenez des espèces, ou gardez l'addition ouverte et confirmez le MoMo au retour d'internet. Tout le reste continue.</p></div>
+<div class="card"><h4><ion-icon name="battery-dead-outline"></ion-icon>L'appareil principal s'est éteint.</h4><p>Les téléphones continuent de prendre et garder les commandes. Rechargez-le et rallumez-le — ou un gérant désigne un autre appareil principal. <span class="soon">Bientôt</span></p></div>
+<div class="card"><h4><ion-icon name="walk-outline"></ion-icon>Un client est parti avant d'être servi.</h4><p>Libérez la table et choisissez <i>Annuler</i>. C'est enregistré comme annulation et montré en cuisine.</p></div>
+<div class="card"><h4><ion-icon name="hand-left-outline"></ion-icon>Le cuisinier a oublié d'appuyer sur Servi.</h4><p>En libérant la table, choisissez <i>Déjà servi</i>. Les tickets servis quittent aussi l'écran seuls après 10 minutes.</p></div>
+<div class="card"><h4><ion-icon name="swap-horizontal-outline"></ion-icon>La commande est sur la mauvaise table.</h4><p>Ouvrez la commande → Déplacer → choisissez la bonne table. Le ticket cuisine est corrigé.</p></div>
+<div class="card"><h4><ion-icon name="alert-circle-outline"></ion-icon>Un serveur dit qu'il n'a pas annulé ce plat.</h4><p>Configuration → Règles de service → Annulations du jour montre qui a annulé quoi, quand, pourquoi, et qui a validé.</p></div>
+<div class="card"><h4><ion-icon name="warning-outline"></ion-icon>Le voyant indique « à vérifier ».</h4><p>Une modification n'a pas pu être acceptée par le cloud. Le gérant l'ouvre et choisit ce qu'il garde. Rien n'est perdu.</p></div>
+</div>
+</section>
+
+<section id="rk-more" class="part">
+<p class="eb">Restaurant &amp; Bar · Partie 6</p>
+<h2>Aller plus loin</h2>
+<p class="sub">Activez ces fonctions dans Configuration → Modules quand vous êtes prêt.</p>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="layers-outline"></ion-icon><h4>Services <span class="tier mid">Mid</span></h4><p>Retenez les plats jusqu'à ce que les entrées soient débarrassées, puis lancez-les.</p></div>
+<div class="card ic-card"><ion-icon name="git-branch-outline"></ion-icon><h4>Postes de cuisine <span class="tier full">Full</span></h4><p>Grill, marmite, friteuse, bar — chacun ne voit que ses plats.</p></div>
+<div class="card ic-card"><ion-icon name="albums-outline"></ion-icon><h4>Totaux du jour <span class="tier full">Full</span></h4><p>« 12 Ndolé à préparer » sur toutes les commandes ouvertes.</p></div>
+<div class="card ic-card"><ion-icon name="wine-outline"></ion-icon><h4>Ardoises au bar <span class="tier full">Full</span></h4><p>Ouvrez une ardoise au nom du client et réglez à la fin.</p></div>
+<div class="card ic-card"><ion-icon name="bed-outline"></ion-icon><h4>Mettre sur la chambre <span class="tier mid">Mid</span></h4><p>Les restaurants d'hôtel portent l'addition sur la chambre du client.</p></div>
+<div class="card ic-card"><ion-icon name="shield-checkmark-outline"></ion-icon><h4>Règles d'annulation <span class="tier full">Full</span></h4><p>PIN du gérant pour les annulations ; validation du patron par téléphone. <span class="soon">Bientôt</span></p></div>
+<div class="card ic-card"><ion-icon name="print-outline"></ion-icon><h4>Impression en cuisine <span class="soon">Bientôt</span></h4><p>Pas d'écran cuisine ? Une imprimante Bluetooth par poste imprime chaque commande et chaque annulation.</p></div>
+<div class="card ic-card"><ion-icon name="beer-outline"></ion-icon><h4>Stock des boissons <span class="soon">Bientôt</span></h4><p>Chaque bière vendue sort du stock. Comptez chaque semaine et voyez ce qui manque.</p></div>
+<div class="card ic-card"><ion-icon name="business-outline"></ion-icon><h4>Plusieurs établissements <span class="tier full">Full</span></h4><p>Deux maquis, un seul patron, un seul jeu de chiffres.</p></div>
+</div>
+</section>
+
+<section id="rk-cards" class="part">
+<p class="eb">À imprimer et afficher</p>
+<h2>Fiches du personnel</h2>
+<div class="tasks">
+<div class="task"><b><ion-icon name="walk-outline"></ion-icon> Serveur</b><span>1. Salle → touchez la table → couverts.<br />2. Commande → plats → Envoyer.<br />3. Un changement ? Touchez le plat → Annuler + motif.<br />4. Le téléphone indique Prêt → servez.<br />5. Salle → Addition.</span></div>
+<div class="task"><b><ion-icon name="cash-outline"></ion-icon> Caissier</b><span>1. Ouvrez la caisse avec le fond.<br />2. Ouvrez la table → Encaisser.<br />3. MoMo : numéro → attendez la confirmation.<br />4. Libérez la table.<br />5. Fermeture : attendez « Synchronisé » → clôturez.</span></div>
+<div class="task"><b><ion-icon name="restaurant-outline"></ion-icon> Cuisinier</b><span>1. Une nouvelle commande arrive dans À cuire.<br />2. Terminé → Prêt.<br />3. VOID ou CHANGED ? Lisez → Vu.<br />4. Le plat part → Servi.</span></div>
+</div>
+</section>
+
+<p class="foot">Guide utilisateur Koomzo · Restaurant &amp; Bar · Version 2 · Les écrans montrés sont ceux du prototype Koomzo actuel. Les noms, plats et prix sont des exemples.</p>
+</main>
+</div>
+<script src="guide/guide.js"></script>
+<script src="guide/anim.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a61bf"/><text x="50" y="62" font-family="Arial,Helvetica,sans-serif" font-size="34" font-weight="700" fill="#fff" text-anchor="middle">FR</text></svg></template>
+</body>
+</html>

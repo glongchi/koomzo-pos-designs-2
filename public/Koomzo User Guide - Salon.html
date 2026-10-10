@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo User Guide — Salon</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="alternate" hreflang="fr" href="Koomzo Guide utilisateur - Salon.html" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="guide/guide.css" />
+<link rel="stylesheet" href="guide/anim.css" />
+<script>(function(){var b='https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons';var s=document.createElement('script');s.type='module';s.src=b+'.esm.js';document.head.appendChild(s);})();</script>
+</head>
+<body data-page="salon">
+<header class="ug-top">
+<a class="ug-mark" data-page="hub" href="Koomzo User Guide.html"><div class="ic"><ion-icon name="book-outline"></ion-icon></div><b>Koomzo User Guide</b><span>Version 2 · October 2026</span></a>
+<nav class="ug-mods" aria-label="Module guides">
+<a data-page="restaurant" href="Koomzo User Guide - Restaurant.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a data-page="hotel" href="Koomzo User Guide - Hotel.html"><ion-icon name="bed-outline"></ion-icon>Hotel</a>
+<a data-page="retail" href="Koomzo User Guide - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+<a data-page="inventory" href="Koomzo User Guide - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Inventory</a>
+<a data-page="signage" href="Koomzo User Guide - Signage.html"><ion-icon name="tv-outline"></ion-icon>Signage</a>
+<a data-page="salon" href="Koomzo User Guide - Salon.html" class="on" aria-current="page"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a data-page="gym" href="Koomzo User Guide - Gym.html"><ion-icon name="barbell-outline"></ion-icon>Gym</a>
+<a data-page="queue" href="Koomzo User Guide - Queue.html"><ion-icon name="people-outline"></ion-icon>Queue</a>
+</nav>
+<div class="ug-lang" aria-label="Language"><b>EN</b><a data-lang-link="fr" href="Koomzo Guide utilisateur - Salon.html" hreflang="fr">FR</a></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Contents">
+<a class="side__back" data-page="hub" href="Koomzo User Guide.html#p1"><ion-icon name="arrow-back-outline"></ion-icon>Platform chapters</a>
+<div class="side__g">Salon</div>
+<a href="#sl"><ion-icon name="cut-outline"></ion-icon>1 · Is this for me?</a>
+<a href="#sl-setup"><ion-icon name="construct-outline"></ion-icon>2 · Set up</a>
+<a href="#sl-day"><ion-icon name="sunny-outline"></ion-icon>3 · Run the day</a>
+<a href="#sl-screens"><ion-icon name="albums-outline"></ion-icon>4 · Screens</a>
+<a class="sub" href="#l-today">Today</a>
+<a class="sub" href="#l-book">Book</a>
+<a class="sub" href="#l-sell">Sell</a>
+<a href="#sl-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · When something goes wrong</a>
+<a href="#sl-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Go further</a>
+<a href="#sl-cards"><ion-icon name="id-card-outline"></ion-icon>Staff task cards</a>
+</nav>
+<main class="doc">
+
+<section id="top">
+<p class="eb">Module guide</p>
+<h1>Salon</h1>
+<p class="lede">The appointment book, payment at the chair, the team's hours and the opening checklist — for hair salons, barbers, beauty and nails. Shared chapters are in the <a data-page="hub" href="Koomzo User Guide.html#p1">Platform chapters</a>.</p>
+</section>
+
+<section id="sl" class="part first">
+<p class="eb">Salon · Part 1</p>
+<h2>Is this for me?</h2>
+<div class="grid3">
+<div class="card"><h4>Hair salon</h4><p>Cuts, colour, braids and treatments; several stylists, bookings and walk-ins.</p></div>
+<div class="card"><h4>Barber</h4><p>Short services, mostly walk-ins, a queue on the wall.</p></div>
+<div class="card"><h4>Beauty · nails · spa</h4><p>Longer bookings, products sold after the service.</p></div>
+</div>
+<h3>What you get at each level</h3>
+<div class="ladder">
+<div><h4><span class="tier lite">Lite</span>Book and get paid</h4><ul><li>Appointment book: today and the week</li><li>Take payment for services and products</li><li>Services with duration and price</li></ul></div>
+<div><h4><span class="tier mid">Mid</span>Run the team</h4><ul><li>Send a service to the stylist</li><li>Team: who works when</li><li>Opening and closing tasks</li></ul></div>
+<div><h4><span class="tier full">Full</span>Pay people fairly</h4><ul><li>Timesheet: clock in and out</li><li>Commission per stylist</li><li>Back-bar colour used per service</li><li>Self check-in kiosk · queue display</li></ul></div>
+</div>
+
+<h3>Fitting a walk-in</h3>
+<p class="sub">Thursday at Salon Lumière, Bonapriso. A customer walks in for a quick cut. Watch Koomzo find the gap, put her on the wall screen and close the bill.</p>
+<figure class="anim" data-ms="2700">
+<div class="anim__stage">
+<div class="sla">
+<div class="sla__grid">
+<span class="h"></span><span class="h">Nadia</span><span class="h">Thomas</span><span class="h">Ivy</span>
+<span>10:00</span><span></span><span></span><span></span>
+<span>10:30</span><span></span><span></span><span></span>
+<span>11:00</span><span></span><span></span><span></span>
+<span>11:30</span><span></span><span></span><span></span>
+<span>12:00</span><span></span><span></span><span></span>
+<div class="sla__b" style="left:calc(44px + 0%);width:calc((100% - 44px)/3 - 6px);top:38px;height:96px;margin-left:3px">Grâce Okoye<br />Retouche racines</div>
+<div class="sla__b" style="left:calc(44px + (100% - 44px)/3);width:calc((100% - 44px)/3 - 6px);top:38px;height:28px;margin-left:3px">Ali Bouba · barbe</div>
+<div class="sla__b" style="left:calc(44px + (100% - 44px)/3);width:calc((100% - 44px)/3 - 6px);top:106px;height:62px;margin-left:3px">Marcel V. · coupe</div>
+<div class="sla__b c" style="left:calc(44px + 2*(100% - 44px)/3);width:calc((100% - 44px)/3 - 6px);top:38px;height:164px;margin-left:3px">Sofia Mbah<br />Mèches complètes</div>
+<div class="sla__gap" data-n="gap" style="left:calc(44px + (100% - 44px)/3);width:calc((100% - 44px)/3 - 6px);top:72px;height:28px;margin-left:3px"></div>
+<div class="sla__wk" style="left:calc(44px + (100% - 44px)/3);width:calc((100% - 44px)/3 - 6px);top:72px;height:28px;margin-left:3px" id="sl-wk">Walk-in · Coupe à sec</div>
+</div>
+<div class="sla__side">
+<div class="mcard" data-n="desk"><div class="mk">Front desk</div><b style="display:block;margin-top:6px;font-size:14px" id="sl-d">10:15 · 3 chairs busy</b></div>
+<div class="sla__q" data-n="q"><div class="mk" style="color:#9aa0b4">Wall screen · next</div><b id="sl-nx">—</b></div>
+<div class="mcard" data-n="bill"><div class="mk">Bill</div><b style="display:block;margin-top:6px;font-size:14px" id="sl-b">—</b></div>
+</div>
+</div>
+</div>
+<ol class="anim__steps">
+<li data-set="wk=no" data-hot="[data-n=desk]">10:15 — three chairs are busy and the book is full until noon, or so it looks.</li>
+<li data-put='{"#sl-d":"Walk-in: Coupe à sec · 30 min"}' data-hot="[data-n=desk]">A customer walks in for a dry cut. Samuel taps <b>Walk-in</b> and picks the service.</li>
+<li data-hot="[data-n=gap]">Koomzo finds a 30-minute gap with Thomas at 10:30 — between two bookings.</li>
+<li data-set="wk=in" data-put='{"#sl-d":"Booked · Thomas 10:30"}'>The walk-in drops into Thomas's column. No other booking moves.</li>
+<li data-put='{"#sl-nx":"Thomas · W-012"}' data-hot="[data-n=q]">The wall screen shows her number. She sits down; no calling across the salon.</li>
+<li data-set="wk=done" data-put='{"#sl-wk":"Done · ready to pay","#sl-b":"Coupe à sec · 3 000 F"}' data-hot="[data-n=bill]">Thomas finishes. The service appears in <b>Finished in the chair</b>, ready for the bill.</li>
+<li data-set="wk=paid" data-put='{"#sl-wk":"Paid · MoMo","#sl-b":"Paid 3 000 F · rebooked in 3 weeks"}' data-hot="[data-n=bill]">Paid by MoMo, and rebooked before she leaves.</li>
+</ol>
+</figure>
+</section>
+
+<section id="sl-setup" class="part">
+<p class="eb">Salon · Part 2</p>
+<h2>Set up <span class="tier lite">Lite</span></h2>
+<ol class="steps">
+<li><div><b>Getting started</b><span>Account, location and staff — <a data-page="hub" href="Koomzo User Guide.html#p1">P1</a>. Each stylist gets a PIN and the days they work.</span></div></li>
+<li><div><b>Opening hours and chairs</b><span>9:00 to 19:00, 4 chairs, 15-minute slots.</span></div></li>
+<li><div><b>Add services</b><span>Name, duration, price, who can do it — Coupe et finition 45 min 5 000 F; Retouche racines 90 min 12 000 F.</span></div></li>
+<li><div><b>Add retail products</b><span>Shampoos, oils, brushes — sold at the chair. Stock in <a data-page="hub" href="Koomzo User Guide.html#modules">Inventory</a>.</span></div></li>
+<li><div><b>Payments</b><span>Cash, MTN MoMo, Orange Money; gift cards if you sell them.</span></div></li>
+<li><div><b>Book a test client</b><span>Book, start, finish, pay. Then delete the test.</span></div></li>
+</ol>
+</section>
+
+<section id="sl-day" class="part">
+<p class="eb">Salon · Part 3</p>
+<h2>Run the day</h2>
+<div class="tbl"><table>
+<thead><tr><th>Moment</th><th>What you do</th><th>Screen</th><th>Tier</th></tr></thead>
+<tbody>
+<tr><td><b>Opening</b></td><td>Tick the opening checklist; clock in.</td><td>Tasks · Hours</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Morning look</b></td><td>Who is booked, who is free next, expected takings.</td><td><a href="#l-today">Today</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>A phone booking</b></td><td>New booking: client, service, stylist, time.</td><td><a href="#l-book">Book</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>A walk-in</b></td><td>Walk-in → Koomzo finds the first free chair that fits.</td><td>Today</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Service done</b></td><td>It moves to <i>Finished in the chair</i>; add products, take payment.</td><td><a href="#l-sell">Sell</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Before she leaves</b></td><td>Rebook the next visit.</td><td>Book</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Closing</b></td><td>Closing tasks, clock out; commission and hours for the week.</td><td>Tasks · Team</td><td><span class="tier full">Full</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="sl-screens" class="part">
+<p class="eb">Salon · Part 4</p>
+<h2>Screens</h2>
+<p class="sub">The left rail: Today, Sell, Book, Services, Tasks, Team, Hours, and Settings at the bottom. A stylist signing in sees their own day first.</p>
+
+<h3 id="l-today">Today <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/sal-today.jpg" alt="Today" /><span class="pin" style="left:20.5%;top:33.5%">1</span><span class="pin" style="left:86.6%;top:33%">2</span><span class="pin" style="left:76.6%;top:50.5%">3</span><span class="pin" style="left:91.5%;top:52%">4</span><span class="pin" style="left:89.8%;top:66%">5</span><span class="pin" style="left:72.3%;top:18.3%">6</span><span class="pin" style="left:89.6%;top:18.3%">7</span></div>
+<ol class="callouts">
+<li><span><b>Booked · chair use · expected takings</b> for today.</span></li>
+<li><span><b>Next free chair</b> — the answer to "can you take me now?".</span></li>
+<li><span><b>All staff or Mine</b>.</span></li>
+<li><span><b>Walk-in</b> — fits a customer into the first gap.</span></li>
+<li><span><b>Status</b> — booked, in the chair, done, paid.</span></li>
+<li><span><b>Assign task</b> — to someone on shift. <span class="tier mid">Mid</span></span></li>
+<li><span><b>New booking</b>.</span></li>
+</ol>
+
+<h3 id="l-book">Book <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/sal-book.jpg" alt="Appointment book" /><span class="pin" style="left:71.2%;top:18%">1</span><span class="pin" style="left:32%;top:32.8%">2</span><span class="pin" style="left:22.7%;top:45.4%">3</span><span class="pin" style="left:25.8%;top:58.3%">4</span><span class="pin" style="left:90.4%;top:32.8%">5</span><span class="pin" style="left:92%;top:54.6%">6</span></div>
+<ol class="callouts">
+<li><span><b>Day grid or Agenda</b>.</span></li>
+<li><span><b>The week</b> — tap a day.</span></li>
+<li><span><b>One column per stylist</b>, with their hours.</span></li>
+<li><span><b>Booking</b> — drag to move, drag the edge to lengthen.</span></li>
+<li><span><b>Working today</b> — hide people who are off.</span></li>
+<li><span><b>Striped</b> — the stylist isn't working yet.</span></li>
+</ol>
+
+<h3 id="l-sell">Sell <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/sal-sell.jpg" alt="Sell" /><span class="pin" style="left:23.3%;top:17%">1</span><span class="pin" style="left:32.5%;top:26.7%">2</span><span class="pin" style="left:34.6%;top:43%">3</span><span class="pin" style="left:17.3%;top:74%">4</span><span class="pin" style="left:71.4%;top:23.9%">5</span><span class="pin" style="left:81.7%;top:63.3%">6</span><span class="pin" style="left:81.2%;top:92.6%">7</span></div>
+<ol class="callouts">
+<li><span><b>Search</b> services, products or clients.</span></li>
+<li><span><b>Categories</b> — Hair, Colour, Barber, Care, Retail.</span></li>
+<li><span><b>Finished in the chair</b> — tap to put the service on the ticket.</span></li>
+<li><span><b>Services and products</b>.</span></li>
+<li><span><b>Add client</b> — history and rebooking.</span></li>
+<li><span><b>Stylist · Discount · Gift card · Hold</b>.</span></li>
+<li><span><b>Charge</b> — cash, MoMo, Orange Money or split. VAT shown.</span></li>
+</ol>
+</section>
+
+<section id="sl-help" class="part">
+<p class="eb">Salon · Part 5</p>
+<h2>When something goes wrong</h2>
+<div class="qa">
+<div class="card"><h4><ion-icon name="time-outline"></ion-icon>A client is late and the next one is waiting.</h4><p>Start the waiting client if a chair is free; drag the late booking later. Koomzo warns if it now overlaps.</p></div>
+<div class="card"><h4><ion-icon name="person-remove-outline"></ion-icon>A stylist is absent.</h4><p>Book → their column → move each booking to someone who can do the service. The client can be told by WhatsApp. <span class="soon"><ion-icon name="time-outline"></ion-icon>Messages soon</span></p></div>
+<div class="card"><h4><ion-icon name="hourglass-outline"></ion-icon>A colour job ran over.</h4><p>Drag the end of the booking. The next booking shows the clash; move it or start it with another stylist.</p></div>
+<div class="card"><h4><ion-icon name="pricetag-outline"></ion-icon>A price dispute at payment.</h4><p>The ticket shows the service and its listed price. A discount needs a reason; above the limit, a manager. </p></div>
+<div class="card"><h4><ion-icon name="cube-outline"></ion-icon>The product ran out.</h4><p>It still sells; stock shows below zero until the delivery is received. Set a reorder point in Inventory.</p></div>
+</div>
+</section>
+
+<section id="sl-more" class="part">
+<p class="eb">Salon · Part 6</p>
+<h2>Go further</h2>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="cash-outline"></ion-icon><h4>Commission <span class="tier full">Full</span></h4><p>A share of each service and product per stylist, worked out every week.</p></div>
+<div class="card ic-card"><ion-icon name="time-outline"></ion-icon><h4>Timesheet <span class="tier full">Full</span></h4><p>Clock in and out with a PIN; hours against the rota.</p></div>
+<div class="card ic-card"><ion-icon name="flask-outline"></ion-icon><h4>Back-bar use <span class="tier full">Full</span></h4><p>Colour and developer leave stock when the service is finished. See <a data-page="hub" href="Koomzo User Guide.html#p7">P7</a>.</p></div>
+<div class="card ic-card"><ion-icon name="tablet-portrait-outline"></ion-icon><h4>Self check-in <span class="tier full">Full</span></h4><p>Clients check in on a tablet at the door.</p></div>
+<div class="card ic-card"><ion-icon name="tv-outline"></ion-icon><h4>Queue display <span class="tier full">Full</span></h4><p>Who is next, on a TV. Uses the Queue module.</p></div>
+<div class="card ic-card"><ion-icon name="checkbox-outline"></ion-icon><h4>Tasks <span class="tier mid">Mid</span></h4><p>Opening and closing checklists, with who ticked what.</p></div>
+</div>
+</section>
+
+<section id="sl-cards" class="part">
+<p class="eb">Print and pin up</p>
+<h2>Staff task cards</h2>
+<div class="tasks">
+<div class="task"><b><ion-icon name="call-outline"></ion-icon> Front desk</b><span>1. Today → who is next, who is free.<br />2. Phone: New booking.<br />3. Walk-in: Walk-in → service.<br />4. Done: Sell → Finished in the chair → Charge.<br />5. Rebook before they leave.</span></div>
+<div class="task"><b><ion-icon name="cut-outline"></ion-icon> Stylist</b><span>1. Clock in with your PIN.<br />2. Mine → your day.<br />3. Client in the chair: Start.<br />4. Finished: Done.<br />5. Clock out.</span></div>
+<div class="task"><b><ion-icon name="checkbox-outline"></ion-icon> Opening &amp; closing</b><span>1. Tasks → today's list.<br />2. Tick as you go.<br />3. Something broken? Add a note.<br />4. Closing: wait for Synced.</span></div>
+</div>
+</section>
+
+<p class="foot">Koomzo User Guide · Salon · Version 2 · Screens shown are from the current Koomzo prototype. Names, services and prices are examples.</p>
+</main>
+
+</div>
+<script src="guide/guide.js"></script>
+<script src="guide/anim.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a61bf"/><rect x="30" y="28" width="40" height="46" rx="5" fill="none" stroke="#fff" stroke-width="5"/><line x1="40" y1="42" x2="60" y2="42" stroke="#fff" stroke-width="4"/><line x1="40" y1="52" x2="60" y2="52" stroke="#fff" stroke-width="4"/><line x1="40" y1="62" x2="53" y2="62" stroke="#fff" stroke-width="4"/></svg></template>
+</body>
+</html>

@@ -43,47 +43,97 @@ a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-sh
 const { useState, useMemo } = React;
 
 const SCREENS = [
-  { g:'Workspace', i:'grid-outline', f:'Koomzo - Control Centre.html', n:'Control Centre', d:'Module hub and capability switches' },
-  { g:'Workspace', i:'log-in-outline', f:'Koomzo - Login.html', n:'Login', d:'Phone + password, EN/FR' },
-  { g:'Workspace', i:'person-add-outline', f:'Koomzo - Signup & Platform Pitch.html', n:'Signup', d:'Create a workspace' },
-  { g:'Workspace', i:'play-circle-outline', f:'Koomzo - Introduction Walkthrough.html', n:'Introduction Walkthrough', d:'Eight-screen product tour' },
-  { g:'Workspace', i:'home-outline', f:'Koomzo POS - Home.html', n:'Home', d:'Operator landing' },
-  { g:'Workspace', i:'apps-outline', f:'Koomzo POS - Apps.html', n:'Apps', d:'Install and dial modules' },
-  { g:'Workspace', i:'settings-outline', f:'Koomzo POS - Settings.html', n:'Settings', d:'Workspace configuration' },
-  { g:'Workspace', i:'people-outline', f:'Koomzo POS - Users.html', n:'Users & Roles', d:'Team and permissions' },
-
-  { g:'Selling', i:'card-outline', f:'Koomzo POS.html', n:'Point of Sale', d:'The register board' },
-  { g:'Selling', i:'storefront-outline', f:'Koomzo POS - Retail.html', n:'Retail', d:'Retail register' },
-  { g:'Selling', i:'swap-horizontal-outline', f:'Koomzo POS - Retail Flex.html', n:'Retail Flex', d:'Sales, inventory, ops' },
-  { g:'Selling', i:'restaurant-outline', f:'Koomzo POS - Restaurant & Bar.html', n:'Restaurant & Bar', d:'Floor, register, kitchen, kiosk' },
-  { g:'Selling', i:'basket-outline', f:'Koomzo Grocery - Till, Dates & Shelf.html', n:'Grocery', d:'Till, dates and shelf' },
-  { g:'Selling', i:'phone-portrait-outline', f:'Koomzo POS - Mobile.html', n:'Mobile', d:'Phone register' },
-  { g:'Selling', i:'pricetag-outline', f:'Koomzo POS - Products.html', n:'Products', d:'Catalogue' },
-  { g:'Selling', i:'pricetags-outline', f:'Koomzo POS - Products v2.html', n:'Products v2', d:'Catalogue, revised' },
-  { g:'Selling', i:'barcode-outline', f:'Koomzo POS - Barcode Labels.html', n:'Barcode Labels', d:'Label designer' },
-
-  { g:'Operations', i:'bed-outline', f:'Koomzo Hotel - Rooms, Folio & Housekeeping.html', n:'Hotel', d:'Rack, folio, housekeeping' },
-  { g:'Operations', i:'cut-outline', f:'Koomzo Salon - Appointments, Tasks, Team.html', n:'Salon', d:'Appointments and team' },
-  { g:'Operations', i:'barbell-outline', f:'Koomzo Gym - Front Desk, Members & Classes.html', n:'Gym & Wellness', d:'Front desk, members, classes' },
-  { g:'Operations', i:'time-outline', f:'Koomzo Queue Management.html', n:'Queue Management', d:'Serve and display' },
-  { g:'Operations', i:'tv-outline', f:'Koomzo Signage - Screens.html', n:'Signage', d:'Players, loops, boards' },
-  { g:'Operations', i:'cube-outline', f:'Koomzo POS - Inventory.html', n:'Inventory', d:'Items, stock, purchasing' },
-  { g:'Operations', i:'construct-outline', f:'Koomzo POS - MRP.html', n:'Manufacturing', d:'BOMs, work orders, costing' },
-  { g:'Operations', i:'hammer-outline', f:'Koomzo MRP - Shop Floor.html', n:'Shop Floor', d:'Operator terminal' },
-  { g:'Operations', i:'receipt-outline', f:'Koomzo POS - Invoicing.html', n:'Invoicing', d:'List, builder, print' },
-
-  { g:'Low-code engines', i:'clipboard-outline', f:'Koomzo POS - Form Builder.html', n:'Form Builder', d:'Fields, steps, rules, data sources' },
-  { g:'Low-code engines', i:'language-outline', f:'Koomzo POS - Form Builder Multilingual.html', n:'Form Builder — Multilingual', d:'EN/FR authoring' },
-  { g:'Low-code engines', i:'document-text-outline', f:'Koomzo POS - Forms.html', n:'Forms', d:'Published forms' },
-  { g:'Low-code engines', i:'albums-outline', f:'Koomzo POS - Form Submissions.html', n:'Submissions', d:'Answers inbox' },
-  { g:'Low-code engines', i:'reader-outline', f:'Koomzo POS - Form Record.html', n:'Form Record', d:'One submission' },
-  { g:'Low-code engines', i:'git-network-outline', f:'Koomzo POS - Workflow Orchestrator.html', n:'Workflow Orchestrator', d:'Recipes across modules' },
-  { g:'Low-code engines', i:'pulse-outline', f:'Koomzo POS - Workflow Runs.html', n:'Workflow Runs', d:'What ran, and when' },
-  { g:'Low-code engines', i:'shapes-outline', f:'Koomzo POS - Flow Designer.html', n:'Flow Designer', d:'Canvas authoring' },
-  { g:'Low-code engines', i:'flash-outline', f:'Koomzo POS - Automations.html', n:'Automations', d:'When / then rules' },
+  {"g":"Workspace","i":"grid-outline","f":"Koomzo - Control Centre.html","n":"Control Centre","d":"Module hub and capability switches"},
+  {"g":"Workspace","i":"log-in-outline","f":"Koomzo - Login.html","n":"Login","d":"Phone + password, EN/FR"},
+  {"g":"Workspace","i":"person-add-outline","f":"Koomzo - Signup & Platform Pitch.html","n":"Signup","d":"Create a workspace"},
+  {"g":"Workspace","i":"play-circle-outline","f":"Koomzo - Introduction Walkthrough.html","n":"Introduction Walkthrough","d":"Eight-screen product tour"},
+  {"g":"Workspace","i":"home-outline","f":"Koomzo POS - Home.html","n":"Home","d":"Operator landing"},
+  {"g":"Workspace","i":"apps-outline","f":"Koomzo POS - Apps.html","n":"Apps","d":"Install and dial modules"},
+  {"g":"Workspace","i":"settings-outline","f":"Koomzo POS - Settings.html","n":"Settings","d":"Workspace configuration"},
+  {"g":"Workspace","i":"people-outline","f":"Koomzo POS - Users.html","n":"Users & Roles","d":"Team and permissions"},
+  {"g":"Selling","i":"card-outline","f":"Koomzo POS.html","n":"Point of Sale","d":"The register board"},
+  {"g":"Selling","i":"storefront-outline","f":"Koomzo POS - Retail.html","n":"Retail","d":"Retail register"},
+  {"g":"Selling","i":"swap-horizontal-outline","f":"Koomzo POS - Retail Flex.html","n":"Retail Flex","d":"Sales, inventory, ops"},
+  {"g":"Selling","i":"restaurant-outline","f":"Koomzo POS - Restaurant & Bar.html","n":"Restaurant & Bar","d":"Floor, register, kitchen, kiosk, server banking"},
+  {"g":"Selling","i":"basket-outline","f":"Koomzo Grocery - Till, Dates & Shelf.html","n":"Grocery","d":"Till, dates and shelf"},
+  {"g":"Selling","i":"pricetag-outline","f":"Koomzo POS - Products.html","n":"Products","d":"Catalogue"},
+  {"g":"Selling","i":"pricetags-outline","f":"Koomzo POS - Products v2.html","n":"Products v2","d":"Catalogue, revised"},
+  {"g":"Selling","i":"barcode-outline","f":"Koomzo POS - Barcode Labels.html","n":"Barcode Labels","d":"Label designer"},
+  {"g":"Operations","i":"bed-outline","f":"Koomzo Hotel - Rooms, Folio & Housekeeping.html","n":"Hotel","d":"Rack, booking form, folio, housekeeping"},
+  {"g":"Operations","i":"cut-outline","f":"Koomzo Salon - Appointments, Tasks, Team.html","n":"Salon","d":"Appointments and team"},
+  {"g":"Operations","i":"barbell-outline","f":"Koomzo Gym - Front Desk, Members & Classes.html","n":"Gym & Wellness","d":"Front desk, members, classes"},
+  {"g":"Operations","i":"time-outline","f":"Koomzo Queue Management.html","n":"Queue Management","d":"Serve and display"},
+  {"g":"Operations","i":"tv-outline","f":"Koomzo Signage - Screens.html","n":"Signage","d":"Players, loops, boards"},
+  {"g":"Operations","i":"cube-outline","f":"Koomzo POS - Inventory.html","n":"Inventory","d":"Items, stock, purchasing"},
+  {"g":"Operations","i":"construct-outline","f":"Koomzo POS - MRP.html","n":"Manufacturing","d":"BOMs, work orders, costing"},
+  {"g":"Operations","i":"hammer-outline","f":"Koomzo MRP - Shop Floor.html","n":"Shop Floor","d":"Operator terminal"},
+  {"g":"Operations","i":"receipt-outline","f":"Koomzo POS - Invoicing.html","n":"Invoicing","d":"List, builder, print"},
+  {"g":"Local network","i":"wifi-outline","f":"Koomzo Link - Device.html","n":"Link · Device","d":"Hub and client device app"},
+  {"g":"Local network","i":"git-network-outline","f":"Koomzo Link - Dev Harness.html","n":"Link · Dev Harness","d":"Several devices side by side"},
+  {"g":"Low-code engines","i":"clipboard-outline","f":"Koomzo POS - Form Builder.html","n":"Form Builder","d":"Fields, steps, rules, data sources"},
+  {"g":"Low-code engines","i":"language-outline","f":"Koomzo POS - Form Builder Multilingual.html","n":"Form Builder — Multilingual","d":"EN/FR authoring"},
+  {"g":"Low-code engines","i":"document-text-outline","f":"Koomzo POS - Forms.html","n":"Forms","d":"Published forms"},
+  {"g":"Low-code engines","i":"albums-outline","f":"Koomzo POS - Form Submissions.html","n":"Submissions","d":"Answers inbox"},
+  {"g":"Low-code engines","i":"reader-outline","f":"Koomzo POS - Form Record.html","n":"Form Record","d":"One submission"},
+  {"g":"Low-code engines","i":"git-merge-outline","f":"Koomzo POS - Workflow Orchestrator.html","n":"Workflow Orchestrator","d":"Recipes across modules"},
+  {"g":"Low-code engines","i":"pulse-outline","f":"Koomzo POS - Workflow Runs.html","n":"Workflow Runs","d":"What ran, and when"},
+  {"g":"Low-code engines","i":"shapes-outline","f":"Koomzo POS - Flow Designer.html","n":"Flow Designer","d":"Canvas authoring"},
+  {"g":"Low-code engines","i":"flash-outline","f":"Koomzo POS - Automations.html","n":"Automations","d":"When / then rules"},
+  {"g":"User guide","i":"book-outline","f":"Koomzo User Guide.html","n":"User Guide (EN)","d":"Hub, platform chapters, 8 module guides"},
+  {"g":"User guide","i":"book-outline","f":"Koomzo Guide utilisateur.html","n":"Guide utilisateur (FR)","d":"Accueil, plateforme, 8 guides de module"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo Guide utilisateur - Gym.html","n":"Gym (FR)","d":"Guide de module"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo Guide utilisateur - Hotel.html","n":"Hotel (FR)","d":"Guide de module"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo Guide utilisateur - Inventory.html","n":"Inventory (FR)","d":"Guide de module"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo Guide utilisateur - Queue.html","n":"Queue (FR)","d":"Guide de module"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo Guide utilisateur - Restaurant.html","n":"Restaurant (FR)","d":"Guide de module"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo Guide utilisateur - Retail Flex.html","n":"Retail Flex (FR)","d":"Guide de module"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo Guide utilisateur - Salon.html","n":"Salon (FR)","d":"Guide de module"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo Guide utilisateur - Signage.html","n":"Signage (FR)","d":"Guide de module"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo User Guide - Gym.html","n":"Gym (EN)","d":"Module guide"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo User Guide - Hotel.html","n":"Hotel (EN)","d":"Module guide"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo User Guide - Inventory.html","n":"Inventory (EN)","d":"Module guide"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo User Guide - Queue.html","n":"Queue (EN)","d":"Module guide"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo User Guide - Restaurant.html","n":"Restaurant (EN)","d":"Module guide"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo User Guide - Retail Flex.html","n":"Retail Flex (EN)","d":"Module guide"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo User Guide - Salon.html","n":"Salon (EN)","d":"Module guide"},
+  {"g":"User guide","i":"reader-outline","f":"Koomzo User Guide - Signage.html","n":"Signage (EN)","d":"Module guide"},
+  {"g":"Plans — latest","i":"document-outline","f":"Koomzo Restaurant - Production Gap Spec.md","n":"Restaurant - Production Gap Spec","d":"Plan · Markdown"},
+  {"g":"Plans — latest","i":"document-outline","f":"Koomzo Restaurant - Service Scenario Plan.md","n":"Restaurant - Service Scenario Plan","d":"Plan · Markdown"},
+  {"g":"Plans — latest","i":"document-outline","f":"Koomzo Restaurant - Server Banking and Ardoise Plan.md","n":"Restaurant - Server Banking and Ardoise Plan","d":"Plan · Markdown"},
+  {"g":"Plans — latest","i":"document-outline","f":"Koomzo Hotel - Booking Form Corrections Plan.md","n":"Hotel - Booking Form Corrections Plan","d":"Plan · Markdown"},
+  {"g":"Plans — latest","i":"document-outline","f":"Koomzo Link - Local Network Plan.md","n":"Link - Local Network Plan","d":"Plan · Markdown"},
+  {"g":"Plans — latest","i":"document-text-outline","f":"Koomzo - Local Network (Hub and Clients).html","n":"Local Network (Hub and Clients)","d":"Spec · page"},
+  {"g":"Plans — latest","i":"document-outline","f":"Koomzo - Batch 1 Close-out Rulings.md","n":"Batch 1 Close-out Rulings","d":"Plan · Markdown"},
+  {"g":"Plans — latest","i":"document-text-outline","f":"Koomzo - Batch 1 Close-out Rulings.html","n":"Batch 1 Close-out Rulings","d":"Spec · page"},
+  {"g":"Plans — latest","i":"document-outline","f":"Koomzo User Guide - Plan.md","n":"User Guide - Plan","d":"Plan · Markdown"},
+  {"g":"Plans — latest","i":"document-outline","f":"Koomzo User Guide - Edition 2 Plan.md","n":"User Guide - Edition 2 Plan","d":"Plan · Markdown"},
+  {"g":"Plans — latest","i":"document-outline","f":"Koomzo Queue - Requirements.md","n":"Queue - Requirements","d":"Plan · Markdown"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Functional Specification Deck.html","n":"Functional Specification Deck","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Functional Specification.html","n":"Functional Specification","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Introduction Walkthrough Deck.html","n":"Introduction Walkthrough Deck","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Mobile Convergence Plan.html","n":"Mobile Convergence Plan","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Module Register Audit.html","n":"Module Register Audit","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Phone Compositions.html","n":"Phone Compositions","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Progressive Disclosure Approach.html","n":"Progressive Disclosure Approach","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Progressive Disclosure Decisions.html","n":"Progressive Disclosure Decisions","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Recipe and Depletion Model.html","n":"Recipe and Depletion Model","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Register Code Change Plan.html","n":"Register Code Change Plan","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Register Functional Spec.html","n":"Register Functional Spec","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Register and Inventory Integration.html","n":"Register and Inventory Integration","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Signup Responsive Views.html","n":"Signup Responsive Views","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Signup v1 (split panel).html","n":"Signup v1 (split panel)","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo - Stock Posting Implementation Plan.html","n":"Stock Posting Implementation Plan","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo Functional Specification (standalone).html","n":"Functional Specification (standalone)","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo Inventory - IA & Integration.html","n":"Inventory - IA & Integration","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo Inventory - Simplification Review.html","n":"Inventory - Simplification Review","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo MRP - IA &amp; Market Fit.html","n":"MRP - IA & Market Fit","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Koomzo Signage - IA and Capabilities.html","n":"Signage - IA and Capabilities","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Retail POS - Brief Answers.html","n":"Retail POS - Brief Answers","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"Retail POS - Variants Reference.html","n":"Retail POS - Variants Reference","d":"Document"},
+  {"g":"Specs & references","i":"document-text-outline","f":"spec-standalone-src.html","n":"spec-standalone-src","d":"Document"}
 ];
 
-const GROUPS = ['Workspace', 'Selling', 'Operations', 'Low-code engines'];
+const GROUPS = ['Workspace', 'Selling', 'Operations', 'Local network', 'Low-code engines', 'User guide', 'Plans — latest', 'Specs & references'];
 
 function Card({ s }) {
   return (
@@ -113,11 +163,11 @@ function App() {
         </svg>
         <div className="wm">k<span className="oo">oo</span>mzo</div>
       </div>
-      <p className="lede">Every screen in the suite, running locally. Each one is a React app served by the Node server in this folder.</p>
+      <p className="lede">Every screen in the suite, the user guides, and the plans and specs behind each module — running locally from the Node server in this folder.</p>
 
       <div className="search">
         <ion-icon name="search-outline"></ion-icon>
-        <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search screens" aria-label="Search screens" />
+        <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search screens, guides and plans" aria-label="Search" />
       </div>
 
       {GROUPS.map(g => {
@@ -130,7 +180,7 @@ function App() {
           </div>
         );
       })}
-      {!hits.length && <div className="empty">No screen matches “{q}”.</div>}
+      {!hits.length && <div className="empty">Nothing matches “{q}”.</div>}
     </div>
   );
 }

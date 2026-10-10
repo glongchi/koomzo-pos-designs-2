@@ -213,6 +213,97 @@ const worksShift = (code) => code === 'M' || code === 'A' || code === 'N';
 /* who is on a given shift on a given day — always against the live team, never HT */
 const onShift = (team, code, day) => team.filter((s) => s.roster[day] === code);
 
+/* ---------------------------------------------------------------------------
+   DATES — one helper for every label, so offsets roll over months (no "32 Aug")
+--------------------------------------------------------------------------- */
+const HT_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const HT_WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const HT_BASE = (() => {
+  const m = /(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/.exec(HT.today || '');
+  const mi = m ? HT_MON.findIndex((x) => m[2].toLowerCase().startsWith(x.toLowerCase())) : -1;
+  return m && mi > -1 ? new Date(+m[3], mi, +m[1]) : new Date(2026, 7, HT.dayNo);
+})();
+const htDateAt = (off) => { const d = new Date(HT_BASE); d.setDate(d.getDate() + off); return d; };
+const htOffOf = (d) => Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - HT_BASE) / 86400000);
+const htShort = (off) => { const d = htDateAt(off); return d.getDate() + ' ' + HT_MON[d.getMonth()]; };
+const htDay = (off) => { const d = htDateAt(off); return HT_WD[d.getDay()] + ' ' + d.getDate() + ' ' + HT_MON[d.getMonth()]; };
+const htThousands = (n) => String(Math.round(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0');
+
+/* − [ value ] + — type straight into the middle; bad input snaps back on blur */
+function HtStepper({ value, onChange, min = 0, max = Infinity, step = 1, fmt, suffix, label }) {
+  const [txt, setTxt] = useState(null);
+  const shown = txt != null ? txt : (fmt ? fmt(value) : String(value));
+  const commit = () => {
+    if (txt == null) return;
+    const n = parseInt(txt, 10);
+    if (!isNaN(n) && n >= min && n <= max) onChange(n);
+    setTxt(null);
+  };
+  return (
+    <div className="htstep">
+      <button type="button" aria-label={'Less ' + (label || '')} disabled={value <= min} onClick={() => onChange(Math.max(min, value - step))}><ion-icon name="remove"></ion-icon></button>
+      <label className="htstep__f">
+        <input inputMode="numeric" aria-label={label} value={shown}
+          onFocus={(e) => { setTxt(String(value)); const el = e.target; setTimeout(() => el.select(), 0); }}
+          onChange={(e) => setTxt(e.target.value.replace(/[^\d]/g, ''))}
+          onBlur={commit} onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); }} />
+        {suffix && <span>{suffix}</span>}
+      </label>
+      <button type="button" aria-label={'More ' + (label || '')} disabled={value + step > max} onClick={() => onChange(Math.min(max, value + step))}><ion-icon name="add"></ion-icon></button>
+    </div>
+  );
+}
+
+/* month calendar for the arrival — previews the stay as a range; struck = room booked */
+function HtDatePop({ value, nights: n, onPick, onClose, blocked, booked, occ, maxAhead }) {
+  const start = htDateAt(value);
+  const [ym, setYm] = useState({ y: start.getFullYear(), m: start.getMonth() });
+  const [hover, setHover] = useState(null);
+  const first = new Date(ym.y, ym.m, 1);
+  const lead = (first.getDay() + 6) % 7;
+  const days = new Date(ym.y, ym.m + 1, 0).getDate();
+  const cells = [...Array(lead).fill(null), ...Array.from({ length: days }, (_, i) => htOffOf(new Date(ym.y, ym.m, i + 1)))];
+  const go = (d) => setYm((c) => { const x = new Date(c.y, c.m + d, 1); return { y: x.getFullYear(), m: x.getMonth() }; });
+  const canPrev = ym.y > HT_BASE.getFullYear() || ym.m > HT_BASE.getMonth();
+  const canNext = htOffOf(new Date(ym.y, ym.m + 1, 1)) <= maxAhead;
+  const from = hover != null ? hover : value;
+  const lvl = (f) => (f >= 0.85 ? 'hi' : f >= 0.5 ? 'md' : 'lo');
+  return (
+    <div className="htcal" role="dialog" aria-label="Pick an arrival date">
+      <div className="htcal__hd">
+        <button type="button" className="icbtn" disabled={!canPrev} onClick={() => go(-1)} aria-label="Previous month"><ion-icon name="chevron-back"></ion-icon></button>
+        <b>{['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][ym.m]} {ym.y}</b>
+        <button type="button" className="icbtn" disabled={!canNext} onClick={() => go(1)} aria-label="Next month"><ion-icon name="chevron-forward"></ion-icon></button>
+        <div className="sp"></div>
+        <button type="button" className="icbtn" onClick={onClose} aria-label="Close calendar"><ion-icon name="close-outline"></ion-icon></button>
+      </div>
+      <div className="htcal__wd">{['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => <span key={d}>{d}</span>)}</div>
+      <div className="htcal__grid" onMouseLeave={() => setHover(null)}>
+        {cells.map((off, i) => {
+          if (off == null) return <span key={'e' + i}></span>;
+          const out = off < 0 || off > maxAhead;
+          const struck = !out && booked(off);
+          const dis = out || blocked(off);
+          const inR = off >= from && off < from + n;
+          const cls = ['htcal__d', off === 0 && 'today', off === value && 'on', inR && 'rng', off === from + n && 'dep', struck && 'struck', dis && 'dis'].filter(Boolean).join(' ');
+          return (
+            <button type="button" key={off} className={cls} disabled={dis}
+              onMouseEnter={() => !dis && setHover(off)} onClick={() => onPick(off)}>
+              {htDateAt(off).getDate()}
+              {occ && !out && <i className={'occ ' + lvl(occ(off))}></i>}
+            </button>
+          );
+        })}
+      </div>
+      <div className="htcal__ft">
+        <span><i className="sw rng"></i>{htShort(from)} → {htShort(from + n)} · {nights(n)}</span>
+        <span><i className="sw struck"></i>Room booked</span>
+        {occ && <span><i className="occ lo"></i><i className="occ md"></i><i className="occ hi"></i>House full</span>}
+      </div>
+    </div>
+  );
+}
+
 Object.assign(window, { HT, xaf, typeOf, roomOf, userOf, guestOf, srcOf, gate, nights, badgeN,
   RACK, rackState, stayIn, folioSum, LINE_IC, HtRail, HtTop, HtSeg, HtSheet, RoomTile, SrcTag,
-  nextAction, shiftOf, worksShift, onShift });
+  nextAction, shiftOf, worksShift, onShift, HT_BASE, htDateAt, htOffOf, htShort, htDay, htThousands, HtStepper, HtDatePop });

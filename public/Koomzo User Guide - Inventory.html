@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo User Guide — Inventory</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="alternate" hreflang="fr" href="Koomzo Guide utilisateur - Inventory.html" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="guide/guide.css" />
+<link rel="stylesheet" href="guide/anim.css" />
+<script>(function(){var b='https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons';var s=document.createElement('script');s.type='module';s.src=b+'.esm.js';document.head.appendChild(s);})();</script>
+</head>
+<body data-page="inventory">
+<header class="ug-top">
+<a class="ug-mark" data-page="hub" href="Koomzo User Guide.html"><div class="ic"><ion-icon name="book-outline"></ion-icon></div><b>Koomzo User Guide</b><span>Version 2 · October 2026</span></a>
+<nav class="ug-mods" aria-label="Module guides">
+<a data-page="restaurant" href="Koomzo User Guide - Restaurant.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a data-page="hotel" href="Koomzo User Guide - Hotel.html"><ion-icon name="bed-outline"></ion-icon>Hotel</a>
+<a data-page="retail" href="Koomzo User Guide - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+<a data-page="inventory" href="Koomzo User Guide - Inventory.html" class="on" aria-current="page"><ion-icon name="cube-outline"></ion-icon>Inventory</a>
+<a data-page="signage" href="Koomzo User Guide - Signage.html"><ion-icon name="tv-outline"></ion-icon>Signage</a>
+<a data-page="salon" href="Koomzo User Guide - Salon.html"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a data-page="gym" href="Koomzo User Guide - Gym.html"><ion-icon name="barbell-outline"></ion-icon>Gym</a>
+<a data-page="queue" href="Koomzo User Guide - Queue.html"><ion-icon name="people-outline"></ion-icon>Queue</a>
+</nav>
+<div class="ug-lang" aria-label="Language"><b>EN</b><a data-lang-link="fr" href="Koomzo Guide utilisateur - Inventory.html" hreflang="fr">FR</a></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Contents">
+<a class="side__back" data-page="hub" href="Koomzo User Guide.html#p1"><ion-icon name="arrow-back-outline"></ion-icon>Platform chapters</a>
+<div class="side__g">Inventory</div>
+<a href="#iv"><ion-icon name="cube-outline"></ion-icon>1 · Is this for me?</a>
+<a href="#iv-setup"><ion-icon name="construct-outline"></ion-icon>2 · Set up</a>
+<a href="#iv-day"><ion-icon name="sunny-outline"></ion-icon>3 · Run the week</a>
+<a href="#iv-screens"><ion-icon name="albums-outline"></ion-icon>4 · Screens</a>
+<a class="sub" href="#v-items">Items</a>
+<a class="sub" href="#v-stock">Stock</a>
+<a class="sub" href="#v-orders">Orders</a>
+<a class="sub" href="#v-reports">Reports</a>
+<a href="#iv-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · When something goes wrong</a>
+<a href="#iv-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Go further</a>
+<a href="#iv-cards"><ion-icon name="id-card-outline"></ion-icon>Staff task cards</a>
+</nav>
+<main class="doc">
+
+<section id="top">
+<p class="eb">Module guide</p>
+<h1>Inventory</h1>
+<p class="lede">One catalogue and one stock count for every module that sells goods — the shop till, the bar, the salon's back-bar, the gym's juice bar. Every change to stock leaves a row you can read. Shared chapters are in the <a data-page="hub" href="Koomzo User Guide.html#p1">Platform chapters</a>; how modules feed stock is in <a data-page="hub" href="Koomzo User Guide.html#p7">P7</a>.</p>
+</section>
+
+<section id="iv" class="part first">
+<p class="eb">Inventory · Part 1</p>
+<h2>Is this for me?</h2>
+<p class="sub">Switch Inventory on when you want to know what you have, what you sold and what went missing. Without it, the till still sells; with it, every sale takes stock off.</p>
+<div class="grid3">
+<div class="card"><h4>Shops and pharmacies</h4><p>Count on hand per item, reorder before the shelf is empty, batch and expiry.</p></div>
+<div class="card"><h4>Bars and restaurants</h4><p>Crates and bottles; dishes that use ingredients. Start with drinks only.</p></div>
+<div class="card"><h4>Salons and gyms</h4><p>Retail products sold, and back-bar colour or juice-bar stock used.</p></div>
+</div>
+<h3>What you get at each level</h3>
+<div class="ladder">
+<div><h4><span class="tier lite">Lite</span>Know what you have</h4><ul><li>Items: the one catalogue</li><li>On hand per item</li><li>Movement log: every in and out</li></ul></div>
+<div><h4><span class="tier mid">Mid</span>Never run out</h4><ul><li>Reorder points and a needs-ordering list</li><li>Partner directory: suppliers and terms</li><li>Services sold by time</li></ul></div>
+<div><h4><span class="tier full">Full</span>Control the money in stock</h4><ul><li>Purchase orders and receiving</li><li>Counts with variance</li><li>Recipes and bundles · batch and expiry · serials</li><li>Valuation, margin, shrinkage</li><li>Several locations and transfers</li></ul></div>
+</div>
+
+<h3>Where a crate goes</h3>
+<p class="sub">Follow Castel 65 cl at a bar in Akwa: one order in, two tills selling, a reorder warning and a weekly count. Every step leaves a row in the ledger.</p>
+<figure class="anim" data-ms="2700">
+<div class="anim__stage">
+<div class="iva">
+<div class="mcard">
+<div class="iva__it"><i><ion-icon name="beer-outline"></ion-icon></i><div><b>Castel 65 cl</b><div class="mk">Bar · par 56 · reorder at 24</div></div></div>
+<div class="iva__q"><span id="iv-q">8</span> <small>bottles on hand</small></div>
+<div class="iva__bar"><b></b><em></em></div>
+<div class="iva__lg"><span>0</span><span>Reorder · 24</span><span>56</span></div>
+<p class="mchip" id="iv-st" style="margin:12px 0 0">Low · order soon</p>
+</div>
+<div class="mcard">
+<div class="mk">Ledger · this week</div>
+<ul><li class="in"><span>Received · PO-2216 · 2 crates</span><span>+48</span></li><li class="out"><span>Sale · Bar till</span><span>−12</span></li><li class="out"><span>Sale · Terrasse phone</span><span>−20</span></li><li><span>Reorder point reached</span><span>24</span></li><li class="out"><span>Count · variance</span><span>−2</span></li><li><span>PO-2231 · 2 crates · sent</span><span>+48 due</span></li></ul>
+</div>
+</div>
+</div>
+<ol class="anim__steps">
+<li data-set="pct=14 rows=0">Monday morning: 8 bottles left. The item shows <b>Low</b>.</li>
+<li data-set="pct=100 rows=1" data-put='{"#iv-q":"56","#iv-st":"In stock"}'>The delivery arrives. <b>Receive</b> against the order: +48, and the cost price is updated.</li>
+<li data-set="pct=79 rows=2" data-put='{"#iv-q":"44"}'>The bar till sells 12 bottles. Each sale takes stock off at once.</li>
+<li data-set="pct=43 rows=3" data-put='{"#iv-q":"24"}'>The server's phone on the terrasse sells 20 more — same stock, no double count.</li>
+<li data-set="rows=4" data-put='{"#iv-st":"Reorder · on the needs-ordering list"}'>24 left: the reorder point is crossed and the item joins <b>Needs ordering</b>.</li>
+<li data-set="pct=39 rows=5" data-put='{"#iv-q":"22","#iv-st":"Count · 2 missing"}'>Sunday count: 22 on the shelf, not 24. The difference is posted as a variance with a reason.</li>
+<li data-set="rows=6" data-put='{"#iv-st":"On order · due Tuesday"}'>One tap turns the suggestion into a purchase order to the supplier.</li>
+</ol>
+</figure>
+</section>
+
+<section id="iv-setup" class="part">
+<p class="eb">Inventory · Part 2</p>
+<h2>Set up <span class="tier lite">Lite</span></h2>
+<p class="sub">Start with the items that matter most — usually drinks, or your top 50 products. Add the rest later.</p>
+<ol class="steps">
+<li><div><b>Import or add items</b><span>Items → Import from a spreadsheet, or Add item: name, SKU or barcode, price, cost, unit (each, crate, ml, kg).</span></div></li>
+<li><div><b>Choose what is tracked</b><span>Track stock for goods; services and dishes without a recipe stay <i>Not tracked</i>.</span></div></li>
+<li><div><b>Enter what you have today</b><span>Stock → Count. The first count sets the opening stock.</span></div></li>
+<li><div><b>Set reorder points</b><span>The level at which an item should be ordered, and the par to order up to. <span class="tier mid">Mid</span></span></div></li>
+<li><div><b>Add suppliers</b><span>Orders → Partners: phone, terms, lead time. <span class="tier mid">Mid</span></span></div></li>
+<li><div><b>Sell one item and check</b><span>Ring it up at the till; the ledger shows the sale row.</span></div></li>
+</ol>
+</section>
+
+<section id="iv-day" class="part">
+<p class="eb">Inventory · Part 3</p>
+<h2>Run the week</h2>
+<p class="sub">Stock work runs on a weekly rhythm, around the daily sales that happen by themselves.</p>
+<div class="tbl"><table>
+<thead><tr><th>Moment</th><th>What you do</th><th>Screen</th><th>Tier</th></tr></thead>
+<tbody>
+<tr><td><b>Every sale</b></td><td>Nothing. The till, bar or salon takes stock off by itself.</td><td>—</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Delivery arrives</b></td><td>Receive against the order; check quantities and cost.</td><td><a href="#v-orders">Orders</a></td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>No order? Stock in</b></td><td>Record what came in, from whom, at what cost.</td><td><a href="#v-stock">Stock</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Breakage, gift, own use</b></td><td>Adjust with a reason: broken, expired, staff, gift.</td><td>Stock</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Monday · Ordering</b></td><td>Open Needs ordering, accept the suggestion, send the PO.</td><td>Orders</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Sunday · Count</b></td><td>Count a shelf or everything; review the differences; post.</td><td>Stock → Count</td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>Month end</b></td><td>Stock value, margin and shrinkage for the owner.</td><td><a href="#v-reports">Reports</a></td><td><span class="tier full">Full</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="iv-screens" class="part">
+<p class="eb">Inventory · Part 4</p>
+<h2>Screens</h2>
+<p class="sub">The left rail: Items, Stock, Orders, Reports, and Setup at the bottom. The screenshots show a business with a boutique and a salon, all locations.</p>
+
+<h3 id="v-items">Items <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/inv-items.jpg" alt="Items" /><span class="pin" style="left:75.8%;top:5%">1</span><span class="pin" style="left:32.5%;top:28.7%">2</span><span class="pin" style="left:70%;top:28.7%">3</span><span class="pin" style="left:58%;top:58%">4</span><span class="pin" style="left:90%;top:47%">5</span><span class="pin" style="left:73%;top:18.3%">6</span><span class="pin" style="left:87%;top:18.3%">7</span></div>
+<ol class="callouts">
+<li><span><b>Location</b> — one shop, or all of them added up. <span class="tier full">Full</span></span></li>
+<li><span><b>Search</b> by name, SKU or barcode.</span></li>
+<li><span><b>Filters</b> — kind, category, stock level (low, out).</span></li>
+<li><span><b>On hand</b> — green in stock, amber low, red out. Services show <i>Not tracked</i>.</span></li>
+<li><span><b>In POS</b> — whether the till can sell it. Back-bar items stay off the till.</span></li>
+<li><span><b>Import</b> from a spreadsheet.</span></li>
+<li><span><b>Add item</b> — goods, a service, or a bundle.</span></li>
+</ol>
+
+<h3 id="v-stock">Stock <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/inv-stock.jpg" alt="Stock ledger" /><span class="pin" style="left:14%;top:28.3%">1</span><span class="pin" style="left:62%;top:28.3%">2</span><span class="pin" style="left:29%;top:39%">3</span><span class="pin" style="left:54%;top:65.7%">4</span><span class="pin" style="left:91.8%;top:49.4%">5</span></div>
+<ol class="callouts">
+<li><span><b>Stock in, out, move, adjust</b> — each asks what, how many, and why.</span></li>
+<li><span><b>Count</b> — a shelf or the whole shop. <span class="tier full">Full</span></span></li>
+<li><span><b>Ledger · On hand · In transit · Counts</b>.</span></li>
+<li><span><b>One row per movement</b> — what, how many, where from, which till, when. Rows are never edited.</span></li>
+<li><span><b>Export</b> for the accountant.</span></li>
+</ol>
+
+<h3 id="v-orders">Orders <span class="tier full">Full</span></h3>
+<div class="shot"><img src="guide/img/inv-orders.jpg" alt="Purchase orders" /><span class="pin" style="left:22%;top:18%">1</span><span class="pin" style="left:22%;top:39%">2</span><span class="pin" style="left:27%;top:51%">3</span><span class="pin" style="left:91.5%;top:62.4%">4</span><span class="pin" style="left:75.8%;top:28.5%">5</span><span class="pin" style="left:90.4%;top:28.5%">6</span></div>
+<ol class="callouts">
+<li><span><b>Purchases and Partners</b> — orders, and the people you buy from. <span class="tier mid">Mid</span></span></li>
+<li><span><b>Suggestions</b> — what is below its reorder point, ready to order.</span></li>
+<li><span><b>Purchase order</b> — supplier, lines, due date, value.</span></li>
+<li><span><b>Status</b> — draft, sent, partly received, received.</span></li>
+<li><span><b>Receive</b> — tick off what arrived; short deliveries stay open.</span></li>
+<li><span><b>New order</b>.</span></li>
+</ol>
+
+<h3 id="v-reports">Reports <span class="tier full">Full</span></h3>
+<div class="shot"><img src="guide/img/inv-reports.jpg" alt="Inventory reports" /><span class="pin" style="left:35.7%;top:28.7%">1</span><span class="pin" style="left:18.6%;top:42.6%">2</span><span class="pin" style="left:17.9%;top:61%">3</span><span class="pin" style="left:36%;top:77.4%">4</span><span class="pin" style="left:52.4%;top:77.4%">5</span><span class="pin" style="left:80%;top:87%">6</span></div>
+<ol class="callouts">
+<li><span><b>Summary · Valuation · Margin · Turnover · Shrinkage</b>.</span></li>
+<li><span><b>Stock value</b> at cost, items tracked, low, out, on order.</span></li>
+<li><span><b>Shrinkage</b> — what went missing this month, in francs.</span></li>
+<li><span><b>Needs attention</b> — below par at any location.</span></li>
+<li><span><b>Suggest order</b> — turns the list into a draft PO.</span></li>
+<li><span><b>Recent movements</b> — nothing changes stock without a row here.</span></li>
+</ol>
+</section>
+
+<section id="iv-help" class="part">
+<p class="eb">Inventory · Part 5</p>
+<h2>When something goes wrong</h2>
+<div class="qa">
+<div class="card"><h4><ion-icon name="remove-circle-outline"></ion-icon>Stock shows a negative number.</h4><p>Something was sold that was never received. Selling is never blocked. Record the missing delivery, or count the item to reset it.</p></div>
+<div class="card"><h4><ion-icon name="clipboard-outline"></ion-icon>The count doesn't match.</h4><p>Review the differences before posting: a big gap is usually an unrecorded delivery or a sale on the wrong item. Post with a reason; the owner sees it under Shrinkage.</p></div>
+<div class="card"><h4><ion-icon name="cube-outline"></ion-icon>The supplier delivered short.</h4><p>Receive only what arrived. The order stays <i>Partly received</i> until the rest comes or you close it.</p></div>
+<div class="card"><h4><ion-icon name="calendar-outline"></ion-icon>An expired batch was found.</h4><p>Stock out with reason <i>Expired</i>. With batch tracking, the till warns before selling a short-dated batch. <span class="tier full">Full</span></p></div>
+<div class="card"><h4><ion-icon name="cloud-offline-outline"></ion-icon>Two tills sold the last bottle while offline.</h4><p>Both sales stand; stock shows −1 until the next delivery or count. Nothing is lost when the devices sync.</p></div>
+</div>
+</section>
+
+<section id="iv-more" class="part">
+<p class="eb">Inventory · Part 6</p>
+<h2>Go further</h2>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="layers-outline"></ion-icon><h4>Recipes &amp; bundles <span class="tier full">Full</span></h4><p>A dish or a gift box takes its parts off stock. Start with drinks; add recipes one dish at a time.</p></div>
+<div class="card ic-card"><ion-icon name="calendar-outline"></ion-icon><h4>Batch &amp; expiry <span class="tier full">Full</span></h4><p>Lot number and expiry date on every receipt. For pharmacies and food.</p></div>
+<div class="card ic-card"><ion-icon name="barcode-outline"></ion-icon><h4>Serial numbers <span class="tier full">Full</span></h4><p>Each phone or appliance identified, with its warranty.</p></div>
+<div class="card ic-card"><ion-icon name="business-outline"></ion-icon><h4>Several locations <span class="tier full">Full</span></h4><p>Stock held per shop, one catalogue. Professional plan.</p></div>
+<div class="card ic-card"><ion-icon name="git-compare-outline"></ion-icon><h4>Transfers <span class="soon"><ion-icon name="time-outline"></ion-icon>Available soon</span></h4><p>Move stock between shops, with an in-transit step. Sync between sites is coming.</p></div>
+<div class="card ic-card"><ion-icon name="stats-chart-outline"></ion-icon><h4>Valuation &amp; margin <span class="tier full">Full</span></h4><p>Stock value at cost, margin per item, turnover.</p></div>
+</div>
+</section>
+
+<section id="iv-cards" class="part">
+<p class="eb">Print and pin up</p>
+<h2>Staff task cards</h2>
+<div class="tasks">
+<div class="task"><b><ion-icon name="download-outline"></ion-icon> Receiving a delivery</b><span>1. Orders → open the PO → Receive.<br />2. Count each line; enter what arrived.<br />3. Check the cost on the invoice.<br />4. Short? Leave it open.</span></div>
+<div class="task"><b><ion-icon name="clipboard-outline"></ion-icon> Weekly count</b><span>1. Stock → Count → choose the shelf.<br />2. Count; type what you see, not what you expect.<br />3. Review differences with the manager.<br />4. Post.</span></div>
+<div class="task"><b><ion-icon name="swap-vertical-outline"></ion-icon> Breakage or own use</b><span>1. Stock → Adjust.<br />2. Item and quantity.<br />3. Reason: broken, expired, staff, gift.<br />4. Save — it's logged with your name.</span></div>
+</div>
+</section>
+
+<p class="foot">Koomzo User Guide · Inventory · Version 2 · Screens shown are from the current Koomzo prototype. Names, items and prices are examples.</p>
+</main>
+
+</div>
+<script src="guide/guide.js"></script>
+<script src="guide/anim.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a61bf"/><rect x="30" y="28" width="40" height="46" rx="5" fill="none" stroke="#fff" stroke-width="5"/><line x1="40" y1="42" x2="60" y2="42" stroke="#fff" stroke-width="4"/><line x1="40" y1="52" x2="60" y2="52" stroke="#fff" stroke-width="4"/><line x1="40" y1="62" x2="53" y2="62" stroke="#fff" stroke-width="4"/></svg></template>
+</body>
+</html>

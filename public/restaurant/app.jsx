@@ -39,7 +39,7 @@ function SuiteRoot() {
   }, [t.accent]);
 
   return (
-    <SuiteProvider tweaks={t}>
+    <SuiteProvider tweaks={t} setTweak={setTweak}>
       <div className="stage" data-device={t.device || 'desktop'}>
         <div className="frame">
           <Suite t={t} setTweak={setTweak} />
@@ -49,18 +49,8 @@ function SuiteRoot() {
   );
 }
 
-function RestaurantSetup() {
-  return (
-    <div className="screen">
-      <div className="screen__bd" style={{ padding: 22, overflowY: 'auto' }}>
-        <ModuleSetup mid="restaurant" />
-      </div>
-    </div>
-  );
-}
-
 function Suite({ t, setTweak }) {
-  const { screen, setScreen } = useSuite();
+  const { screen, setScreen, kioskLocked } = useSuite();
   const didInit = useRef(false);
   useEffect(() => {
     if (!didInit.current && t.startScreen && t.startScreen !== 'home') { setScreen(t.startScreen); }
@@ -73,12 +63,14 @@ function Suite({ t, setTweak }) {
   else if (screen === 'floor') Screen = Floor;
   else if (screen === 'kiosk') Screen = Kiosk;
   else if (screen === 'setup') Screen = RestaurantSetup;
+  else if (screen === 'close') Screen = DayClose;
   else Screen = Home;
 
   return (
-    <div className="suite">
-      <NavRail />
-      <Screen />
+    <div className={'suite' + (kioskLocked ? ' suite--kiosk' : '')}>
+      {!kioskLocked && <NavRail />}
+      {kioskLocked ? <Kiosk /> : <Screen />}
+      {!kioskLocked && <PrinterBanner />}
 
       <TweaksPanel>
         <TweakSection label="Preview" />

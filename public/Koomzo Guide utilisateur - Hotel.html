@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Guide utilisateur Koomzo — Hôtel</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="alternate" hreflang="en" href="Koomzo User Guide - Hotel.html" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="guide/guide.css" />
+<link rel="stylesheet" href="guide/anim.css" />
+<script>(function(){var b='https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons';var s=document.createElement('script');s.type='module';s.src=b+'.esm.js';document.head.appendChild(s);})();</script>
+</head>
+<body data-page="hotel">
+<header class="ug-top">
+<a class="ug-mark" data-page="hub" href="Koomzo Guide utilisateur.html"><div class="ic"><ion-icon name="book-outline"></ion-icon></div><b>Guide utilisateur Koomzo</b><span>Version 2 · octobre 2026</span></a>
+<nav class="ug-mods" aria-label="Guides par module">
+<a data-page="restaurant" href="Koomzo Guide utilisateur - Restaurant.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a data-page="hotel" href="Koomzo Guide utilisateur - Hotel.html" class="on" aria-current="page"><ion-icon name="bed-outline"></ion-icon>Hôtel</a>
+<a data-page="retail" href="Koomzo Guide utilisateur - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+<a data-page="inventory" href="Koomzo Guide utilisateur - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Stock</a>
+<a data-page="signage" href="Koomzo Guide utilisateur - Signage.html"><ion-icon name="tv-outline"></ion-icon>Affichage</a>
+<a data-page="salon" href="Koomzo Guide utilisateur - Salon.html"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a data-page="gym" href="Koomzo Guide utilisateur - Gym.html"><ion-icon name="barbell-outline"></ion-icon>Salle de sport</a>
+<a data-page="queue" href="Koomzo Guide utilisateur - Queue.html"><ion-icon name="people-outline"></ion-icon>File d’attente</a>
+</nav>
+<div class="ug-lang" aria-label="Langue"><a data-lang-link="en" href="Koomzo User Guide - Hotel.html" hreflang="en">EN</a><b>FR</b></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Sommaire">
+<a class="side__back" data-page="hub" href="Koomzo Guide utilisateur.html#p1"><ion-icon name="arrow-back-outline"></ion-icon>Chapitres Plateforme</a>
+<div class="side__g">Hôtel</div>
+<a href="#ht"><ion-icon name="bed-outline"></ion-icon>1 · Est-ce pour moi ?</a>
+<a href="#ht-setup"><ion-icon name="construct-outline"></ion-icon>2 · Installation</a>
+<a href="#ht-day"><ion-icon name="sunny-outline"></ion-icon>3 · Une journée</a>
+<a href="#ht-screens"><ion-icon name="albums-outline"></ion-icon>4 · Les écrans</a>
+<a class="sub" href="#h-rack">Chambres</a>
+<a class="sub" href="#h-book">Nouvelle réservation</a>
+<a class="sub" href="#h-folio">Folios</a>
+<a class="sub" href="#h-clean">Ménage</a>
+<a class="sub" href="#h-pre">Pré-arrivée</a>
+<a class="sub" href="#h-audit">Audit de nuit</a>
+<a href="#ht-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · En cas de problème</a>
+<a href="#ht-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Aller plus loin</a>
+<a href="#ht-cards"><ion-icon name="id-card-outline"></ion-icon>Fiches du personnel</a>
+</nav>
+<main class="doc">
+
+<section id="top">
+<p class="eb">Guide de module</p>
+<h1>Hôtel</h1>
+<p class="lede">Chaque chambre, son état et qui y dort ce soir — réservations, note du client, ménage et audit de nuit, sur l'ordinateur de la réception et les téléphones des femmes de chambre. Les chapitres communs — appareils, hors ligne, paiements — sont dans les <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">chapitres Plateforme</a>.</p>
+<div class="note"><ion-icon name="language-outline"></ion-icon><p>Les captures montrent la version anglaise du prototype. Les boutons sont donnés en français, avec le libellé anglais entre parenthèses quand c'est utile.</p></div>
+</section>
+
+<section id="ht" class="part first">
+<p class="eb">Hôtel · Partie 1</p>
+<h2>Est-ce pour moi ?</h2>
+<p class="sub">Le module Hôtel convient à tout lieu qui vend un lit pour la nuit ou un appartement au mois. La configuration vous demande votre format :</p>
+<div class="grid3">
+<div class="card"><h4>Petit hôtel · auberge · motel</h4><p>10 à 40 chambres vendues à la nuit. Le départ le plus courant.</p></div>
+<div class="card"><h4>Appartements · meublés</h4><p>Logements loués à la semaine ou au mois, eau et électricité facturées au compteur.</p></div>
+<div class="card"><h4>Lodge · les deux</h4><p>Chambres et appartements sous un même toit, souvent avec restaurant et bar.</p></div>
+</div>
+<h3>Ce que vous avez à chaque niveau</h3>
+<div class="ladder">
+<div><h4><span class="tier lite">Lite</span>Vendre les chambres</h4><ul><li>Tableau des chambres : chaque chambre, ce soir</li><li>Réservations, arrivées, départs</li><li>Fiches clients avec CNI ou passeport</li><li>Liste de ménage et planning</li></ul></div>
+<div><h4><span class="tier mid">Mid</span>La note et la loi</h4><ul><li>Folio : les charges sur la chambre</li><li>Tarifs, disponibilités, réservations OTA</li><li>Registre de police et taxe de séjour</li><li>Fiche de pré-arrivée · charges du restaurant</li><li>Chambres hors service pour travaux</li></ul></div>
+<div><h4><span class="tier full">Full</span>Clôturer, grandir</h4><ul><li>Audit de nuit et clôture</li><li>Cautions et dégâts</li><li>Longs séjours et appartements</li><li>Taux d'occupation, PMC, RevPAR</li><li>Séjour minimum, arrivée fermée</li></ul></div>
+</div>
+
+<h3>Une chambre, une journée</h3>
+<p class="sub">Suivez la chambre 104 du Bilongue Suites &amp; Lodge, à Douala — d'une chambre propre à une réservation, une note, un départ, puis de nouveau en vente. Chaque étape montre qui agit, et sur quel appareil.</p>
+<figure class="anim" data-ms="2700">
+<div class="anim__stage">
+<div class="hroom">
+<div>
+<span class="hroom__clock"><ion-icon name="time-outline"></ion-icon><span id="h-t">Jour 1 · 08:00</span></span>
+<div class="htile"><div class="htile__no">104</div><div class="htile__ty">Double supérieure · 45 000 F la nuit</div><span class="htile__st" id="h-st">Libre · prête</span><div class="htile__g" id="h-g"></div><div class="htile__s" id="h-s">En vente ce soir</div></div>
+<div class="hwho"><span data-w="desk"><ion-icon name="laptop-outline"></ion-icon>Réception</span><span data-w="bar"><ion-icon name="restaurant-outline"></ion-icon>Restaurant</span><span data-w="audit"><ion-icon name="moon-outline"></ion-icon>Audit de nuit</span><span data-w="hk"><ion-icon name="phone-portrait-outline"></ion-icon>Femme de chambre</span></div>
+</div>
+<div class="hfolio">
+<div class="hfolio__h"><span>Folio · chambre 104</span><span>FCFA</span></div>
+<ul><li class="pay"><span>Caution · MTN MoMo</span><span>−40 000</span></li><li><span>Dîner · Lodge Restaurant</span><span>12 500</span></li><li><span>Nuitée × 2</span><span>90 000</span></li><li><span>Taxe de séjour · 2 pers. × 2</span><span>4 000</span></li><li class="pay"><span>Règlement · MoMo + espèces</span><span>−66 500</span></li></ul>
+<div class="hfolio__t"><span>Solde</span><span id="h-bal">0</span></div>
+</div>
+</div>
+</div>
+<ol class="anim__steps">
+<li data-set="state=vac lines=0" data-hot="[data-w=desk]">La chambre 104 est propre et en vente. Le tableau l'affiche en vert.</li>
+<li data-set="state=arr lines=1" data-put='{"#h-t":"Jour 1 · 10:30","#h-st":"Arrivée aujourd’hui","#h-g":"Claudine Ngo Bella","#h-s":"2 nuits · réservée par téléphone","#h-bal":"−40 000"}' data-hot="[data-w=desk]">Claudine réserve 2 nuits par téléphone et verse 40 000 F de caution par MoMo.</li>
+<li data-set="state=occ" data-put='{"#h-t":"Jour 1 · 14:10","#h-st":"Occupée","#h-s":"Clé remise · CNI au registre"}' data-hot="[data-w=desk]">Elle arrive. Sa fiche pré-remplie est vérifiée une fois ; la ligne du registre de police s'écrit toute seule.</li>
+<li data-set="lines=2" data-put='{"#h-t":"Jour 1 · 20:30","#h-bal":"−27 500"}' data-hot="[data-w=bar]">Le dîner au Lodge Restaurant est porté sur la chambre 104 — pas d'espèces à table.</li>
+<li data-set="lines=4" data-put='{"#h-t":"Jour 2 · 23:59","#h-bal":"66 500"}' data-hot="[data-w=audit]">L'audit de nuit porte chaque nuitée et la taxe de séjour sur le folio.</li>
+<li data-set="state=due lines=5" data-put='{"#h-t":"Jour 3 · 11:00","#h-st":"Départ","#h-s":"Réglé · MoMo + espèces","#h-bal":"0"}' data-hot="[data-w=desk]">Départ : le solde est payé en MoMo et en espèces. Le reçu part par WhatsApp.</li>
+<li data-set="state=dirty" data-put='{"#h-t":"Jour 3 · 11:05","#h-st":"À nettoyer","#h-g":"","#h-s":"Ménage de départ · draps"}' data-hot="[data-w=hk]">La chambre 104 passe au rouge et arrive sur le téléphone de la femme de chambre.</li>
+<li data-set="state=insp" data-put='{"#h-t":"Jour 3 · 11:45","#h-st":"À contrôler","#h-s":"Nettoyée par Sylvie"}' data-hot="[data-w=hk]">Sylvie appuie sur Terminé ; la gouvernante contrôle la chambre.</li>
+<li data-set="state=vac lines=0" data-put='{"#h-t":"Jour 3 · 12:10","#h-st":"Libre · prête","#h-s":"En vente ce soir","#h-bal":"0"}' data-hot="[data-w=desk]">De nouveau en vente — la réception peut la vendre au prochain client de passage.</li>
+</ol>
+</figure>
+</section>
+
+<section id="ht-setup" class="part">
+<p class="eb">Hôtel · Partie 2</p>
+<h2>Installation <span class="tier lite">Lite</span></h2>
+<p class="sub">Environ une heure et demie, une seule fois. À faire avant votre premier client.</p>
+<ol class="steps">
+<li><div><b>Premiers pas</b><span>Compte, établissement et personnel — voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">P1</a>. Donnez aux femmes de chambre le rôle <i>Ménage</i> : leur téléphone n'affiche que la liste de ménage.</span></div></li>
+<li><div><b>Choisissez votre format</b><span>Petit hôtel, appartements, ou lodge avec les deux.</span></div></li>
+<li><div><b>Ajoutez les types et les chambres</b><span>Standard, Supérieure, Suite, Appartement — chacun avec son prix à la nuit. Puis chaque chambre : numéro, étage, type.</span></div></li>
+<li><div><b>Fixez les règles de la maison</b><span>Arrivée dès 14:00, départ avant 12:00, taxe de séjour par personne et par nuit, TVA.</span></div></li>
+<li><div><b>Formulaire de réservation</b><span>Configuration → Formulaire de réservation (Booking form) : la durée maximale, le pas de la caution, et si la liste des chambres suit les dates choisies.</span></div></li>
+<li><div><b>Paiements</b><span>Espèces activées ; ajoutez MTN MoMo et Orange Money. La carte quand votre terminal est prêt.</span></div></li>
+<li><div><b>Faites un séjour test</b><span>Réservez une chambre pour ce soir, faites l'arrivée, ajoutez une charge, le départ, puis le ménage.</span></div></li>
+</ol>
+</section>
+
+<section id="ht-day" class="part">
+<p class="eb">Hôtel · Partie 3</p>
+<h2>Une journée à l'hôtel</h2>
+<p class="sub">L'ordre réel d'une journée, et l'écran utilisé à chaque moment.</p>
+<div class="tbl"><table>
+<thead><tr><th>Moment</th><th>Ce que vous faites</th><th>Écran</th><th>Niveau</th></tr></thead>
+<tbody>
+<tr><td><b>07:00 · Matin</b></td><td>Regardez le tableau : qui part aujourd'hui, qui arrive, ce qui est hors service.</td><td><a href="#h-rack">Chambres</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>08:00 · Tableau de ménage</b></td><td>Envoyez le tableau ; chaque femme de chambre voit ses chambres sur son téléphone.</td><td><a href="#h-clean">Ménage</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Avant midi · Départs</b></td><td>Vérifiez le folio, encaissez le solde, rendez ou retenez la caution.</td><td><a href="#h-folio">Folios</a></td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>À tout moment · Client de passage ou appel</b></td><td>Nouvelle réservation : client, chambre, date d'arrivée, nuits, caution.</td><td><a href="#h-book">Nouvelle réservation</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Matin · Arrivées à venir</b></td><td>Envoyez le lien de pré-arrivée ; vérifiez les fiches reçues.</td><td><a href="#h-pre">Pré-arrivée</a></td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Dès 14:00 · Arrivées</b></td><td>Vérifiez la pièce d'identité, remettez la clé. La ligne du registre s'écrit seule.</td><td>Chambres</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Soir · Restaurant et bar</b></td><td>Le client signe ; la note arrive sur son folio.</td><td>Restaurant → Folios</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Tard · Registre de police</b></td><td>Chaque chambre occupée, le client, sa pièce, la taxe due ce soir.</td><td>Clients</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Minuit · Audit de nuit</b></td><td>Portez la nuit sur chaque chambre occupée et clôturez la journée.</td><td><a href="#h-audit">Audit de nuit</a></td><td><span class="tier full">Full</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="ht-screens" class="part">
+<p class="eb">Hôtel · Partie 4</p>
+<h2>Les écrans</h2>
+<p class="sub">La barre de gauche : Chambres (Rooms), Réservations (Bookings), Ménage (Cleaning), Folios, Clients (Guests), Long séjour, Tarifs (Rates), Audit, Rapports, Équipe (Team), Pré-arrivée, et Configuration (Setup) en bas. Une femme de chambre connectée sur téléphone ne voit que Chambres, Ménage et Équipe.</p>
+
+<h3 id="h-rack">Chambres <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/hotel-rack.jpg" alt="Tableau des chambres" /><span class="pin" style="left:3.6%;top:13%">1</span><span class="pin" style="left:14%;top:30%">2</span><span class="pin" style="left:17%;top:45%">3</span><span class="pin" style="left:15%;top:64%">4</span><span class="pin" style="left:80%;top:88%">5</span><span class="pin" style="left:72.5%;top:18.3%">6</span><span class="pin" style="left:89.5%;top:18.3%">7</span></div>
+<ol class="callouts">
+<li><span><b>Barre</b> — les pastilles comptent ce qui attend quelqu'un aujourd'hui.</span></li>
+<li><span><b>Hors service</b> — une chambre retirée pour travaux, avec le motif.</span></li>
+<li><span><b>Ce soir</b> — occupation, arrivées, départs, chambres prêtes, argent sur les chambres.</span></li>
+<li><span><b>Filtres</b> — Arrivées, Départs, Libres prêtes, À nettoyer, Long séjour.</span></li>
+<li><span><b>Tuile de chambre</b> — la couleur est l'état ; le bouton est la prochaine action (arrivée, départ, ménage).</span></li>
+<li><span><b>À nettoyer</b> — ouvre le tableau de ménage.</span></li>
+<li><span><b>Nouvelle réservation</b> (New booking) — voir ci-dessous.</span></li>
+</ol>
+
+<h3 id="h-book">Nouvelle réservation <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/hotel-book.jpg" alt="Formulaire de réservation" /><span class="pin" style="left:32%;top:25%">1</span><span class="pin" style="left:32%;top:43%">2</span><span class="pin" style="left:27%;top:60%">3</span><span class="pin" style="left:20.5%;top:89%">4</span><span class="pin" style="left:30%;top:95.5%">5</span></div>
+<ol class="callouts">
+<li><span><b>Client et mobile</b> — nom de famille d'abord, comme sur la CNI.</span></li>
+<li><span><b>CNI ou passeport</b> — obligatoire pour le registre de police. <span class="tier mid">Mid</span></span></li>
+<li><span><b>Chambre</b> — les chambres grisées sont prises aux dates choisies, pas seulement ce soir.</span></li>
+<li><span><b>Arrivée</b> — aujourd'hui, demain ou les cinq jours suivants, en un geste.</span></li>
+<li><span><b>Choisir une date</b> (Pick a date) — un calendrier jusqu'à un an. Le séjour s'affiche en plage ; les nuits déjà réservées de la chambre sont barrées ; un point indique le remplissage de l'hôtel.</span></li>
+</ol>
+<div class="note"><ion-icon name="add-circle-outline"></ion-icon><p>Plus bas : <b>Nuits</b> et <b>Caution</b> ont chacun des boutons − / + et une case où taper directement — n'importe quel nombre de nuits, n'importe quel montant. Les tarifs à la semaine ou au mois avancent d'une semaine ou d'un mois.</p></div>
+
+<h3 id="h-folio">Folios <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/hotel-folio.jpg" alt="Folios" /><span class="pin" style="left:27%;top:20.5%">1</span><span class="pin" style="left:17%;top:28.7%">2</span><span class="pin" style="left:92%;top:30%">3</span><span class="pin" style="left:68%;top:18.3%">4</span><span class="pin" style="left:87.7%;top:18.3%">5</span></div>
+<ol class="callouts">
+<li><span><b>En cours</b> — toutes les notes ouvertes, additionnées.</span></li>
+<li><span><b>Une ligne par chambre</b> — touchez pour voir chaque charge : nuitées, restaurant, bar, blanchisserie, taxe.</span></li>
+<li><span><b>Solde</b> et ce qui est déjà payé.</span></li>
+<li><span><b>Ajouter une charge</b> (Post a charge) — blanchisserie, minibar, un taxi avancé pour le client.</span></li>
+<li><span><b>Départ et règlement</b> (Check out &amp; settle) — espèces, MoMo, Orange Money ou partagé ; caution rendue ou retenue en partie pour dégâts. <span class="tier full">Full</span></span></li>
+</ol>
+
+<h3 id="h-clean">Ménage <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/hotel-clean.jpg" alt="Tableau de ménage" /><span class="pin" style="left:22.7%;top:28.5%">1</span><span class="pin" style="left:16%;top:39.4%">2</span><span class="pin" style="left:47.5%;top:58%">3</span><span class="pin" style="left:17%;top:79%">4</span><span class="pin" style="left:92%;top:53.5%">5</span><span class="pin" style="left:88.7%;top:18.3%">6</span></div>
+<ol class="callouts">
+<li><span><b>Tableau et Maintenance</b> — les chambres à préparer et les pannes à réparer. <span class="tier mid">Mid</span></span></li>
+<li><span><b>À nettoyer</b> — les départs d'abord, puis les recouches ; changements de draps signalés.</span></li>
+<li><span><b>Commencer</b> (Start) — la femme de chambre appuie en entrant.</span></li>
+<li><span><b>Attribuer</b> (Assign) — confier une chambre à quelqu'un de service.</span></li>
+<li><span><b>Terminé</b> (Done) — la chambre passe au contrôle, puis en vente.</span></li>
+<li><span><b>Envoyer le tableau</b> — chaque téléphone reçoit sa liste.</span></li>
+</ol>
+
+<h3 id="h-pre">Pré-arrivée <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/hotel-prearrival.jpg" alt="Pré-arrivée" /><span class="pin" style="left:17%;top:30%">1</span><span class="pin" style="left:52%;top:66.7%">2</span><span class="pin" style="left:92.5%;top:77%">3</span><span class="pin" style="left:71.4%;top:18.3%">4</span><span class="pin" style="left:89.8%;top:18.3%">5</span></div>
+<ol class="callouts">
+<li><span><b>Fiches à vérifier</b> — comparez une fois la photo de la pièce au numéro.</span></li>
+<li><span><b>État de la fiche</b> — envoyée, ouverte, à vérifier, vérifiée, ou remplie à la réception.</span></li>
+<li><span><b>Vérifier</b> — à l'arrivée, la ligne du registre s'écrit seule ; personne ne recopie un passeport.</span></li>
+<li><span><b>Vue client</b> — ce que le client voit sur son téléphone.</span></li>
+<li><span><b>Envoyer le lien</b> — par WhatsApp. <span class="soon"><ion-icon name="time-outline"></ion-icon>Disponible bientôt</span></span></li>
+</ol>
+
+<h3 id="h-audit">Audit de nuit <span class="tier full">Full</span></h3>
+<div class="shot"><img src="guide/img/hotel-audit.jpg" alt="Audit de nuit" /><span class="pin" style="left:14%;top:29%">1</span><span class="pin" style="left:14%;top:49.5%">2</span><span class="pin" style="left:17%;top:63%">3</span><span class="pin" style="left:21.6%;top:77.8%">4</span><span class="pin" style="left:89.3%;top:18.3%">5</span></div>
+<ol class="callouts">
+<li><span><b>Encore ouverts</b> — arrivées non faites, départs non clôturés. Validez quand même : ils passent au lendemain avec une note.</span></li>
+<li><span><b>Chambres non préparées</b> — reportées au tableau du matin.</span></li>
+<li><span><b>Chiffres du soir</b> — chambres vendues, chiffre des chambres, taxe de séjour.</span></li>
+<li><span><b>Ce qui sera porté</b> — une ligne par chambre et par nuit. La veille n'est jamais modifiée.</span></li>
+<li><span><b>Porter la nuit</b> (Post the night) — et la journée est clôturée.</span></li>
+</ol>
+</section>
+
+<section id="ht-help" class="part">
+<p class="eb">Hôtel · Partie 5</p>
+<h2>En cas de problème</h2>
+<div class="qa">
+<div class="card"><h4><ion-icon name="card-outline"></ion-icon>Le client n'a ni CNI ni passeport sur lui.</h4><p>Faites l'arrivée ; la chambre affiche <i>Sans pièce</i> et l'audit la signale. Saisissez la pièce avant l'audit de nuit — le registre de police l'exige.</p></div>
+<div class="card"><h4><ion-icon name="copy-outline"></ion-icon>Un client Booking.com arrive pour une chambre déjà vendue.</h4><p>Quand la liste des chambres suit les dates, la réception ne peut pas vendre une nuit réservée. Si cela arrive avec une réservation OTA saisie à la main, réservez l'un des clients dans une chambre libre du même type.</p></div>
+<div class="card"><h4><ion-icon name="flash-off-outline"></ion-icon>Le courant a sauté pendant l'audit de nuit.</h4><p>Rien n'est porté deux fois. Rallumez l'ordinateur et relancez Porter la nuit ; les chambres déjà portées sont ignorées.</p></div>
+<div class="card"><h4><ion-icon name="hammer-outline"></ion-icon>Des dégâts constatés au départ.</h4><p>Règlement → retenez une partie de la caution avec un motif. Le reçu du client l'indique. <span class="tier full">Full</span></p></div>
+<div class="card"><h4><ion-icon name="construct-outline"></ion-icon>Une chambre tombe en panne avec un client attendu ce soir.</h4><p>Ménage → Maintenance → signalez la panne et mettez la chambre hors service. La réservation affiche une alerte ; placez le client dans une autre chambre.</p></div>
+<div class="card"><h4><ion-icon name="cloud-offline-outline"></ion-icon>Pas d'internet au départ, et le client paie par MoMo.</h4><p>Prenez des espèces, ou laissez le folio ouvert et confirmez le MoMo au retour d'internet. Les arrivées et le ménage continuent normalement.</p></div>
+</div>
+</section>
+
+<section id="ht-more" class="part">
+<p class="eb">Hôtel · Partie 6</p>
+<h2>Aller plus loin</h2>
+<p class="sub">Activez ces fonctions dans Configuration quand vous êtes prêt.</p>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="restaurant-outline"></ion-icon><h4>Porter sur la chambre <span class="tier mid">Mid</span></h4><p>Le restaurant et le bar envoient les notes sur le folio du client. Voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p7">P7</a>.</p></div>
+<div class="card ic-card"><ion-icon name="globe-outline"></ion-icon><h4>Réservations OTA <span class="tier mid">Mid</span></h4><p>Booking.com, Airbnb et agences, saisies à la main avec leur référence.</p></div>
+<div class="card ic-card"><ion-icon name="shield-outline"></ion-icon><h4>Cautions et dégâts <span class="tier full">Full</span></h4><p>Gardez une caution, retenez-en une partie au départ avec un motif.</p></div>
+<div class="card ic-card"><ion-icon name="key-outline"></ion-icon><h4>Longs séjours <span class="tier full">Full</span></h4><p>Locations à la semaine ou au mois, renouvellements, eau et électricité au compteur.</p></div>
+<div class="card ic-card"><ion-icon name="stats-chart-outline"></ion-icon><h4>Occupation, PMC, RevPAR <span class="tier full">Full</span></h4><p>Par rapport à l'an dernier, et selon l'origine des clients.</p></div>
+<div class="card ic-card"><ion-icon name="lock-closed-outline"></ion-icon><h4>Restrictions de séjour <span class="tier full">Full</span></h4><p>Nuits minimum, arrivée ou départ fermé, arrêt des ventes.</p></div>
+<div class="card ic-card"><ion-icon name="sync-outline"></ion-icon><h4>Synchronisation des canaux <span class="soon"><ion-icon name="time-outline"></ion-icon>Disponible bientôt</span></h4><p>Disponibilités envoyées aux OTA dans les deux sens. Formule Professional.</p></div>
+<div class="card ic-card"><ion-icon name="people-circle-outline"></ion-icon><h4>Tableau des services <span class="tier mid">Mid</span></h4><p>Qui couvre chaque service, et où il manque du monde.</p></div>
+</div>
+</section>
+
+<section id="ht-cards" class="part">
+<p class="eb">À imprimer et afficher</p>
+<h2>Fiches du personnel</h2>
+<div class="tasks">
+<div class="task"><b><ion-icon name="laptop-outline"></ion-icon> Réception</b><span>1. Matin : Chambres → Départs et Arrivées.<br />2. Client de passage : Nouvelle réservation → chambre, dates, nuits, caution.<br />3. Arrivée : vérifier la pièce → clé.<br />4. Départ : Folios → Départ et règlement.<br />5. Le soir : chaque chambre a-t-elle une pièce ?</span></div>
+<div class="task"><b><ion-icon name="sparkles-outline"></ion-icon> Femme de chambre</b><span>1. Ouvrez Ménage sur votre téléphone.<br />2. Les départs d'abord.<br />3. Appuyez sur Commencer en entrant.<br />4. Une panne ? Signalez-la depuis la chambre.<br />5. Appuyez sur Terminé quand la chambre est prête.</span></div>
+<div class="task"><b><ion-icon name="moon-outline"></ion-icon> Veilleur de nuit</b><span>1. Audit → lisez les alertes.<br />2. Saisissez les pièces manquantes.<br />3. Portez la nuit.<br />4. Attendez « Synchronisé » avant de partir.</span></div>
+</div>
+</section>
+
+<p class="foot">Guide utilisateur Koomzo · Hôtel · Version 2 · Les écrans montrés sont ceux du prototype Koomzo actuel. Les noms, chambres et prix sont des exemples.</p>
+</main>
+
+</div>
+<script src="guide/guide.js"></script>
+<script src="guide/anim.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a61bf"/><text x="50" y="62" font-family="Arial,Helvetica,sans-serif" font-size="34" font-weight="700" fill="#fff" text-anchor="middle">FR</text></svg></template>
+</body>
+</html>

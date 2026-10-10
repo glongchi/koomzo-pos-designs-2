@@ -173,11 +173,28 @@ function BookSheet({ seed, api, onClose }) {
   const [plan, setPlan] = useState('nightly');
   const [idNo, setIdNo] = useState('');
   const [dep, setDep] = useState(0);
+  const [cal, setCal] = useState(false);
+  const cfg = api.bookCfg;
   const t = typeOf(roomOf(no).type);
   const rate = plan === 'monthly' ? (t.monthly || t.rate * 26) : plan === 'weekly' ? (t.weekly || t.rate * 6) : t.rate;
   const sources = HT.sources.filter((s) => gate('ota') || !s.ota);
-  const ok = name.trim().length > 1;
-  const stay = plan === 'monthly' ? 30 : plan === 'weekly' ? 7 * Math.max(1, Math.round(nts / 7)) : nts;
+  /* the stepper moves in the plan's own unit: nights, weeks or months */
+  const unit = plan === 'monthly' ? 30 : plan === 'weekly' ? 7 : 1;
+  const maxN = Math.max(unit, cfg.maxNights - (cfg.maxNights % unit));
+  const stay = Math.min(maxN, unit * Math.max(1, Math.round(nts / unit)));
+  const pickPlan = (p) => { const u = p === 'monthly' ? 30 : p === 'weekly' ? 7 : 1; setPlan(p); setNts((v) => u * Math.max(1, Math.round(v / u))); };
+  const nightChips = plan === 'monthly' ? [30, 60, 90] : plan === 'weekly' ? [7, 14, 21, 28] : [1, 2, 3, 5, 7, 14];
+
+  /* availability by date: a room is taken on a night if any live stay covers it */
+  const takenOn = (rno, off) => st.stays.some((x) => x.no === rno && x.status !== 'out' && off >= x.from && off < x.from + x.nights);
+  const clash = (rno, from, len) => { for (let i = 0; i < len; i++) if (takenOn(rno, from + i)) return true; return false; };
+  const ooo = (rno) => rackState(rno, st) === 'ooo';
+  const roomBusy = (r) => cfg.roomsByDate ? (ooo(r.no) || clash(r.no, day, stay))
+    : ['occ', 'due', 'arr', 'stay', 'ooo'].indexOf(rackState(r.no, st)) > -1;
+  const freeN = HT.rooms.filter((r) => !roomBusy(r)).length;
+  const roomClash = cfg.roomsByDate && clash(no, day, stay);
+  const occOf = (off) => HT.rooms.filter((r) => takenOn(r.no, off)).length / Math.max(1, HT.rooms.length);
+  const ok = name.trim().length > 1 && !roomClash;
 
   return (
     <HtSheet wide title={seed.no ? 'Check in · room ' + seed.no : gate('bookings') ? 'New booking' : 'Check a guest in'}
@@ -210,14 +227,15 @@ function BookSheet({ seed, api, onClose }) {
       )}
 
       <div style={{ marginTop: 14 }}>
-        <span className="lbl">Room · {free.length} vacant</span>
+        <span className="lbl">Room · {cfg.roomsByDate ? freeN + ' free ' + (day === 0 ? 'from tonight' : 'from ' + htShort(day)) : free.length + ' vacant'}</span>
         <div className="htchips" style={{ marginTop: 7 }}>
           {HT.rooms.map((r) => {
-            const s = rackState(r.no, st), busy = ['occ', 'due', 'arr', 'stay', 'ooo'].indexOf(s) > -1;
+            const busy = roomBusy(r);
             return <button key={r.no} className={'htchip' + (no === r.no ? ' on' : '')} disabled={busy}
               style={busy ? { opacity: .35 } : null} onClick={() => setNo(r.no)}>{r.no}<b style={{ opacity: .65, fontWeight: 600 }}>{typeOf(r.type).short}</b></button>;
           })}
         </div>
+        {roomClash && <div className="note wrn" style={{ marginTop: 9 }}><ion-icon name="alert-circle-outline"></ion-icon>Room {no} is booked during {htShort(day)} → {htShort(day + stay)}. Pick another room or other dates.</div>}
       </div>
 
       {gate('bookings') && (
@@ -225,27 +243,40 @@ function BookSheet({ seed, api, onClose }) {
           <span className="lbl">Arrives</span>
           <div className="htchips" style={{ marginTop: 7 }}>
             {[0, 1, 2, 3, 4, 5, 6].map((d) => (
-              <button key={d} className={'htchip' + (day === d ? ' on' : '')} onClick={() => setDay(d)}>
-                {d === 0 ? 'Today' : d === 1 ? 'Tomorrow' : (HT.dayNo + d) + ' ' + HT.month}</button>
+              <button key={d} className={'htchip' + (day === d ? ' on' : '')} onClick={() => { setDay(d); setCal(false); }}>
+                {d === 0 ? 'Today' : d === 1 ? 'Tomorrow' : htShort(d)}</button>
             ))}
+            <button className={'htchip' + (day > 6 || cal ? ' on' : '')} aria-expanded={cal} onClick={() => setCal((v) => !v)}>
+              <ion-icon name="calendar-outline"></ion-icon>{day > 6 ? htDay(day) : 'Pick a date'}</button>
           </div>
+          {cal && (
+            <HtDatePop value={day} nights={stay} maxAhead={365} onClose={() => setCal(false)}
+              onPick={(off) => { setDay(off); setCal(false); }}
+              booked={(off) => takenOn(no, off)} blocked={(off) => clash(no, off, stay)}
+              occ={cfg.showOcc ? occOf : null} />
+          )}
+          <div className="htdep"><ion-icon name="log-out-outline"></ion-icon>Departs {htDay(day + stay)} · {nights(stay)}</div>
         </div>
       )}
 
       <div className="fgrid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: 12, marginTop: 14 }}>
         <div>
-          <span className="lbl">Nights</span>
-          <div className="htchips" style={{ marginTop: 7 }}>
-            {[1, 2, 3, 5, 7, 14].map((n) => <button key={n} className={'htchip' + (nts === n ? ' on' : '')} onClick={() => setNts(n)}>{n}</button>)}
+          <span className="lbl">Nights{plan !== 'nightly' ? ' · in ' + (plan === 'weekly' ? 'weeks' : 'months') : ''}</span>
+          <div className="htfield2" style={{ marginTop: 7 }}>
+            <HtStepper label="nights" value={stay} min={unit} max={maxN} step={unit} onChange={setNts}
+              suffix={plan === 'monthly' ? (stay / 30) + ' mo' : plan === 'weekly' ? (stay / 7) + ' wk' : null} />
+            <div className="htchips">
+              {nightChips.filter((n) => n <= maxN).map((n) => <button key={n} className={'htchip' + (stay === n ? ' on' : '')} onClick={() => setNts(n)}>{n}</button>)}
+            </div>
           </div>
         </div>
         {gate('rates') && (
           <div>
             <span className="lbl">Rate plan</span>
             <div className="htchips" style={{ marginTop: 7 }}>
-              <button className={'htchip' + (plan === 'nightly' ? ' on' : '')} onClick={() => setPlan('nightly')}>Nightly</button>
-              {gate('longstay') && <button className={'htchip' + (plan === 'weekly' ? ' on' : '')} onClick={() => setPlan('weekly')}>Weekly</button>}
-              {gate('longstay') && <button className={'htchip' + (plan === 'monthly' ? ' on' : '')} onClick={() => setPlan('monthly')}>Monthly</button>}
+              <button className={'htchip' + (plan === 'nightly' ? ' on' : '')} onClick={() => pickPlan('nightly')}>Nightly</button>
+              {gate('longstay') && <button className={'htchip' + (plan === 'weekly' ? ' on' : '')} onClick={() => pickPlan('weekly')}>Weekly</button>}
+              {gate('longstay') && <button className={'htchip' + (plan === 'monthly' ? ' on' : '')} onClick={() => pickPlan('monthly')}>Monthly</button>}
             </div>
           </div>
         )}
@@ -262,20 +293,48 @@ function BookSheet({ seed, api, onClose }) {
       {gate('deposits') && (
         <div style={{ marginTop: 14 }}>
           <span className="lbl">Security deposit held</span>
-          <div className="htchips" style={{ marginTop: 7 }}>
-            {[0, 50000, 100000, 150000, rate].map((v, i) => (
-              <button key={i} className={'htchip' + (dep === v ? ' on' : '')} onClick={() => setDep(v)}>{v ? xaf(v) : 'None'}</button>
-            ))}
+          <div className="htfield2" style={{ marginTop: 7 }}>
+            <HtStepper label="deposit" value={dep} min={0} max={5000000} step={cfg.depStep} onChange={setDep} fmt={htThousands} suffix="FCFA" />
+            <div className="htchips">
+              {[0, 50000, 100000, 150000, rate].map((v, i) => (
+                <button key={i} className={'htchip' + (dep === v ? ' on' : '')} onClick={() => setDep(v)}>{v ? xaf(v) : 'None'}</button>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
-      <div className="note info" style={{ marginTop: 16 }}><ion-icon name="information-circle-outline"></ion-icon>
+      <div className="note info" style={{ marginTop: 16 }}><ion-icon name="information-circle-outline"></ion-icon><span>
         {t.name} · {xaf(rate)} {plan === 'nightly' ? 'per night' : 'per ' + plan.replace('ly', '')} ·
         {' '}{plan === 'nightly' ? xaf(rate * nts) + ' for ' + nights(nts) : nights(stay) + ' booked'}
         {gate('register') ? ' · levy ' + xaf(HT.levy) + ' per guest per night' : ''}
-      </div>
+        {gate('deposits') && dep > 0 ? ' · deposit ' + xaf(dep) + ' held' : ''}
+      </span></div>
     </HtSheet>
+  );
+}
+
+/* ---------------- Setup → booking form (per tenant) ---------------- */
+const HT_BOOKCFG_DEFAULT = { maxNights: 365, depStep: 5000, showOcc: true, roomsByDate: true };
+function BookingFormSetup({ api }) {
+  const c = api.bookCfg, set = api.setBookCfg;
+  const Opt = ({ k, opts, fmt }) => (
+    <div className="htchips">{opts.map((v) => <button key={v} className={'htchip' + (c[k] === v ? ' on' : '')} onClick={() => set({ [k]: v })}>{fmt ? fmt(v) : v}</button>)}</div>
+  );
+  return (
+    <section className="panel" style={{ marginBottom: 14 }}>
+      <div className="panel__hd"><div><h3>Booking form</h3><p>How reception enters dates, nights and deposits at this property</p></div></div>
+      <div className="htcfg">
+        <div className="htcfg__row"><div><b>Longest stay at the desk</b><span>The most nights the form accepts in one booking.</span></div>
+          <Opt k="maxNights" opts={[30, 90, 180, 365]} fmt={(v) => v + ' nights'} /></div>
+        <div className="htcfg__row"><div><b>Deposit − / + step</b><span>How much each tap moves the deposit. Any amount can still be typed.</span></div>
+          <Opt k="depStep" opts={[1000, 5000, 10000, 25000]} fmt={(v) => htThousands(v)} /></div>
+        <label className="htcfg__row"><div><b>Show how full the house is in the calendar</b><span>A dot under each day: green, amber, red.</span></div>
+          <input type="checkbox" className="htcfg__ck" checked={c.showOcc} onChange={() => set({ showOcc: !c.showOcc })} /></label>
+        <label className="htcfg__row"><div><b>Room list follows the chosen dates</b><span>Rooms booked on any night of the stay can't be picked. Off: rooms reflect tonight only.</span></div>
+          <input type="checkbox" className="htcfg__ck" checked={c.roomsByDate} onChange={() => set({ roomsByDate: !c.roomsByDate })} /></label>
+      </div>
+    </section>
   );
 }
 
@@ -308,4 +367,4 @@ function FaultSheet({ no, api, onClose }) {
   );
 }
 
-Object.assign(window, { BookingsView, TapeChart, BookSheet, FaultSheet, MoveRow });
+Object.assign(window, { BookingFormSetup, HT_BOOKCFG_DEFAULT, BookingsView, TapeChart, BookSheet, FaultSheet, MoveRow });

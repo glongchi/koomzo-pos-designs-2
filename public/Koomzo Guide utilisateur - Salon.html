@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Guide utilisateur Koomzo — Salon</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="alternate" hreflang="en" href="Koomzo User Guide - Salon.html" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="guide/guide.css" />
+<link rel="stylesheet" href="guide/anim.css" />
+<script>(function(){var b='https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons';var s=document.createElement('script');s.type='module';s.src=b+'.esm.js';document.head.appendChild(s);})();</script>
+</head>
+<body data-page="salon">
+<header class="ug-top">
+<a class="ug-mark" data-page="hub" href="Koomzo Guide utilisateur.html"><div class="ic"><ion-icon name="book-outline"></ion-icon></div><b>Guide utilisateur Koomzo</b><span>Version 2 · octobre 2026</span></a>
+<nav class="ug-mods" aria-label="Guides par module">
+<a data-page="restaurant" href="Koomzo Guide utilisateur - Restaurant.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a data-page="hotel" href="Koomzo Guide utilisateur - Hotel.html"><ion-icon name="bed-outline"></ion-icon>Hôtel</a>
+<a data-page="retail" href="Koomzo Guide utilisateur - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+<a data-page="inventory" href="Koomzo Guide utilisateur - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Stock</a>
+<a data-page="signage" href="Koomzo Guide utilisateur - Signage.html"><ion-icon name="tv-outline"></ion-icon>Affichage</a>
+<a data-page="salon" href="Koomzo Guide utilisateur - Salon.html" class="on" aria-current="page"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a data-page="gym" href="Koomzo Guide utilisateur - Gym.html"><ion-icon name="barbell-outline"></ion-icon>Salle de sport</a>
+<a data-page="queue" href="Koomzo Guide utilisateur - Queue.html"><ion-icon name="people-outline"></ion-icon>File d’attente</a>
+</nav>
+<div class="ug-lang" aria-label="Langue"><a data-lang-link="en" href="Koomzo User Guide - Salon.html" hreflang="en">EN</a><b>FR</b></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Sommaire">
+<a class="side__back" data-page="hub" href="Koomzo Guide utilisateur.html#p1"><ion-icon name="arrow-back-outline"></ion-icon>Chapitres Plateforme</a>
+<div class="side__g">Salon</div>
+<a href="#sl"><ion-icon name="cut-outline"></ion-icon>1 · Est-ce pour moi ?</a>
+<a href="#sl-setup"><ion-icon name="construct-outline"></ion-icon>2 · Installation</a>
+<a href="#sl-day"><ion-icon name="sunny-outline"></ion-icon>3 · Une journée</a>
+<a href="#sl-screens"><ion-icon name="albums-outline"></ion-icon>4 · Les écrans</a>
+<a class="sub" href="#l-today">Aujourd'hui</a>
+<a class="sub" href="#l-book">Agenda</a>
+<a class="sub" href="#l-sell">Encaisser</a>
+<a href="#sl-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · En cas de problème</a>
+<a href="#sl-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Aller plus loin</a>
+<a href="#sl-cards"><ion-icon name="id-card-outline"></ion-icon>Fiches du personnel</a>
+</nav>
+<main class="doc">
+
+<section id="top">
+<p class="eb">Guide de module</p>
+<h1>Salon</h1>
+<p class="lede">L'agenda, l'encaissement au fauteuil, les heures de l'équipe et la liste d'ouverture — pour salons de coiffure, barbiers, instituts de beauté et ongleries. Les chapitres communs sont dans les <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">chapitres Plateforme</a>.</p>
+<div class="note"><ion-icon name="language-outline"></ion-icon><p>Les captures montrent la version anglaise du prototype. Les boutons sont donnés en français, avec le libellé anglais entre parenthèses quand c'est utile.</p></div>
+</section>
+
+<section id="sl" class="part first">
+<p class="eb">Salon · Partie 1</p>
+<h2>Est-ce pour moi ?</h2>
+<div class="grid3">
+<div class="card"><h4>Salon de coiffure</h4><p>Coupes, couleurs, tresses et soins ; plusieurs coiffeuses, rendez-vous et clients de passage.</p></div>
+<div class="card"><h4>Barbier</h4><p>Prestations courtes, surtout sans rendez-vous, une file sur l'écran.</p></div>
+<div class="card"><h4>Beauté · ongles · spa</h4><p>Rendez-vous plus longs, produits vendus après la prestation.</p></div>
+</div>
+<h3>Ce que vous avez à chaque niveau</h3>
+<div class="ladder">
+<div><h4><span class="tier lite">Lite</span>Réserver et encaisser</h4><ul><li>Agenda : aujourd'hui et la semaine</li><li>Encaisser prestations et produits</li><li>Prestations avec durée et prix</li></ul></div>
+<div><h4><span class="tier mid">Mid</span>Faire tourner l'équipe</h4><ul><li>Envoyer une prestation à la coiffeuse</li><li>Équipe : qui travaille quand</li><li>Tâches d'ouverture et de fermeture</li></ul></div>
+<div><h4><span class="tier full">Full</span>Payer chacun justement</h4><ul><li>Pointage : arrivée et départ</li><li>Commission par coiffeuse</li><li>Produits techniques consommés par prestation</li><li>Borne d'accueil · écran de file</li></ul></div>
+</div>
+
+<h3>Caser un client de passage</h3>
+<p class="sub">Jeudi au Salon Lumière, Bonapriso. Une cliente entre pour une coupe rapide. Regardez Koomzo trouver le créneau, l'afficher à l'écran et clôturer la note.</p>
+<figure class="anim" data-ms="2700">
+<div class="anim__stage">
+<div class="sla">
+<div class="sla__grid">
+<span class="h"></span><span class="h">Nadia</span><span class="h">Thomas</span><span class="h">Ivy</span>
+<span>10:00</span><span></span><span></span><span></span>
+<span>10:30</span><span></span><span></span><span></span>
+<span>11:00</span><span></span><span></span><span></span>
+<span>11:30</span><span></span><span></span><span></span>
+<span>12:00</span><span></span><span></span><span></span>
+<div class="sla__b" style="left:calc(44px + 0%);width:calc((100% - 44px)/3 - 6px);top:38px;height:96px;margin-left:3px">Grâce Okoye<br />Retouche racines</div>
+<div class="sla__b" style="left:calc(44px + (100% - 44px)/3);width:calc((100% - 44px)/3 - 6px);top:38px;height:28px;margin-left:3px">Ali Bouba · barbe</div>
+<div class="sla__b" style="left:calc(44px + (100% - 44px)/3);width:calc((100% - 44px)/3 - 6px);top:106px;height:62px;margin-left:3px">Marcel V. · coupe</div>
+<div class="sla__b c" style="left:calc(44px + 2*(100% - 44px)/3);width:calc((100% - 44px)/3 - 6px);top:38px;height:164px;margin-left:3px">Sofia Mbah<br />Mèches complètes</div>
+<div class="sla__gap" data-n="gap" style="left:calc(44px + (100% - 44px)/3);width:calc((100% - 44px)/3 - 6px);top:72px;height:28px;margin-left:3px"></div>
+<div class="sla__wk" style="left:calc(44px + (100% - 44px)/3);width:calc((100% - 44px)/3 - 6px);top:72px;height:28px;margin-left:3px" id="sl-wk">Passage · Coupe à sec</div>
+</div>
+<div class="sla__side">
+<div class="mcard" data-n="desk"><div class="mk">Accueil</div><b style="display:block;margin-top:6px;font-size:14px" id="sl-d">10:15 · 3 fauteuils occupés</b></div>
+<div class="sla__q" data-n="q"><div class="mk" style="color:#9aa0b4">Écran · suivant</div><b id="sl-nx">—</b></div>
+<div class="mcard" data-n="bill"><div class="mk">Note</div><b style="display:block;margin-top:6px;font-size:14px" id="sl-b">—</b></div>
+</div>
+</div>
+</div>
+<ol class="anim__steps">
+<li data-set="wk=no" data-hot="[data-n=desk]">10:15 — trois fauteuils sont occupés et l'agenda semble plein jusqu'à midi.</li>
+<li data-put='{"#sl-d":"Passage : Coupe à sec · 30 min"}' data-hot="[data-n=desk]">Une cliente entre pour une coupe à sec. Samuel appuie sur <b>Passage</b> (Walk-in) et choisit la prestation.</li>
+<li data-hot="[data-n=gap]">Koomzo trouve 30 minutes libres avec Thomas à 10:30 — entre deux rendez-vous.</li>
+<li data-set="wk=in" data-put='{"#sl-d":"Réservé · Thomas 10:30"}'>Le passage se place dans la colonne de Thomas. Aucun autre rendez-vous ne bouge.</li>
+<li data-put='{"#sl-nx":"Thomas · W-012"}' data-hot="[data-n=q]">L'écran affiche son numéro. Elle s'assoit ; personne ne crie dans le salon.</li>
+<li data-set="wk=done" data-put='{"#sl-wk":"Terminé · à encaisser","#sl-b":"Coupe à sec · 3 000 F"}' data-hot="[data-n=bill]">Thomas a fini. La prestation apparaît dans <b>Terminé au fauteuil</b>, prête pour la note.</li>
+<li data-set="wk=paid" data-put='{"#sl-wk":"Payé · MoMo","#sl-b":"Payé 3 000 F · revient dans 3 semaines"}' data-hot="[data-n=bill]">Payé par MoMo, et le prochain rendez-vous pris avant qu'elle parte.</li>
+</ol>
+</figure>
+</section>
+
+<section id="sl-setup" class="part">
+<p class="eb">Salon · Partie 2</p>
+<h2>Installation <span class="tier lite">Lite</span></h2>
+<ol class="steps">
+<li><div><b>Premiers pas</b><span>Compte, établissement et personnel — <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">P1</a>. Chaque coiffeuse a un PIN et ses jours de travail.</span></div></li>
+<li><div><b>Horaires et fauteuils</b><span>9:00 à 19:00, 4 fauteuils, créneaux de 15 minutes.</span></div></li>
+<li><div><b>Ajoutez les prestations</b><span>Nom, durée, prix, qui peut la faire — Coupe et finition 45 min 5 000 F ; Retouche racines 90 min 12 000 F.</span></div></li>
+<li><div><b>Ajoutez les produits</b><span>Shampooings, huiles, brosses — vendus au fauteuil. Le stock est dans le module <a data-page="hub" href="Koomzo Guide utilisateur.html#modules">Stock</a>.</span></div></li>
+<li><div><b>Paiements</b><span>Espèces, MTN MoMo, Orange Money ; cartes cadeau si vous en vendez.</span></div></li>
+<li><div><b>Une cliente test</b><span>Réservez, commencez, terminez, encaissez. Puis supprimez le test.</span></div></li>
+</ol>
+</section>
+
+<section id="sl-day" class="part">
+<p class="eb">Salon · Partie 3</p>
+<h2>Une journée au salon</h2>
+<div class="tbl"><table>
+<thead><tr><th>Moment</th><th>Ce que vous faites</th><th>Écran</th><th>Niveau</th></tr></thead>
+<tbody>
+<tr><td><b>Ouverture</b></td><td>Cochez la liste d'ouverture ; pointez.</td><td>Tâches · Heures</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Coup d'œil du matin</b></td><td>Qui est réservé, qui est libre ensuite, recette prévue.</td><td><a href="#l-today">Aujourd'hui</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Un rendez-vous par téléphone</b></td><td>Nouveau rendez-vous : cliente, prestation, coiffeuse, heure.</td><td><a href="#l-book">Agenda</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Un client de passage</b></td><td>Passage → Koomzo trouve le premier fauteuil qui convient.</td><td>Aujourd'hui</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Prestation terminée</b></td><td>Elle passe dans <i>Terminé au fauteuil</i> ; ajoutez les produits, encaissez.</td><td><a href="#l-sell">Encaisser</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Avant qu'elle parte</b></td><td>Prenez le prochain rendez-vous.</td><td>Agenda</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Fermeture</b></td><td>Tâches de fermeture, pointage ; commissions et heures de la semaine.</td><td>Tâches · Équipe</td><td><span class="tier full">Full</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="sl-screens" class="part">
+<p class="eb">Salon · Partie 4</p>
+<h2>Les écrans</h2>
+<p class="sub">La barre de gauche : Aujourd'hui (Today), Encaisser (Sell), Agenda (Book), Prestations, Tâches, Équipe, Heures, et Réglages en bas. Une coiffeuse connectée voit d'abord sa propre journée.</p>
+
+<h3 id="l-today">Aujourd'hui <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/sal-today.jpg" alt="Aujourd'hui" /><span class="pin" style="left:20.5%;top:33.5%">1</span><span class="pin" style="left:86.6%;top:33%">2</span><span class="pin" style="left:76.6%;top:50.5%">3</span><span class="pin" style="left:91.5%;top:52%">4</span><span class="pin" style="left:89.8%;top:66%">5</span><span class="pin" style="left:72.3%;top:18.3%">6</span><span class="pin" style="left:89.6%;top:18.3%">7</span></div>
+<ol class="callouts">
+<li><span><b>Rendez-vous · occupation · recette prévue</b> du jour.</span></li>
+<li><span><b>Prochain fauteuil libre</b> — la réponse à « vous pouvez me prendre ? ».</span></li>
+<li><span><b>Toute l'équipe ou Moi</b>.</span></li>
+<li><span><b>Passage</b> (Walk-in) — case un client dans le premier créneau.</span></li>
+<li><span><b>État</b> — réservé, au fauteuil, terminé, payé.</span></li>
+<li><span><b>Assigner une tâche</b> — à quelqu'un de service. <span class="tier mid">Mid</span></span></li>
+<li><span><b>Nouveau rendez-vous</b>.</span></li>
+</ol>
+
+<h3 id="l-book">Agenda <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/sal-book.jpg" alt="Agenda" /><span class="pin" style="left:71.2%;top:18%">1</span><span class="pin" style="left:32%;top:32.8%">2</span><span class="pin" style="left:22.7%;top:45.4%">3</span><span class="pin" style="left:25.8%;top:58.3%">4</span><span class="pin" style="left:90.4%;top:32.8%">5</span><span class="pin" style="left:92%;top:54.6%">6</span></div>
+<ol class="callouts">
+<li><span><b>Grille ou Liste</b>.</span></li>
+<li><span><b>La semaine</b> — touchez un jour.</span></li>
+<li><span><b>Une colonne par coiffeuse</b>, avec ses horaires.</span></li>
+<li><span><b>Rendez-vous</b> — glissez pour déplacer, tirez le bord pour allonger.</span></li>
+<li><span><b>Présentes aujourd'hui</b> — masquer celles qui sont en repos.</span></li>
+<li><span><b>Hachuré</b> — la coiffeuse n'a pas encore commencé.</span></li>
+</ol>
+
+<h3 id="l-sell">Encaisser <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/sal-sell.jpg" alt="Encaisser" /><span class="pin" style="left:23.3%;top:17%">1</span><span class="pin" style="left:32.5%;top:26.7%">2</span><span class="pin" style="left:34.6%;top:43%">3</span><span class="pin" style="left:17.3%;top:74%">4</span><span class="pin" style="left:71.4%;top:23.9%">5</span><span class="pin" style="left:81.7%;top:63.3%">6</span><span class="pin" style="left:81.2%;top:92.6%">7</span></div>
+<ol class="callouts">
+<li><span><b>Recherche</b> de prestations, produits ou clientes.</span></li>
+<li><span><b>Catégories</b> — Coiffure, Couleur, Barbier, Soins, Revente.</span></li>
+<li><span><b>Terminé au fauteuil</b> — touchez pour mettre la prestation sur le ticket.</span></li>
+<li><span><b>Prestations et produits</b>.</span></li>
+<li><span><b>Ajouter une cliente</b> — historique et prochain rendez-vous.</span></li>
+<li><span><b>Coiffeuse · Remise · Carte cadeau · En attente</b>.</span></li>
+<li><span><b>Encaisser</b> (Charge) — espèces, MoMo, Orange Money ou partagé. TVA affichée.</span></li>
+</ol>
+</section>
+
+<section id="sl-help" class="part">
+<p class="eb">Salon · Partie 5</p>
+<h2>En cas de problème</h2>
+<div class="qa">
+<div class="card"><h4><ion-icon name="time-outline"></ion-icon>Une cliente est en retard et la suivante attend.</h4><p>Commencez celle qui attend si un fauteuil est libre ; glissez le rendez-vous en retard plus tard. Koomzo signale un chevauchement.</p></div>
+<div class="card"><h4><ion-icon name="person-remove-outline"></ion-icon>Une coiffeuse est absente.</h4><p>Agenda → sa colonne → déplacez chaque rendez-vous vers quelqu'un qui fait la prestation. La cliente peut être prévenue par WhatsApp. <span class="soon"><ion-icon name="time-outline"></ion-icon>Messages bientôt</span></p></div>
+<div class="card"><h4><ion-icon name="hourglass-outline"></ion-icon>Une couleur a pris plus de temps.</h4><p>Tirez la fin du rendez-vous. Le suivant affiche le conflit ; déplacez-le ou confiez-le à une autre coiffeuse.</p></div>
+<div class="card"><h4><ion-icon name="pricetag-outline"></ion-icon>Un désaccord sur le prix à l'encaissement.</h4><p>Le ticket montre la prestation et son prix affiché. Une remise demande un motif ; au-delà de la limite, le gérant.</p></div>
+<div class="card"><h4><ion-icon name="cube-outline"></ion-icon>Le produit est épuisé.</h4><p>Il se vend quand même ; le stock passe sous zéro jusqu'à la réception. Fixez un seuil dans le Stock.</p></div>
+</div>
+</section>
+
+<section id="sl-more" class="part">
+<p class="eb">Salon · Partie 6</p>
+<h2>Aller plus loin</h2>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="cash-outline"></ion-icon><h4>Commission <span class="tier full">Full</span></h4><p>Une part de chaque prestation et produit par coiffeuse, calculée chaque semaine.</p></div>
+<div class="card ic-card"><ion-icon name="time-outline"></ion-icon><h4>Pointage <span class="tier full">Full</span></h4><p>Arrivée et départ avec un PIN ; heures comparées au planning.</p></div>
+<div class="card ic-card"><ion-icon name="flask-outline"></ion-icon><h4>Produits techniques <span class="tier full">Full</span></h4><p>Couleur et oxydant sortent du stock à la fin de la prestation. Voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p7">P7</a>.</p></div>
+<div class="card ic-card"><ion-icon name="tablet-portrait-outline"></ion-icon><h4>Borne d'accueil <span class="tier full">Full</span></h4><p>Les clientes s'enregistrent sur une tablette à l'entrée.</p></div>
+<div class="card ic-card"><ion-icon name="tv-outline"></ion-icon><h4>Écran de file <span class="tier full">Full</span></h4><p>Qui passe ensuite, sur une télé. Utilise le module File d'attente.</p></div>
+<div class="card ic-card"><ion-icon name="checkbox-outline"></ion-icon><h4>Tâches <span class="tier mid">Mid</span></h4><p>Listes d'ouverture et de fermeture, avec qui a coché quoi.</p></div>
+</div>
+</section>
+
+<section id="sl-cards" class="part">
+<p class="eb">À imprimer et afficher</p>
+<h2>Fiches du personnel</h2>
+<div class="tasks">
+<div class="task"><b><ion-icon name="call-outline"></ion-icon> Accueil</b><span>1. Aujourd'hui → qui suit, qui est libre.<br />2. Téléphone : Nouveau rendez-vous.<br />3. Passage : Passage → prestation.<br />4. Terminé : Encaisser → Terminé au fauteuil → Encaisser.<br />5. Prochain rendez-vous avant le départ.</span></div>
+<div class="task"><b><ion-icon name="cut-outline"></ion-icon> Coiffeuse</b><span>1. Pointez avec votre PIN.<br />2. Moi → votre journée.<br />3. Cliente au fauteuil : Commencer.<br />4. Fini : Terminé.<br />5. Pointez en partant.</span></div>
+<div class="task"><b><ion-icon name="checkbox-outline"></ion-icon> Ouverture et fermeture</b><span>1. Tâches → la liste du jour.<br />2. Cochez au fur et à mesure.<br />3. Quelque chose de cassé ? Une note.<br />4. Fermeture : attendez « Synchronisé ».</span></div>
+</div>
+</section>
+
+<p class="foot">Guide utilisateur Koomzo · Salon · Version 2 · Les écrans montrés sont ceux du prototype Koomzo actuel. Les noms, prestations et prix sont des exemples.</p>
+</main>
+
+</div>
+<script src="guide/guide.js"></script>
+<script src="guide/anim.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a61bf"/><text x="50" y="62" font-family="Arial,Helvetica,sans-serif" font-size="34" font-weight="700" fill="#fff" text-anchor="middle">FR</text></svg></template>
+</body>
+</html>

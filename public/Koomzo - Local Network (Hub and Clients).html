@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="design_doc_mode" content="canvas" />
+<title>Koomzo — Local network (hub &amp; clients)</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.fr{position:absolute;background:var(--kz-bg);border-radius:var(--kz-radius-lg);overflow:hidden;box-shadow:var(--kz-shadow-lg);display:flex;flex-direction:column}
+.lbl{position:absolute;width:390px;font:700 13px var(--kz-font-sans);color:#3b3f4c;letter-spacing:-.01em}
+.lbl small{display:block;font:500 11.5px var(--kz-font-sans);color:#6b7080;margin-top:3px;letter-spacing:0;max-width:420px;line-height:1.5}
+.ph{width:390px;height:820px}.tb{width:1100px;height:760px}
+.top{display:flex;align-items:center;gap:10px;height:56px;padding:0 16px;background:#fff;border-bottom:1px solid var(--kz-border);flex:none}
+.top ion-icon{font-size:22px;color:var(--kz-ink-2)}
+.top b{font:700 16px var(--kz-font-sans);letter-spacing:-.01em}
+.top .sp{flex:1}
+.body{flex:1;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:12px}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:14px 16px}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--kz-muted-3);margin:2px 0 8px}
+.h{font:700 20px var(--kz-font-sans);letter-spacing:-.02em;margin:0 0 4px;text-wrap:balance}
+.p{font:400 13.5px/1.55 var(--kz-font-sans);color:var(--kz-muted);margin:0;text-wrap:pretty}
+.role{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:14px}
+.role.on{border:1.5px solid var(--kz-primary);background:var(--kz-primary-wash)}
+.role .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--kz-surface-2)}
+.role.on .ic{background:var(--kz-primary)}
+.role .ic ion-icon{font-size:22px;color:var(--kz-ink-2)}.role.on .ic ion-icon{color:#fff}
+.role b{display:block;font:700 14.5px var(--kz-font-sans);margin-bottom:3px}
+.role span{font:400 12.5px/1.5 var(--kz-font-sans);color:var(--kz-muted)}
+.role .rd{margin-left:auto;width:20px;height:20px;border-radius:50%;border:2px solid var(--kz-border-strong);flex:none;margin-top:2px}
+.role.on .rd{border:6px solid var(--kz-primary)}
+.btn{height:48px;border-radius:12px;border:none;font:700 15px var(--kz-font-sans);display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.btn.pri{background:var(--kz-primary);color:#fff;box-shadow:var(--kz-shadow-key)}
+.btn.gh{background:#fff;color:var(--kz-ink-2);border:1px solid var(--kz-border-strong)}
+.btn.sm{height:36px;font-size:13px;width:auto;padding:0 14px;border-radius:9px}
+.btn.ok{background:var(--kz-success);color:#fff}
+.btn.bad{background:#fff;color:var(--kz-discount);border:1px solid #f2c4b4}
+.btn ion-icon{font-size:18px}
+.grow{flex:1}
+.row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--kz-border)}
+.row:last-child{border-bottom:none}
+.row .di{width:38px;height:38px;border-radius:10px;background:var(--kz-surface-2);display:grid;place-items:center;flex:none}
+.row .di ion-icon{font-size:19px;color:var(--kz-ink-2)}
+.row .t{flex:1;min-width:0}
+.row .t b{display:block;font:600 13.5px var(--kz-font-sans)}
+.row .t span{font:400 12px var(--kz-font-sans);color:var(--kz-muted-2)}
+.pill{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font:700 11px var(--kz-font-sans);white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.ok{background:var(--kz-success-wash);color:#1f7a45}
+.pill.warn{background:var(--kz-warning-wash);color:#8a6414}
+.pill.bad{background:var(--kz-discount-wash);color:#b8401f}
+.pill.pri{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.pill.mut{background:var(--kz-surface-2);color:var(--kz-muted-2)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font:400 12.5px var(--kz-font-sans)}
+.kv dt{color:var(--kz-muted-2)}.kv dd{margin:0;font:600 12.5px var(--kz-font-num);color:var(--kz-ink-2)}
+.code{display:flex;gap:8px;justify-content:center}
+.code span{width:46px;height:56px;border-radius:10px;background:#fff;border:1.5px solid var(--kz-border-strong);display:grid;place-items:center;font:700 26px var(--kz-font-num);letter-spacing:-.02em}
+.code.big{gap:6px}.code.big span{width:46px;height:60px;font-size:30px;border-color:var(--kz-primary-tint);background:var(--kz-primary-wash);color:var(--kz-primary)}
+.qr{width:150px;height:150px;border-radius:12px;background:repeating-conic-gradient(var(--kz-ink) 0 25%,#fff 0 50%) 0 0/18px 18px;border:10px solid #fff;outline:1px solid var(--kz-border);flex:none}
+.note{display:flex;gap:9px;background:var(--kz-info-wash);border-radius:var(--kz-radius);padding:11px 13px;font:400 12.5px/1.5 var(--kz-font-sans);color:var(--kz-ink-2)}
+.note ion-icon{font-size:17px;color:var(--kz-info);flex:none;margin-top:1px}
+.note.warn{background:var(--kz-warning-wash)}.note.warn ion-icon{color:#8a6414}
+.note.bad{background:var(--kz-discount-wash)}.note.bad ion-icon{color:#b8401f}
+.banner{display:flex;align-items:center;gap:10px;padding:10px 16px;font:600 13px var(--kz-font-sans);flex:none}
+.banner.bad{background:var(--kz-discount);color:#fff}
+.banner.warn{background:var(--kz-warning);color:#3a2a05}
+.banner ion-icon{font-size:18px}
+.side{width:240px;background:#fff;border-right:1px solid var(--kz-border);padding:14px 10px;flex:none}
+.side a{display:flex;align-items:center;gap:10px;height:40px;padding:0 12px;border-radius:9px;font:600 13px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a ion-icon{font-size:18px;color:var(--kz-muted-3)}
+.side a.on{background:var(--kz-primary-wash);color:var(--kz-primary)}.side a.on ion-icon{color:var(--kz-primary)}
+.side .g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:14px 12px 6px}
+.cols{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px;flex:1;min-height:0}
+.stat{display:flex;gap:18px;flex-wrap:wrap}
+.stat div b{display:block;font:700 22px var(--kz-font-num);letter-spacing:-.02em}
+.stat div span{font:600 10.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+.topo{display:flex;align-items:center;gap:8px;font:600 12px var(--kz-font-sans);color:var(--kz-ink-2);flex-wrap:wrap}
+.topo .n{display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:8px;background:var(--kz-surface-2)}
+.topo .n.hub{background:var(--kz-primary);color:#fff}
+.topo .ln{width:22px;height:2px;background:var(--kz-border-strong)}
+.topo .ln.off{background:repeating-linear-gradient(90deg,var(--kz-discount) 0 4px,transparent 4px 7px)}
+.chipstrip{display:flex;flex-direction:column;gap:14px;padding:22px}
+.chiprow{display:flex;align-items:center;gap:16px}
+.chiprow p{margin:0;font:400 12.5px/1.5 var(--kz-font-sans);color:var(--kz-muted);flex:1}
+.netchip{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;font:700 12px var(--kz-font-sans);background:#fff;border:1px solid var(--kz-border);white-space:nowrap;min-width:190px}
+.netchip ion-icon{font-size:16px}
+.sheetwrap{position:absolute;inset:0;background:rgba(20,24,38,.45);display:flex;align-items:flex-end}
+.sheet{background:#fff;width:100%;border-radius:16px 16px 0 0;padding:18px 16px 20px;display:flex;flex-direction:column;gap:12px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg span{height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--kz-border-strong);display:inline-flex;align-items:center;gap:6px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2);background:#fff}
+.seg span.on{background:var(--kz-primary);border-color:var(--kz-primary);color:#fff}
+.seg span ion-icon{font-size:15px}
+.spin{width:54px;height:54px;border-radius:50%;border:4px solid var(--kz-primary-wash);border-top-color:var(--kz-primary);margin:0 auto}
+.center{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.toggle{width:44px;height:26px;border-radius:999px;background:var(--kz-success);position:relative;flex:none}
+.toggle::after{content:"";position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff}
+.toggle.off{background:var(--kz-border-strong)}.toggle.off::after{right:auto;left:3px}
+.wifi{display:flex;align-items:center;gap:6px;font:600 12px var(--kz-font-sans);color:var(--kz-muted-2)}
+.mono{font:600 12px var(--kz-font-num)}
+</style>
+</head>
+<body>
+
+<div class="lbl" style="left:40px;top:30px;width:1700px">Koomzo Link — local network, hub &amp; clients<small>Offline by design. Devices stay connected locally. A platform feature (Settings → Local network) shared by every module. The main device (site coordinator) is the only one that talks to the internet; every other device saves locally, then sends its changes through it.</small></div>
+
+<!-- 1 · Role picker -->
+<div class="lbl" style="left:40px;top:110px">1 · Choose this device's role<small>First run, or Settings → Local network. Standalone stays the default.</small></div>
+<div class="fr ph" style="left:40px;top:170px">
+<div class="top"><ion-icon name="chevron-back"></ion-icon><b>Local network</b><span class="sp"></span></div>
+<div class="body">
+<div><h2 class="h">How will this device work?</h2><p class="p">Use several devices together — a till, a kitchen screen, servers' phones, a queue display. They keep working together when the internet is down.</p></div>
+<div class="role on"><div class="ic"><ion-icon name="server-outline"></ion-icon></div><div><b>Main device (hub)</b><span>Keeps the data and syncs with the internet. Choose the till that stays on and plugged in.</span></div><div class="rd"></div></div>
+<div class="role"><div class="ic"><ion-icon name="phone-portrait-outline"></ion-icon></div><div><b>Join a hub</b><span>Kitchen screen, server's phone, second till. Works through the main device.</span></div><div class="rd"></div></div>
+<div class="role"><div class="ic"><ion-icon name="tablet-portrait-outline"></ion-icon></div><div><b>Standalone</b><span>One device only. Connects to the internet directly.</span></div><div class="rd"></div></div>
+<div class="grow"></div>
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><span>Uses your Wi-Fi or 4G box if you have one. No Wi-Fi? The main device makes its own hotspot. No internet credit needed.</span></div>
+<button class="btn pri">Continue</button>
+</div></div>
+
+<!-- 2 · Hub setup / ready -->
+<div class="lbl" style="left:470px;top:110px">2 · Hub is ready — invite devices<small>Show a QR code and a 6-digit code. Devices on the Wi-Fi also find the hub on their own.</small></div>
+<div class="fr ph" style="left:470px;top:170px">
+<div class="top"><ion-icon name="chevron-back"></ion-icon><b>Main device</b><span class="sp"></span><span class="pill ok"><i></i>Hub on</span></div>
+<div class="body">
+<div class="card" style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px">
+<p class="eb" style="margin:0">Scan from the other device</p>
+<div class="qr"></div>
+<p class="eb" style="margin:4px 0 0">or enter this code</p>
+<div class="code big"><span>4</span><span>8</span><span>2</span><span>9</span><span>1</span><span>7</span></div>
+<p class="p" style="font-size:12px">Code changes every 10 min · <a href="#">New code</a></p>
+</div>
+<div class="card"><dl class="kv"><dt>Hub name</dt><dd>Le Comptoir · Till 1</dd><dt>Wi-Fi</dt><dd>MTN-4G-BOX-7F2A</dd><dt>Address</dt><dd>192.168.1.12 : 8790</dd></dl></div>
+<div class="card" style="display:flex;align-items:center;gap:12px"><div class="t" style="flex:1"><b style="font:600 13.5px var(--kz-font-sans);display:block">Approve each new device</b><span style="font:400 12px var(--kz-font-sans);color:var(--kz-muted-2)">Recommended. Stops anyone on the Wi-Fi from joining.</span></div><div class="toggle"></div></div>
+<div class="grow"></div>
+<button class="btn gh"><ion-icon name="people-outline"></ion-icon>See connected devices · 3</button>
+</div></div>
+
+<!-- 3 · Join: discover -->
+<div class="lbl" style="left:900px;top:110px">3 · Join — find the hub<small>The hub is found on the Wi-Fi by itself. Scanning or typing the code are the fallbacks.</small></div>
+<div class="fr ph" style="left:900px;top:170px">
+<div class="top"><ion-icon name="chevron-back"></ion-icon><b>Join a hub</b><span class="sp"></span></div>
+<div class="body">
+<div class="wifi"><ion-icon name="wifi-outline"></ion-icon>On Wi-Fi <span class="mono" style="color:var(--kz-ink-2)">MTN-4G-BOX-7F2A</span></div>
+<div class="card" style="padding:4px 16px">
+<p class="eb" style="margin:10px 0 2px">Found on this Wi-Fi</p>
+<div class="row"><div class="di" style="background:var(--kz-primary-wash)"><ion-icon name="server-outline" style="color:var(--kz-primary)"></ion-icon></div><div class="t"><b>Le Comptoir · Till 1</b><span>Restaurant &amp; Bar · 3 devices</span></div><button class="btn pri sm">Join</button></div>
+<div class="row"><div class="di"><ion-icon name="server-outline"></ion-icon></div><div class="t"><b>Akwa Boutique · Caisse</b><span>Retail · 1 device</span></div><button class="btn gh sm">Join</button></div>
+</div>
+<p class="eb" style="margin:6px 0 0">Not listed?</p>
+<button class="btn gh"><ion-icon name="qr-code-outline"></ion-icon>Scan hub QR code</button>
+<button class="btn gh"><ion-icon name="radio-outline"></ion-icon>No Wi-Fi? Connect directly</button>
+<p class="eb" style="margin:6px 0 0">Or enter the 6-digit code</p>
+<div class="code"><span>4</span><span>8</span><span>2</span><span></span><span></span><span></span></div>
+<div class="grow"></div>
+<div class="note warn"><ion-icon name="warning-outline"></ion-icon><span>No hub found? Make sure the main device has Koomzo open and is nearby.</span></div>
+</div></div>
+
+<!-- 4 · Join: device role sheet -->
+<div class="lbl" style="left:1330px;top:110px">4 · Tell the hub what this device does<small>The role sets the default screen and which module opens. The hub can change it later.</small></div>
+<div class="fr ph" style="left:1330px;top:170px">
+<div class="top"><ion-icon name="chevron-back"></ion-icon><b>Join a hub</b><span class="sp"></span></div>
+<div class="body" style="opacity:.35"><div class="card" style="height:120px"></div><div class="card" style="height:200px"></div></div>
+<div class="sheetwrap"><div class="sheet">
+<div><h2 class="h" style="font-size:18px">Joining Le Comptoir · Till 1</h2><p class="p">Name this device and pick its job.</p></div>
+<div><p class="eb">Device name</p><div class="card" style="padding:12px 14px;font:600 14px var(--kz-font-sans)">Phone Blaise</div></div>
+<div><p class="eb">Role</p><div class="seg"><span><ion-icon name="cash-outline"></ion-icon>Till</span><span class="on"><ion-icon name="walk-outline"></ion-icon>Server</span><span><ion-icon name="restaurant-outline"></ion-icon>Kitchen screen</span><span><ion-icon name="print-outline"></ion-icon>Printer</span><span><ion-icon name="tv-outline"></ion-icon>Customer display</span></div></div>
+<div><p class="eb">Opens in</p><div class="seg"><span class="on"><ion-icon name="restaurant-outline"></ion-icon>Restaurant</span><span><ion-icon name="cube-outline"></ion-icon>Inventory</span></div></div>
+<button class="btn pri">Send request</button>
+</div></div>
+</div>
+
+<!-- 5 · Waiting / connected -->
+<div class="lbl" style="left:1760px;top:110px">5 · Waiting, then connected<small>Waiting for the hub to approve, then a confirmation screen. The client shows the hub it uses, the delay and any queued requests.</small></div>
+<div class="fr ph" style="left:1760px;top:170px">
+<div class="top"><ion-icon name="chevron-back"></ion-icon><b>Local network</b><span class="sp"></span><span class="pill ok"><i></i>Connected</span></div>
+<div class="body">
+<div class="card center" style="padding:22px 16px">
+<div style="width:64px;height:64px;border-radius:50%;background:var(--kz-success-wash);display:grid;place-items:center"><ion-icon name="checkmark-circle" style="font-size:38px;color:var(--kz-success)"></ion-icon></div>
+<h2 class="h" style="margin:0">Connected to Le Comptoir</h2>
+<p class="p">Phone Blaise · Server · Restaurant</p>
+</div>
+<div class="card"><dl class="kv"><dt>Hub</dt><dd>Le Comptoir · Till 1</dd><dt>Signal</dt><dd>Good · 18 ms</dd><dt>Waiting to send</dt><dd>0</dd><dt>Hub internet</dt><dd style="color:#1f7a45">Online · synced 2 min ago</dd></dl></div>
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><span>If the hub goes off, this phone keeps taking orders. They are sent as soon as the hub is back.</span></div>
+<div class="grow"></div>
+<button class="btn pri"><ion-icon name="restaurant-outline"></ion-icon>Open Restaurant</button>
+<button class="btn bad">Leave this hub</button>
+</div></div>
+
+<!-- 6 · Hub console (tablet) -->
+<div class="lbl" style="left:40px;top:1050px;width:1100px">6 · Hub console — tablet<small>On the main device: settings, connected devices, approvals, and what is waiting to go to the internet. The same screen stacks into one column on a phone.</small></div>
+<div class="fr tb" style="left:40px;top:1110px">
+<div class="top"><ion-icon name="menu-outline"></ion-icon><b>Settings</b><span class="sp"></span><span class="netchip" style="min-width:0"><ion-icon name="server" style="color:var(--kz-primary)"></ion-icon>Hub · 3 devices · online</span></div>
+<div style="display:flex;flex:1;min-height:0">
+<nav class="side">
+<div class="g">Business</div><a href="#"><ion-icon name="storefront-outline"></ion-icon>Locations</a><a href="#"><ion-icon name="people-outline"></ion-icon>Users &amp; roles</a><a href="#"><ion-icon name="card-outline"></ion-icon>Payments</a>
+<div class="g">Devices</div><a href="#" class="on"><ion-icon name="git-network-outline"></ion-icon>Local network</a><a href="#"><ion-icon name="print-outline"></ion-icon>Printers</a><a href="#"><ion-icon name="cloud-outline"></ion-icon>Sync &amp; backup</a>
+</nav>
+<div class="body" style="padding:18px 20px">
+<div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap">
+<div style="flex:1;min-width:260px"><p class="eb" style="margin:0 0 4px">This device is the hub</p><h2 class="h" style="margin:0">Le Comptoir · Till 1</h2></div>
+<button class="btn gh sm"><ion-icon name="qr-code-outline"></ion-icon>Invite device</button>
+<button class="btn gh sm"><ion-icon name="swap-horizontal-outline"></ion-icon>Hand over hub</button>
+</div>
+<div class="card topo"><span class="n"><ion-icon name="cloud-outline"></ion-icon>Koomzo cloud</span><span class="ln"></span><span class="n hub"><ion-icon name="server-outline"></ion-icon>Till 1 (hub)</span><span class="ln"></span><span class="n">Kitchen</span><span class="n">Phone Blaise</span><span class="n">Phone Anita</span><span class="ln off"></span><span class="n" style="opacity:.6">Till 2 · off</span></div>
+<div class="cols">
+<div class="card" style="padding:6px 16px;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;margin:10px 0 2px"><p class="eb" style="margin:0">Devices</p><span class="pill warn"><i></i>1 waiting for approval</span></div>
+<div class="row" style="background:var(--kz-warning-wash);margin:0 -16px;padding:11px 16px"><div class="di" style="background:#fff"><ion-icon name="phone-portrait-outline"></ion-icon></div><div class="t"><b>Phone Junior</b><span>Asks to join as Server · just now</span></div><button class="btn bad sm">Refuse</button><button class="btn ok sm">Approve</button></div>
+<div class="row"><div class="di"><ion-icon name="restaurant-outline"></ion-icon></div><div class="t"><b>Kitchen tablet</b><span>Kitchen screen · Restaurant</span></div><span class="pill ok"><i></i>12 ms</span><ion-icon name="ellipsis-vertical" style="color:var(--kz-muted-3)"></ion-icon></div>
+<div class="row"><div class="di"><ion-icon name="walk-outline"></ion-icon></div><div class="t"><b>Phone Blaise</b><span>Server · Restaurant</span></div><span class="pill ok"><i></i>18 ms</span><ion-icon name="ellipsis-vertical" style="color:var(--kz-muted-3)"></ion-icon></div>
+<div class="row"><div class="di"><ion-icon name="walk-outline"></ion-icon></div><div class="t"><b>Phone Anita</b><span>Server · Restaurant</span></div><span class="pill warn"><i></i>Weak · 240 ms</span><ion-icon name="ellipsis-vertical" style="color:var(--kz-muted-3)"></ion-icon></div>
+<div class="row"><div class="di"><ion-icon name="cash-outline"></ion-icon></div><div class="t"><b>Till 2</b><span>Till · Bar · last seen 14:02</span></div><span class="pill mut"><i></i>Off</span><ion-icon name="ellipsis-vertical" style="color:var(--kz-muted-3)"></ion-icon></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;min-height:0">
+<div class="card"><p class="eb">Internet sync</p><div class="stat"><div><b style="color:#1f7a45">Online</b><span>Hub internet</span></div><div><b>2 min</b><span>Last sync</span></div><div><b>0</b><span>Waiting to upload</span></div><div><b style="color:#8a6414">2</b><span>Need a decision</span></div></div></div>
+<div class="card"><p class="eb">Network</p><dl class="kv"><dt>Connection</dt><dd>Wi-Fi · MTN-4G-BOX-7F2A</dd><dt>If Wi-Fi drops</dt><dd>Hotspot from this device</dd><dt>Approval</dt><dd>Required for new devices</dd><dt>Backup hub</dt><dd>Kitchen tablet</dd></dl></div>
+<div class="note"><ion-icon name="battery-charging-outline"></ion-icon><span>Keep the hub plugged in or on a power bank. If it goes off, the backup hub can take over.</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 7 · Hub lost on a client -->
+<div class="lbl" style="left:1190px;top:1050px">7 · Client loses the hub<small>Power cut or the hub goes out of Wi-Fi range. Work continues on the device and is queued. After a set time, the backup hub can take over.</small></div>
+<div class="fr ph" style="left:1190px;top:1110px">
+<div class="banner bad"><ion-icon name="cloud-offline-outline"></ion-icon><span style="flex:1">Hub not reachable · 3 orders waiting</span><ion-icon name="chevron-forward"></ion-icon></div>
+<div class="top"><ion-icon name="chevron-back"></ion-icon><b>Local network</b><span class="sp"></span><span class="pill bad"><i></i>Hub lost</span></div>
+<div class="body">
+<div class="card"><dl class="kv"><dt>Hub</dt><dd>Le Comptoir · Till 1</dd><dt>Last contact</dt><dd>4 min ago</dd><dt>Waiting to send</dt><dd>3 orders · 1 payment</dd></dl></div>
+<div class="note warn"><ion-icon name="warning-outline"></ion-icon><span>You can keep taking orders. Payments by MoMo need the internet — take cash or wait for the hub.</span></div>
+<div class="card"><p class="eb">Waiting to send</p>
+<div class="row"><div class="di"><ion-icon name="receipt-outline"></ion-icon></div><div class="t"><b>Table 7 · 3 items</b><span>14:21</span></div><span class="pill warn">Queued</span></div>
+<div class="row"><div class="di"><ion-icon name="receipt-outline"></ion-icon></div><div class="t"><b>Table 3 · void 1 Ndolé</b><span>14:23</span></div><span class="pill warn">Queued</span></div>
+<div class="row"><div class="di"><ion-icon name="cash-outline"></ion-icon></div><div class="t"><b>Table 12 · cash 8 500</b><span>14:25</span></div><span class="pill warn">Queued</span></div>
+</div>
+<div class="grow"></div>
+<button class="btn gh"><ion-icon name="refresh-outline"></ion-icon>Try again</button>
+<button class="btn pri"><ion-icon name="server-outline"></ion-icon>Make this device the hub</button>
+<p class="p" style="font-size:11.5px;text-align:center">Only the backup hub or a manager can do this.</p>
+</div></div>
+
+<!-- 8 · Status chip states -->
+<div class="lbl" style="left:1620px;top:1050px;width:560px">8 · Status chip in the app header — every module<small>One chip, five states. Tap it to open Local network.</small></div>
+<div class="fr" style="left:1620px;top:1110px;width:560px;height:430px;background:#fff">
+<div class="chipstrip">
+<div class="chiprow"><span class="netchip"><ion-icon name="cloud-done-outline" style="color:var(--kz-success)"></ion-icon>Online</span><p>Standalone, or hub with internet. Nothing waiting.</p></div>
+<div class="chiprow"><span class="netchip"><ion-icon name="git-network-outline" style="color:var(--kz-success)"></ion-icon>Via hub · Till 1</span><p>Client connected. Hub online.</p></div>
+<div class="chiprow"><span class="netchip" style="background:var(--kz-warning-wash);border-color:#e8d6a8"><ion-icon name="cloud-upload-outline" style="color:#8a6414"></ion-icon>No internet · 12 waiting</span><p>Local network fine, hub's internet down. Work continues; sync later.</p></div>
+<div class="chiprow"><span class="netchip" style="background:var(--kz-discount-wash);border-color:#f2c4b4"><ion-icon name="cloud-offline-outline" style="color:#b8401f"></ion-icon>Hub lost · 3 waiting</span><p>Client can't reach the hub. Queuing on this device.</p></div>
+<div class="chiprow"><span class="netchip"><ion-icon name="sync-outline" style="color:var(--kz-primary)"></ion-icon>Syncing · 3 of 12</span><p>Sending the queue after the connection comes back.</p></div>
+</div>
+</div>
+
+<!-- 9 · Needs a decision (conflicts) -->
+<div class="lbl" style="left:40px;top:1990px">9 · Needs a decision<small>Changes the main device couldn't accept after a reconnect. Nothing is dropped silently. Each has a plain cause and one or two fixes.</small></div>
+<div class="fr ph" style="left:40px;top:2050px">
+<div class="top"><ion-icon name="chevron-back"></ion-icon><b>Needs a decision</b><span class="sp"></span><span class="pill warn"><i></i>2</span></div>
+<div class="body">
+<p class="p">These came in while devices were offline. A manager should check them before closing the day.</p>
+<div class="card" style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px"><span class="pill warn">Order</span><span class="mono" style="color:var(--kz-muted-2)">14:31 · Phone Anita</span></div>
+<b style="font:700 14.5px var(--kz-font-sans)">Table 7 was already paid</b>
+<p class="p" style="font-size:12.5px">Phone Anita added 2 × Jus Bissap while offline, but Till 1 had taken payment for Table 7 at 14:29.</p>
+<div style="display:flex;gap:8px"><button class="btn pri sm" style="flex:1">Start new order</button><button class="btn gh sm" style="flex:1">Discard items</button></div>
+</div>
+<div class="card" style="display:flex;flex-direction:column;gap:10px;border-color:#f2c4b4">
+<div style="display:flex;align-items:center;gap:8px"><span class="pill bad">Payment</span><span class="mono" style="color:var(--kz-muted-2)">14:25 · two devices</span></div>
+<b style="font:700 14.5px var(--kz-font-sans)">Table 12 was paid twice</b>
+<p class="p" style="font-size:12.5px">Cash 8 500 on Phone Blaise and MoMo 8 500 on Till 1. Both payments are kept until a manager decides.</p>
+<div style="display:flex;gap:8px"><button class="btn gh sm" style="flex:1">Refund cash</button><button class="btn gh sm" style="flex:1">Keep as credit</button></div>
+</div>
+<div class="grow"></div>
+<div class="note"><ion-icon name="lock-closed-outline"></ion-icon><span>Payment decisions need a manager PIN. Closing the day is blocked until both are resolved.</span></div>
+</div></div>
+
+<!-- 10 · Display client -->
+<div class="lbl" style="left:470px;top:1990px;width:760px">10 · Display client: queue or menu screen<small>Read-only. When the main device is out of reach it keeps showing the last good update with a small mark. It never goes blank.</small></div>
+<div class="fr" style="left:470px;top:2050px;width:760px;height:428px;background:#141826;color:#fff">
+<div style="display:flex;align-items:center;gap:10px;padding:18px 26px"><ion-icon name="storefront" style="font-size:22px;color:var(--kz-primary-tint)"></ion-icon><b style="font:700 16px var(--kz-font-sans)">Akwa Boutique · Service client</b><span class="sp" style="flex:1"></span><span class="pill" style="background:rgba(255,255,255,.1);color:#f1c76b"><i></i>Last update 14:02 · reconnecting</span></div>
+<div style="flex:1;display:grid;grid-template-columns:1.3fr 1fr;gap:18px;padding:6px 26px 26px">
+<div style="background:rgba(255,255,255,.06);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><span style="font:700 13px var(--kz-font-sans);letter-spacing:.1em;text-transform:uppercase;color:#a9aec0">Now serving</span><span style="font:700 96px var(--kz-font-num);letter-spacing:-.03em;line-height:1">A-042</span><span style="font:600 22px var(--kz-font-sans);color:var(--kz-primary-tint)">Counter 2</span></div>
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px var(--kz-font-sans);letter-spacing:.1em;text-transform:uppercase;color:#a9aec0">Next</span>
+<div style="display:flex;justify-content:space-between;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.06);font:700 26px var(--kz-font-num)">A-043<span style="font:600 15px var(--kz-font-sans);color:#a9aec0;align-self:center">Counter 1</span></div>
+<div style="display:flex;justify-content:space-between;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.06);font:700 26px var(--kz-font-num)">B-017<span style="font:600 15px var(--kz-font-sans);color:#a9aec0;align-self:center">Counter 3</span></div>
+<div style="display:flex;justify-content:space-between;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.06);font:700 26px var(--kz-font-num)">A-044<span style="font:600 15px var(--kz-font-sans);color:#a9aec0;align-self:center">—</span></div>
+</div></div>
+</div>
+
+</body>
+</html>

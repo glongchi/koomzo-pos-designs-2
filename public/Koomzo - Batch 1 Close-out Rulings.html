@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Batch 1 close-out: rulings and sequencing</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 14px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 16px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 6px 10px}
+.side a.nv{display:flex;align-items:center;gap:9px;min-height:34px;padding:6px 10px;border-radius:9px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a.nv ion-icon{font-size:15px;color:var(--kz-muted-3);flex:none}
+.side a.nv:hover{background:var(--kz-surface-2);color:var(--kz-ink)}
+.doc{padding:34px 34px 110px;max-width:1080px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.lede{margin:0 0 22px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:74ch;text-wrap:pretty}
+h2{margin:44px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em;scroll-margin-top:22px}
+h3{margin:26px 0 8px;font:700 15px var(--kz-font-sans)}
+.sub{margin:0 0 14px;font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-muted);max-width:76ch;text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:76ch;text-wrap:pretty}
+ul{max-width:76ch;padding-left:19px}li{font:400 13.5px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);margin-bottom:5px;text-wrap:pretty}
+.mono{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 6px;color:var(--kz-ink-2);white-space:nowrap}
+.tblwrap{overflow-x:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+.y{color:var(--kz-success);font-weight:700}.n{color:var(--kz-discount);font-weight:700}
+.note{display:flex;gap:10px;background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:13px 15px;margin-bottom:12px}
+.note ion-icon{color:var(--kz-primary);font-size:17px;flex:none;margin-top:1px}
+.note p{margin:0;font-size:13px;line-height:1.62}
+.note.warn{background:var(--kz-warning-wash);border-color:#e8d6a8}
+.note.warn ion-icon{color:#8a6414}
+.note.bad{background:var(--kz-discount-wash);border-color:#f2c4b4}
+.note.bad ion-icon{color:#b8401f}
+.note.good{background:var(--kz-success-wash);border-color:#bfe3cd}
+.note.good ion-icon{color:#1f7a45}
+.rule{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:12px;overflow:hidden}
+.rule__h{display:flex;align-items:center;gap:11px;padding:12px 16px;background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.rule__h .num{width:26px;height:26px;border-radius:7px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none}
+.rule__h b{font:700 13.5px var(--kz-font-sans)}
+.rule__b{padding:13px 16px}
+.rule__b p{margin:0 0 9px;font-size:13.5px}
+.rule__b p:last-child{margin-bottom:0}
+.verdict{display:flex;gap:10px;align-items:flex-start;background:var(--kz-success-wash);border:1px solid #bfe3cd;border-radius:var(--kz-radius);padding:11px 13px;margin:0 0 11px}
+.verdict ion-icon{color:#1f7a45;font-size:17px;flex:none;margin-top:1px}
+.verdict p{margin:0;font:600 13px/1.6 var(--kz-font-sans);color:var(--kz-ink)}
+.tag{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--kz-radius-pill);white-space:nowrap}
+.tag.go{background:var(--kz-success-wash);color:#1f7a45}
+.tag.mock{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.tag.hold{background:var(--kz-warning-wash);color:#8a6414}
+.tag.no{background:var(--kz-surface-2);color:var(--kz-muted-3)}
+.code{display:block;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:13px 15px;font:500 11.5px/1.75 var(--kz-font-num);white-space:pre-wrap;word-break:break-word;color:var(--kz-ink-2);margin-bottom:12px;overflow-x:auto}
+.code b{color:var(--kz-primary);font-weight:700}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--kz-border);border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-bottom:12px}
+@media (max-width:640px){.ba{grid-template-columns:1fr}}
+.ba>div{background:#fff;padding:11px 13px}
+.ba .t2{font:700 9.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:6px}
+.ba code{display:block;font:500 11.5px/1.7 var(--kz-font-num);white-space:pre-wrap;word-break:break-word;color:var(--kz-ink-2)}
+.ba .bad code{color:#b8401f}.ba .good code{color:#1f7a45}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side">
+<div class="side__mark"><div class="ic"><ion-icon name="hand-left-outline"></ion-icon></div><b>koomzo · POS</b></div>
+<p class="side__v">Batch 1 close-out · Sep 2026</p>
+<div class="side__g">Your three</div>
+<a class="nv" href="#d1"><ion-icon name="flame-outline"></ion-icon>1 · Void after fire</a>
+<a class="nv" href="#d2"><ion-icon name="business-outline"></ion-icon>2 · Gym &amp; restaurant sites</a>
+<a class="nv" href="#d3"><ion-icon name="git-merge-outline"></ion-icon>3 · Land batch 1</a>
+<div class="side__g">Backend</div>
+<a class="nv" href="#mock"><ion-icon name="server-outline"></ion-icon>The mock contract</a>
+<a class="nv" href="#svc"><ion-icon name="list-outline"></ion-icon>Five services</a>
+<div class="side__g">Shell &amp; modules</div>
+<a class="nv" href="#shell"><ion-icon name="apps-outline"></ion-icon>Shell fixes</a>
+<a class="nv" href="#persist"><ion-icon name="save-outline"></ion-icon>Reload survival</a>
+<a class="nv" href="#mods"><ion-icon name="layers-outline"></ion-icon>Module backlog</a>
+<a class="nv" href="#retail"><ion-icon name="tablet-portrait-outline"></ion-icon>Retail pay bar</a>
+<div class="side__g">Close</div>
+<a class="nv" href="#seq"><ion-icon name="play-outline"></ion-icon>Sequence</a>
+</nav>
+
+<main class="doc">
+<p class="eb">Decision record · closes D321 · D322</p>
+<h1>Batch 1 close-out — rulings and sequencing</h1>
+<p class="lede">Three decisions were waiting on me, and two of them already have a precedent in the source code that settles them. Below: the three rulings, the mock-backend contract for everything in the backend phase, and a recommended order for the rest — weighted for a Douala operator on a Bluetooth thermal printer and an intermittent connection, not a European venue with a channel manager.</p>
+<div class="links">
+<a href="Koomzo - Recipe and Depletion Model.html"><ion-icon name="restaurant-outline"></ion-icon>Recipe &amp; depletion model</a>
+<a href="Koomzo - Register and Inventory Integration.html"><ion-icon name="git-network-outline"></ion-icon>Integration spec</a>
+<a href="Koomzo - Register Functional Spec.html"><ion-icon name="receipt-outline"></ion-icon>Register spec</a>
+</div>
+
+<h2 id="d1">1 · Void after fire — agreed, and there is already a precedent</h2>
+<div class="verdict"><ion-icon name="checkmark-circle"></ion-icon><p><b>Ruled:</b> restore the unit, then write it off. Two movements, net one. Your recommendation, and it is the pattern the codebase already uses.</p></div>
+<p><span class="mono">kz-stock-sales.js:70</span> <span class="mono">reverseSale()</span> already does exactly this for damaged returns, with a comment stating the intent: damaged goods are <b>two events — the customer's refund, and the business's write-off</b>. It posts the refund as <span class="mono">kind:'sale'</span> and the write-off as <span class="mono">kind:'adjust', reason:'damaged'</span>.</p>
+<p>A dish voided after firing is the same shape: the kitchen consumed it, then the business threw it away. So the fire adapter mirrors the method rather than inventing one.</p>
+<div class="ba">
+<div class="bad"><div class="t2">Today — 30 → 28</div><code>fire   −1  kind:'fire'
+void   −1  kind:'fire'    ← wrong
+                            counted twice</code></div>
+<div class="good"><div class="t2">Ruled — 30 → 29</div><code>fire   −1  kind:'fire'
+void   +1  kind:'fire'    reason:'void-reversal'
+       −1  kind:'adjust'  reason:'waste'</code></div>
+</div>
+<p>Three rows, not two, and deliberately so: the fire stays on the record, the reversal cancels it, and the waste is the number an owner can actually act on. It also keeps rung 4 variance honest later — waste is attributable, not hidden inside a depletion figure. One method (<span class="mono">reverseFire()</span>) and one spec paragraph, as you said.</p>
+<div class="note"><ion-icon name="information-circle-outline"></ion-icon><p><b>One rider.</b> A void <i>before</i> fire still posts nothing — no consumption happened. The rule only engages once <span class="mono">firedAt</span> is set.</p></div>
+
+<h2 id="d2">2 · Gym and restaurant stock — each gets its own site</h2>
+<div class="verdict"><ion-icon name="checkmark-circle"></ion-icon><p><b>Ruled:</b> two new rows in <span class="mono">IV_LOCATIONS</span>. Agreed with you — and the current state is worse than a fixture shortcut, it is a reporting falsehood.</p></div>
+<p>Today <span class="mono">IV_LOCATIONS</span> holds <span class="mono">dt · Akwa Boutique (Store)</span>, <span class="mono">up · Bonapriso Salon (Salon)</span>, plus warehouse and a fourth site. Posting the gym bar to <span class="mono">up</span> means the salon's stock report shows energy drinks it never sold; posting the restaurant cellar to <span class="mono">dt</span> puts wine on the boutique's valuation. Every location-scoped surface — count sheets, transfers, reorder, valuation, variance later — inherits that error. A cycle count at Bonapriso would come back short by exactly the gym's consumption, and nobody would know why.</p>
+<p>Each location row already carries <span class="mono">kind</span>, <span class="mono">code</span>, <span class="mono">sells</span>, <span class="mono">staff</span>, <span class="mono">icon</span>, so the addition is declarative:</p>
+<span class="code">{ id:'gy', name:'Akwa Fitness Bar', kind:'Gym',        code:'GF', sells:true, icon:'barbell-outline' }
+{ id:'rk', name:'Le Comptoir Cellier', kind:'Restaurant', code:'LC', sells:true, icon:'restaurant-outline' }
+
+<b>// then</b>  GM_LOC = 'gy'   RK_LOC = 'rk'</span>
+<p>Two extra rows in every location selector is the correct cost — a multi-site operator in Douala running a salon, a gym and a restaurant off one Koomzo account is precisely the target customer, and they need to see three separate stock positions. Update the fixtures in the same commit so the seeded movements land on the right sites; as you say, the tests are not the blocker.</p>
+
+<h2 id="d3">3 · Land batch 1 on main — yes, before anything else</h2>
+<div class="verdict"><ion-icon name="checkmark-circle"></ion-icon><p><b>Ruled:</b> merge <span class="mono">rebaseline-p2-5</span> to main now. It is the prerequisite for every other item on this list.</p></div>
+<p>Main sitting at the PR #9 merge while all subsequent work lives on a branch means every item below either targets a stale base or compounds the divergence. Land it, tag it (<span class="mono">batch-1</span>), and make that tag the baseline the batch-2 plan is written against. Rulings 1 and 2 then go in as their own small commits on top, so the fire-reversal change and the location split are each independently reviewable and revertible.</p>
+
+<h2 id="mock">4 · The backend phase — mock service contract</h2>
+<p class="sub">Your instruction, made concrete: an interface plus a mock implementation plus JSON-file persistence, so <span class="mono">koomzoapps</span> swaps the implementation and nothing else.</p>
+<p>The rule for these seven hotel buttons and the gym WhatsApp action is <b>not</b> "stay absent until a real connection exists" — it is "call a real interface whose implementation happens to be a mock." That difference matters: the Angular component, the loading state, the error state, the disabled state and the success toast all get built and tested now, and production only replaces one provider.</p>
+<span class="code"><b>// koomzodesignsystem/src/app/core/backend/</b>
+export interface PrintService {
+  printFolio(folioId: string): Promise&lt;PrintJob&gt;;   <b>// PrintJob: {id,status,at}</b>
+}
+
+<b>// mock/print.mock.ts</b> — resolves after a realistic delay, writes to
+<b>// backend/data/print-jobs.json</b>, and can be told to fail.
+
+providers: [{ provide: PrintService, useClass: MockPrintService }]</span>
+<p>Three properties every mock must have, because they are what the UI is being built against:</p>
+<ul>
+<li><b>Latency.</b> 600–1500 ms, not instant. A Douala connection is not instant, and a button with no spinner state ships broken.</li>
+<li><b>A failure path.</b> A settings toggle or a seeded item that always fails. <b>Offline is the normal case here</b>, not the edge case — the retry and queue states are the feature, and they cannot be designed against a mock that always succeeds.</li>
+<li><b>Durable state.</b> Written to JSON under <span class="mono">backend/data/</span>, so a sent WhatsApp link is still sent after a reload and the history views have something real to render.</li>
+</ul>
+
+<h3 id="svc">The five services</h3>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:20%">Service</th><th style="width:28%">Covers</th><th>Mock behaviour &amp; market note</th></tr></thead>
+<tbody>
+<tr><td><b>PrintService</b></td><td>Print folio, Export register</td><td>Returns a job with a status. <b>Market note:</b> assume a 58/80 mm Bluetooth thermal printer, not A4 — the folio needs a receipt-width layout, and that is a design task the mock unblocks today. Export writes a real CSV to <span class="mono">backend/data/exports/</span>.</td></tr>
+<tr><td><b>MessagingService</b></td><td>Gym WhatsApp, pre-arrival <i>Send N links</i> and <i>Ask again</i></td><td>One interface, <span class="mono">send(channel, to, template, vars)</span>. <b>WhatsApp is the default channel, not SMS</b> — it is how this market communicates. Mock appends to <span class="mono">messages.json</span> with <span class="mono">queued → sent → delivered</span>, and holds at <span class="mono">queued</span> when the offline toggle is on. <i>Ask again</i> must be rate-limited in the mock, or the UI will not grow the guard it needs.</td></tr>
+<tr><td><b>ChannelService</b></td><td>Push availability, Push to channels</td><td>Lowest real-world priority — few independent Cameroonian properties run a channel manager. Mock it thinly: accept a push, echo a per-channel result, seed one channel that always errors so partial-failure UI exists.</td></tr>
+<tr><td><b>PublishService</b></td><td>New season, Publish week, Send the board</td><td>Version + publish semantics against <span class="mono">schedules.json</span>. <i>Send the board</i> composes to <b>MessagingService</b> rather than owning a transport — a published rota goes out over WhatsApp.</td></tr>
+<tr><td><b>ExportService</b></td><td>Register export, report downloads</td><td>Could fold into Print; keep separate if the register export is ever scheduled rather than pressed.</td></tr>
+</tbody></table></div>
+<div class="note good"><ion-icon name="cloud-offline-outline"></ion-icon><p><b>Build the outbox once.</b> Print, message, publish and channel-push all need the same thing on an intermittent connection: queue locally, show pending, retry, surface failure. Build one <b>OutboxService</b> the four sit on rather than four retry implementations. This is the single highest-value piece of the backend phase for this market.</p></div>
+
+<h2 id="shell">5 · Shell fixes — one commit, all modules</h2>
+<p>These are cheap and they are the things a user notices in the first ten seconds. Do them as one shell pass:</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:30%">Item</th><th style="width:12%">Call</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>Profile chip (salon, gym)</td><td><span class="tag go">Build</span></td><td>Shell component, not per-module. Fixes both at once.</td></tr>
+<tr><td>Salon contextual subtitle</td><td><span class="tag go">Build</span></td><td>Same header component.</td></tr>
+<tr><td>Kiosk PIN exit — D70 press-and-hold</td><td><span class="tag go">Build</span></td><td>Security-relevant: an unattended kiosk with an easy exit is a cash risk. Keep the press-and-hold; it is deliberate friction.</td></tr>
+<tr><td>Gym front-desk search autofocus</td><td><span class="tag hold">Build, but desktop only</span></td><td><b>Suppress on touch.</b> Autofocus on a tablet throws up the on-screen keyboard and eats half the screen on arrival. Focus on pointer devices only.</td></tr>
+</tbody></table></div>
+
+<h3 id="persist">Item 9 — reload survival, and the line that must not be crossed</h3>
+<div class="verdict"><ion-icon name="checkmark-circle"></ion-icon><p><b>Ruled:</b> one register-wide persistence rule. Persist the <b>order</b>. Never persist the <b>tender result</b>.</p></div>
+<p>You are right that this is one decision for every register, not a restaurant fix. It is also the highest-priority item on this entire list: <b>power cuts and browser reloads are routine in this market</b>, and a register that loses an open table on reload is not deployable. But it collides directly with the money-loss defect found earlier, where a reload re-hydrated a previous order's succeeded tenders and could charge a room twice. So the rule has to be two-sided:</p>
+<div class="ba">
+<div class="good"><div class="t2">Persist — survives reload</div><code>open tables · cart lines · qty
+modifiers · seat/course · notes
+customer · discount (unapproved)
+ticket no (session-scoped seq)</code></div>
+<div class="bad"><div class="t2">Never persist — rebuild or discard</div><code>succeeded tenders
+MoMo pending state
+folio post confirmations
+supervisor approval grants</code></div>
+</div>
+<p>Mechanically: one <span class="mono">RegisterStateService</span> writing to <span class="mono">localStorage</span> under <span class="mono">kz:register:&lt;locId&gt;:&lt;registerId&gt;</span>, debounced, versioned with a schema number, and cleared on Z-close. On load it restores the order and shows a quiet <i>"Restored your open orders"</i> line. A tender bucket found on load is <b>validated against ticket identity and total before it is trusted, and discarded otherwise</b> — that validation is the fix for the double-charge, and it belongs in the same commit as the persistence, never after it.</p>
+<div class="note warn"><ion-icon name="warning-outline"></ion-icon><p>Do not ship persistence without the tender validation. Persistence alone makes the money bug easier to hit, not harder.</p></div>
+
+<h2 id="mods">6 · Module backlog — recommended order</h2>
+<p class="sub">Reordered by operator impact in this market rather than by module.</p>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:5%">#</th><th style="width:30%">Item</th><th style="width:12%">Call</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>10</td><td>Grocery age-prompt ID chips</td><td><span class="tag go">First</span></td><td>Agreed — it is blocking test coverage of an entire item class, and an <span class="mono">ion-alert</span> cannot carry the ID-method choice. Unblocks 18+ items in fixtures too.</td></tr>
+<tr><td>11</td><td>PLU shortcut chips</td><td><span class="tag go">High</span></td><td>Loose produce sold by weight with no barcode is the norm in this market. High daily value.</td></tr>
+<tr><td>12</td><td>Crates stepper sheet</td><td><span class="tag go">High</span></td><td>Returnable bottle crates are real money in Cameroon — deposits on beer and soft-drink crates are a live liability. Outstanding count is the point of the sheet.</td></tr>
+<tr><td>15</td><td>Salon quick keys (Stylist / Discount / Carte cadeau)</td><td><span class="tag go">High</span></td><td>Per-stylist attribution drives commission; this is used every ticket.</td></tr>
+<tr><td>16</td><td>Salon Now line</td><td><span class="tag go">Med</span></td><td>Cheap, high glance-value on the agenda.</td></tr>
+<tr><td>25</td><td>Restaurant stations setting inert (D62 §4)</td><td><span class="tag go">Med</span></td><td>Promote this. Stations gate the fire path, and the depletion model keys food-vs-bar off <span class="mono">station</span> — an inert setting becomes a stock bug in batch 1b.</td></tr>
+<tr><td>23</td><td>Gym payout route</td><td><span class="tag go">Med</span></td><td>Currently unassigned; assign it — an unrouted nav item reads as broken.</td></tr>
+<tr><td>17–22</td><td>Salon reorder badge, task delete, timesheet reopen, agenda row actions, autoClock/mineOnly</td><td><span class="tag go">Batch</span></td><td>Do as one salon-completion pass rather than scattered. Low individual value, good cumulative polish.</td></tr>
+<tr><td>13</td><td>Hotel long-stay <i>New tenancy</i></td><td><span class="tag go">Med</span></td><td>Long-stay and monthly tenancy are common in Douala hotels — more relevant here than in the European template this pattern came from.</td></tr>
+<tr><td>24</td><td>Gym company seat list</td><td><span class="tag hold">Low</span></td><td>Corporate memberships are a thinner segment. Leave stubbed.</td></tr>
+<tr><td>14</td><td>Hotel guest card preview / Hide guest view</td><td><span class="tag hold">Batch 4</span></td><td>Agreed — it is a screen, not a fix.</td></tr>
+</tbody></table></div>
+<p><b>On the three deliberately-not-built items:</b> all three calls are right. Gym churn without a source screen would be invention; D143's drawer placement for Rewards is the better pattern; and the 90-second attract-screen idle beats a 20-second countdown — a countdown pressures a customer who is still deciding, which in a kiosk context loses the order.</p>
+
+<h2 id="retail">7 · Item 26 — the floating pay bar</h2>
+<div class="verdict"><ion-icon name="alert-circle"></ion-icon><p><b>Ruled:</b> fix it, but not now — schedule it as a single contained change after the shell pass, not as a retail patch.</p></div>
+<p>A pay bar that floats mid-screen on a 768 px portrait tablet is not cosmetic: <b>the portrait tablet is a very common register form factor in this market</b>, and the Charge button is the one control that must be in the same place every time. Muscle memory is the whole argument for a pinned bar.</p>
+<p>But you are right that it touches all five retail layouts, so do not patch it inside another task. The fix is to make the bar a sticky footer of the order-panel container with a <span class="mono">min-height</span> on the scroll region above it, so a short product list still pushes it down — one shared container change, applied five times, tested at 768 px portrait specifically. Keep the KNOWN-GAP entry in <span class="mono">FROZEN.md</span> until it lands.</p>
+
+<h2 id="seq">8 · Recommended sequence</h2>
+<div class="tblwrap"><table>
+<thead><tr><th style="width:8%">Step</th><th style="width:34%">Work</th><th>Why here</th></tr></thead>
+<tbody>
+<tr><td><b>1</b></td><td>Land batch 1 on main, tag <span class="mono">batch-1</span></td><td>Everything else needs the base.</td></tr>
+<tr><td><b>2</b></td><td>Ruling 1 (fire reversal) + ruling 2 (two locations), separate commits</td><td>Small, spec-closing, independently revertible.</td></tr>
+<tr><td><b>3</b></td><td>Register persistence + tender validation</td><td>Highest operator impact; also closes the money bug. Must be one commit.</td></tr>
+<tr><td><b>4</b></td><td>Shell pass — profile chip, subtitle, PIN exit, conditional autofocus</td><td>Cheap, visible, one commit across modules.</td></tr>
+<tr><td><b>5</b></td><td>Backend interfaces + mocks + OutboxService; wire the seven hotel buttons and gym WhatsApp</td><td>Unblocks eight dead controls, and the production swap is one provider each.</td></tr>
+<tr><td><b>6</b></td><td>Module backlog in the order above, starting with grocery 10–12</td><td>Grocery items are the ones used every transaction.</td></tr>
+<tr><td><b>7</b></td><td>Retail pay bar, contained change across all five layouts</td><td>After the shell pass, so container conventions are settled.</td></tr>
+<tr><td><b>8</b></td><td>Batch 2 planning</td><td>Written against the <span class="mono">batch-1</span> tag.</td></tr>
+</tbody></table></div>
+<div class="note"><ion-icon name="git-branch-outline"></ion-icon><p><b>Batch 1b (recipes, two-unit model, prep batches, variance) stays parked</b> — correct call, and consistent with the depletion-ladder position that rungs 2–4 wait for a venue to ask. Steps 2 and 6·25 above are the only 1b prerequisites worth doing early, and both pay for themselves independently.</p></div>
+
+</main>
+</div>
+</body>
+</html>

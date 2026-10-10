@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo User Guide — Restaurant &amp; Bar</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="alternate" hreflang="fr" href="Koomzo Guide utilisateur - Restaurant.html" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="guide/guide.css" />
+<link rel="stylesheet" href="guide/anim.css" />
+<script>(function(){var b='https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons';var s=document.createElement('script');s.type='module';s.src=b+'.esm.js';document.head.appendChild(s);})();</script>
+</head>
+<body data-page="restaurant">
+<header class="ug-top">
+<a class="ug-mark" data-page="hub" href="Koomzo User Guide.html"><div class="ic"><ion-icon name="book-outline"></ion-icon></div><b>Koomzo User Guide</b><span>Version 2 · October 2026</span></a>
+<nav class="ug-mods" aria-label="Module guides">
+<a data-page="restaurant" href="Koomzo User Guide - Restaurant.html" class="on" aria-current="page"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a data-page="hotel" href="Koomzo User Guide - Hotel.html"><ion-icon name="bed-outline"></ion-icon>Hotel</a>
+<a data-page="retail" href="Koomzo User Guide - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+<a data-page="inventory" href="Koomzo User Guide - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Inventory</a>
+<a data-page="signage" href="Koomzo User Guide - Signage.html"><ion-icon name="tv-outline"></ion-icon>Signage</a>
+<a data-page="salon" href="Koomzo User Guide - Salon.html"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a data-page="gym" href="Koomzo User Guide - Gym.html"><ion-icon name="barbell-outline"></ion-icon>Gym</a>
+<a data-page="queue" href="Koomzo User Guide - Queue.html"><ion-icon name="people-outline"></ion-icon>Queue</a>
+</nav>
+<div class="ug-lang" aria-label="Language"><b>EN</b><a data-lang-link="fr" href="Koomzo Guide utilisateur - Restaurant.html" hreflang="fr">FR</a></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Contents">
+<a class="side__back" data-page="hub" href="Koomzo User Guide.html#p1"><ion-icon name="arrow-back-outline"></ion-icon>Platform chapters</a>
+<div class="side__g">Restaurant &amp; Bar</div>
+<a href="#rk"><ion-icon name="restaurant-outline"></ion-icon>1 · Is this for me?</a>
+<a href="#rk-setup"><ion-icon name="construct-outline"></ion-icon>2 · Set up</a>
+<a href="#rk-day"><ion-icon name="sunny-outline"></ion-icon>3 · Run the day</a>
+<a href="#rk-screens"><ion-icon name="albums-outline"></ion-icon>4 · Screens</a>
+<a class="sub" href="#s-register">Register</a>
+<a class="sub" href="#s-floor">Floor</a>
+<a class="sub" href="#s-kitchen">Kitchen screen</a>
+<a class="sub" href="#s-kiosk">Kiosk</a>
+<a class="sub" href="#s-setup">Setup</a>
+<a href="#rk-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · When something goes wrong</a>
+<a href="#rk-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Go further</a>
+<a href="#rk-cards"><ion-icon name="id-card-outline"></ion-icon>Staff task cards</a>
+</nav>
+<main class="doc">
+
+<section id="top">
+<p class="eb">Module guide</p>
+<h1>Restaurant &amp; Bar</h1>
+<p class="lede">Orders, kitchen, floor and payment — maquis, restaurants, bars, snacks. Shared chapters — devices, offline, payments — are in the <a data-page="hub" href="Koomzo User Guide.html#p1">Platform chapters</a>.</p>
+</section>
+
+<section id="rk" class="part first">
+<p class="eb">Restaurant &amp; Bar · Part 1</p>
+<h2>Is this for me?</h2>
+<p class="sub">Restaurant &amp; Bar suits any place where people eat or drink — at a table, at the bar, or to take away. Setup offers a starting layout for each:</p>
+<div class="grid3">
+<div class="card"><h4>Maquis / small restaurant</h4><p>Salle and terrasse. The most common start.</p></div>
+<div class="card"><h4>Restaurant</h4><p>Salle, terrasse and a bar counter.</p></div>
+<div class="card"><h4>Bar / lounge</h4><p>Stools at the bar and lounge tables.</p></div>
+<div class="card"><h4>Hotel restaurant</h4><p>Restaurant, bar and room service.</p></div>
+<div class="card"><h4>Snack / fast food</h4><p>Order at the counter, a few tables to eat in.</p></div>
+<div class="card"><h4>Counter only</h4><p>No tables — tabs and counter tickets.</p></div>
+</div>
+<h3>A day at Chez Mama Ngono</h3>
+<p class="sub">A maquis in Bonamoussadi, Douala: 8 tables in the salle, 4 on the terrasse. Mama runs the till; Grace and Junior serve; Paul cooks; a kiosk by the door; a TV menu board.</p>
+<div class="day">
+<div class="day__row"><span class="day__t">10:30</span><div class="day__b"><b>Opening</b><span>Mama turns on the till — the main device. The phones, kitchen tablet and kiosk connect on their own. She opens the shift with 20 000 F float.</span></div></div>
+<div class="day__row"><span class="day__t">12:15</span><div class="day__b"><b>Lunch rush</b><span>Four guests sit at Table 4. Grace seats them on her phone, takes 2 Ndolé, 1 Poulet DG and drinks, and taps Send. Paul's kitchen screen shows it before she reaches the kitchen.</span></div></div>
+<div class="day__row"><span class="day__t">12:40</span><div class="day__b"><b>A change of mind</b><span>One guest wants Poisson Braisé instead of Ndolé. Grace voids the Ndolé with a reason; Paul sees it crossed out and taps Seen.</span></div></div>
+<div class="day__row"><span class="day__t">13:05</span><div class="day__b"><b>The terrasse fills up</b><span>Friends join Table 4. Grace moves the party to the terrasse and joins two tables. The kitchen tickets follow them.</span></div></div>
+<div class="day__row"><span class="day__t">13:30</span><div class="day__b"><b>Power cut</b><span>The ENEO power goes; the 4G box is on a battery, the till on its power bank. Orders keep flowing between devices. The sync light shows <i>No internet · 8 waiting</i>.</span></div></div>
+<div class="day__row"><span class="day__t">13:50</span><div class="day__b"><b>The bill</b><span>Table 4 asks for the addition. Two pay by MoMo once the internet is back, the rest in cash. Mama clears the table; the kitchen screen clears it too.</span></div></div>
+<div class="day__row"><span class="day__t">19:00</span><div class="day__b"><b>Evening</b><span>The TV switches to the bar menu. A customer orders a takeaway on the kiosk and pays at the counter.</span></div></div>
+<div class="day__row"><span class="day__t">23:30</span><div class="day__b"><b>Closing</b><span>Mama checks the sync light shows Synced, reviews today's voids, and closes the shift. The owner sees the day's sales on his phone.</span></div></div>
+</div>
+</section>
+
+<section id="rk-setup" class="part">
+<p class="eb">Restaurant &amp; Bar · Part 2</p>
+<h2>Set up <span class="tier lite">Lite</span></h2>
+<p class="sub">About an hour, once. Do it before your first service.</p>
+<ol class="steps">
+<li><div><b>Getting started</b><span>Account, location and staff — see <a data-page="hub" href="Koomzo User Guide.html#p1">P1</a>.</span></div></li>
+<li><div><b>Choose a layout</b><span>Setup → Floor plan → <i>Start from a layout</i>. Maquis (Salle + Terrasse) is the usual choice. Set the number of tables in each area.</span></div></li>
+<li><div><b>Add your menu</b><span>Categories (Starters, Mains, Grills, Drinks…), each dish with its price and the station that prepares it — grill, sauce pot, bar.</span></div></li>
+<li><div><b>Choose payments</b><span>Cash is on. Add MTN MoMo and Orange Money with your merchant numbers.</span></div></li>
+<li><div><b>Choose your devices</b><span>One device to start. Add phones, a kitchen screen and a kiosk later — <a data-page="hub" href="Koomzo User Guide.html#p4">P4</a>.</span></div></li>
+<li><div><b>Do a test order</b><span>Seat a table, order, send, mark it ready, pay and clear. Then you're ready to open.</span></div></li>
+</ol>
+</section>
+
+<section id="rk-day" class="part">
+<p class="eb">Restaurant &amp; Bar · Part 3</p>
+<h2>Run the day</h2>
+<p class="sub">The real order of a service, and which screen you use for each moment.</p>
+<div class="tbl"><table>
+<thead><tr><th>Moment</th><th>What you do</th><th>Screen</th><th>Tier</th></tr></thead>
+<tbody>
+<tr><td><b>Before opening</b></td><td>Turn on the main device. Check every device is connected and the light shows Synced.</td><td>Any</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Guests arrive</b></td><td>Tap a free table, enter the number of guests.</td><td><a href="#s-floor">Floor</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Take the order</b></td><td>Tap dishes, add notes (no piment, allergies), tap Send.</td><td><a href="#s-register">Register</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>In the kitchen</b></td><td>Orders arrive by station. Tap Mark Ready, then Served.</td><td><a href="#s-kitchen">Kitchen</a></td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Starters, then mains</b></td><td>Send course 1 now, fire course 2 when the table is ready.</td><td>Register</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>A change</b></td><td>Void a sent dish with a reason; add more dishes anytime.</td><td>Register</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Table moves</b></td><td>Move the party, join two tables, or move a few dishes to another bill.</td><td>Floor · Register</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>The bill</b></td><td>Request the bill, split it, take MoMo and cash.</td><td>Register</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Clear the table</b></td><td>The table goes free and the kitchen screen clears it.</td><td>Floor</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Self-order</b></td><td>Customers order on the kiosk; pay by MoMo or at the counter.</td><td><a href="#s-kiosk">Kiosk</a></td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>Closing</b></td><td>Wait for Synced. Review today's voids. Close the shift.</td><td><a href="#s-setup">Setup</a></td><td><span class="tier lite">Lite</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="rk-screens" class="part">
+<p class="eb">Restaurant &amp; Bar · Part 4</p>
+<h2>Screens</h2>
+<p class="sub">The left rail switches screens: Order, Floor, Kitchen, Kiosk, Today, and Setup at the bottom. On a phone, the same screens stack into one column.</p>
+
+<h3 id="s-register">Register <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/register.jpg" alt="Register screen" /><span class="pin" style="left:12%;top:10.5%">1</span><span class="pin" style="left:30%;top:21.5%">2</span><span class="pin" style="left:20%;top:32%">3</span><span class="pin" style="left:52%;top:16.8%">4</span><span class="pin" style="left:68%;top:28%">5</span><span class="pin" style="left:15%;top:95%">6</span><span class="pin" style="left:26%;top:95%">7</span><span class="pin" style="left:91%;top:3.4%">8</span></div>
+<ol class="callouts">
+<li><span><b>Table</b> — pick the table first, or start a walk-in and choose the table when you send.</span></li>
+<li><span><b>Fire</b> — sends this course to the kitchen.</span></li>
+<li><span><b>The order</b> — tap a line to change quantity, add a note or, once sent, <b>Void</b> it with a reason.</span></li>
+<li><span><b>Categories</b> — Starters, Mains, Grills, Drinks…</span></li>
+<li><span><b>Dishes</b> — tap to add. Tags show vegetarian, spicy, allergens.</span></li>
+<li><span><b>Send</b> — sends everything not yet sent to the kitchen.</span></li>
+<li><span><b>Pay</b> — cash, MoMo, Orange Money or split.</span></li>
+<li><span><b>Sync light</b> — see <a data-page="hub" href="Koomzo User Guide.html#p3">P3</a>.</span></li>
+</ol>
+<div class="note"><ion-icon name="swap-horizontal-outline"></ion-icon><p><b>Move</b> (in the bar above Send) moves the whole party, or only the dishes you tick — that's how you split a bill between two tables. <span class="tier mid">Mid</span></p></div>
+
+<h3 id="s-floor">Floor <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/floor.jpg" alt="Floor screen" /><span class="pin" style="left:19%;top:3.5%">1</span><span class="pin" style="left:36%;top:3.5%">2</span><span class="pin" style="left:76%;top:3.5%">3</span><span class="pin" style="left:20%;top:54%">4</span><span class="pin" style="left:27%;top:19%">5</span></div>
+<ol class="callouts">
+<li><span><b>Areas</b> — Main Floor, Patio, Bar. Your own names from Setup.</span></li>
+<li><span><b>List or map</b> — the list is easier on a phone; the map on a tablet.</span></li>
+<li><span><b>Colours</b> — green seated, blue order in progress, amber bill asked, red needs attention, white free.</span></li>
+<li><span><b>Tap a table</b> to seat guests, open its order, request the bill, <b>Move</b> or clear it.</span></li>
+<li><span><b>Badge</b> — dishes in the kitchen for that table.</span></li>
+</ol>
+<div class="note warn"><ion-icon name="restaurant-outline"></ion-icon><p><b>Clearing a table with food still cooking?</b> Koomzo asks: keep cooking as take-away, mark it already served, or cancel it. Nothing disappears from the kitchen without a decision.</p></div>
+
+<h3 id="s-kitchen">Kitchen screen <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/kitchen.jpg" alt="Kitchen screen" /><span class="pin" style="left:9%;top:10%">1</span><span class="pin" style="left:34%;top:16%">2</span><span class="pin" style="left:15%;top:23%">3</span><span class="pin" style="left:20%;top:38.5%">4</span><span class="pin" style="left:51%;top:35%">5</span><span class="pin" style="left:93%;top:10%">6</span><span class="pin" style="left:88%;top:3.5%">7</span></div>
+<ol class="callouts">
+<li><span><b>Lanes</b> — To cook, Ready, Served. Oldest order first.</span></li>
+<li><span><b>Timer</b> — turns amber, then red, when an order is late.</span></li>
+<li><span><b>Stations</b> — what each station still has to make. <span class="tier full">Full</span></span></li>
+<li><span><b>Mark Ready</b> — the server's phone is told.</span></li>
+<li><span><b>Served</b> — the runner has taken it out.</span></li>
+<li><span><b>Clear all</b> — tidy the Served lane. Paid tables clear themselves.</span></li>
+<li><span><b>Area filter</b> — one kitchen for the salle, another for the terrasse.</span></li>
+</ol>
+<p class="sub">A voided dish appears crossed out with <b>VOID</b>; a changed note shows <b>CHANGED</b>. The cook taps <b>Seen</b> so the server knows.</p>
+
+<h3 id="s-kiosk">Kiosk <span class="tier full">Full</span></h3>
+<div class="shot"><img src="guide/img/kiosk.jpg" alt="Kiosk welcome screen" /><span class="pin" style="left:13%;top:2.8%">1</span><span class="pin" style="left:87%;top:2.8%">2</span><span class="pin" style="left:53%;top:35%">3</span><span class="pin" style="left:53%;top:62%">4</span></div>
+<ol class="callouts">
+<li><span><b>Staff preview</b> — see how the kiosk looks on a desktop, tablet or phone.</span></li>
+<li><span><b>Start kiosk mode</b> — locks the device: staff screens disappear.</span></li>
+<li><span><b>To leave</b>, press and hold the logo, then enter the manager PIN.</span></li>
+<li><span><b>Eat in or Takeaway</b> — the customer browses, orders and pays by MoMo, or pays at the counter.</span></li>
+</ol>
+<p class="sub">After 90 seconds without a touch, the kiosk empties the basket and returns to the welcome screen.</p>
+
+<h3 id="s-setup">Setup <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/setup-floor.jpg" alt="Floor plan editor" /><span class="pin" style="left:13%;top:10.5%">1</span><span class="pin" style="left:92%;top:10.5%">2</span><span class="pin" style="left:40%;top:50%">3</span><span class="pin" style="left:89%;top:47%">4</span></div>
+<ol class="callouts">
+<li><span><b>Areas</b> — add, rename, reorder. <span class="tier mid">Mid</span></span></li>
+<li><span><b>Start from a layout</b> — the presets from Part 1, with the number of tables.</span></li>
+<li><span><b>Drag tables</b> into place on a tablet. On a phone, edit them as a list.</span></li>
+<li><span><b>Add a table</b> — square, round, long or a bar stool. Set its label and seats.</span></li>
+</ol>
+<div class="shot"><img src="guide/img/setup-rules.jpg" alt="Service rules" /><span class="pin" style="left:42%;top:16.6%">1</span><span class="pin" style="left:42%;top:31.7%">2</span><span class="pin" style="left:44%;top:62%">3</span><span class="pin" style="left:42%;top:77%">4</span><span class="pin" style="left:42%;top:86.5%">5</span></div>
+<ol class="callouts">
+<li><span><b>Void approval</b> — after cooking starts, always, or never. <span class="tier full">Full</span></span></li>
+<li><span><b>Owner approves from his phone</b> when no manager is on site. <span class="soon"><ion-icon name="time-outline"></ion-icon>Soon</span></span></li>
+<li><span><b>Served tickets</b> leave the kitchen after 10 minutes.</span></li>
+<li><span><b>Kiosk mode</b> can also be started here.</span></li>
+<li><span><b>Today's voids</b> — by reason and by server.</span></li>
+</ol>
+</section>
+
+<section id="rk-help" class="part">
+<p class="eb">Restaurant &amp; Bar · Part 5</p>
+<h2>When something goes wrong</h2>
+<div class="qa">
+<div class="card"><h4><ion-icon name="flash-off-outline"></ion-icon>The power went off in the middle of service.</h4><p>Keep working on battery. Every order is already saved. When power returns, open the app — open tables come back as they were.</p></div>
+<div class="card"><h4><ion-icon name="cloud-offline-outline"></ion-icon>No internet, and a guest wants to pay by MoMo.</h4><p>Take cash, or keep the bill open and confirm the MoMo when the internet returns. Everything else carries on.</p></div>
+<div class="card"><h4><ion-icon name="battery-dead-outline"></ion-icon>The main device died.</h4><p>Phones keep taking orders and hold them. Charge it and turn it on — or a manager makes another device the main one. <span class="soon">Soon</span></p></div>
+<div class="card"><h4><ion-icon name="walk-outline"></ion-icon>A guest left before the food came out.</h4><p>Clear the table and choose <i>Cancel</i>. It's logged as a void and shown to the kitchen.</p></div>
+<div class="card"><h4><ion-icon name="hand-left-outline"></ion-icon>The cook forgot to tap Served.</h4><p>When you clear the table, choose <i>Already served</i>. Served tickets also leave the screen by themselves after 10 minutes.</p></div>
+<div class="card"><h4><ion-icon name="swap-horizontal-outline"></ion-icon>We put the order on the wrong table.</h4><p>Open the order → Move → pick the right table. The kitchen ticket is relabelled.</p></div>
+<div class="card"><h4><ion-icon name="alert-circle-outline"></ion-icon>A server says they didn't void that dish.</h4><p>Setup → Service rules → Today's voids shows who voided what, when, why, and who approved.</p></div>
+<div class="card"><h4><ion-icon name="warning-outline"></ion-icon>The sync light shows "needs attention".</h4><p>A change couldn't be accepted by the cloud. The manager opens it and chooses what to keep. Nothing is lost.</p></div>
+</div>
+</section>
+
+<section id="rk-more" class="part">
+<p class="eb">Restaurant &amp; Bar · Part 6</p>
+<h2>Go further</h2>
+<p class="sub">Switch these on in Setup → Modules when you're ready.</p>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="layers-outline"></ion-icon><h4>Courses <span class="tier mid">Mid</span></h4><p>Hold mains until starters are cleared, then fire them.</p></div>
+<div class="card ic-card"><ion-icon name="git-branch-outline"></ion-icon><h4>Kitchen stations <span class="tier full">Full</span></h4><p>Grill, sauce pot, fryer, bar — each sees only its dishes.</p></div>
+<div class="card ic-card"><ion-icon name="albums-outline"></ion-icon><h4>All-day counts <span class="tier full">Full</span></h4><p>"12 Ndolé to make" across every open order.</p></div>
+<div class="card ic-card"><ion-icon name="wine-outline"></ion-icon><h4>Bar tabs <span class="tier full">Full</span></h4><p>Open a named tab at the bar and settle at the end.</p></div>
+<div class="card ic-card"><ion-icon name="bed-outline"></ion-icon><h4>Charge to room <span class="tier mid">Mid</span></h4><p>Hotel restaurants post the bill to the guest's room.</p></div>
+<div class="card ic-card"><ion-icon name="shield-checkmark-outline"></ion-icon><h4>Void rules <span class="tier full">Full</span></h4><p>Manager PIN for voids; owner approval by phone. <span class="soon">Soon</span></p></div>
+<div class="card ic-card"><ion-icon name="print-outline"></ion-icon><h4>Print to kitchen <span class="soon">Soon</span></h4><p>No kitchen screen? A Bluetooth printer per station prints each order and each void.</p></div>
+<div class="card ic-card"><ion-icon name="beer-outline"></ion-icon><h4>Drinks stock <span class="soon">Soon</span></h4><p>Each beer sold leaves stock. Count weekly and see what's missing.</p></div>
+<div class="card ic-card"><ion-icon name="business-outline"></ion-icon><h4>Several locations <span class="tier full">Full</span></h4><p>Two maquis, one owner, one set of figures.</p></div>
+</div>
+</section>
+
+<section id="rk-cards" class="part">
+<p class="eb">Print and pin up</p>
+<h2>Staff task cards</h2>
+<div class="tasks">
+<div class="task"><b><ion-icon name="walk-outline"></ion-icon> Server</b><span>1. Floor → tap table → guests.<br />2. Order → dishes → Send.<br />3. Change? Tap the dish → Void + reason.<br />4. Phone says Ready → serve.<br />5. Floor → Bill.</span></div>
+<div class="task"><b><ion-icon name="cash-outline"></ion-icon> Cashier</b><span>1. Open the shift with the float.<br />2. Open the table → Pay.<br />3. MoMo: number → wait for confirm.<br />4. Clear the table.<br />5. Closing: wait for Synced → close shift.</span></div>
+<div class="task"><b><ion-icon name="restaurant-outline"></ion-icon> Cook</b><span>1. New order appears in To cook.<br />2. Done → Mark Ready.<br />3. VOID or CHANGED? Read → Seen.<br />4. Runner takes it → Served.</span></div>
+</div>
+</section>
+
+<p class="foot">Koomzo User Guide · Restaurant &amp; Bar · Version 2 · Screens shown are from the current Koomzo prototype. Names, dishes and prices are examples.</p>
+</main>
+</div>
+<script src="guide/guide.js"></script>
+<script src="guide/anim.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a61bf"/><rect x="30" y="28" width="40" height="46" rx="5" fill="none" stroke="#fff" stroke-width="5"/><line x1="40" y1="42" x2="60" y2="42" stroke="#fff" stroke-width="4"/><line x1="40" y1="52" x2="60" y2="52" stroke="#fff" stroke-width="4"/><line x1="40" y1="62" x2="53" y2="62" stroke="#fff" stroke-width="4"/></svg></template>
+</body>
+</html>

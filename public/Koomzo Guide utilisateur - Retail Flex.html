@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Guide utilisateur Koomzo — Retail Flex</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="alternate" hreflang="en" href="Koomzo User Guide - Retail Flex.html" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="guide/guide.css" />
+<link rel="stylesheet" href="guide/anim.css" />
+<script>(function(){var b='https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons';var s=document.createElement('script');s.type='module';s.src=b+'.esm.js';document.head.appendChild(s);})();</script>
+</head>
+<body data-page="retail">
+<header class="ug-top">
+<a class="ug-mark" data-page="hub" href="Koomzo Guide utilisateur.html"><div class="ic"><ion-icon name="book-outline"></ion-icon></div><b>Guide utilisateur Koomzo</b><span>Version 2 · octobre 2026</span></a>
+<nav class="ug-mods" aria-label="Guides par module">
+<a data-page="restaurant" href="Koomzo Guide utilisateur - Restaurant.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a data-page="hotel" href="Koomzo Guide utilisateur - Hotel.html"><ion-icon name="bed-outline"></ion-icon>Hôtel</a>
+<a data-page="retail" href="Koomzo Guide utilisateur - Retail Flex.html" class="on" aria-current="page"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+<a data-page="inventory" href="Koomzo Guide utilisateur - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Stock</a>
+<a data-page="signage" href="Koomzo Guide utilisateur - Signage.html"><ion-icon name="tv-outline"></ion-icon>Affichage</a>
+<a data-page="salon" href="Koomzo Guide utilisateur - Salon.html"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a data-page="gym" href="Koomzo Guide utilisateur - Gym.html"><ion-icon name="barbell-outline"></ion-icon>Salle de sport</a>
+<a data-page="queue" href="Koomzo Guide utilisateur - Queue.html"><ion-icon name="people-outline"></ion-icon>File d’attente</a>
+</nav>
+<div class="ug-lang" aria-label="Langue"><a data-lang-link="en" href="Koomzo User Guide - Retail Flex.html" hreflang="en">EN</a><b>FR</b></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Sommaire">
+<a class="side__back" data-page="hub" href="Koomzo Guide utilisateur.html#p1"><ion-icon name="arrow-back-outline"></ion-icon>Chapitres Plateforme</a>
+<div class="side__g">Retail Flex</div>
+<a href="#rx"><ion-icon name="storefront-outline"></ion-icon>1 · Est-ce pour moi ?</a>
+<a href="#rx-setup"><ion-icon name="construct-outline"></ion-icon>2 · Installation</a>
+<a href="#rx-day"><ion-icon name="sunny-outline"></ion-icon>3 · Une journée</a>
+<a href="#rx-screens"><ion-icon name="albums-outline"></ion-icon>4 · Les écrans</a>
+<a class="sub" href="#x-register">Caisse</a>
+<a class="sub" href="#x-tickets">Tickets en attente</a>
+<a class="sub" href="#x-returns">Retours</a>
+<a class="sub" href="#x-customers">Clients</a>
+<a class="sub" href="#x-shift">Caisse et tiroir</a>
+<a class="sub" href="#x-setup">Configuration</a>
+<a href="#rx-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · En cas de problème</a>
+<a href="#rx-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Aller plus loin</a>
+<a href="#rx-cards"><ion-icon name="id-card-outline"></ion-icon>Fiches du personnel</a>
+</nav>
+<main class="doc">
+
+<section id="top">
+<p class="eb">Guide de module</p>
+<h1>Retail Flex</h1>
+<p class="lede">Une seule caisse qui prend la forme de votre boutique — le scan d'abord pour une supérette, la recherche d'abord pour une pharmacie ou une quincaillerie, des tuiles photo pour la beauté et les produits de salon. Les chapitres communs — appareils, hors ligne, paiements — sont dans les <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">chapitres Plateforme</a>.</p>
+<div class="note"><ion-icon name="language-outline"></ion-icon><p>Les captures montrent la version anglaise du prototype. Les boutons sont donnés en français, avec le libellé anglais entre parenthèses quand c'est utile.</p></div>
+</section>
+
+<section id="rx" class="part first">
+<p class="eb">Retail Flex · Partie 1</p>
+<h2>Est-ce pour moi ?</h2>
+<p class="sub">Retail Flex convient à toute boutique qui vend des articles au comptoir. La configuration propose une forme de départ — un <b>profil</b> — pour chaque type de commerce. Un profil ne fixe que des valeurs par défaut ; rien n'est verrouillé.</p>
+<div class="grid3">
+<div class="card"><h4><ion-icon name="basket-outline"></ion-icon>Alimentation &amp; proximité</h4><p>Le scan d'abord, produits pesés, espèces rapides. Alimentation, supérette, kiosque.</p></div>
+<div class="card"><h4><ion-icon name="construct-outline"></ion-icon>Quincaillerie / bazar</h4><p>Recherche par caractéristique ; vente à l'unité, à la boîte ou au mètre.</p></div>
+<div class="card"><h4><ion-icon name="hardware-chip-outline"></ion-icon>Électronique / réparation</h4><p>Le modèle, puis le numéro de série et la garantie de chaque appareil.</p></div>
+<div class="card"><h4><ion-icon name="medkit-outline"></ion-icon>Pharmacie / santé</h4><p>Dosage, forme et conditionnement ; validation d'ordonnance ; lot et péremption.</p></div>
+<div class="card"><h4><ion-icon name="cut-outline"></ion-icon>Produits de salon</h4><p>Produits vendus au fauteuil, rattachés à la coiffeuse.</p></div>
+<div class="card"><h4><ion-icon name="nutrition-outline"></ion-icon>Boulangerie / traiteur</h4><p>Ventes pesées au comptoir avec tare ; tranché ou entier.</p></div>
+<div class="card"><h4><ion-icon name="flower-outline"></ion-icon>Beauté &amp; cosmétiques</h4><p>Gammes de teintes en nuancier, recherche par code teinte.</p></div>
+</div>
+<h3>Ce que vous avez à chaque niveau</h3>
+<div class="ladder">
+<div><h4><span class="tier lite">Lite</span>Vendre</h4><ul><li>Caisse : scanner, chercher ou toucher</li><li>Espèces, MoMo, Orange Money, partagé</li><li>Historique des ventes et réimpressions</li><li>Stock par article</li></ul></div>
+<div><h4><span class="tier mid">Mid</span>La boucle de la boutique</h4><ul><li>Catégories et tuiles</li><li>Tickets en attente : garder une vente</li><li>Retours et échanges</li><li>Clients et fidélité</li><li>Envoyer une ligne au comptoir qui la prépare</li></ul></div>
+<div><h4><span class="tier full">Full</span>Maîtriser la caisse</h4><ul><li>Ouverture et clôture, rapports X et Z</li><li>Validation du gérant au-delà d'une remise</li><li>Plusieurs caisses dans une boutique</li></ul></div>
+</div>
+
+<h3>Une caisse, sept boutiques</h3>
+<p class="sub">Regardez la même caisse changer de forme avec le profil. Le mode de saisie, ce qu'on demande au caissier et les touches rapides changent — la façon de vendre reste la même.</p>
+<figure class="anim" data-ms="2900">
+<div class="anim__stage">
+<div class="rxa">
+<div class="rxa__hd"><span class="rxa__pf"><ion-icon name="storefront-outline"></ion-icon><span id="rx-pf">Alimentation & proximité</span></span><span class="rxa__bl" id="rx-bl">Le scan d’abord, produits pesés, espèces rapides.</span></div>
+<div class="rxa__cat"><div class="rxa__in scan"><ion-icon name="barcode-outline"></ion-icon><span id="rx-is">Scanner un code-barres…</span></div><div class="rxa__in search"><ion-icon name="search-outline"></ion-icon><span id="rx-isr">Scanner un code-barres…</span></div><div class="rxa__grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="rxa__list"><i></i><i></i><i></i><i></i><i></i></div><div class="rxa__pick"><ion-icon name="options-outline"></ion-icon><span id="rx-pk"></span></div></div>
+<div class="rxa__tk"><b>Ticket · Caisse 1</b><div class="rxa__ln"><span id="rx-l1">Riz parfumé 5 kg</span><span id="rx-a1">6 500 F</span></div><div class="rxa__ln"><span id="rx-l2">Tomates · 1,2 kg</span><span id="rx-a2">1 440 F</span></div><div class="rxa__q"><span id="rx-q1"></span><span id="rx-q2"></span><span id="rx-q3"></span><span id="rx-q4"></span></div><div class="rxa__pay">Encaisser</div></div>
+</div>
+</div>
+<ol class="anim__steps">
+<li data-set="entry=scan pick=off" data-put='{"#rx-pf":"Alimentation & proximité","#rx-bl":"Le scan d’abord, produits pesés, espèces rapides.","#rx-is":"Scanner un code-barres…","#rx-isr":"Scanner un code-barres…","#rx-pk":"","#rx-l1":"Riz parfumé 5 kg","#rx-a1":"6 500 F","#rx-l2":"Tomates · 1,2 kg","#rx-a2":"1 440 F","#rx-q1":"Peser","#rx-q2":"Vérifier un prix","#rx-q3":"Sac","#rx-q4":"Contrôle d’âge"}'><b>Alimentation & proximité</b> — Le scan d’abord, produits pesés, espèces rapides.</li>
+<li data-set="entry=search pick=on" data-put='{"#rx-pf":"Quincaillerie / bazar","#rx-bl":"Recherche par caractéristique ; à l’unité, la boîte ou le mètre.","#rx-is":"Chercher par caractéristique…","#rx-isr":"Chercher par caractéristique…","#rx-pk":"Vendu : unité · boîte · mètre","#rx-l1":"Câble 2,5 mm² · 12 m","#rx-a1":"9 600 F","#rx-l2":"Vis 4×40 · boîte de 100","#rx-a2":"2 500 F","#rx-q1":"Référence","#rx-q2":"Coupe à la longueur","#rx-q3":"Prix pro","#rx-q4":"Devis"}'><b>Quincaillerie / bazar</b> — Recherche par caractéristique ; à l’unité, la boîte ou le mètre.</li>
+<li data-set="entry=search pick=on" data-put='{"#rx-pf":"Électronique / réparation","#rx-bl":"Le modèle, puis série et garantie par appareil.","#rx-is":"Chercher un modèle…","#rx-isr":"Chercher un modèle…","#rx-pk":"N° de série · garantie 12 mois","#rx-l1":"Tecno Spark 20 · 128 Go","#rx-a1":"89 000 F","#rx-l2":"Écouteurs Bluetooth","#rx-a2":"4 500 F","#rx-q1":"Série","#rx-q2":"Garantie","#rx-q3":"Fiche réparation","#rx-q4":"Reprise"}'><b>Électronique / réparation</b> — Le modèle, puis série et garantie par appareil.</li>
+<li data-set="entry=search pick=on" data-put='{"#rx-pf":"Pharmacie / santé","#rx-bl":"Dosage × forme × boîte, ordonnance, lot et péremption.","#rx-is":"Chercher un médicament…","#rx-isr":"Chercher un médicament…","#rx-pk":"500 mg · comprimé · boîte de 16 · lot L2408","#rx-l1":"Paracétamol 500 mg","#rx-a1":"900 F","#rx-l2":"Amoxicilline 1 g · Rx","#rx-a2":"3 500 F","#rx-q1":"Ordonnance","#rx-q2":"Substitution","#rx-q3":"Lot","#rx-q4":"Conseil donné"}'><b>Pharmacie / santé</b> — Dosage × forme × boîte, ordonnance, lot et péremption.</li>
+<li data-set="entry=grid pick=on" data-put='{"#rx-pf":"Produits de salon","#rx-bl":"Tailles sur tuiles photo, rattachées à une coiffeuse.","#rx-is":"","#rx-isr":"","#rx-pk":"Coiffeuse : Nadia · 250 ml","#rx-l1":"Huile d’argan","#rx-a1":"11 000 F","#rx-l2":"Shampooing réparateur","#rx-a2":"9 500 F","#rx-q1":"Lier au rendez-vous","#rx-q2":"Coiffeuse","#rx-q3":"Pourboire","#rx-q4":"Reprogrammer"}'><b>Produits de salon</b> — Tailles sur tuiles photo, rattachées à une coiffeuse.</li>
+<li data-set="entry=scan pick=on" data-put='{"#rx-pf":"Boulangerie / traiteur","#rx-bl":"Ventes pesées avec tare ; la coupe en option.","#rx-is":"Scanner ou peser…","#rx-isr":"Scanner ou peser…","#rx-pk":"Pesé · tare 20 g · tranché","#rx-l1":"Pain complet · tranché","#rx-a1":"750 F","#rx-l2":"Croissants × 6","#rx-a2":"1 800 F","#rx-q1":"Peser","#rx-q2":"Tare","#rx-q3":"Trancher","#rx-q4":"Étiquette"}'><b>Boulangerie / traiteur</b> — Ventes pesées avec tare ; la coupe en option.</li>
+<li data-set="entry=grid pick=on" data-put='{"#rx-pf":"Beauté & cosmétiques","#rx-bl":"Teintes en nuancier, recherche par code teinte.","#rx-is":"","#rx-isr":"","#rx-pk":"Teinte 4.5N · nuancier","#rx-l1":"Fond de teint · 4.5N","#rx-a1":"12 500 F","#rx-l2":"Rouge à lèvres","#rx-a2":"6 000 F","#rx-q1":"Trouver la teinte","#rx-q2":"Testeur","#rx-q3":"Coffret","#rx-q4":"Mettre de côté"}'><b>Beauté & cosmétiques</b> — Teintes en nuancier, recherche par code teinte.</li>
+</ol>
+</figure>
+</section>
+
+<section id="rx-setup" class="part">
+<p class="eb">Retail Flex · Partie 2</p>
+<h2>Installation <span class="tier lite">Lite</span></h2>
+<p class="sub">Environ une heure pour une petite boutique. Plus si vous avez des milliers d'articles — importez-les depuis un tableur.</p>
+<ol class="steps">
+<li><div><b>Premiers pas</b><span>Compte, établissement et personnel — voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">P1</a>. Les caissiers ont le rôle <i>Personnel</i> : pas d'accès à la configuration.</span></div></li>
+<li><div><b>Choisissez un profil</b><span>Configuration → Profil d'activité (Business profile). Prenez le type le plus proche ; tout reste modifiable.</span></div></li>
+<li><div><b>Ajoutez vos articles</b><span>Nom, prix, code-barres s'il y en a, catégorie. Des variantes si besoin — taille, dosage, teinte. Le stock est dans le module <a data-page="hub" href="Koomzo Guide utilisateur.html#modules">Stock</a>.</span></div></li>
+<li><div><b>Taxes</b><span>TVA 19,25 % par défaut ; les produits de base et les médicaments peuvent être à taux zéro.</span></div></li>
+<li><div><b>Paiements</b><span>Espèces activées ; ajoutez MTN MoMo et Orange Money avec vos numéros marchands.</span></div></li>
+<li><div><b>Matériel</b><span>Un lecteur de code-barres Bluetooth ou USB et une imprimante à tickets. Une balance pour les produits pesés. <span class="soon"><ion-icon name="time-outline"></ion-icon>Balances — bientôt</span></span></div></li>
+<li><div><b>Faites une vente test</b><span>Scannez, payez en espèces et en MoMo, retournez un article, retrouvez la vente dans l'historique.</span></div></li>
+</ol>
+</section>
+
+<section id="rx-day" class="part">
+<p class="eb">Retail Flex · Partie 3</p>
+<h2>Une journée en boutique</h2>
+<p class="sub">L'ordre réel d'une journée, et l'écran utilisé à chaque moment.</p>
+<div class="tbl"><table>
+<thead><tr><th>Moment</th><th>Ce que vous faites</th><th>Écran</th><th>Niveau</th></tr></thead>
+<tbody>
+<tr><td><b>Ouverture</b></td><td>Ouvrez la caisse et comptez le fond de caisse.</td><td><a href="#x-shift">Caisse et tiroir</a></td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>Un client au comptoir</b></td><td>Scannez, cherchez ou touchez les articles. Touches rapides pour les extras habituels.</td><td><a href="#x-register">Caisse</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Il s'éloigne</b></td><td>Mettez la vente en attente avec un motif ; servez le suivant ; reprenez-la plus tard.</td><td><a href="#x-tickets">Tickets en attente</a></td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Paiement</b></td><td>Espèces avec monnaie, MoMo ou Orange Money, ou partagé.</td><td>Caisse</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Un habitué</b></td><td>Ajoutez le client : points, avoir, notes pour le prochain caissier.</td><td><a href="#x-customers">Clients</a></td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Un retour</b></td><td>Retrouvez la vente, choisissez ce qui revient et pourquoi, remboursez ou échangez.</td><td><a href="#x-returns">Retours</a></td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Une grosse remise</b></td><td>Au-delà du seuil, le gérant valide avec son code PIN.</td><td>Caisse</td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>Fermeture</b></td><td>Réglez les paiements ouverts et les tickets en attente, comptez le tiroir, clôturez — le rapport Z.</td><td><a href="#x-shift">Caisse et tiroir</a></td><td><span class="tier full">Full</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="rx-screens" class="part">
+<p class="eb">Retail Flex · Partie 4</p>
+<h2>Les écrans</h2>
+<p class="sub">La barre de gauche : Caisse (Register), Ventes (Sales), Stock, Catégories, Tickets, Retours (Returns), Clients (Customers), Caisse et tiroir (Shift), et Configuration (Setup) en bas. Les captures montrent le profil Pharmacie à la Caisse 1.</p>
+
+<h3 id="x-register">Caisse <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/retail-register.jpg" alt="Caisse" /><span class="pin" style="left:31.4%;top:5%">1</span><span class="pin" style="left:32.5%;top:17%">2</span><span class="pin" style="left:32.5%;top:26.7%">3</span><span class="pin" style="left:17.3%;top:41.7%">4</span><span class="pin" style="left:71.4%;top:25%">5</span><span class="pin" style="left:74.7%;top:63.3%">6</span><span class="pin" style="left:91.2%;top:16%">7</span><span class="pin" style="left:81%;top:92.6%">8</span><span class="pin" style="left:83%;top:5%">9</span></div>
+<ol class="callouts">
+<li><span><b>Profil</b> — le type de boutique pour lequel cette caisse est réglée.</span></li>
+<li><span><b>Chercher ou scanner</b> — par nom, référence, marque ou code-barres.</span></li>
+<li><span><b>Catégories</b> — les vôtres, dans l'ordre où la boutique vend.</span></li>
+<li><span><b>Articles</b> — touchez pour ajouter. Les produits sur ordonnance demandent une validation.</span></li>
+<li><span><b>Ajouter un client</b> — points et avoir. <span class="tier mid">Mid</span></span></li>
+<li><span><b>Touches rapides</b> — les extras habituels du profil (ici : ordonnance, substitution, lot, conseil donné).</span></li>
+<li><span><b>Mettre en attente ou vider</b> — garder la vente comme ticket, ou l'effacer. <span class="tier mid">Mid</span></span></li>
+<li><span><b>Encaisser</b> (Charge) — espèces, MoMo, Orange Money ou partagé.</span></li>
+<li><span><b>Voyant de synchro</b> — voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p3">P3</a>.</span></li>
+</ol>
+
+<h3 id="x-tickets">Tickets en attente <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/retail-tickets.jpg" alt="Tickets en attente" /><span class="pin" style="left:4.3%;top:52.8%">1</span><span class="pin" style="left:23.8%;top:29.6%">2</span><span class="pin" style="left:21%;top:38%">3</span><span class="pin" style="left:31.6%;top:48.3%">4</span><span class="pin" style="left:90.4%;top:18.3%">5</span></div>
+<ol class="callouts">
+<li><span><b>Pastille</b> — combien de ventes attendent.</span></li>
+<li><span><b>Ticket</b> — qui, combien d'articles, depuis quand.</span></li>
+<li><span><b>Pourquoi il attend</b> — confirmation MoMo, un deuxième article, l'accord du gérant.</span></li>
+<li><span><b>Reprendre</b> (Resume) — de retour en caisse exactement comme avant.</span></li>
+<li><span><b>Nouveau ticket</b> — commencer une autre vente pendant que l'une attend.</span></li>
+</ol>
+
+<h3 id="x-returns">Retours et échanges <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/retail-returns.jpg" alt="Retours et échanges" /><span class="pin" style="left:32.5%;top:28.7%">1</span><span class="pin" style="left:34.6%;top:39.6%">2</span><span class="pin" style="left:27%;top:56.5%">3</span><span class="pin" style="left:88.7%;top:58%">4</span></div>
+<ol class="callouts">
+<li><span><b>Retrouver la vente</b> — numéro de reçu, 4 derniers chiffres de la carte, client, ou sans reçu.</span></li>
+<li><span><b>Scannez le reçu</b>, ou tapez le numéro de commande.</span></li>
+<li><span><b>Ventes récentes</b> — avec le moyen de paiement et le vendeur.</span></li>
+<li><span><b>Ouvrez-la</b> — cochez ce qui revient, donnez le motif, puis remboursez sur le même moyen, en avoir, ou échangez.</span></li>
+</ol>
+
+<h3 id="x-customers">Clients <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/retail-customers.jpg" alt="Clients" /><span class="pin" style="left:27%;top:29.4%">1</span><span class="pin" style="left:23%;top:39.8%">2</span><span class="pin" style="left:66%;top:43%">3</span><span class="pin" style="left:64.7%;top:65.4%">4</span><span class="pin" style="left:90.4%;top:37.2%">5</span><span class="pin" style="left:90.7%;top:91%">6</span></div>
+<ol class="callouts">
+<li><span><b>Chercher</b> par nom, téléphone ou carte de fidélité.</span></li>
+<li><span><b>Filtres</b> — membres Gold, clients avec un avoir, nouveaux.</span></li>
+<li><span><b>Niveau de fidélité</b> et les points jusqu'au suivant.</span></li>
+<li><span><b>Avoir</b> — issu d'un retour, utilisé à la vente suivante.</span></li>
+<li><span><b>Démarrer un ticket</b> — une vente déjà liée à ce client.</span></li>
+<li><span><b>Racheter ou retourner</b> directement depuis un achat passé.</span></li>
+</ol>
+
+<h3 id="x-shift">Caisse et tiroir <span class="tier full">Full</span></h3>
+<div class="shot"><img src="guide/img/retail-shift.jpg" alt="Caisse et tiroir" /><span class="pin" style="left:62.5%;top:20%">1</span><span class="pin" style="left:23.8%;top:30%">2</span><span class="pin" style="left:88.5%;top:46%">3</span><span class="pin" style="left:85.5%;top:95.7%">4</span><span class="pin" style="left:75.2%;top:18.3%">5</span><span class="pin" style="left:89.8%;top:18.3%">6</span></div>
+<ol class="callouts">
+<li><span><b>Caisse ouverte</b> — qui, quelle caisse, depuis quand.</span></li>
+<li><span><b>À régler avant la clôture</b> — ventes payées en partie et tickets en attente. Rien n'est annulé en silence.</span></li>
+<li><span><b>Terminer le paiement</b> — encaisser ce qui reste dû.</span></li>
+<li><span><b>Reprendre ou passer</b> un ticket en attente à l'équipe suivante.</span></li>
+<li><span><b>Rapport X</b> — les chiffres à cet instant, sans clôturer.</span></li>
+<li><span><b>Clôturer</b> — comptez le tiroir ; le rapport Z montre l'écart.</span></li>
+</ol>
+
+<h3 id="x-setup">Configuration <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/retail-setup.jpg" alt="Profils d'activité" /><span class="pin" style="left:26%;top:30.2%">1</span><span class="pin" style="left:45.5%;top:38.9%">2</span><span class="pin" style="left:94%;top:96%">3</span></div>
+<ol class="callouts">
+<li><span><b>Profil d'activité</b> — un profil par type de boutique.</span></li>
+<li><span><b>Ce qu'il active</b> — mode de saisie, sélecteur, variantes, produits pesés, fidélité.</span></li>
+<li><span><b>Profil actuel</b> — coché. Changez-le quand vous voulez ; vos articles restent.</span></li>
+</ol>
+</section>
+
+<section id="rx-help" class="part">
+<p class="eb">Retail Flex · Partie 5</p>
+<h2>En cas de problème</h2>
+<div class="qa">
+<div class="card"><h4><ion-icon name="cash-outline"></ion-icon>Il manque de l'argent à la fermeture.</h4><p>Le rapport Z montre l'écart avec les ventes en espèces. Vérifiez d'abord les ventes payées en partie et les remboursements ; le caissier ajoute une note. Le propriétaire le voit le soir même.</p></div>
+<div class="card"><h4><ion-icon name="barcode-outline"></ion-icon>Le code-barres ne passe pas.</h4><p>Tapez les chiffres sous les barres, ou cherchez par nom. Si l'article est introuvable, ajoutez-le depuis la caisse avec son prix.</p></div>
+<div class="card"><h4><ion-icon name="receipt-outline"></ion-icon>Un retour sans reçu.</h4><p>Retours → Sans reçu. Cherchez par client ou par article ; remboursez en avoir si vos règles le demandent.</p></div>
+<div class="card"><h4><ion-icon name="pricetag-outline"></ion-icon>Le prix en rayon diffère de la caisse.</h4><p>La caisse a raison — les prix viennent d'un seul catalogue. Accordez le prix du rayon par une remise sur la ligne et corrigez l'étiquette.</p></div>
+<div class="card"><h4><ion-icon name="git-branch-outline"></ion-icon>Moitié MoMo, moitié espèces.</h4><p>Encaisser → Partager. Prenez d'abord le MoMo ; une fois confirmé, le reste en espèces.</p></div>
+<div class="card"><h4><ion-icon name="cloud-offline-outline"></ion-icon>Pas d'internet en caisse.</h4><p>Le scan, les espèces et les tickets en attente continuent. Le MoMo attend ; gardez la vente en attente ou prenez des espèces.</p></div>
+</div>
+</section>
+
+<section id="rx-more" class="part">
+<p class="eb">Retail Flex · Partie 6</p>
+<h2>Aller plus loin</h2>
+<p class="sub">Activez ces fonctions dans Configuration quand vous êtes prêt.</p>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="cube-outline"></ion-icon><h4>Stock et commandes <span class="tier mid">Mid</span></h4><p>Seuils de réapprovisionnement, fournisseurs, bons de commande — le module Stock. Voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p7">P7</a>.</p></div>
+<div class="card ic-card"><ion-icon name="flame-outline"></ion-icon><h4>Préparer et envoyer <span class="tier mid">Mid</span></h4><p>Envoyer une ligne au comptoir qui la prépare — la boucherie, le four.</p></div>
+<div class="card ic-card"><ion-icon name="pricetag-outline"></ion-icon><h4>Remises du gérant <span class="tier full">Full</span></h4><p>Au-delà d'un montant, le gérant valide avec son code PIN.</p></div>
+<div class="card ic-card"><ion-icon name="tablet-landscape-outline"></ion-icon><h4>Plusieurs caisses <span class="tier full">Full</span></h4><p>Deux caisses ou plus dans une boutique, un seul stock. <span class="soon"><ion-icon name="time-outline"></ion-icon>Réseau local — bientôt</span></p></div>
+<div class="card ic-card"><ion-icon name="tv-outline"></ion-icon><h4>Écrans de prix <span class="tier mid">Mid</span></h4><p>Promotions et prix sur une télé, lus depuis la caisse. Module Affichage.</p></div>
+<div class="card ic-card"><ion-icon name="barcode-outline"></ion-icon><h4>Étiquettes de rayon <span class="tier full">Full</span></h4><p>Imprimer une série d'étiquettes après un changement de prix.</p></div>
+</div>
+</section>
+
+<section id="rx-cards" class="part">
+<p class="eb">À imprimer et afficher</p>
+<h2>Fiches du personnel</h2>
+<div class="tasks">
+<div class="task"><b><ion-icon name="cash-outline"></ion-icon> Caissier</b><span>1. Caisse et tiroir → ouvrir avec le fond.<br />2. Scanner ou chercher → Encaisser.<br />3. Le client s'éloigne ? Mettre en attente.<br />4. MoMo : numéro → attendre la confirmation.<br />5. Fermeture : régler la liste → compter → Clôturer.</span></div>
+<div class="task"><b><ion-icon name="refresh-outline"></ion-icon> Retours</b><span>1. Retours → scanner le reçu.<br />2. Cocher ce qui revient → motif.<br />3. Même moyen, avoir ou échange.<br />4. Remettre l'article en rayon ou de côté.</span></div>
+<div class="task"><b><ion-icon name="shield-checkmark-outline"></ion-icon> Gérant</b><span>1. Valider les grosses remises avec votre PIN.<br />2. Rapport X à midi.<br />3. Contrôler le rapport Z et l'écart.<br />4. Attendre « Synchronisé » avant de fermer.</span></div>
+</div>
+</section>
+
+<p class="foot">Guide utilisateur Koomzo · Retail Flex · Version 2 · Les écrans montrés sont ceux du prototype Koomzo actuel. Les noms, articles et prix sont des exemples.</p>
+</main>
+
+</div>
+<script src="guide/guide.js"></script>
+<script src="guide/anim.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a61bf"/><text x="50" y="62" font-family="Arial,Helvetica,sans-serif" font-size="34" font-weight="700" fill="#fff" text-anchor="middle">FR</text></svg></template>
+</body>
+</html>

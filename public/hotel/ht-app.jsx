@@ -30,6 +30,9 @@ function HotelApp() {
   const [team, setTeam] = useState(HT.staff);
   const [prearr, setPrearr] = useState(HT.prearr);
   const [published, setPublished] = useState(true);
+  /* per-tenant booking-form settings (Setup → Booking form) */
+  const [bookCfg, setBookCfgRaw] = useState(() => { try { return { ...HT_BOOKCFG_DEFAULT, ...JSON.parse(localStorage.getItem('kz:ht:bookcfg') || '{}') }; } catch (e) { return { ...HT_BOOKCFG_DEFAULT }; } });
+  const setBookCfg = (p) => setBookCfgRaw((c) => { const n = { ...c, ...p }; try { localStorage.setItem('kz:ht:bookcfg', JSON.stringify(n)); } catch (e) {} return n; });
   const [sheet, setSheet] = useState(null);
   const [toast, setToast] = useState(null);
   const [folioFocus, setFolioFocus] = useState(null);
@@ -90,7 +93,7 @@ function HotelApp() {
     : [...c, { no, state:'clean', to:null, pri:'stay', linen:false, note:'', ...patch }]);
 
   const api = {
-    st, me, view, setView, folioFocus, toast: say,
+    st, me, view, setView, folioFocus, toast: say, bookCfg, setBookCfg,
     team, published,
     /* the roster is one value per person per day — a write is a cell, not a form */
     setShift: (uid, day, code) => {
@@ -145,7 +148,7 @@ function HotelApp() {
         if (d.dep) lines.push({ at: now(), kind:'payment', desc:'Security deposit taken', amount:-d.dep, src:'Reception' });
         setFolio((c) => ({ ...c, [id]: lines }));
       }
-      say(d.name + (d.day === 0 ? ' checked into ' + d.no : ' booked into ' + d.no + ' for ' + (HT.dayNo + d.day) + ' ' + HT.month));
+      say(d.name + (d.day === 0 ? ' checked into ' + d.no : ' booked into ' + d.no + ' for ' + htShort(d.day)));
     },
     checkIn: (id) => {
       setStays((c) => c.map((s) => s.id === id ? { ...s, status:'inhouse' } : s));
@@ -262,6 +265,7 @@ function HotelApp() {
                   <div className="sp"></div>
                   <a className="btn" href="Koomzo - Control Centre.html"><ion-icon name="options-outline"></ion-icon>Control Centre</a>
                 </div>
+                {gate('bookings') && <BookingFormSetup api={api} />}
                 <ModuleSetup mid="hotel" embedded />
               </div>
             )}

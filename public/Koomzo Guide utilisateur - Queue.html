@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Guide utilisateur Koomzo — File d’attente</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="alternate" hreflang="en" href="Koomzo User Guide - Queue.html" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="guide/guide.css" />
+<link rel="stylesheet" href="guide/anim.css" />
+<script>(function(){var b='https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons';var s=document.createElement('script');s.type='module';s.src=b+'.esm.js';document.head.appendChild(s);})();</script>
+</head>
+<body data-page="queue">
+<header class="ug-top">
+<a class="ug-mark" data-page="hub" href="Koomzo Guide utilisateur.html"><div class="ic"><ion-icon name="book-outline"></ion-icon></div><b>Guide utilisateur Koomzo</b><span>Version 2 · octobre 2026</span></a>
+<nav class="ug-mods" aria-label="Guides par module">
+<a data-page="restaurant" href="Koomzo Guide utilisateur - Restaurant.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a data-page="hotel" href="Koomzo Guide utilisateur - Hotel.html"><ion-icon name="bed-outline"></ion-icon>Hôtel</a>
+<a data-page="retail" href="Koomzo Guide utilisateur - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+<a data-page="inventory" href="Koomzo Guide utilisateur - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Stock</a>
+<a data-page="signage" href="Koomzo Guide utilisateur - Signage.html"><ion-icon name="tv-outline"></ion-icon>Affichage</a>
+<a data-page="salon" href="Koomzo Guide utilisateur - Salon.html"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a data-page="gym" href="Koomzo Guide utilisateur - Gym.html"><ion-icon name="barbell-outline"></ion-icon>Salle de sport</a>
+<a data-page="queue" href="Koomzo Guide utilisateur - Queue.html" class="on" aria-current="page"><ion-icon name="people-outline"></ion-icon>File d’attente</a>
+</nav>
+<div class="ug-lang" aria-label="Langue"><a data-lang-link="en" href="Koomzo User Guide - Queue.html" hreflang="en">EN</a><b>FR</b></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Sommaire">
+<a class="side__back" data-page="hub" href="Koomzo Guide utilisateur.html#p1"><ion-icon name="arrow-back-outline"></ion-icon>Chapitres Plateforme</a>
+<div class="side__g">File d'attente</div>
+<a href="#qu"><ion-icon name="people-outline"></ion-icon>1 · Est-ce pour moi ?</a>
+<a href="#qu-setup"><ion-icon name="construct-outline"></ion-icon>2 · Installation</a>
+<a href="#qu-day"><ion-icon name="sunny-outline"></ion-icon>3 · Une journée</a>
+<a href="#qu-screens"><ion-icon name="albums-outline"></ion-icon>4 · Les écrans</a>
+<a class="sub" href="#u-display">Affichage</a>
+<a class="sub" href="#u-modes">Accueil, Guichet, Supervision</a>
+<a href="#qu-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · En cas de problème</a>
+<a href="#qu-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Aller plus loin</a>
+<a href="#qu-cards"><ion-icon name="id-card-outline"></ion-icon>Fiches du personnel</a>
+</nav>
+<main class="doc">
+
+<section id="top">
+<p class="eb">Guide de module</p>
+<h1>File d'attente</h1>
+<p class="lede">Tickets, guichets et écran d'appel — pour tout lieu où l'on attend : agence bancaire, clinique, mairie, salon, passe d'une cuisine. Les chapitres communs sont dans les <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">chapitres Plateforme</a>.</p>
+<div class="note"><ion-icon name="language-outline"></ion-icon><p>Les captures montrent la version anglaise du prototype. Les boutons sont donnés en français, avec le libellé anglais entre parenthèses quand c'est utile.</p></div>
+</section>
+
+<section id="qu" class="part first">
+<p class="eb">File d'attente · Partie 1</p>
+<h2>Est-ce pour moi ?</h2>
+<p class="sub">La configuration propose une forme de départ pour chaque type de lieu. Le principe reste le même : prendre un ticket, attendre à l'écran, être appelé à un guichet.</p>
+<div class="grid3">
+<div class="card"><h4><ion-icon name="business-outline"></ion-icon>Agence bancaire · microfinance</h4><p>Retrait, dépôt, services au compte, conseiller — plusieurs guichets.</p></div>
+<div class="card"><h4><ion-icon name="document-text-outline"></ion-icon>Administration · clinique</h4><p>Nouvelle demande, renouvellement, aide technique, paiements.</p></div>
+<div class="card"><h4><ion-icon name="cut-outline"></ion-icon>Salon · barbier</h4><p>Les clients de passage attendent par prestation ; chaque fauteuil appelle le suivant.</p></div>
+<div class="card"><h4><ion-icon name="restaurant-outline"></ion-icon>Passe de cuisine</h4><p>Tickets sur place, à emporter, livraison appelés au retrait.</p></div>
+</div>
+<h3>Ce que vous avez à chaque niveau</h3>
+<div class="ladder">
+<div><h4><span class="tier lite">Lite</span>Appeler le suivant</h4><ul><li>Appeler, rappeler, absent</li><li>Plusieurs guichets ou fauteuils</li></ul></div>
+<div><h4><span class="tier mid">Mid</span>Le bon guichet</h4><ul><li>Catégories de service avec leur lettre</li><li>L'écran d'appel</li><li>Tickets prioritaires</li></ul></div>
+<div><h4><span class="tier full">Full</span>Maîtriser l'attente</h4><ul><li>Supervision : déplacer, ouvrir des guichets</li><li>Temps d'attente et de service par rapport à l'objectif</li><li>SMS au client quand c'est son tour</li></ul></div>
+</div>
+
+<h3>Du ticket au guichet</h3>
+<p class="sub">Un vendredi matin dans une agence bancaire de Douala. Suivez le ticket W-042 de l'entrée au guichet 2.</p>
+<figure class="anim" data-ms="2600">
+<div class="anim__stage">
+<div class="qa2">
+<div><div class="qa2__tk" data-n="tk"><div class="mk">Retrait</div><b id="q-tk">W-042</b><div class="mk" id="q-pos">4 avant vous · environ 18 min</div></div><div class="qa2__wait"><i></i></div></div>
+<div class="qa2__d">
+<p class="qa2__k">En cours</p>
+<div class="qa2__cs"><div class="qa2__c" data-n="c1"><small>Guichet 1</small><b id="q-c1">W-038</b></div><div class="qa2__c" data-n="c2"><small>Guichet 2</small><b id="q-c2">D-021</b></div><div class="qa2__c" data-n="c3"><small>Guichet 3</small><b id="q-c3">W-039</b></div></div>
+<p class="qa2__k" style="margin-top:12px">Ensuite</p>
+<div class="qa2__nx"><span id="q-n1">W-040</span><span id="q-n2">D-022</span><span id="q-n3">W-041</span><span id="q-n4" data-n="me">W-042</span></div>
+</div>
+</div>
+</div>
+<ol class="anim__steps">
+<li data-set="w=1" data-hot="[data-n=tk]">Mme Ngo prend le ticket W-042 pour un retrait à l'entrée. 4 personnes passent avant elle.</li>
+<li data-set="w=2" data-put='{"#q-c1":"W-040","#q-n1":"D-022","#q-n2":"W-041","#q-n3":"W-042","#q-n4":"A-007","#q-pos":"3 avant vous · environ 12 min"}' data-hot="[data-n=c1]">Le guichet 1 appelle W-040. Tout le monde avance ; son numéro monte à l'écran.</li>
+<li data-set="w=3" data-put='{"#q-c3":"D-022","#q-n1":"W-041","#q-n2":"W-042","#q-n3":"A-007","#q-n4":"W-043","#q-pos":"2 avant vous · environ 8 min"}' data-hot="[data-n=c3]">Le guichet 3 prend un dépôt. Dépôts et retraits partagent les guichets, le plus ancien d'abord.</li>
+<li data-set="w=4" data-put='{"#q-c1":"W-041","#q-n1":"W-042","#q-n2":"A-007","#q-n3":"W-043","#q-n4":"D-023","#q-pos":"C’est bientôt vous"}'>Elle est la suivante. Avec le SMS activé, son téléphone est prévenu maintenant.</li>
+<li data-set="w=5" data-put='{"#q-c2":"W-042","#q-n1":"A-007","#q-n2":"W-043","#q-n3":"D-023","#q-n4":"W-044","#q-pos":"Guichet 2 · avancez s’il vous plaît"}' data-hot="[data-n=c2],[data-n=tk]">Le guichet 2 appuie sur <b>Appeler le suivant</b> : <b>W-042 · Guichet 2</b>, avec un carillon.</li>
+<li data-put='{"#q-pos":"Servie · 14 min d’attente, objectif 15"}'>Servie. Son attente — 14 minutes pour un objectif de 15 — rejoint le rapport du jour.</li>
+</ol>
+</figure>
+</section>
+
+<section id="qu-setup" class="part">
+<p class="eb">File d'attente · Partie 2</p>
+<h2>Installation <span class="tier lite">Lite</span></h2>
+<ol class="steps">
+<li><div><b>Choisissez une forme de départ</b><span>Banque, administration, salon ou passe de cuisine.</span></div></li>
+<li><div><b>Guichets</b><span>Nommez chaque guichet ou fauteuil, et les services qu'il traite.</span></div></li>
+<li><div><b>Services</b><span>Chacun avec une lettre et une durée moyenne — W Retrait 6 min, D Dépôt 5 min. <span class="tier mid">Mid</span></span></div></li>
+<li><div><b>Accueil</b><span>Une tablette à l'entrée, une imprimante à tickets, ou le personnel qui remet les tickets. <span class="soon"><ion-icon name="time-outline"></ion-icon>Imprimantes à tickets — bientôt</span></span></div></li>
+<li><div><b>L'écran</b><span>Une télé au mur — voir <a data-page="signage" href="Koomzo Guide utilisateur - Signage.html">Affichage</a>.</span></div></li>
+</ol>
+</section>
+
+<section id="qu-day" class="part">
+<p class="eb">File d'attente · Partie 3</p>
+<h2>Une journée</h2>
+<div class="tbl"><table>
+<thead><tr><th>Moment</th><th>Ce que vous faites</th><th>Écran</th><th>Niveau</th></tr></thead>
+<tbody>
+<tr><td><b>Ouverture</b></td><td>Ouvrez les guichets tenus.</td><td>Guichet</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Les clients arrivent</b></td><td>Ils choisissent un service et prennent un ticket.</td><td>Accueil</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Au guichet</b></td><td>Appeler · Rappeler · Absent · Terminé.</td><td>Guichet</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>Un client prioritaire</b></td><td>Personne âgée, enceinte, handicapée : ticket prioritaire ; il passe d'abord.</td><td>Accueil</td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Une pause</b></td><td>Mettez le guichet en pause ; l'écran affiche <i>De retour bientôt</i>.</td><td>Guichet</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>La file s'allonge</b></td><td>Ouvrez un guichet ou déplacez des tickets.</td><td>Supervision</td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>Fermeture</b></td><td>Temps d'attente et de service par rapport à l'objectif, par service.</td><td>Supervision</td><td><span class="tier full">Full</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="qu-screens" class="part">
+<p class="eb">File d'attente · Partie 4</p>
+<h2>Les écrans</h2>
+<p class="sub">La File d'attente a cinq modes : Affichage (Display), Guichet (Serve), Accueil (Intake), Supervision (Supervise) et Configuration. Chaque appareil lance celui dont il a besoin — la télé l'Affichage, chaque guichet le mode Guichet.</p>
+
+<h3 id="u-display">Affichage <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/q-display.jpg" alt="Écran d'appel" /><span class="pin" style="left:13.5%;top:40.7%">1</span><span class="pin" style="left:38%;top:40.7%">2</span><span class="pin" style="left:62%;top:75.5%">3</span><span class="pin" style="left:13.6%;top:88.3%">4</span><span class="pin" style="left:73.6%;top:6.3%">5</span><span class="pin" style="left:93.6%;top:95.5%">6</span></div>
+<ol class="callouts">
+<li><span><b>Chaque guichet ou fauteuil</b> — le ticket servi et le service.</span></li>
+<li><span><b>En pause</b> — <i>De retour bientôt</i> ; personne n'y est envoyé.</span></li>
+<li><span><b>Avancez s'il vous plaît</b> — le ticket qui vient d'être appelé, mis en avant.</span></li>
+<li><span><b>Ensuite</b> — avec une attente estimée pour chacun.</span></li>
+<li><span><b>En attente · ouverts</b> — combien attendent, combien de guichets sont ouverts.</span></li>
+<li><span><b>Appareils synchronisés</b> — l'écran, les guichets et l'accueil sur le même réseau.</span></li>
+</ol>
+
+<h3 id="u-modes">Accueil, Guichet, Supervision</h3>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="ticket-outline"></ion-icon><h4>Accueil <span class="tier lite">Lite</span></h4><p>De grands boutons, un par service. Le client touche et reçoit un numéro — imprimé, à l'écran, ou par SMS.</p></div>
+<div class="card ic-card"><ion-icon name="megaphone-outline"></ion-icon><h4>Guichet <span class="tier lite">Lite</span></h4><p>Un guichet : <b>Appeler le suivant</b>, Rappeler, Absent, Terminé, Pause. Affiche qui attend pour ses services.</p></div>
+<div class="card ic-card"><ion-icon name="eye-outline"></ion-icon><h4>Supervision <span class="tier full">Full</span></h4><p>Tous les guichets d'un coup d'œil ; ouvrir, fermer, déplacer un ticket, temps d'attente par rapport à l'objectif.</p></div>
+</div>
+</section>
+
+<section id="qu-help" class="part">
+<p class="eb">File d'attente · Partie 5</p>
+<h2>En cas de problème</h2>
+<div class="qa">
+<div class="card"><h4><ion-icon name="close-circle-outline"></ion-icon>Un guichet ferme avec du monde en attente.</h4><p>Leurs tickets restent dans la file ; les autres guichets qui traitent ce service les appellent ensuite. Personne ne reprend de ticket.</p></div>
+<div class="card"><h4><ion-icon name="walk-outline"></ion-icon>Un client a manqué son numéro.</h4><p>Rappelez-le, ou marquez Absent. Un absent qui revient peut être remis en tête par le superviseur.</p></div>
+<div class="card"><h4><ion-icon name="tv-outline"></ion-icon>La télé d'appel est éteinte.</h4><p>Les guichets continuent d'appeler ; annoncez le numéro à voix haute en attendant. La télé se rattrape à la reconnexion.</p></div>
+<div class="card"><h4><ion-icon name="accessibility-outline"></ion-icon>Un client prioritaire arrive.</h4><p>Remettez un ticket prioritaire à l'accueil. Il passe avant les tickets normaux du même service.</p></div>
+<div class="card"><h4><ion-icon name="flash-off-outline"></ion-icon>Le courant a sauté.</h4><p>Les appareils sur batterie continuent sur le réseau local. La file est la même au retour du courant.</p></div>
+</div>
+</section>
+
+<section id="qu-more" class="part">
+<p class="eb">File d'attente · Partie 6</p>
+<h2>Aller plus loin</h2>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="albums-outline"></ion-icon><h4>Catégories de service <span class="tier mid">Mid</span></h4><p>Des lettres et des guichets différents pour chaque motif d'attente.</p></div>
+<div class="card ic-card"><ion-icon name="stats-chart-outline"></ion-icon><h4>Rapport des temps <span class="tier full">Full</span></h4><p>Attente et service par rapport à l'objectif, par service, guichet et heure.</p></div>
+<div class="card ic-card"><ion-icon name="chatbubble-outline"></ion-icon><h4>SMS quand c'est le tour <span class="soon"><ion-icon name="time-outline"></ion-icon>Disponible bientôt</span></h4><p>Les clients attendent dehors ou à côté ; leur téléphone les prévient.</p></div>
+<div class="card ic-card"><ion-icon name="megaphone-outline"></ion-icon><h4>Appel sur tous les écrans <span class="tier mid">Mid</span></h4><p>Le numéro aussi sur le menu ou l'écran du hall. Voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p7">P7</a>.</p></div>
+</div>
+</section>
+
+<section id="qu-cards" class="part">
+<p class="eb">À imprimer et afficher</p>
+<h2>Fiches du personnel</h2>
+<div class="tasks">
+<div class="task"><b><ion-icon name="megaphone-outline"></ion-icon> Guichet</b><span>1. Guichet → votre guichet → Ouvrir.<br />2. Appeler le suivant.<br />3. Absent ? Rappelez une fois, puis Absent.<br />4. Fini : Terminé.<br />5. Pause : Pause.</span></div>
+<div class="task"><b><ion-icon name="ticket-outline"></ion-icon> Accueil</b><span>1. Demandez le motif.<br />2. Touchez le service → ticket.<br />3. Âgé, enceinte ou handicapé ? Prioritaire.<br />4. Montrez l'écran.</span></div>
+<div class="task"><b><ion-icon name="eye-outline"></ion-icon> Superviseur</b><span>1. Supervision → surveillez l'attente la plus longue.<br />2. La file grandit ? Ouvrez un guichet.<br />3. Déplacez les tickets si un guichet ferme.<br />4. Fermeture : lisez le rapport des temps.</span></div>
+</div>
+</section>
+
+<p class="foot">Guide utilisateur Koomzo · File d'attente · Version 2 · Les écrans montrés sont ceux du prototype Koomzo actuel. Les noms et numéros sont des exemples.</p>
+</main>
+
+</div>
+<script src="guide/guide.js"></script>
+<script src="guide/anim.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a61bf"/><text x="50" y="62" font-family="Arial,Helvetica,sans-serif" font-size="34" font-weight="700" fill="#fff" text-anchor="middle">FR</text></svg></template>
+</body>
+</html>

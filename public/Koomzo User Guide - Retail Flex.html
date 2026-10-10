@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo User Guide — Retail Flex</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="alternate" hreflang="fr" href="Koomzo Guide utilisateur - Retail Flex.html" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<link rel="stylesheet" href="guide/guide.css" />
+<link rel="stylesheet" href="guide/anim.css" />
+<script>(function(){var b='https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons';var s=document.createElement('script');s.type='module';s.src=b+'.esm.js';document.head.appendChild(s);})();</script>
+</head>
+<body data-page="retail">
+<header class="ug-top">
+<a class="ug-mark" data-page="hub" href="Koomzo User Guide.html"><div class="ic"><ion-icon name="book-outline"></ion-icon></div><b>Koomzo User Guide</b><span>Version 2 · October 2026</span></a>
+<nav class="ug-mods" aria-label="Module guides">
+<a data-page="restaurant" href="Koomzo User Guide - Restaurant.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</a>
+<a data-page="hotel" href="Koomzo User Guide - Hotel.html"><ion-icon name="bed-outline"></ion-icon>Hotel</a>
+<a data-page="retail" href="Koomzo User Guide - Retail Flex.html" class="on" aria-current="page"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</a>
+<a data-page="inventory" href="Koomzo User Guide - Inventory.html"><ion-icon name="cube-outline"></ion-icon>Inventory</a>
+<a data-page="signage" href="Koomzo User Guide - Signage.html"><ion-icon name="tv-outline"></ion-icon>Signage</a>
+<a data-page="salon" href="Koomzo User Guide - Salon.html"><ion-icon name="cut-outline"></ion-icon>Salon</a>
+<a data-page="gym" href="Koomzo User Guide - Gym.html"><ion-icon name="barbell-outline"></ion-icon>Gym</a>
+<a data-page="queue" href="Koomzo User Guide - Queue.html"><ion-icon name="people-outline"></ion-icon>Queue</a>
+</nav>
+<div class="ug-lang" aria-label="Language"><b>EN</b><a data-lang-link="fr" href="Koomzo Guide utilisateur - Retail Flex.html" hreflang="fr">FR</a></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Contents">
+<a class="side__back" data-page="hub" href="Koomzo User Guide.html#p1"><ion-icon name="arrow-back-outline"></ion-icon>Platform chapters</a>
+<div class="side__g">Retail Flex</div>
+<a href="#rx"><ion-icon name="storefront-outline"></ion-icon>1 · Is this for me?</a>
+<a href="#rx-setup"><ion-icon name="construct-outline"></ion-icon>2 · Set up</a>
+<a href="#rx-day"><ion-icon name="sunny-outline"></ion-icon>3 · Run the day</a>
+<a href="#rx-screens"><ion-icon name="albums-outline"></ion-icon>4 · Screens</a>
+<a class="sub" href="#x-register">Register</a>
+<a class="sub" href="#x-tickets">Open tickets</a>
+<a class="sub" href="#x-returns">Returns</a>
+<a class="sub" href="#x-customers">Customers</a>
+<a class="sub" href="#x-shift">Shift &amp; drawer</a>
+<a class="sub" href="#x-setup">Setup</a>
+<a href="#rx-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · When something goes wrong</a>
+<a href="#rx-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Go further</a>
+<a href="#rx-cards"><ion-icon name="id-card-outline"></ion-icon>Staff task cards</a>
+</nav>
+<main class="doc">
+
+<section id="top">
+<p class="eb">Module guide</p>
+<h1>Retail Flex</h1>
+<p class="lede">One register that takes the shape of your shop — scan-first for a supermarket, search-first for a pharmacy or a hardware store, picture tiles for beauty and salon products. Shared chapters — devices, offline, payments — are in the <a data-page="hub" href="Koomzo User Guide.html#p1">Platform chapters</a>.</p>
+</section>
+
+<section id="rx" class="part first">
+<p class="eb">Retail Flex · Part 1</p>
+<h2>Is this for me?</h2>
+<p class="sub">Retail Flex is for any shop that sells goods over a counter. Setup offers a starting shape — a <b>preset</b> — for each kind of shop. A preset only sets defaults; nothing is locked.</p>
+<div class="grid3">
+<div class="card"><h4><ion-icon name="basket-outline"></ion-icon>Grocery &amp; convenience</h4><p>Scan first, weighed produce, fast cash. Alimentation, supérette, kiosque.</p></div>
+<div class="card"><h4><ion-icon name="construct-outline"></ion-icon>Hardware / general store</h4><p>Search by spec; sell by each, box or metre. Quincaillerie.</p></div>
+<div class="card"><h4><ion-icon name="hardware-chip-outline"></ion-icon>Electronics / repair</h4><p>Model, then serial number and warranty for each unit.</p></div>
+<div class="card"><h4><ion-icon name="medkit-outline"></ion-icon>Pharmacy / health</h4><p>Strength, form and pack; prescription sign-off; batch and expiry.</p></div>
+<div class="card"><h4><ion-icon name="cut-outline"></ion-icon>Salon retail</h4><p>Products sold at the chair, linked to the stylist.</p></div>
+<div class="card"><h4><ion-icon name="nutrition-outline"></ion-icon>Bakery / deli</h4><p>Weighed counter sales with tare; sliced or whole.</p></div>
+<div class="card"><h4><ion-icon name="flower-outline"></ion-icon>Beauty &amp; cosmetics</h4><p>Shade ranges as swatches, searchable by shade code.</p></div>
+</div>
+<h3>What you get at each level</h3>
+<div class="ladder">
+<div><h4><span class="tier lite">Lite</span>Sell</h4><ul><li>Register: scan, search or tap</li><li>Cash, MoMo, Orange Money, split</li><li>Sales history and reprints</li><li>Stock per product</li></ul></div>
+<div><h4><span class="tier mid">Mid</span>The shop's daily loop</h4><ul><li>Categories and tiles</li><li>Open tickets: park a sale</li><li>Returns and exchanges</li><li>Customers and loyalty</li><li>Send a line to a counter that prepares it</li></ul></div>
+<div><h4><span class="tier full">Full</span>Control the cash</h4><ul><li>Shift and cash drawer, X and Z reports</li><li>Manager approval above a discount</li><li>Several registers in one shop</li></ul></div>
+</div>
+
+<h3>Same register, seven shops</h3>
+<p class="sub">Watch one register change shape with the preset. The entry mode, what the cashier is asked to pick, and the quick keys change — the way of selling stays the same.</p>
+<figure class="anim" data-ms="2900">
+<div class="anim__stage">
+<div class="rxa">
+<div class="rxa__hd"><span class="rxa__pf"><ion-icon name="storefront-outline"></ion-icon><span id="rx-pf">Grocery & Convenience</span></span><span class="rxa__bl" id="rx-bl">Scan-first lanes, weighed produce, fast cash.</span></div>
+<div class="rxa__cat"><div class="rxa__in scan"><ion-icon name="barcode-outline"></ion-icon><span id="rx-is">Scan a barcode…</span></div><div class="rxa__in search"><ion-icon name="search-outline"></ion-icon><span id="rx-isr">Scan a barcode…</span></div><div class="rxa__grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="rxa__list"><i></i><i></i><i></i><i></i><i></i></div><div class="rxa__pick"><ion-icon name="options-outline"></ion-icon><span id="rx-pk"></span></div></div>
+<div class="rxa__tk"><b>Ticket · Caisse 1</b><div class="rxa__ln"><span id="rx-l1">Riz parfumé 5 kg</span><span id="rx-a1">6 500 F</span></div><div class="rxa__ln"><span id="rx-l2">Tomates · 1,2 kg</span><span id="rx-a2">1 440 F</span></div><div class="rxa__q"><span id="rx-q1"></span><span id="rx-q2"></span><span id="rx-q3"></span><span id="rx-q4"></span></div><div class="rxa__pay">Charge</div></div>
+</div>
+</div>
+<ol class="anim__steps">
+<li data-set="entry=scan pick=off" data-put='{"#rx-pf":"Grocery & Convenience","#rx-bl":"Scan-first lanes, weighed produce, fast cash.","#rx-is":"Scan a barcode…","#rx-isr":"Scan a barcode…","#rx-pk":"","#rx-l1":"Riz parfumé 5 kg","#rx-a1":"6 500 F","#rx-l2":"Tomates · 1,2 kg","#rx-a2":"1 440 F","#rx-q1":"Weigh item","#rx-q2":"Price check","#rx-q3":"Bag","#rx-q4":"Age check"}'><b>Grocery & Convenience</b> — Scan-first lanes, weighed produce, fast cash.</li>
+<li data-set="entry=search pick=on" data-put='{"#rx-pf":"Hardware / General store","#rx-bl":"Spec search; sold by each, box or metre.","#rx-is":"Search by spec or SKU…","#rx-isr":"Search by spec or SKU…","#rx-pk":"Sold by: each · box · metre","#rx-l1":"Câble 2,5 mm² · 12 m","#rx-a1":"9 600 F","#rx-l2":"Vis 4×40 · boîte de 100","#rx-a2":"2 500 F","#rx-q1":"SKU lookup","#rx-q2":"Cut to length","#rx-q3":"Trade price","#rx-q4":"Quote"}'><b>Hardware / General store</b> — Spec search; sold by each, box or metre.</li>
+<li data-set="entry=search pick=on" data-put='{"#rx-pf":"Electronics / Repair","#rx-bl":"Model variant, then serial and warranty per unit.","#rx-is":"Search model…","#rx-isr":"Search model…","#rx-pk":"Serial no. · warranty 12 months","#rx-l1":"Tecno Spark 20 · 128 Go","#rx-a1":"89 000 F","#rx-l2":"Écouteurs Bluetooth","#rx-a2":"4 500 F","#rx-q1":"Serial","#rx-q2":"Warranty","#rx-q3":"Repair ticket","#rx-q4":"Trade-in"}'><b>Electronics / Repair</b> — Model variant, then serial and warranty per unit.</li>
+<li data-set="entry=search pick=on" data-put='{"#rx-pf":"Pharmacy / Health","#rx-bl":"Strength × form × pack, Rx sign-off, batch and expiry.","#rx-is":"Search medicine…","#rx-isr":"Search medicine…","#rx-pk":"500 mg · tablet · box of 16 · batch L2408","#rx-l1":"Paracétamol 500 mg","#rx-a1":"900 F","#rx-l2":"Amoxicilline 1 g · Rx","#rx-a2":"3 500 F","#rx-q1":"Rx lookup","#rx-q2":"Substitute","#rx-q3":"Batch","#rx-q4":"Advice given"}'><b>Pharmacy / Health</b> — Strength × form × pack, Rx sign-off, batch and expiry.</li>
+<li data-set="entry=grid pick=on" data-put='{"#rx-pf":"Salon retail add-ons","#rx-bl":"Size sheet on image tiles, attached to a stylist.","#rx-is":"","#rx-isr":"","#rx-pk":"Stylist: Nadia · 250 ml","#rx-l1":"Huile d’argan","#rx-a1":"11 000 F","#rx-l2":"Shampooing réparateur","#rx-a2":"9 500 F","#rx-q1":"Attach booking","#rx-q2":"Stylist","#rx-q3":"Tip","#rx-q4":"Rebook"}'><b>Salon retail add-ons</b> — Size sheet on image tiles, attached to a stylist.</li>
+<li data-set="entry=scan pick=on" data-put='{"#rx-pf":"Bakery / Deli","#rx-bl":"Weighed counter sales with tare; cut style as a modifier.","#rx-is":"Scan or weigh…","#rx-isr":"Scan or weigh…","#rx-pk":"Weighed · tare 20 g · sliced","#rx-l1":"Pain complet · tranché","#rx-a1":"750 F","#rx-l2":"Croissants × 6","#rx-a2":"1 800 F","#rx-q1":"Weigh item","#rx-q2":"Tare","#rx-q3":"Slice","#rx-q4":"Label"}'><b>Bakery / Deli</b> — Weighed counter sales with tare; cut style as a modifier.</li>
+<li data-set="entry=grid pick=on" data-put='{"#rx-pf":"Beauty & Cosmetics","#rx-bl":"Deep shade ranges as swatches, searchable by shade code.","#rx-is":"","#rx-isr":"","#rx-pk":"Shade 4.5N · swatch","#rx-l1":"Fond de teint · 4.5N","#rx-a1":"12 500 F","#rx-l2":"Rouge à lèvres","#rx-a2":"6 000 F","#rx-q1":"Shade match","#rx-q2":"Tester","#rx-q3":"Gift set","#rx-q4":"Hold"}'><b>Beauty & Cosmetics</b> — Deep shade ranges as swatches, searchable by shade code.</li>
+</ol>
+</figure>
+</section>
+
+<section id="rx-setup" class="part">
+<p class="eb">Retail Flex · Part 2</p>
+<h2>Set up <span class="tier lite">Lite</span></h2>
+<p class="sub">About an hour for a small shop. Longer if you have thousands of items — import them from a spreadsheet.</p>
+<ol class="steps">
+<li><div><b>Getting started</b><span>Account, location and staff — see <a data-page="hub" href="Koomzo User Guide.html#p1">P1</a>. Cashiers get the <i>Staff</i> role: no Setup.</span></div></li>
+<li><div><b>Choose a preset</b><span>Setup → Business profile. Pick the closest shop type; you can change any setting afterwards.</span></div></li>
+<li><div><b>Add your items</b><span>Name, price, barcode if any, category. Variants where you need them — size, strength, shade. Stock is in <a data-page="hub" href="Koomzo User Guide.html#modules">Inventory</a>.</span></div></li>
+<li><div><b>Taxes</b><span>VAT 19.25 % by default; basic foods and medicines can be zero-rated.</span></div></li>
+<li><div><b>Payments</b><span>Cash on; add MTN MoMo and Orange Money with your merchant numbers.</span></div></li>
+<li><div><b>Hardware</b><span>A Bluetooth or USB barcode scanner and a receipt printer. A scale for weighed goods. <span class="soon"><ion-icon name="time-outline"></ion-icon>Scales — available soon</span></span></div></li>
+<li><div><b>Do a test sale</b><span>Scan, pay by cash and MoMo, return one item, look at the sale in history.</span></div></li>
+</ol>
+</section>
+
+<section id="rx-day" class="part">
+<p class="eb">Retail Flex · Part 3</p>
+<h2>Run the day</h2>
+<p class="sub">The real order of a shop day, and which screen you use for each moment.</p>
+<div class="tbl"><table>
+<thead><tr><th>Moment</th><th>What you do</th><th>Screen</th><th>Tier</th></tr></thead>
+<tbody>
+<tr><td><b>Opening</b></td><td>Open the shift and count the float into the drawer.</td><td><a href="#x-shift">Shift</a></td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>A customer at the counter</b></td><td>Scan, search or tap the items. Quick keys for the shop's usual extras.</td><td><a href="#x-register">Register</a></td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>They step away</b></td><td>Park the sale with a reason; serve the next person; resume it later.</td><td><a href="#x-tickets">Open tickets</a></td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>Payment</b></td><td>Cash with change, MoMo or Orange Money, or split between them.</td><td>Register</td><td><span class="tier lite">Lite</span></td></tr>
+<tr><td><b>A regular</b></td><td>Add the customer: points, store credit, notes for the next cashier.</td><td><a href="#x-customers">Customers</a></td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>A return</b></td><td>Find the sale, choose what comes back and why, refund or exchange.</td><td><a href="#x-returns">Returns</a></td><td><span class="tier mid">Mid</span></td></tr>
+<tr><td><b>A big discount</b></td><td>Above the threshold, a manager approves with their PIN.</td><td>Register</td><td><span class="tier full">Full</span></td></tr>
+<tr><td><b>Closing</b></td><td>Resolve open payments and parked tickets, count the drawer, close the shift — the Z report.</td><td><a href="#x-shift">Shift</a></td><td><span class="tier full">Full</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="rx-screens" class="part">
+<p class="eb">Retail Flex · Part 4</p>
+<h2>Screens</h2>
+<p class="sub">The left rail: Register, Sales, Stock, Categories, Tickets, Returns, Customers, Shift, and Setup at the bottom. The screenshots show the Pharmacy preset at Caisse 1.</p>
+
+<h3 id="x-register">Register <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/retail-register.jpg" alt="Register" /><span class="pin" style="left:31.4%;top:5%">1</span><span class="pin" style="left:32.5%;top:17%">2</span><span class="pin" style="left:32.5%;top:26.7%">3</span><span class="pin" style="left:17.3%;top:41.7%">4</span><span class="pin" style="left:71.4%;top:25%">5</span><span class="pin" style="left:74.7%;top:63.3%">6</span><span class="pin" style="left:91.2%;top:16%">7</span><span class="pin" style="left:81%;top:92.6%">8</span><span class="pin" style="left:83%;top:5%">9</span></div>
+<ol class="callouts">
+<li><span><b>Preset</b> — the shop type this register is shaped for.</span></li>
+<li><span><b>Search or scan</b> — by name, SKU, brand or barcode.</span></li>
+<li><span><b>Categories</b> — your own, in the order the shop sells.</span></li>
+<li><span><b>Items</b> — tap to add. Prescription-only items ask for sign-off.</span></li>
+<li><span><b>Add customer</b> — points and store credit. <span class="tier mid">Mid</span></span></li>
+<li><span><b>Quick keys</b> — the preset's usual extras (here: Rx lookup, Substitute, Batch, Advice given).</span></li>
+<li><span><b>Park or clear</b> — park the sale as an open ticket, or clear it. <span class="tier mid">Mid</span></span></li>
+<li><span><b>Charge</b> — cash, MoMo, Orange Money or split.</span></li>
+<li><span><b>Sync light</b> — see <a data-page="hub" href="Koomzo User Guide.html#p3">P3</a>.</span></li>
+</ol>
+
+<h3 id="x-tickets">Open tickets <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/retail-tickets.jpg" alt="Open tickets" /><span class="pin" style="left:4.3%;top:52.8%">1</span><span class="pin" style="left:23.8%;top:29.6%">2</span><span class="pin" style="left:21%;top:38%">3</span><span class="pin" style="left:31.6%;top:48.3%">4</span><span class="pin" style="left:90.4%;top:18.3%">5</span></div>
+<ol class="callouts">
+<li><span><b>Badge</b> — how many sales are waiting.</span></li>
+<li><span><b>Ticket</b> — who, how many items, how long ago.</span></li>
+<li><span><b>Why it's parked</b> — waiting for MoMo, looking for a second item, waiting for the manager.</span></li>
+<li><span><b>Resume</b> — back on the register exactly as it was.</span></li>
+<li><span><b>New ticket</b> — start another sale while one waits.</span></li>
+</ol>
+
+<h3 id="x-returns">Returns &amp; exchange <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/retail-returns.jpg" alt="Returns and exchange" /><span class="pin" style="left:32.5%;top:28.7%">1</span><span class="pin" style="left:34.6%;top:39.6%">2</span><span class="pin" style="left:27%;top:56.5%">3</span><span class="pin" style="left:88.7%;top:58%">4</span></div>
+<ol class="callouts">
+<li><span><b>Find the sale</b> — receipt number, card last 4, customer, or no receipt.</span></li>
+<li><span><b>Scan the receipt</b> barcode, or type the order number.</span></li>
+<li><span><b>Recent sales</b> — with how they were paid and who served.</span></li>
+<li><span><b>Open it</b> — tick what comes back, give the reason, then refund to the same method, store credit, or exchange.</span></li>
+</ol>
+
+<h3 id="x-customers">Customers <span class="tier mid">Mid</span></h3>
+<div class="shot"><img src="guide/img/retail-customers.jpg" alt="Customers" /><span class="pin" style="left:27%;top:29.4%">1</span><span class="pin" style="left:23%;top:39.8%">2</span><span class="pin" style="left:66%;top:43%">3</span><span class="pin" style="left:64.7%;top:65.4%">4</span><span class="pin" style="left:90.4%;top:37.2%">5</span><span class="pin" style="left:90.7%;top:91%">6</span></div>
+<ol class="callouts">
+<li><span><b>Find</b> by name, phone or loyalty card.</span></li>
+<li><span><b>Filters</b> — Gold members, customers with store credit, new.</span></li>
+<li><span><b>Loyalty level</b> and points to the next one.</span></li>
+<li><span><b>Store credit</b> — from a return, spent at the next sale.</span></li>
+<li><span><b>Start ticket</b> — a sale already linked to this customer.</span></li>
+<li><span><b>Reorder or return</b> straight from a past purchase.</span></li>
+</ol>
+
+<h3 id="x-shift">Shift &amp; cash drawer <span class="tier full">Full</span></h3>
+<div class="shot"><img src="guide/img/retail-shift.jpg" alt="Shift and cash drawer" /><span class="pin" style="left:62.5%;top:20%">1</span><span class="pin" style="left:23.8%;top:30%">2</span><span class="pin" style="left:88.5%;top:46%">3</span><span class="pin" style="left:85.5%;top:95.7%">4</span><span class="pin" style="left:75.2%;top:18.3%">5</span><span class="pin" style="left:89.8%;top:18.3%">6</span></div>
+<ol class="callouts">
+<li><span><b>Shift open</b> — who, which till, since when.</span></li>
+<li><span><b>To resolve before close</b> — part-paid sales and parked tickets. Nothing is voided silently.</span></li>
+<li><span><b>Finish payment</b> — collect what is still owed.</span></li>
+<li><span><b>Resume or hand over</b> a parked ticket to the next shift.</span></li>
+<li><span><b>X report</b> — the figures so far, without closing.</span></li>
+<li><span><b>Close shift</b> — count the drawer; the Z report shows any difference.</span></li>
+</ol>
+
+<h3 id="x-setup">Setup <span class="tier lite">Lite</span></h3>
+<div class="shot"><img src="guide/img/retail-setup.jpg" alt="Business profile presets" /><span class="pin" style="left:26%;top:30.2%">1</span><span class="pin" style="left:45.5%;top:38.9%">2</span><span class="pin" style="left:94%;top:96%">3</span></div>
+<ol class="callouts">
+<li><span><b>Business profile</b> — one preset per shop type.</span></li>
+<li><span><b>What it turns on</b> — entry mode, picker, variants, weighed items, loyalty.</span></li>
+<li><span><b>Current preset</b> — ticked. Change it at any time; your items stay.</span></li>
+</ol>
+</section>
+
+<section id="rx-help" class="part">
+<p class="eb">Retail Flex · Part 5</p>
+<h2>When something goes wrong</h2>
+<div class="qa">
+<div class="card"><h4><ion-icon name="cash-outline"></ion-icon>The drawer is short at closing.</h4><p>The Z report shows the difference against cash sales. Check part-paid sales and refunds first; the cashier adds a note. The owner sees it the same evening.</p></div>
+<div class="card"><h4><ion-icon name="barcode-outline"></ion-icon>The barcode won't scan.</h4><p>Type the code under the bars, or search by name. If the item isn't found, add it from the register and give it its price.</p></div>
+<div class="card"><h4><ion-icon name="receipt-outline"></ion-icon>A return with no receipt.</h4><p>Returns → No receipt. Search by customer or by the item; refund as store credit if your rules ask for it.</p></div>
+<div class="card"><h4><ion-icon name="pricetag-outline"></ion-icon>The shelf price differs from the till.</h4><p>The till is right — prices come from one catalogue. Honour the shelf with a line discount and fix the label.</p></div>
+<div class="card"><h4><ion-icon name="git-branch-outline"></ion-icon>Half MoMo, half cash.</h4><p>Charge → Split. Take the MoMo first; when it's confirmed, take the rest in cash.</p></div>
+<div class="card"><h4><ion-icon name="cloud-offline-outline"></ion-icon>No internet at the till.</h4><p>Scanning, cash and parked tickets keep working. MoMo waits; keep the sale parked or take cash.</p></div>
+</div>
+</section>
+
+<section id="rx-more" class="part">
+<p class="eb">Retail Flex · Part 6</p>
+<h2>Go further</h2>
+<p class="sub">Switch these on in Setup when you're ready.</p>
+<div class="grid3">
+<div class="card ic-card"><ion-icon name="cube-outline"></ion-icon><h4>Stock &amp; orders <span class="tier mid">Mid</span></h4><p>Reorder points, suppliers and purchase orders — the Inventory module. See <a data-page="hub" href="Koomzo User Guide.html#p7">P7</a>.</p></div>
+<div class="card ic-card"><ion-icon name="flame-outline"></ion-icon><h4>Prepare &amp; send <span class="tier mid">Mid</span></h4><p>Send a line to the counter that makes it — the butcher, the bakery oven.</p></div>
+<div class="card ic-card"><ion-icon name="pricetag-outline"></ion-icon><h4>Manager discounts <span class="tier full">Full</span></h4><p>Above a set amount, a manager approves with their PIN.</p></div>
+<div class="card ic-card"><ion-icon name="tablet-landscape-outline"></ion-icon><h4>Several registers <span class="tier full">Full</span></h4><p>Two or more tills in one shop, one stock. <span class="soon"><ion-icon name="time-outline"></ion-icon>Local network — available soon</span></p></div>
+<div class="card ic-card"><ion-icon name="tv-outline"></ion-icon><h4>Price screens <span class="tier mid">Mid</span></h4><p>Promotions and prices on a TV, read from the till. Signage module.</p></div>
+<div class="card ic-card"><ion-icon name="barcode-outline"></ion-icon><h4>Shelf labels <span class="tier full">Full</span></h4><p>Print a run of labels after a price change.</p></div>
+</div>
+</section>
+
+<section id="rx-cards" class="part">
+<p class="eb">Print and pin up</p>
+<h2>Staff task cards</h2>
+<div class="tasks">
+<div class="task"><b><ion-icon name="cash-outline"></ion-icon> Cashier</b><span>1. Shift → open with the float.<br />2. Scan or search → Charge.<br />3. Customer steps away? Park the sale.<br />4. MoMo: number → wait for confirm.<br />5. Close: resolve the list → count → Close shift.</span></div>
+<div class="task"><b><ion-icon name="refresh-outline"></ion-icon> Returns</b><span>1. Returns → scan the receipt.<br />2. Tick what comes back → reason.<br />3. Same method, store credit or exchange.<br />4. Put the item back on the shelf or aside.</span></div>
+<div class="task"><b><ion-icon name="shield-checkmark-outline"></ion-icon> Manager</b><span>1. Approve big discounts with your PIN.<br />2. X report at midday.<br />3. Check the Z report and any difference.<br />4. Wait for Synced before closing up.</span></div>
+</div>
+</section>
+
+<p class="foot">Koomzo User Guide · Retail Flex · Version 2 · Screens shown are from the current Koomzo prototype. Names, items and prices are examples.</p>
+</main>
+
+</div>
+<script src="guide/guide.js"></script>
+<script src="guide/anim.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a61bf"/><rect x="30" y="28" width="40" height="46" rx="5" fill="none" stroke="#fff" stroke-width="5"/><line x1="40" y1="42" x2="60" y2="42" stroke="#fff" stroke-width="4"/><line x1="40" y1="52" x2="60" y2="52" stroke="#fff" stroke-width="4"/><line x1="40" y1="62" x2="53" y2="62" stroke="#fff" stroke-width="4"/></svg></template>
+</body>
+</html>

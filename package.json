@@ -1,8 +1,8 @@
 {
   "name": "koomzo-pos-web",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
-  "description": "Koomzo — full application suite (React screens) served by a Node/Express server.",
+  "description": "Koomzo — full application suite (React screens), user guides, plans and specs, served by a Node/Express server.",
   "type": "module",
   "scripts": {
     "start": "node server.js",

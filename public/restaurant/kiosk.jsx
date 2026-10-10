@@ -13,10 +13,43 @@ const NOTE_PRESETS = {
   none: ['No cutlery'],
 };
 
-function KioskAttract({ vertical, onStart }) {
+/* press-and-hold: the only way out of a locked kiosk (D70) */
+function useHold(cb, ms) {
+  const t = useRef(null);
+  const start = () => { clearTimeout(t.current); t.current = setTimeout(cb, ms || 1600); };
+  const stop = () => clearTimeout(t.current);
+  return { onPointerDown: start, onPointerUp: stop, onPointerLeave: stop, onContextMenu: (e) => e.preventDefault() };
+}
+
+function KioskExitSheet({ onClose }) {
+  const { rules, setKioskLocked, setScreen } = useSuite();
+  const [pin, setPin] = useState('');
+  const [err, setErr] = useState(false);
+  const onPin = (v) => {
+    setPin(v); setErr(false);
+    if (v.length === rules.managerPin.length) {
+      if (v === rules.managerPin) { setKioskLocked(false); setScreen('home'); onClose(); } else { setErr(true); setPin(''); }
+    }
+  };
+  return (
+    <div className="scrim" onClick={onClose}>
+      <div className="sheet" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet__pad">
+          <h3 className="sheet__title">Staff exit</h3>
+          <p className="sheet__sub">Enter the manager PIN to leave kiosk mode.</p>
+          <input autoFocus className={'svc-pin big' + (err ? ' err' : '')} type="password" inputMode="numeric" maxLength={6} value={pin} onChange={(e) => onPin(e.target.value.replace(/\D/g, ''))} />
+          {err && <div className="svc-err">Wrong PIN</div>}
+          <div className="sheet__actions" style={{ marginTop: 16 }}><button className="btn-ghost" onClick={onClose}>Back to kiosk</button></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function KioskAttract({ vertical, onStart, hold }) {
   return (
     <div className="kattract">
-      <div className="kattract__brand"><div className="mk"><ion-icon name="restaurant"></ion-icon></div>koomzo<span> order</span></div>
+      <div className="kattract__brand" {...(hold || {})}><div className="mk"><ion-icon name="restaurant"></ion-icon></div>koomzo<span> order</span></div>
       <h1 className="kattract__h">Order here.</h1>
       <p className="kattract__p">Browse the menu, pay with mobile money, and we’ll call your number.</p>
       <div className="kattract__acts">
@@ -178,7 +211,10 @@ function KioskCheckout({ total, mode, onClose, onDone }) {
 }
 
 function Kiosk() {
-  const { vertical, verticalCfg, menu, sendTicket } = useSuite();
+  const { vertical, verticalCfg, menu, sendTicket, kioskLocked, setKioskLocked, rules, tweaks, setTweak } = useSuite();
+  const [exiting, setExiting] = useState(false);
+  const hold = useHold(() => kioskLocked && setExiting(true));
+  const lastTouch = useRef(Date.now());
   const [mode, setMode] = useState(vertical === 'retail' ? 'takeaway' : 'dinein');
   const [cat, setCat] = useState(verticalCfg.categories[0].id);
   const [cart, setCart] = useState([]);
@@ -188,6 +224,18 @@ function Kiosk() {
   const [detail, setDetail] = useState(null);
 
   useEffect(() => { setCat(verticalCfg.categories[0].id); setCart([]); setStarted(false); setMode(vertical === 'retail' ? 'takeaway' : 'dinein'); }, [vertical]);
+
+  /* idle → back to the welcome screen, cart cleared */
+  useEffect(() => {
+    if (!started) return;
+    lastTouch.current = Date.now();
+    const id = setInterval(() => {
+      if (Date.now() - lastTouch.current > (rules.kioskIdleSec || 90) * 1000) {
+        setCart([]); setDrawer(false); setCheckout(false); setDetail(null); setStarted(false);
+      }
+    }, 1000);
+    return () => clearInterval(id);
+  }, [started, rules.kioskIdleSec]);
 
   const products = menu.filter((p) => p.cat === cat);
   const qtyFor = (id) => cart.filter((c) => c.id === id).reduce((s, c) => s + c.qty, 0);
@@ -218,11 +266,22 @@ function Kiosk() {
 
   return (
     <div className="screen">
-      <div className="kiosk">
-        {!started ? <KioskAttract vertical={vertical} onStart={(m) => { setMode(m); setStarted(true); }} /> : (
+      {!kioskLocked && (
+        <div className="kstaff">
+          <span className="kstaff__t"><ion-icon name="eye-outline"></ion-icon>Staff preview</span>
+          <div className="svc-chips tight">
+            {[['desktop', 'Desktop', 'desktop-outline'], ['tablet', 'Tablet', 'tablet-portrait-outline'], ['phone', 'Phone', 'phone-portrait-outline']].map(([v, l, ic]) => (
+              <button key={v} className={(tweaks.device || 'desktop') === v ? 'on' : ''} onClick={() => setTweak && setTweak('device', v)}><ion-icon name={ic}></ion-icon><span className="kstaff__l">{l}</span></button>
+            ))}
+          </div>
+          <button className="kstaff__go" onClick={() => setKioskLocked(true)}><ion-icon name="lock-closed-outline"></ion-icon>Start kiosk mode</button>
+        </div>
+      )}
+      <div className="kiosk" onPointerDown={() => { lastTouch.current = Date.now(); }}>
+        {!started ? <KioskAttract vertical={vertical} hold={hold} onStart={(m) => { setMode(m); setStarted(true); }} /> : (
         <>
         <div className="khead">
-          <div className="khead__brand">
+          <div className="khead__brand" {...hold}>
             <div className="mk"><ion-icon name="restaurant"></ion-icon></div>
             <div className="nm">koomzo<span> order</span></div>
           </div>
@@ -307,9 +366,10 @@ function Kiosk() {
           onDone={() => { doCheckout(); setCart([]); setCheckout(false); setStarted(false); }} />}
         </>
         )}
+        {exiting && <KioskExitSheet onClose={() => setExiting(false)} />}
       </div>
     </div>
   );
 }
 
-Object.assign(window, { Kiosk, KioskTile, KioskCheckout, KioskAttract, KioskItemSheet });
+Object.assign(window, { Kiosk, useHold, KioskExitSheet, KioskTile, KioskCheckout, KioskAttract, KioskItemSheet });

@@ -11,6 +11,7 @@ const SCREENS = [
   { id: 'kitchen',  label: 'Kitchen', icon: 'restaurant-outline' },
   { id: 'kiosk',    label: 'Kiosk',   icon: 'tablet-portrait-outline' },
   { id: 'home',     label: 'Today',   icon: 'today-outline' },
+  { id: 'close',    label: 'Close',   icon: 'moon-outline' },
   { id: 'setup',    label: 'Setup',   icon: 'options-outline' },
 ];
 
@@ -29,7 +30,7 @@ function NavRail() {
   /* one badge per item, and it counts what that screen shows when opened */
   const badge = (id) => (id === 'kitchen' ? counts.late || counts.active
     : id === 'floor' ? counts.occupied : 0);
-  const core = { register: 1, home: 1, setup: 1 };
+  const core = { register: 1, home: 1, close: 1, setup: 1 };
   const items = SCREENS.filter((s) => core[s.id] || !window.KZ || window.KZ.on('restaurant', s.id));
   const main = items.filter((s) => s.id !== 'setup');
   return (

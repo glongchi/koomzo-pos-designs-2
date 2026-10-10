@@ -5,13 +5,13 @@ let RUID = 1;
 
 function Register() {
   const S = useSuite();
-  const { vertical, verticalCfg, menu, tweaks, sendTicket, activeTable, setActiveTable, tableState, setScreen, clearTable } = S;
+  const { vertical, verticalCfg, menu, tweaks, sendTicket, activeTable, setActiveTable, tableState, setScreen, clearTable,
+    getOrder, setOrderLines, activeTicketsFor, amendFired, restored, setRestored, me, rules, canAct, ownerOf, printBill, recordSale } = S;
   const flags = verticalCfg.flags;
 
   const [cat, setCat] = useState('all');
   const [query, setQuery] = useState('');
   const [view, setView] = useState('grid');
-  const [order, setOrder] = useState([]);
   const [selectedUid, setSelectedUid] = useState(null);
   const [mode, setMode] = useState('qty');
   const [buffer, setBuffer] = useState(null);
@@ -24,9 +24,22 @@ function Register() {
   const [noteFor, setNoteFor] = useState(null);
   const [orderNo, setOrderNo] = useState(() => window.KZ_TICKET.compose({ loc: 'DLA1', reg: 'R1', seq: 1042 }));
   const [mobilePane, setMobilePane] = useState('menu'); // phone: 'menu' | 'order'
+  const [voidFor, setVoidFor] = useState(null);
+  const [moving, setMoving] = useState(false);
+  const [clearWarn, setClearWarn] = useState(null);
+  const [takeover, setTakeover] = useState(false);
 
-  /* reset coursing when vertical changes; clear order */
-  useEffect(() => { setOrder([]); setSelectedUid(null); setEditing(false); setActiveCourse(1); }, [vertical]);
+  /* C1 — one open order per table / tab / counter, held in the store */
+  const orderKey = flags.tables ? (activeTable || '_walkin') : flags.tabs ? 'tab:' + tabName : '_counter:' + vertical;
+  const orderMeta = getOrder(orderKey);
+  const order = orderMeta.lines;
+  /* D6 — table belongs to its server: anyone else sees it read-only */
+  const locked = flags.tables && activeTable && !canAct(activeTable);
+  const owner = flags.tables && activeTable ? ownerOf(activeTable) : null;
+  const setOrder = (fn) => { if (!locked) setOrderLines(orderKey, fn); };
+
+  /* reset selection when the bound order changes */
+  useEffect(() => { setSelectedUid(null); setEditing(false); setActiveCourse(1); }, [orderKey]);
 
   /* bind to a table chosen on the floor */
   useEffect(() => {
@@ -43,6 +56,7 @@ function Register() {
 
   /* ---- add / edit ---- */
   const addItem = (p) => {
+    if (locked) return;
     setOrder((cur) => {
       const ex = cur.find((o) => o.id === p.id && !o.fired && (!flags.courses || o.course === activeCourse));
       if (ex) { setSelectedUid(ex.uid); return cur.map((o) => o === ex ? { ...o, qty: o.qty + 1 } : o); }
@@ -52,7 +66,7 @@ function Register() {
     });
     setMode('qty'); setBuffer(null);
   };
-  const selectLine = (uid) => { setSelectedUid(uid); setBuffer(null); setEditing(true); setMode('qty'); };
+  const selectLine = (uid) => { if (locked) return; setSelectedUid(uid); setBuffer(null); setEditing(true); setMode('qty'); };
   const stepQty = (uid, d) => setOrder((cur) => cur.flatMap((o) => o.uid !== uid ? [o] : (o.qty + d <= 0 ? [] : [{ ...o, qty: o.qty + d }])));
   const removeLine = (uid) => { setOrder((cur) => cur.filter((o) => o.uid !== uid)); if (selectedUid === uid) { setSelectedUid(null); setEditing(false); } };
   const changeMode = (m) => { setMode(m); setBuffer(null); };
@@ -61,6 +75,7 @@ function Register() {
     if (!selectedUid) return;
     const line = order.find((o) => o.uid === selectedUid);
     if (!line) return;
+    if (line.fired && mode === 'qty') return; // fired qty only changes through Void
     const stored = mode === 'qty' ? qtyStr(line.qty) : mode === 'disc' ? String(line.discPct) : String(line.priceOverride != null ? line.priceOverride : line.price);
     let buf;
     if (k === 'back') buf = (buffer === null ? stored : buffer).slice(0, -1);
@@ -79,7 +94,7 @@ function Register() {
 
   useEffect(() => {
     const h = (e) => {
-      if (charging || splitting || noteFor || !editing || !selectedUid) return;
+      if (charging || splitting || noteFor || voidFor || moving || !editing || !selectedUid) return;
       if (/^[0-9]$/.test(e.key)) onKey(e.key);
       else if (e.key === '.') onKey('.');
       else if (e.key === 'Backspace') { e.preventDefault(); onKey('back'); }
@@ -97,6 +112,12 @@ function Register() {
     return { net, svc, tax, total: +(net + svc + tax).toFixed(2) };
   }, [order, svcRate]);
   const itemCount = order.reduce((s, o) => s + o.qty, 0);
+  /* D6 — pre-bill: print the addition first; any change after printing needs a reprint before payment */
+  const billOn = rules.preBill && ((flags.tables && activeTable) || flags.tabs) && order.length > 0;
+  const bill = orderMeta.bill;
+  const billState = !billOn ? 'off' : !bill ? 'none' : bill.sig === billSig(order) ? 'ok' : 'changed';
+  const orderLabel = flags.tables ? (activeTable ? tableLabel(activeTable) : 'Walk-in') : flags.tabs ? tabName : 'Counter';
+  const doPrintBill = () => printBill(orderKey, orderLabel, order, svcRate);
   const unfired = order.filter((o) => !o.fired && (!flags.kitchen || o.station !== 'bar'));
 
   /* ---- coursing ---- */
@@ -107,24 +128,39 @@ function Register() {
   }, [order, activeCourse]);
   const courseName = (n) => ['1st Course', '2nd Course', '3rd Course', '4th Course', '5th Course'][n - 1] || `Course ${n}`;
 
-  const fireCourse = (n) => {
-    const toFire = order.filter((o) => o.course === n && !o.fired && o.station !== 'bar');
-    if (!toFire.length) return;
-    const no = sendTicket({ table: activeTable, floor: floorOf(activeTable), server: 'Anita O.', guests, items: toFire.map((o) => ({ name: o.name, qty: o.qty, station: o.station, notes: o.notes, tags: o.tags })) });
-    setOrder((cur) => cur.map((o) => o.course === n && o.station !== 'bar' ? { ...o, fired: true } : o));
+  const fire = (lines, extra) => {
+    if (!lines.length) return;
+    const ticketId = 'tk' + Date.now() + Math.random().toString(36).slice(2, 5);
+    sendTicket({ id: ticketId, table: activeTable, floor: floorOf(activeTable), server: owner || me.name, guests, ...extra,
+      items: lines.map((o) => ({ uid: o.uid, name: o.name, qty: o.qty, station: o.station, notes: o.notes, tags: o.tags })) });
+    const uids = lines.map((o) => o.uid);
+    setOrder((cur) => cur.map((o) => uids.includes(o.uid) ? { ...o, fired: true, ticketId } : o));
   };
+  const fireCourse = (n) => fire(order.filter((o) => o.course === n && !o.fired && o.station !== 'bar'));
   const sendAll = () => {
     if (flags.tables && !activeTable) { setScreen('floor'); return; }
     if (!unfired.length) return;
-    sendTicket({ table: flags.tables ? activeTable : (flags.tabs ? tabName : null), floor: floorOf(activeTable), server: 'Anita O.', guests: flags.guests ? guests : 2, items: unfired.map((o) => ({ name: o.name, qty: o.qty, station: o.station, notes: o.notes, tags: o.tags })) });
-    setOrder((cur) => cur.map((o) => (o.station !== 'bar' ? { ...o, fired: true } : o)));
+    fire(unfired, { table: flags.tables ? activeTable : (flags.tabs ? tabName : null), guests: flags.guests ? guests : 2 });
   };
 
-  const finishOrder = () => {
+  /* payment closes the table; food still in the kitchen is asked about, never deleted */
+  const finishOrder = (tender) => {
     setCharging(false);
-    if (flags.tables && activeTable) clearTable(activeTable);
-    setOrder([]); setSelectedUid(null); setEditing(false); setActiveCourse(1); setActiveTable(null);
+    const tid = activeTable;
+    recordSale({ total: totals.total, table: orderLabel, server: owner || me.name, method: tender || 'cash', items: itemCount });
+    setOrder([]); setSelectedUid(null); setEditing(false); setActiveCourse(1);
     setOrderNo((n) => window.KZ_TICKET.next(n));
+    if (flags.tables && tid) {
+      if (activeTicketsFor(tid).length) { setClearWarn(tid); return; }
+      clearTable(tid);
+    }
+    setActiveTable(null);
+  };
+  const saveNote = (patch) => {
+    const line = noteFor;
+    setOrder((cur) => cur.map((o) => o.uid === line.uid ? { ...o, ...patch } : o));
+    if (line.fired && line.ticketId && (patch.notes || '') !== (line.notes || '')) amendFired(line.ticketId, line.uid, patch.notes);
+    setNoteFor(null);
   };
 
   const selLine = order.find((o) => o.uid === selectedUid);
@@ -138,10 +174,19 @@ function Register() {
         <div className="sbar__right">
           <VerticalSwitch />
           <span className="sbar__sync"><ion-icon name="wifi-outline"></ion-icon>Synced</span>
-          <div className="avatar"><ion-icon name="person"></ion-icon></div>
+          <StaffSwitch />
         </div>
       </div>
 
+      {restored && (
+        <div className="rk-restored"><ion-icon name="refresh-circle-outline"></ion-icon>Restored your open orders after reload.<button onClick={() => setRestored(false)}>OK</button></div>
+      )}
+      {locked && (
+        <div className="rk-lock"><ion-icon name="lock-closed-outline"></ion-icon>
+          <span><b>Table {tableLabel(activeTable)} is {owner}'s table.</b> You can view it. To change it, ask {owner} or a supervisor.</span>
+          <button onClick={() => setTakeover(true)}>Take over</button>
+        </div>
+      )}
       <div className={'reg reg--' + mobilePane}>
         {/* phone-only pane switcher (hidden on tablet/desktop) */}
         <div className="reg__mobtabs">
@@ -163,9 +208,15 @@ function Register() {
 
           <OrderTicket order={order} flags={flags} selectedUid={selectedUid} buffer={buffer} mode={mode}
             unitWord={verticalCfg.unitWord} courseNums={courseNums} courseName={courseName}
-            onSelect={selectLine} onStep={stepQty} onRemove={removeLine} onFire={fireCourse} />
+            onSelect={selectLine} onStep={stepQty} onRemove={removeLine} onFire={fireCourse} onVoid={(l) => { if (!locked) setVoidFor(l); }} />
 
           <OrderTotals totals={totals} svcRate={svcRate} />
+          {billState === 'changed' && (
+            <div className="rk-bill chg"><ion-icon name="alert-circle-outline"></ion-icon><span><b>Bill changed</b> since it was printed. Reprint it before taking payment.</span></div>
+          )}
+          {billState === 'ok' && (
+            <div className="rk-bill"><ion-icon name="receipt-outline"></ion-icon><span>Bill printed {window.KZ_LOCALE.fmtTime(new Date(bill.at))}{bill.n > 1 ? ' · copy ' + bill.n : ''}</span><button disabled={locked} onClick={doPrintBill}>Reprint</button></div>
+          )}
           {flags.loyalty && order.length > 0 && (
             <div className="oloyal">
               <div className="oloyal__card"><div className="lbl">Points won</div><div className="val up">+{totals.total.toFixed(1)}</div></div>
@@ -173,23 +224,30 @@ function Register() {
             </div>
           )}
 
-          <div className="oactions">
-            <button className="accent" disabled={!selLine} onClick={() => setNoteFor(selLine)}><ion-icon name="chatbubble-ellipses-outline"></ion-icon>Note</button>
-            <button disabled={order.length < 2} onClick={() => setSplitting(true)}><ion-icon name="git-branch-outline"></ion-icon>Split</button>
-            <button disabled={!selLine} onClick={() => { if (selLine) changeMode('disc'); }}><ion-icon name="pricetag-outline"></ion-icon>Discount</button>
-            <button onClick={() => alert('Refund mode — scan or select items to return.')}><ion-icon name="arrow-undo-outline"></ion-icon>Refund</button>
+          <div className={'oactions' + (flags.tables ? ' five' : '')}>
+            <button className="accent" disabled={!selLine || locked} onClick={() => setNoteFor(selLine)}><ion-icon name="chatbubble-ellipses-outline"></ion-icon>Note</button>
+            <button disabled={order.length < 2 || locked} onClick={() => setSplitting(true)}><ion-icon name="git-branch-outline"></ion-icon>Split</button>
+            <button disabled={!selLine || locked} onClick={() => { if (selLine) changeMode('disc'); }}><ion-icon name="pricetag-outline"></ion-icon>Discount</button>
+            {flags.tables && <button disabled={!order.length || !activeTable || locked} onClick={() => setMoving(true)}><ion-icon name="swap-horizontal-outline"></ion-icon>Move</button>}
+            <button disabled={locked} onClick={() => alert('Refund mode — scan or select items to return.')}><ion-icon name="arrow-undo-outline"></ion-icon>Refund</button>
           </div>
 
           <div className="ofoot">
             {flags.kitchen && (
-              <button className="ofoot__send" disabled={!unfired.length && !(flags.tables && !activeTable)} onClick={sendAll}>
+              <button className="ofoot__send" disabled={locked || (!unfired.length && !(flags.tables && !activeTable))} onClick={sendAll}>
                 <ion-icon name="send-outline"></ion-icon>{flags.tables && !activeTable ? 'Pick table' : 'Send'}
                 {unfired.length > 0 && <span className="ct">{unfired.reduce((s, o) => s + o.qty, 0)}</span>}
               </button>
             )}
-            <button className="ofoot__pay" disabled={!order.length} onClick={() => setCharging(true)}>
-              <ion-icon name="card-outline"></ion-icon>Pay<span className="amt">{money(totals.total)}</span>
-            </button>
+            {billState === 'none' || billState === 'changed' ? (
+              <button className={'ofoot__pay ofoot__bill' + (billState === 'changed' ? ' chg' : '')} disabled={locked} onClick={doPrintBill}>
+                <ion-icon name="print-outline"></ion-icon>{billState === 'changed' ? 'Reprint bill' : 'Print bill'}<span className="amt">{money(totals.total)}</span>
+              </button>
+            ) : (
+              <button className="ofoot__pay" disabled={!order.length || locked} onClick={() => setCharging(true)}>
+                <ion-icon name="card-outline"></ion-icon>Pay<span className="amt">{money(totals.total)}</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -225,19 +283,15 @@ function Register() {
 
       {charging && <ChargeSheet total={totals.total} orderNo={orderNo} onDone={finishOrder} onClose={() => setCharging(false)} />}
       {splitting && <SplitSheet order={order} guests={guests} onClose={() => setSplitting(false)} />}
-      {noteFor && <NoteSheet line={noteFor} onSave={(patch) => { setOrder((cur) => cur.map((o) => o.uid === noteFor.uid ? { ...o, ...patch } : o)); setNoteFor(null); }} onClose={() => setNoteFor(null)} />}
+      {noteFor && <NoteSheet line={noteFor} onSave={saveNote} onClose={() => setNoteFor(null)} />}
+      {voidFor && <VoidSheet line={voidFor} table={activeTable ? tableLabel(activeTable) : (flags.tabs ? tabName : 'Counter')}
+        onDone={(qty) => { setOrder((cur) => cur.flatMap((o) => o.uid !== voidFor.uid ? [o] : (o.qty - qty <= 0 ? [] : [{ ...o, qty: o.qty - qty }]))); setVoidFor(null); setSelectedUid(null); setEditing(false); }}
+        onClose={() => setVoidFor(null)} />}
+      {moving && <MoveLinesSheet from={activeTable} lines={order} onClose={() => setMoving(false)} />}
+      {takeover && <TakeoverSheet tableId={activeTable} owner={owner} onClose={() => setTakeover(false)} />}
+      {clearWarn && <ClearWarnSheet tableId={clearWarn} onClose={() => { setClearWarn(null); setActiveTable(null); }} />}
     </div>
   );
 }
 
-function floorOf(tableId) {
-  if (!tableId) return 'main';
-  const f = window.RK_FLOORS.find((fl) => fl.tables.some((t) => t.id === tableId));
-  return f ? f.id : 'main';
-}
-function tableLabel(tableId) {
-  for (const f of window.RK_FLOORS) { const t = f.tables.find((x) => x.id === tableId); if (t) return t.label; }
-  return tableId;
-}
-
-Object.assign(window, { Register, floorOf, tableLabel });
+Object.assign(window, { Register });

@@ -1,63 +1,62 @@
 # Koomzo — Application Suite (local)
 
-Every Koomzo application screen as a runnable **React + Node** project. No
-documents, specs or decks are included — application files only.
+Every Koomzo application screen as a runnable **React + Node** project, together with the **user guides** (EN/FR) and the **plans and specs** each module was built from.
 
 ## Run it
 
 ```bash
-cd koomzo-pos-web
 npm install
 npm start
 ```
 
-Then open **http://localhost:5173** — the launcher lists all 35 screens.
+Then open **http://localhost:5173**. The launcher lists every screen, guide and plan, and has a search box.
 
-Node 18 or newer. A different port: `PORT=3000 npm start`.
+You need Node 18 or newer. To use a different port: `PORT=3000 npm start`.
 
 ## What this is
 
-Each screen is a **React application**: components in `.jsx`, state in React
-hooks, styled with the Koomzo design tokens. JSX is transpiled in the browser by
-`@babel/standalone`, and a small **Express** server (`server.js`) serves the
-screens and their shared modules from `public/`. This is the same code that runs
-in the design tool, packaged to run anywhere — there is no build step, so
-editing a `.jsx` file and reloading the page is the whole loop.
+Each screen is a **React application**: components in `.jsx`, state in React hooks, styled with the Koomzo design tokens. `@babel/standalone` transpiles the JSX in the browser. A small **Express** server (`server.js`) serves everything from `public/`. There is no build step: edit a `.jsx` file and reload the page.
+
+Markdown plans (`*.md`) open as a readable page in the browser. Add `?raw` to the URL to get the file itself.
 
 ## Layout
 
 ```
 koomzo-pos-web/
-  package.json        Express dependency + start script
-  server.js           Static server + /api/screens index
+  package.json · server.js · CHANGES.md
+  backend/                Firebase functions + Firestore rules (not started by npm start)
   public/
-    index.html        React launcher (all screens, searchable)
-    Koomzo *.html      one entry point per screen
-    kz/                shared shell: capability registry, locale, setup, profile
-    pos/               design tokens (colors_and_type.css), kit.css, favicon
-    padmin/            admin shell — rail, topbar, tables
-    formbuilder/       form builder: fields, logic, data sources, i18n
-    workflow/          orchestrator + flow designer
-    automations/       recipes and runs
-    forms/ forms-admin/    published forms, submissions, records
-    retail/ retailflex/ restaurant/ grocery/   selling modules
-    hotel/ salon/ gym/ queue/ signage/         operations modules
+    index.html            Launcher: screens, guides, plans (searchable)
+    Koomzo *.html         One entry point per screen, guide page or spec
+    Koomzo *.md           Plans and specs (Markdown)
+    kz/                   Shared shell: capability registry, locale, setup, profile
+    pos/                  Design tokens (colors_and_type.css), kit.css, favicon
+    link/                 Local network: hub/client core, peers, device app
+    guide/                User guide CSS, JS, step animations, screenshots
+    restaurant/ hotel/ retailflex/ retail/ grocery/ salon/ gym/ queue/ signage/
     inventory/ mrp/ invoicing/ catalog/ barcode/
-    apps/ home/ settings/ uadmin/ mobile/
+    padmin/ formbuilder/ workflow/ automations/ forms/ forms-admin/
+    apps/ home/ settings/ uadmin/ docs/ spec/
 ```
 
-Shared design tokens: `public/pos/colors_and_type.css`. The capability registry
-that drives progressive disclosure: `public/kz/kz-caps.js`.
+## Plans and specs — latest
+
+| Document | Module |
+|---|---|
+| `Koomzo Restaurant - Production Gap Spec.md` | Restaurant & Bar: gaps to production (G1–G6) |
+| `Koomzo Restaurant - Service Scenario Plan.md` | Restaurant & Bar: service scenarios |
+| `Koomzo Restaurant - Server Banking and Ardoise Plan.md` | Restaurant & Bar: server banking and the ardoise (tab) |
+| `Koomzo Hotel - Booking Form Corrections Plan.md` | Hotel: arrival calendar, nights and deposit counters, per-tenant settings |
+| `Koomzo Link - Local Network Plan.md` · `Koomzo - Local Network (Hub and Clients).html` | Local network: one hub, many clients, offline |
+| `Koomzo - Batch 1 Close-out Rulings.md` / `.html` | Batch 1 rulings |
+| `Koomzo User Guide - Plan.md` · `Koomzo User Guide - Edition 2 Plan.md` | User guide, editions 1 and 2 |
+| `Koomzo Queue - Requirements.md` | Queue |
+
+The rest of the specs (functional spec, register, inventory, signage, MRP, progressive disclosure…) are listed under **Specs & references** in the launcher.
 
 ## Notes
 
-- React, ReactDOM, Babel and Ionicons load from CDNs, so first load needs
-  network access. To run fully offline, vendor those four scripts into `public/`
-  and update the `<script src>` tags in each HTML file.
-- Data is in-memory fixtures (`*-data.js`, `rdata.js`, `gm-data.js`, …). Nothing
-  persists across reloads except language and a few UI preferences in
-  `localStorage`.
-- To move to a bundled production setup, point Vite at the same `.jsx` files:
-  they are ordinary React components, but they currently share state through
-  `window` assignments rather than ES module imports, so that port means adding
-  `import`/`export` to each file.
+- React, ReactDOM, Babel and Ionicons load from CDNs, so the first load needs network access. To run fully offline, vendor those four scripts into `public/` and update the `<script src>` tags.
+- Data comes from in-memory fixtures (`*-data.js`). Only language and a few UI preferences persist, in `localStorage`.
+- To move to a bundled production setup, point Vite at the same `.jsx` files. They share state through `window` assignments rather than ES module imports, so that port means adding `import`/`export` to each file.
+- The user guide pages link to each other under project names. `public/guide/guide.js` also handles the short published names (`index.html`, `fr.html`, `hotel.html`, `fr-hotel.html` …).
