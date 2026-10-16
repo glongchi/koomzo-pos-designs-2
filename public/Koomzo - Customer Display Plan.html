@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Customer-Facing Display Plan</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.sp{flex:1}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 14px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 16px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 6px 10px}
+.side a.nv{display:flex;align-items:center;gap:9px;min-height:34px;padding:6px 10px;border-radius:9px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a.nv ion-icon{font-size:15px;color:var(--kz-muted-3);flex:none}
+.side a.nv:hover{background:var(--kz-surface-2);color:var(--kz-ink)}
+.side a.nv.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.side a.nv.on ion-icon{color:var(--kz-primary)}
+.doc{padding:34px 34px 110px;max-width:1080px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.lede{margin:0 0 22px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:72ch;text-wrap:pretty}
+h2{margin:44px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em;scroll-margin-top:22px}
+h3{margin:26px 0 8px;font:700 15px var(--kz-font-sans)}
+.sub{margin:0 0 14px;font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-muted);max-width:74ch;text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:74ch;text-wrap:pretty}
+.mono{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 6px;color:var(--kz-ink-2);white-space:nowrap}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px}
+.card h4{margin:0 0 4px;font:700 14px var(--kz-font-sans);display:flex;align-items:center;gap:8px}
+.card h4 ion-icon{color:var(--kz-primary);font-size:16px}
+.card p{margin:0;font-size:13px;line-height:1.65}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.tblwrap{overflow-x:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+td .y{color:var(--kz-success);font-weight:700}td .n{color:var(--kz-muted-3)}
+.chg{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:11px;overflow:hidden}
+.chg__h{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.chg__h .num{width:26px;height:26px;border-radius:7px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none}
+.chg__h b{font:700 13.5px var(--kz-font-sans)}
+.chg__b{padding:13px 16px}
+.chg__b p{margin:0 0 9px;font-size:13.5px}
+.chg__b p:last-child{margin-bottom:0}
+.sev{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--kz-radius-pill)}
+.sev.bug{background:var(--kz-discount-wash);color:#b8401f}
+.sev.gap{background:var(--kz-warning-wash);color:#8a6414}
+.sev.new{background:var(--kz-info-wash);color:#2a63b8}
+.sev.ok{background:var(--kz-success-wash);color:#1f7a45}
+.sev.done{background:var(--kz-success-wash);color:#1f7a45}
+.done-ic{width:20px;height:20px;border-radius:999px;background:var(--kz-success);display:grid;place-items:center;flex:none}
+.done-ic ion-icon{font-size:12px;color:#fff}
+.banner{display:flex;gap:12px;background:var(--kz-success-wash);border:1px solid #bfe3cd;border-radius:var(--kz-radius);padding:15px 17px;margin-bottom:16px}
+.banner ion-icon{color:#1f7a45;font-size:19px;flex:none;margin-top:1px}
+.banner p{margin:0;font-size:13.5px;line-height:1.62}
+.dev{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:4px 18px;margin-bottom:12px}
+.dev__r{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--kz-border)}
+.dev__r:last-child{border-bottom:none}
+.dev__r ion-icon{color:var(--kz-warning);font-size:16px;flex:none;margin-top:2px}
+.dev__r div{font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-ink-2)}
+.dev__r b{color:var(--kz-ink)}
+.files{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.files span{font:600 11px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:6px;padding:3px 8px;color:var(--kz-ink-2)}
+.ba{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--kz-border);border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-top:4px}
+.ba>div{background:#fff;padding:11px 13px}
+.ba .t{font:700 9.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:6px}
+.ba code{display:block;font:500 11.5px/1.7 var(--kz-font-num);color:var(--kz-ink-2);white-space:pre-wrap;word-break:break-word}
+.ba .bad code{color:#b8401f}
+.ba .good code{color:#1f7a45}
+.note{display:flex;gap:10px;background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:13px 15px;margin-bottom:12px}
+.note ion-icon{color:var(--kz-primary);font-size:17px;flex:none;margin-top:1px}
+.note p{margin:0;font-size:13px;line-height:1.62}
+.note.warn{background:var(--kz-warning-wash);border-color:#e8d6a8}
+.note.warn ion-icon{color:#8a6414}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+
+.dec td:first-child{white-space:nowrap;font:700 12px var(--kz-font-num);color:var(--kz-primary)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:6px 0 14px}
+.flow>div{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:12px 13px}
+.flow .k{font:700 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-primary);margin-bottom:4px}
+.flow b{display:block;font:700 13px var(--kz-font-sans);margin-bottom:3px}
+.flow span{font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-muted)}
+.chk{list-style:none;padding:0;margin:0 0 12px;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius)}
+.chk li{display:flex;gap:10px;padding:10px 14px;border-bottom:1px solid var(--kz-border);font:400 13px/1.55 var(--kz-font-sans);color:var(--kz-ink-2)}
+.chk li:last-child{border-bottom:none}
+.chk li code{font:700 11px var(--kz-font-num);color:var(--kz-muted-3);min-width:34px}
+.chk li .st{margin-left:auto;flex:none}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side">
+<div class="side__mark"><div class="ic"><ion-icon name="tv"></ion-icon></div><b>koomzo · POS</b></div>
+<p class="side__v">Customer display · plan v1 · Oct 2026</p>
+<div class="side__g">Why</div>
+<a class="nv" href="#goal"><ion-icon name="flag-outline"></ion-icon>Goal</a>
+<a class="nv" href="#decisions"><ion-icon name="git-branch-outline"></ion-icon>Decisions to validate</a>
+<div class="side__g">Design</div>
+<a class="nv" href="#states"><ion-icon name="albums-outline"></ion-icon>Display screens</a>
+<a class="nv" href="#layouts"><ion-icon name="phone-landscape-outline"></ion-icon>Layouts by device</a>
+<a class="nv" href="#staff"><ion-icon name="person-outline"></ion-icon>Staff side</a>
+<a class="nv" href="#contract"><ion-icon name="code-slash-outline"></ion-icon>Message contract</a>
+<div class="side__g">Delivery</div>
+<a class="nv" href="#work"><ion-icon name="list-outline"></ion-icon>Work items</a>
+<a class="nv" href="#prod"><ion-icon name="construct-outline"></ion-icon>Production tasks</a>
+<a class="nv" href="#accept"><ion-icon name="checkmark-done-outline"></ion-icon>Acceptance checklist</a>
+<a class="nv" href="#out"><ion-icon name="remove-circle-outline"></ion-icon>Out of scope</a>
+<a class="nv" href="#verify"><ion-icon name="shield-checkmark-outline"></ion-icon>Cross-check</a>
+</nav>
+<main class="doc">
+<p class="eb">Plan · validated and built</p>
+<h1>Customer-facing display — Restaurant &amp; Bar and Retail Flex</h1>
+<p class="lede">A second screen turned towards the customer — the rear screen of an all-in-one POS, a tablet, or a payment terminal — shows each item as it is rung up, the running total, and what to do at payment. The customer checks the bill as it is built, and the cashier stops reading totals aloud.</p>
+<div class="banner"><ion-icon name="checkmark-done-circle"></ion-icon><p><b>Validated.</b> All proposals accepted, with two changes: <b>D5</b> — each touch action (loyalty phone, receipt choice, tipping) is a separate switch per display, so the venue chooses which ones customers see; <b>D12</b> — available on <b>all tiers</b>, not Mid+.</p></div>
+<div class="links"><a href="Koomzo - Customer Display Demo.html"><ion-icon name="play-outline"></ion-icon>Side-by-side demo</a><a href="Koomzo Customer Display.html"><ion-icon name="tv-outline"></ion-icon>Display app</a><a href="Koomzo POS - Restaurant &amp; Bar.html"><ion-icon name="restaurant-outline"></ion-icon>Restaurant → Setup → Customer display</a><a href="Koomzo POS - Retail Flex.html"><ion-icon name="storefront-outline"></ion-icon>Retail Flex → Setup</a></div>
+
+<h2 id="goal">Goal</h2>
+<div class="g2">
+<div class="card"><h4><ion-icon name="people-outline"></ion-icon>Customer</h4><p>Sees every line, every price change and the total live; knows exactly what to pay and how (cash change, MoMo approval). Can enter a loyalty number or choose a receipt on a touch screen.</p></div>
+<div class="card"><h4><ion-icon name="storefront-outline"></ion-icon>Venue</h4><p>Fewer disputes at the till, faster MoMo approvals, a place for promotions while idle. Works on the shop Wi-Fi with the internet down, like the rest of Koomzo.</p></div>
+</div>
+
+<h2 id="decisions">Decisions to validate</h2>
+<p class="sub">Proposed answers in bold.</p>
+<div class="tblwrap"><table class="dec"><thead><tr><th>#</th><th>Question</th><th>Proposed</th><th>Why</th></tr></thead><tbody>
+<tr><td>D1</td><td>How the display gets its data</td><td><b>The register sends the whole visible state on every change</b> (not item-by-item edits), with a sequence number and a 2-second heartbeat. Prototype: browser channel. Production: the same message over Koomzo Link on the shop Wi-Fi — no internet needed.</td><td>A dropped message can never leave the screen showing a wrong total: the next snapshot replaces everything.</td></tr>
+<tr><td>D2</td><td>Pairing</td><td><b>Register Setup → Customer display → a 4-digit code.</b> The display enters the code once and stays paired. One display per register; a display follows one register.</td><td>Simple for a cashier, no IT. Built-in rear screens skip pairing (see D9).</td></tr>
+<tr><td>D3</td><td>Screens the customer sees</td><td><b>Idle → Order → Payment → Thank you → Idle.</b> Order: every line with quantity, unit price, options and discounts, the newest line highlighted, running total. Payment: amount due large; cash tendered and change; MoMo / Orange Money “approve on your phone” with the countdown; split payments as paid / remaining. Thank you: change due, points earned, then back to idle after 8 s.</td><td>Matches the till’s own flow, so the customer always sees the same number the cashier sees.</td></tr>
+<tr><td>D4</td><td>What is never shown</td><td><b>Staff-only data is filtered out at the register before sending:</b> cost and margin, kitchen notes, void reasons and approvals, staff PINs, other tables. Phone numbers are masked (6•• •• •• 41). A removed line shows briefly struck through, then disappears.</td><td>Privacy and trust: the customer sees changes to their bill, never internal reasons.</td></tr>
+<tr><td>D5</td><td>Customer can tap (touch displays)</td><td><b>Three actions, each switched on or off per display</b> (validated change): loyalty phone entry (on), receipt choice — WhatsApp / SMS / print / none (on), tipping (off). Each arrives at the register as a suggestion the cashier accepts.</td><td>Useful without slowing the queue; tipping is uncommon locally, so it stays opt-in.</td></tr>
+<tr><td>D6</td><td>Restaurant: whose bill is shown</td><td><b>Counter, takeaway and tab orders show while being rung up. A table’s bill appears only when the cashier opens Print bill or Pay for it.</b> Service charge shows as its own line; a split shows only the part being paid. Switch: “Show table orders while ordering”.</td><td>A counter till moves between tables all evening; a customer at the counter must not see another table’s bill.</td></tr>
+<tr><td>D7</td><td>Retail Flex: sensitive items</td><td><b>Weighed items show weight × price per kg; variants show size / colour.</b> Age checks show “Staff is checking ID”, never the date of birth. Pharmacy profile: prescription items show “Prescription item” instead of the drug name (on by default for Pharmacy, a switch for others). An attached customer is greeted by first name with their points.</td><td>Retail sells things customers behind in the queue should not read.</td></tr>
+<tr><td>D8</td><td>Idle screen</td><td><b>Venue name and a welcome line, plus up to 3 promo slides.</b> If the Signage module is on, pick one of its playlists instead.</td><td>Reuses Signage for venues that already have it; nothing new to learn.</td></tr>
+<tr><td>D9</td><td>Hardware supported</td><td><b>(a) Built-in rear screen</b> on an all-in-one POS: <i>Open on second screen</i> from the register, no pairing. <b>(b) Separate tablet</b> on the Wi-Fi, paired. <b>(c) Android payment terminal</b> with a screen, running the display app. Three layouts: landscape 10–15" (lines left, total right), portrait 7–8" (stacked), small 4–6" terminal (total first, last item only).</td><td>Covers the full-suite hardware without a separate product per device.</td></tr>
+<tr><td>D10</td><td>When the link drops</td><td><b>After 5 s without a heartbeat the display greys the total and shows “Reconnecting…”.</b> It never shows an old total as current. Reconnect picks up the latest snapshot.</td><td>A stale total on a customer screen is worse than none.</td></tr>
+<tr><td>D11</td><td>Language</td><td><b>Set per display — Français (default) or English</b>, independent of the staff language. Dish and product names stay as entered.</td><td>The cashier and the customer often prefer different languages.</td></tr>
+<tr><td>D12</td><td>Where it is switched on</td><td><b>New capability “Customer display” for Restaurant & Bar and Retail Flex, on all tiers</b> (validated change), in the Control Centre like every other capability.</td><td>Same on/off mechanism as the rest of the suite; Lite venues don’t see it.</td></tr>
+</tbody></table></div>
+
+<h2 id="states">Display screens</h2>
+<div class="flow">
+<div><div class="k">1 · Pair</div><b>Enter the code</b><span>Shown once on a new display. Big 4-digit keypad, register name confirmed after pairing.</span></div>
+<div><div class="k">2 · Idle</div><b>Welcome</b><span>Venue name, “Bienvenue”, promo slides every 8 s. Nothing personal.</span></div>
+<div><div class="k">3 · Order</div><b>Live bill</b><span>Lines with qty × price, options, discount chips; newest line highlighted and scrolled into view; subtotal, discount, service, TVA, <b>total</b>. Customer name and points when attached.</span></div>
+<div><div class="k">4 · Payment</div><b>How to pay</b><span>Amount due. Cash: tendered and change. MoMo / OM: “Approve on your phone 6•• •• •• 41”, countdown, then approved or declined. Split: paid / remaining.</span></div>
+<div><div class="k">5 · Thank you</div><b>Done</b><span>Change to collect, points earned, receipt choice on touch screens. Back to idle after 8 s.</span></div>
+<div><div class="k">Any time</div><b>Reconnecting</b><span>After 5 s without a heartbeat: total greyed, “Reconnecting…”.</span></div>
+</div>
+
+<h2 id="layouts">Layouts by device</h2>
+<div class="tblwrap"><table><thead><tr><th>Device</th><th>Typical</th><th>Layout</th></tr></thead><tbody>
+<tr><td><b>Landscape 10–15"</b></td><td>All-in-one rear screen, 10" tablet</td><td>Lines on the left (scrolling), totals and payment panel on the right; total ≥ 48 px.</td></tr>
+<tr><td><b>Portrait 7–8"</b></td><td>Tablet on a stand</td><td>Header with context, lines, totals pinned at the bottom.</td></tr>
+<tr><td><b>Small 4–6"</b></td><td>Android payment terminal</td><td>Total first, last item added below, item count; payment takes the whole screen.</td></tr>
+</tbody></table></div>
+
+<h2 id="staff">Staff side</h2>
+<div class="g2">
+<div class="card"><h4><ion-icon name="options-outline"></ion-icon>Setup → Customer display</h4><p>Pairing code and status (paired · last seen), <i>Open on second screen</i>, <i>Show test screen</i>, language, welcome line, up to 3 slides or a Signage playlist, table rule (Restaurant), Rx privacy (Retail), tipping, unpair.</p></div>
+<div class="card"><h4><ion-icon name="tv-outline"></ion-icon>On the register</h4><p>A small status dot in the order header (display connected / reconnecting). Customer suggestions (loyalty phone, receipt choice) appear as a one-tap Accept / Ignore strip — never applied silently.</p></div>
+</div>
+
+<h2 id="contract">Message contract</h2>
+<p class="sub">One snapshot type from the register, one event type back. Everything staff-only is removed before the snapshot is built.</p>
+<div class="ba"><div><div class="t">Register → display · CfdSnapshot</div><code>{ v: 1, seq, at, registerId, venue, lang,
+  phase: 'idle' | 'order' | 'pay' | 'done',
+  order: { no, context, customer: {first, points}|null,
+    lines: [{ id, name, detail, qty, unitLabel,
+              unit, amount, disc, img, removed }],
+    subtotal, discount, svc, tax, taxLabel,
+    total, items, lastId },
+  pay:  { due, paid, remaining, method,
+          state, phoneMasked, expiresAt,
+          tendered, change },
+  done: { change, points } }</code></div>
+<div><div class="t">Display → register · CfdEvent</div><code>{ type: 'loyaltyPhone' | 'receipt' | 'tip'
+        | 'hello' | 'bye',
+  value, displayId, at }
+
+heartbeat: snapshot repeated every 2 s
+(same seq) — display drops seq ≤ last</code></div>
+<div><div class="t">Never in a snapshot</div><code>cost, margin, stock, kitchen notes,
+void reasons, approver, staff PIN,
+other tables / held tickets,
+full phone numbers, Rx drug names
+(when Rx privacy is on)</code></div></div>
+
+<h2 id="work">Work items</h2>
+<div class="chg"><div class="chg__h"><span class="num">1</span><b>Display channel</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>kz/kz-cfd.js (new)</span></div><p>Pairing codes, publish / subscribe of snapshots, heartbeat, back-channel events, per-register settings, the privacy filter that builds a snapshot from an order.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">2</span><b>Customer display app</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>Koomzo Customer Display.html (new)</span><span>kz/kz-cfd-display.jsx (new)</span><span>kz/kz-cfd.css (new)</span></div><p>Pair, idle, order, payment, thank-you and reconnecting screens; three layouts; FR / EN; touch actions.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">3</span><b>Restaurant & Bar</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>restaurant/register.jsx</span><span>kz/kz-charge.jsx</span><span>restaurant/floor-setup.jsx</span></div><p>Publish from the register (D6 rule), the charge sheet phases (cash / MoMo / split), status dot, suggestion strip, Setup → Customer display tab.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">4</span><b>Retail Flex</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>retailflex/rx-app.jsx</span><span>retailflex/rx-screens.jsx</span></div><p>Publish from the register (variants, weight, customer, D7 privacy), tender phases, status dot, suggestion strip, a Customer display section in Setup.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">5</span><b>Capability</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>kz/kz-caps.js</span></div><p>“Customer display” in both modules, all tiers.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">6</span><b>Side-by-side demo</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>Koomzo - Customer Display Demo.html (new)</span></div><p>Register and display next to each other, with a device-size switch for the display, so it can be tested on one computer.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">7</span><b>Guides</b><span class="sp"></span><span class="sev g">a</span></div><div class="chg__b"><p>Pairing and what customers see, in the Restaurant and Retail Flex guides (FR + EN).</p></div></div>
+<h3 id="prod">Production tasks (target app)</h3>
+<p class="sub">Could not be built in the prototype (no backend, device APIs or real network). Specified for <span class="mono">koomzoapps</span> in <a href="Koomzo - Templates, Photos &amp; Customer Display - Production Gap Spec.md">Production Gap Spec</a>; the prototype is the UI and rules reference.</p>
+<div class="chg"><div class="chg__h"><span class="num">8</span><b>Link transport + pairing records</b><span class="sp"></span><span class="sev gap">Target app</span></div><div class="chg__b"><p><b>C1</b> snapshot / event stream over Koomzo Link (non-persisted, latest-wins). <b>C2</b> pairing as a backend record — single-use code, 10-minute expiry.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">9</span><b>Display app build, rear screen, terminal</b><span class="sp"></span><span class="sev gap">Target app</span></div><div class="chg__b"><p><b>C4</b> Capacitor build of the display (kiosk lock, keep-awake, auto-start). <b>C3</b> built-in rear screen via Android Presentation / DisplayManager. <b>C5</b> Android payment terminal packaging; card capture stays out of scope.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">10</span><b>Real payment, receipt and loyalty</b><span class="sp"></span><span class="sev gap">Target app</span></div><div class="chg__b"><p><b>C6</b> MoMo / Orange Money state from provider callbacks. <b>C7</b> receipt choice delivered by WhatsApp / SMS / print. <b>C8</b> Restaurant loyalty lookup on the shared Customers service.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">11</span><b>Signage idle, tips, settings</b><span class="sp"></span><span class="sev gap">Target app</span></div><div class="chg__b"><p><b>C9</b> Signage loop on the idle screen (closes A4). <b>C10</b> tip as <span class="mono">order.tip_minor</span>, not a line. <b>C11</b> display settings as audited venue policy.</p></div></div>
+
+<h2 id="accept">Acceptance checklist</h2>
+<p class="sub">After building, each line is checked and marked Pass or Fail with notes.</p>
+<ul class="chk"><li><code>A1</code>Customer display capability exists for Restaurant & Bar and Retail Flex on all tiers and is visible in the Control Centre.</li><li><code>A2</code>Register Setup → Customer display: pair code, paired display status, Open on second screen, test screen, settings (language, idle message, slides, table rule, tipping, Rx privacy).</li><li><code>A3</code>Display page: enter code → paired; survives reload; unpair from either side.</li><li><code>A4</code>Idle screen with venue name, welcome line and rotating slides (or a Signage playlist when Signage is on).</li><li><code>A5</code>Restaurant: adding, changing quantity, discounting and removing lines updates the display within a second; newest line highlighted; removed line struck through briefly.</li><li><code>A6</code>Restaurant: table orders appear only at Print bill / Pay (default); counter / takeaway / tab orders appear while ringing; service charge line shown.</li><li><code>A7</code>Retail Flex: scanned items, variants, weighed items (kg × price/kg), line discounts and attached customer (first name + points) shown.</li><li><code>A8</code>Retail Flex: age-check step shows “Staff is checking ID”; Pharmacy prescription items show “Prescription item”.</li><li><code>A9</code>Payment: amount due; cash tendered and change; MoMo / Orange Money pending with masked number and countdown, then approved / declined; split payments as paid / remaining.</li><li><code>A10</code>Thank you: change and points; returns to idle after 8 s, or at once when the next order starts.</li><li><code>A11</code>No staff-only data in any message sent to the display (checked in the message itself, not just on screen).</li><li><code>A12</code>Touch actions: each of loyalty phone, receipt choice and tipping can be switched on/off per display; enabled ones reach the register as an accept / ignore suggestion; defaults loyalty + receipt on, tipping off.</li><li><code>A13</code>Heartbeat: display greys and shows Reconnecting after 5 s without a message; recovers on the next snapshot.</li><li><code>A14</code>Layouts: landscape, portrait and small-terminal render correctly; text readable at 1 m (total ≥ 48 px on landscape).</li><li><code>A15</code>Display language FR / EN per display, independent of the register.</li><li><code>A16</code>A side-by-side demo page (register + display) for testing without two devices.</li><li><code>A17</code>Guides (FR + EN) for Restaurant and Retail Flex explain pairing and what customers see.</li><li><code>A18</code>No console errors on Restaurant & Bar, Retail Flex, the display page and the demo page.</li></ul>
+
+<h2 id="out">Out of scope (v1)</h2>
+<div class="dev">
+<div class="dev__r"><ion-icon name="remove-circle-outline"></ion-icon><div><b>Card / NFC payment on the terminal itself</b> — the terminal shows the bill and MoMo status; taking card payments needs the acquirer’s SDK.</div></div>
+<div class="dev__r"><ion-icon name="remove-circle-outline"></ion-icon><div><b>Signature capture and customer ratings.</b></div></div>
+<div class="dev__r"><ion-icon name="remove-circle-outline"></ion-icon><div><b>One display for several registers</b> (queue-style) — Queue Management already covers calling customers.</div></div>
+<div class="dev__r"><ion-icon name="remove-circle-outline"></ion-icon><div><b>Real network transport</b> — the prototype uses an in-browser channel; production plugs the same messages into Koomzo Link.</div></div>
+</div>
+
+<h2 id="verify">Cross-check against the plan</h2>
+<p class="sub">Every acceptance line checked in the running prototype, 15 Oct 2026.</p>
+<div class="tblwrap"><table><thead><tr><th>#</th><th>Result</th><th>What was checked</th></tr></thead><tbody>
+<tr><td><b>A1</b></td><td><span class="sev ok">Pass</span></td><td>“Customer display” capability added to Retail POS and Restaurant (Lite tier, Free plan → every tier and plan). Existing saved states get it switched on by the normal migration. Limited to desktop/tablet devices like the kitchen display.</td></tr>
+<tr><td><b>A2</b></td><td><span class="sev ok">Pass</span></td><td>Setup → Customer display (Restaurant tab; Retail Flex panel under Setup): code, status with display id and last seen, Open on second screen, Show test screen, Unpair · new code, language, table rule (Restaurant), Rx privacy (Retail), thank-you seconds, touch actions, welcome line, 3 slides.</td></tr>
+<tr><td><b>A3</b></td><td><span class="sev ok">Pass</span></td><td>Code entry pairs and survives reload; “Unpair · new code” on the register sends an unpair and the display returns to the code screen. Built-in screens skip pairing.</td></tr>
+<tr><td><b>A4</b></td><td><span class="sev gap">Partial → C9</span></td><td>Venue name, welcome line and rotating slides (title, line, optional https image) work. <b>Signage playlist on the idle screen is not wired</b> — the display has no Signage player yet; listed under follow-ups.</td></tr>
+<tr><td><b>A5</b></td><td><span class="sev ok">Pass</span></td><td>Adding, quantity, discount and removal publish on each change (verified in the snapshot); newest line highlighted and scrolled into view; removed line struck through ~1.5 s.</td></tr>
+<tr><td><b>A6</b></td><td><span class="sev ok">Pass</span></td><td>Table orders publish only while Pay is open or a bill has been printed (rule “At bill / Pay”); counter and tab orders always; service charge line carried. Switch “While ordering” follows the register.</td></tr>
+<tr><td><b>A7</b></td><td><span class="sev ok">Pass</span></td><td>Variants and modifiers as the line detail, weighed items as “1.250 kg” with price / kg, line discount chips, attached customer as first name + points.</td></tr>
+<tr><td><b>A8</b></td><td><span class="sev ok">Pass</span></td><td>Age-check step publishes notice “Staff is checking ID”; Pharmacy prescription items publish as “Article sur ordonnance / Prescription item” — checked in the message (no drug name, Rx reference or lot).</td></tr>
+<tr><td><b>A9</b></td><td><span class="sev ok">Pass</span></td><td>Payment phase is driven by the shared charge model, so both registers get it: amount due, cash tendered + change, MoMo / Orange Money pending with countdown ring, declined / expired / unknown, split as paid / remaining, share amount.</td></tr>
+<tr><td><b>A10</b></td><td><span class="sev ok">Pass</span></td><td>Paid → thank-you with change and points; back to idle after the set seconds (5 / 8 / 12), or at once when the next order starts.</td></tr>
+<tr><td><b>A11</b></td><td><span class="sev ok">Pass</span></td><td>A whitelist builds every message; fields not listed (cost, notes, station, tags, fired, void data, staff, PINs, Rx refs, lot, serial, full phone) cannot pass. Phone numbers are masked before sending.</td></tr>
+<tr><td><b>A12</b></td><td><span class="sev ok">Pass</span></td><td>Loyalty, receipt and tipping each switched per display (validated change). Taps arrive as Accept / Ignore cards on the register. Accept: Retail attaches the matching member (or says none found); Restaurant marks the order as a loyalty member; tip adds a Tip line; receipt choice is recorded.</td></tr>
+<tr><td><b>A13</b></td><td><span class="sev ok">Pass</span></td><td>Heartbeat every 2 s; after 5 s without one the total, change and amounts grey out with “Reconnexion… / Reconnecting…”; the next snapshot clears it.</td></tr>
+<tr><td><b>A14</b></td><td><span class="sev ok">Pass</span></td><td>Landscape (lines left, totals right, total 48–72 px), portrait (stacked) and small terminal (total first, last item, full-screen payment). Auto-chosen from the screen size or forced with ?layout=.</td></tr>
+<tr><td><b>A15</b></td><td><span class="sev ok">Pass</span></td><td>French (default) or English per display, independent of the register; product names unchanged.</td></tr>
+<tr><td><b>A16</b></td><td><span class="sev ok">Pass</span></td><td>Koomzo - Customer Display Demo: Restaurant or Retail register beside a rear-screen / 8" tablet / 5" terminal display.</td></tr>
+<tr><td><b>A17</b></td><td><span class="sev ok">Pass</span></td><td>Restaurant and Retail Flex guides, FR + EN: pairing, test screen, touch actions, welcome screen, what is never shown, the table rule.</td></tr>
+<tr><td><b>A18</b></td><td><span class="sev ok">Pass</span></td><td>No console errors on the display, demo, Restaurant & Bar and Retail Flex pages.</td></tr>
+</tbody></table></div>
+<h3>Delivered files</h3>
+<div class="files"><span>kz/kz-cfd.js</span><span>kz/kz-cfd-ui.jsx</span><span>kz/kz-cfd-display.jsx</span><span>kz/kz-cfd.css</span><span>Koomzo Customer Display.html</span><span>Koomzo - Customer Display Demo.html</span><span>kz/kz-charge.jsx</span><span>kz/kz-caps.js</span><span>restaurant/register.jsx</span><span>restaurant/floor-setup.jsx</span><span>retailflex/rx-app.jsx</span><span>retailflex/rx-screens.jsx</span><span>retailflex/rx-parts.jsx</span><span>4 guides</span></div>
+<div class="dev">
+<div class="dev__r"><ion-icon name="arrow-forward-circle-outline"></ion-icon><div><b>Signage playlist on idle (D8) → C9</b> in the <a href="Koomzo - Templates, Photos &amp; Customer Display - Production Gap Spec.md">production spec</a>. Slides cover the need in the prototype.</div></div>
+<div class="dev__r"><ion-icon name="arrow-forward-circle-outline"></ion-icon><div><b>Transport → C1, C2.</b> The prototype channel works inside one browser; the target app carries the same messages over Koomzo Link with backend pairing.</div></div>
+<div class="dev__r"><ion-icon name="arrow-forward-circle-outline"></ion-icon><div><b>Restaurant loyalty → C8; receipt delivery → C7; tips → C10; rear screen / terminal → C3–C5.</b> Behaviour is final in the prototype; only the device and service wiring remain.</div></div>
+</div>
+</main>
+</div>
+</body>
+</html>

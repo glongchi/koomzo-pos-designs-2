@@ -139,11 +139,10 @@ function ProductTile({ p, qty, onAdd, unitWord }) {
   return (
     <button className="ptile" onClick={() => onAdd(p)}>
       {qty > 0 && <span className="ptile__badge" key={qty}>{qty}</span>}
-      <div className="ptile__art" style={{ background: p.tint.bg }}>
-        <ion-icon name={p.icon} style={{ color: p.tint.fg }}></ion-icon>
+      <DishArt p={p} className="ptile__art">
         {p.tags && p.tags.length > 0 && <span className="ptile__tags"><TagChips tags={p.tags.slice(0, 2)} /></span>}
         <span className="ptile__add"><ion-icon name="add"></ion-icon></span>
-      </div>
+      </DishArt>
       <div className="ptile__meta">
         <div className="ptile__name">{p.name}</div>
         <div className="ptile__desc">{p.desc}</div>

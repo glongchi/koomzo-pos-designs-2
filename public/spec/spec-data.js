@@ -265,6 +265,7 @@ window.SPEC_MODULES = [
       { m:'POST', path:'/v1/shifts/:id/close', note:'Counted amounts, variance reason.' },
     ],
     open:[
+      'Customer display (capability: cfd) — production transport, pairing, rear screen and terminal builds are C1–C5 in the Templates, Photos & Customer Display gap spec; Pharmacy hides prescription names on the display by default.',
       'Price override: does it need a manager PIN by default, or is that a per-tenant policy?',
       'Return window is currently 30 days globally. Should it be per category, or per tenant with category exceptions?',
       'Store credit — a first-class balance entity, or gift cards with a flag?',
@@ -559,6 +560,9 @@ window.SPEC_MODULES = [
       'Item names are unique within a tenant catalogue. Kitchen tickets and all-day aggregation resolve dishes by name, so two menus may not ship the same name with different prices or routing.',
       'A bill charged to a room becomes a folio line in the Hotel module and the order closes as settled_to_folio. The order stays immutable; no copy of it lives on the folio, only a reference.',
       'Charge to room requires an in-house stay on that unit. A departed or off-sale room may not accept a posting.',
+      'Menu and floor plan may be started from a platform template. Applying one is a copy: no link from venue data back to the template, and later template versions never change a venue. Copied dishes carry a check-price flag until edited or confirmed.',
+      'Dish photos are CDN media referenced by id; the item keeps an icon and tint as the fallback whenever the image is missing or fails.',
+      'Customer display (capability: cfd): the register publishes a whitelisted snapshot only — no cost, notes, void data, staff or other tables. A table bill shows only at Print bill or Pay unless the venue chooses otherwise. Customer taps arrive as suggestions the cashier accepts.',
     ],
     events:[
       { name:'ticket.fired', when:'Sent to kitchen', payload:'ticket, items, stations' },
@@ -576,8 +580,13 @@ window.SPEC_MODULES = [
       { m:'PATCH',path:'/v1/tables/:id', note:'Status transitions.' },
       { m:'GET',  path:'/v1/hotel/in-house?site=', note:'Rooms a bill may be charged to. Read-only projection of the rack.' },
       { m:'POST', path:'/v1/orders/:id/charge-to-room', note:'Posts one folio line and closes the order as settled_to_folio.' },
+      { m:'GET',  path:'/v1/templates?kind=&venue=&currency=', note:'Published menu and floor templates (T1).' },
+      { m:'POST', path:'/v1/template-uses', note:'Copy record; idempotent (T1, T2).' },
+      { m:'POST', path:'/v1/media', note:'Dish photo upload → CDN url + media_id (T4).' },
+      { m:'POST', path:'/v1/cfd/pairings', note:'Pair a customer display to a register; single-use code (C2).' },
     ],
     open:[
+      'Production gaps for templates, dish photos and the customer display are specified in “Koomzo - Templates, Photos & Customer Display - Production Gap Spec.md” (T1–T4, C1–C11).',
       'Transport for KDS: websocket, SSE, or long-poll? Affects the offline cache design.',
       'Course firing — automatic on a timer, or always manual?',
       'Do kiosk and server orders share numbering, or separate series?',

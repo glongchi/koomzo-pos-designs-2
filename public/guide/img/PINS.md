@@ -12,3 +12,7 @@ sal-sell: search 23.3/17 · cats 32.5/26.7 · finished in chair 34.6/43 · tiles
 gym-desk: offline 30/14.8 · writes 80/14.8 · search 20.5/27.2 · scan 56/27.2 · class now 20.5/53 · member 22.7/82.2 · check-in 48.5/94 · capacity 70.3/26 · zones 73/37 · floor 69/59.3
 gym-timetable: room 71/27.4 · book 88.7/27.4 · stats 20.5/40.7 · no-shows 65/40.7 · tabs 26/54.3 · row 25/68.5 · places 81.7/69 · full 82/93
 q-display: chair 13.5/40.7 · paused 38/40.7 · come forward 62/75.5 · next up 13.6/88.3 · waiting 73.6/6.3 · sync 93.6/95.5
+menu: tab 14.4/3.3 · cat actions 9/25 · new cat 7.6/51.7 · new dish 77/8 · station 72/17
+menu-dish: name 24/24.2 · desc 24/32.8 · price 24/41.3 · category 24/49.2 · station 24/56.4 · tags 24/66.1 · save 72.5/86.7
+retail-products: rail 7.5/33 · search 12/28.7 · categories 71/12 · new 88/12 · price 93/36
+retail-product-new: name 11.8/36 · sku/barcode 34.5/69 · category 11.8/92 · preview 75/50 · save 89/12

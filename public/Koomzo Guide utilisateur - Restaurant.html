@@ -38,6 +38,8 @@
 <a class="sub" href="#s-floor">Plan de salle</a>
 <a class="sub" href="#s-kitchen">Écran cuisine</a>
 <a class="sub" href="#s-kiosk">Borne</a>
+<a class="sub" href="#s-menu">Menu</a>
+<a class="sub" href="#s-cfd">Écran client</a>
 <a class="sub" href="#s-setup">Configuration</a>
 <a href="#rk-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · En cas de problème</a>
 <a href="#rk-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Aller plus loin</a>
@@ -83,8 +85,8 @@
 <p class="sub">Environ une heure, une seule fois. À faire avant votre premier service.</p>
 <ol class="steps">
 <li><div><b>Premiers pas</b><span>Compte, établissement et personnel — voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">P1</a>.</span></div></li>
-<li><div><b>Choisissez un plan</b><span>Configuration → Plan de salle → <i>Partir d'un plan type</i>. Maquis (Salle + Terrasse) est le choix habituel. Indiquez le nombre de tables par zone.</span></div></li>
-<li><div><b>Ajoutez votre menu</b><span>Catégories (Entrées, Plats, Grillades, Boissons…), chaque plat avec son prix et le poste qui le prépare — grill, marmite, bar.</span></div></li>
+<li><div><b>Choisissez un plan</b><span>Configuration → Plan de salle → <i>Partir d'un modèle</i>. Maquis (Salle + Terrasse) est le choix habituel. Indiquez le nombre de tables par zone avant d'appliquer.</span></div></li>
+<li><div><b>Ajoutez votre menu</b><span>Configuration → <strong>Menu</strong> → <i>Partir d'un modèle</i> pour un menu tout prêt à modifier — ou créez vos catégories, puis chaque plat avec son prix et le poste qui le prépare — grill, marmite, bar. Pas à pas : <a href="#s-menu">Menu</a>.</span></div></li>
 <li><div><b>Choisissez les paiements</b><span>Les espèces sont actives. Ajoutez MTN MoMo et Orange Money avec vos numéros marchands.</span></div></li>
 <li><div><b>Choisissez vos appareils</b><span>Un appareil pour commencer. Ajoutez téléphones, écran cuisine et borne plus tard — <a data-page="hub" href="Koomzo Guide utilisateur.html#p4">P4</a>.</span></div></li>
 <li><div><b>Faites une commande d'essai</b><span>Installez une table, commandez, envoyez, marquez prêt, encaissez et libérez. Vous êtes prêt à ouvrir.</span></div></li>
@@ -165,11 +167,39 @@
 </ol>
 <p class="sub">Après 90 secondes sans contact, la borne vide le panier et revient à l'écran d'accueil.</p>
 
+<h3 id="s-menu">Menu <span class="tier lite">Lite</span></h3>
+<p class="sub">Configuration → Menu. Les catégories à gauche, les plats de la catégorie à droite. Ce que vous enregistrez apparaît aussitôt en caisse, à la borne et à l'écran cuisine.</p>
+<div class="shot"><img src="guide/img/menu.jpg" alt="Menu : catégories et plats" /><span class="pin" style="left:14.4%;top:3.3%">1</span><span class="pin" style="left:9%;top:25%">2</span><span class="pin" style="left:7.6%;top:51.7%">3</span><span class="pin" style="left:77%;top:8%">4</span><span class="pin" style="left:72%;top:17%">5</span></div><ol class="callouts"><li><span><b>Menu</b> — premier onglet de Configuration.</span></li><li><span><b>Catégorie choisie</b> — monter, descendre, renommer. L'ordre est celui des puces en caisse.</span></li><li><span><b>Nouvelle catégorie</b> — tapez le nom, Entrée.</span></li><li><span><b>Nouveau plat</b> — dans la catégorie affichée.</span></li><li><span><b>Poste</b> — où part le plat. Touchez une ligne pour la modifier.</span></li></ol>
+<div class="shot"><img src="guide/img/menu-dish.jpg" alt="Formulaire plat" /><span class="pin" style="left:24%;top:24.2%">1</span><span class="pin" style="left:24%;top:32.8%">2</span><span class="pin" style="left:24%;top:41.3%">3</span><span class="pin" style="left:24%;top:49.2%">4</span><span class="pin" style="left:24%;top:56.4%">5</span><span class="pin" style="left:24%;top:66.1%">6</span><span class="pin" style="left:72.5%;top:86.7%">7</span></div><ol class="callouts"><li><span><b>Nom</b> — obligatoire.</span></li><li><span><b>Description courte</b> — la seconde ligne de la tuile.</span></li><li><span><b>Prix</b> en FCFA — obligatoire.</span></li><li><span><b>Catégorie</b> — changez-la ici pour déplacer le plat.</span></li><li><span><b>Préparé à</b> — grill, friteuse, marmite, bar… Comptoir = pas de ticket cuisine.</span></li><li><span><b>Tags</b> — végétarien, épicé, allergènes ; affichés en cuisine et à la borne.</span></li><li><span><b>Enregistrer</b> — actif dès que nom et prix sont remplis.</span></li></ol>
+<ol class="steps">
+<li><div><b>Ouvrez le menu</b><span>Barre latérale → <i>Configuration</i> (en bas) → onglet <strong>Menu</strong>.</span></div></li>
+<li><div><b>Vos catégories</b><span>Gardez celles qui servent, renommez-les, ou <strong>Nouvelle catégorie</strong> : Entrées, Plats, Grillades, Boissons… Réordonnez avec les flèches.</span></div></li>
+<li><div><b>Choisissez une catégorie</b><span>Touchez-la à gauche ; ses plats s'affichent à droite.</span></div></li>
+<li><div><b>Nouveau plat</b><span>Nom, description courte, prix.</span></div></li>
+<li><div><b>Le poste</b><span>Qui le prépare : <i>Grill</i> pour le poisson braisé, <i>Sauce Pot</i> pour le ndolé, <i>Bar</i> pour les boissons. Sans écran cuisine, chaque poste reçoit son ticket imprimé.</span></div></li>
+<li><div><b>Photo, tags et tuile</b><span>Facultatifs. <strong>Photo</strong> : collez un lien https:// vers l'image sur votre CDN, ou <i>Upload photo</i> depuis le téléphone ou l'ordinateur. Elle s'affiche en caisse, à la borne et dans la liste des plats. Sans photo — ou si le lien ne répond plus — la tuile reprend son icône et sa couleur.</span></div></li>
+<li><div><b>Enregistrer le plat</b><span>Il est en caisse tout de suite. Pour corriger un prix, touchez la ligne ; <strong>Retirer</strong> l'enlève du menu.</span></div></li>
+</ol>
+
+<div class="card"><h4><ion-icon name="albums-outline"></ion-icon>Partir d'un modèle Koomzo</h4><p><strong>Templates</strong> (sous les catégories, ou premier bouton d'un menu vide) ouvre les menus types adaptés à votre établissement — Maquis, Bar, Snack, Hôtel. Touchez-en un pour voir chaque plat et prix, puis <i>Use this template</i>. Si vous avez déjà des plats : <i>Add to mine</i> (les plats de même nom sont mis à jour) ou <i>Replace</i>. Vous obtenez votre propre copie : Koomzo ne la modifie jamais ensuite. Les prix d'exemple portent l'étiquette <b>Check price</b> jusqu'à ce que vous modifiiez le plat ou touchiez <i>Confirm all prices</i>. Changé d'avis ? <i>Undo</i> fonctionne jusqu'à la prochaine modification. Le même bouton sur le Plan de salle ouvre les plans types, et un menu propose le plan qui va avec.</p></div>
+<div class="card"><h4><ion-icon name="cloud-upload-outline"></ion-icon>Tout le menu d'un coup : fichier CSV</h4><p>Sous les catégories, <strong>CSV template</strong> télécharge un fichier prêt à remplir dans Excel ou Google Sheets : une ligne par plat, colonnes <i>category, name, description, price, station, tags, image</i> — image est un lien https:// facultatif vers la photo. Catégorie, nom et prix sont obligatoires ; les catégories inconnues sont créées. Puis <strong>Importer CSV</strong> : Koomzo affiche les plats ajoutés, mis à jour et les lignes ignorées avec leur numéro, avant d'appliquer. <i>Ajouter et mettre à jour</i> garde le reste du menu ; <i>Remplacer tout le menu</i> l'efface. <strong>Exporter le menu</strong> sort le menu actuel au même format.</p></div>
+
+<h3 id="s-cfd">Écran client <span class="tier lite">Lite</span></h3>
+<p class="sub">Un écran tourné vers le client — l'écran arrière d'une caisse tout-en-un, une tablette ou un terminal de paiement Android — affiche chaque ligne au fur et à mesure, le total et comment payer.</p>
+<ol class="steps">
+<li><div><b>Associez-le</b><span>Configuration → <strong>Customer display</strong> affiche un code à 4 chiffres. Sur la tablette ou le terminal, ouvrez <i>Koomzo Customer Display</i> et saisissez le code. Sur une caisse tout-en-un avec écran arrière, touchez plutôt <strong>Open on second screen</strong> — sans code.</span></div></li>
+<li><div><b>Vérifiez</b><span><strong>Show test screen</strong> affiche une commande d'exemple pendant 8 secondes. La caisse indique <i>Display</i> en vert quand l'écran est connecté.</span></div></li>
+<li><div><b>Choisissez ce que le client peut toucher</b><span>Numéro de fidélité, choix du reçu (WhatsApp, SMS, imprimé, aucun) et pourboire — chacun a son propre interrupteur. Ce que le client touche arrive sur votre caisse comme une suggestion : <i>Accept</i> ou <i>Ignore</i>. Rien n'est appliqué tout seul.</span></div></li>
+<li><div><b>Réglez l'écran d'accueil</b><span>Une phrase d'accueil et jusqu'à 3 visuels promo, affichés quand personne n'est servi. Choisissez le français ou l'anglais pour l'écran — vos propres écrans ne changent pas.</span></div></li>
+</ol>
+<div class="card"><h4><ion-icon name="shield-checkmark-outline"></ion-icon>Ce que le client ne voit jamais</h4><p>Les coûts, notes cuisine, motifs d'annulation, noms et PIN du personnel, autres tables ou tickets en attente, numéros de téléphone complets. Une ligne retirée s'affiche barrée un instant, puis disparaît. Si l'écran perd la caisse pendant 5 secondes, il grise le total et affiche <i>Reconnexion…</i> plutôt qu'un ancien montant.</p></div>
+<div class="note"><ion-icon name="restaurant-outline"></ion-icon><p><b>Tables :</b> une caisse comptoir passe d’une table à l’autre toute la soirée ; l’addition d’une table n’apparaît donc à l’écran que lorsque vous ouvrez <i>Print bill</i> ou <i>Pay</i> pour elle. Les commandes comptoir, à emporter et ardoises s’affichent pendant la saisie. Réglage : Configuration → Customer display → <i>Table orders</i>.</p></div>
+
 <h3 id="s-setup">Configuration <span class="tier lite">Lite</span></h3>
 <div class="shot"><img src="guide/img/setup-floor.jpg" alt="Éditeur du plan de salle" /><span class="pin" style="left:13%;top:10.5%">1</span><span class="pin" style="left:92%;top:10.5%">2</span><span class="pin" style="left:40%;top:50%">3</span><span class="pin" style="left:89%;top:47%">4</span></div>
 <ol class="callouts">
 <li><span><b>Zones</b> — ajouter, renommer, réordonner. <span class="tier mid">Mid</span></span></li>
-<li><span><b>Partir d'un plan type</b> — les plans de la Partie 1, avec le nombre de tables.</span></li>
+<li><span><b>Modèles</b> — les plans types Koomzo, avec le nombre de tables par zone.</span></li>
 <li><span><b>Faites glisser les tables</b> sur tablette. Sur téléphone, modifiez-les en liste.</span></li>
 <li><span><b>Ajouter une table</b> — carrée, ronde, longue ou tabouret de bar. Indiquez son nom et ses places.</span></li>
 </ol>

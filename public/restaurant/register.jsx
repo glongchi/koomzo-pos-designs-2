@@ -57,13 +57,15 @@ function Register() {
   /* ---- add / edit ---- */
   const addItem = (p) => {
     if (locked) return;
+    /* work out the target line first — never set Register state inside the store updater */
+    const ex = order.find((o) => o.id === p.id && !o.fired && (!flags.courses || o.course === activeCourse));
+    const uid = ex ? ex.uid : 'r' + Date.now().toString(36) + (RUID++);
     setOrder((cur) => {
-      const ex = cur.find((o) => o.id === p.id && !o.fired && (!flags.courses || o.course === activeCourse));
-      if (ex) { setSelectedUid(ex.uid); return cur.map((o) => o === ex ? { ...o, qty: o.qty + 1 } : o); }
-      const uid = 'r' + (RUID++);
-      setSelectedUid(uid);
-      return [...cur, { uid, id: p.id, name: p.name, price: p.price, priceOverride: null, qty: 1, discPct: 0, station: p.station, tags: p.tags || [], notes: '', unit: p.unit, icon: p.icon, tint: p.tint, course: activeCourse, fired: false }];
+      const hit = ex && cur.find((o) => o.uid === ex.uid);
+      if (hit) return cur.map((o) => o.uid === hit.uid ? { ...o, qty: o.qty + 1 } : o);
+      return [...cur, { uid, id: p.id, name: p.name, price: p.price, priceOverride: null, qty: 1, discPct: 0, station: p.station, tags: p.tags || [], notes: '', unit: p.unit, img: p.img, icon: p.icon, tint: p.tint, course: activeCourse, fired: false }];
     });
+    setSelectedUid(uid);
     setMode('qty'); setBuffer(null);
   };
   const selectLine = (uid) => { if (locked) return; setSelectedUid(uid); setBuffer(null); setEditing(true); setMode('qty'); };
@@ -120,6 +122,33 @@ function Register() {
   const doPrintBill = () => printBill(orderKey, orderLabel, order, svcRate);
   const unfired = order.filter((o) => !o.fired && (!flags.kitchen || o.station !== 'bar'));
 
+  /* ---- customer display (CFD plan D6): counter / tab orders live; a table's bill only at Print bill or Pay ---- */
+  const cfdHub = useMemo(() => (window.cfdAttachFor ? window.cfdAttachFor('restaurant') : null), []);
+  const [cfdLoyal, setCfdLoyal] = useState(null);
+  useEffect(() => {
+    if (!cfdHub) return;
+    const set = window.KZ_CFD.settings('rk-R1'), en = set.lang === 'en';
+    const isTable = flags.tables && !!activeTable;
+    const show = !isTable || set.tableRule === 'always' || charging || billState === 'ok' || billState === 'changed';
+    if (!show || !order.length) { cfdHub.setOrder(null); return; }
+    const unitOf = (o) => (o.priceOverride != null ? o.priceOverride : o.price);
+    const gross = order.reduce((s, o) => s + unitOf(o) * o.qty, 0);
+    cfdHub.setOrder({
+      no: orderNo, context: isTable ? 'Table ' + orderLabel : flags.tabs ? orderLabel : (en ? 'Counter' : 'Comptoir'),
+      customer: cfdLoyal ? { first: en ? 'member' : 'client fidèle', points: cfdLoyal.points } : null, customerPhone: cfdLoyal ? cfdLoyal.phone : '',
+      lines: order.map((o) => ({ id: o.uid, name: o.id === 'tip' ? (en ? 'Tip' : 'Pourboire') : o.name, qty: o.qty, unit: unitOf(o), amount: Math.round(unitOf(o) * o.qty * (1 - o.discPct / 100)),
+        disc: o.discPct ? '−' + o.discPct + ' %' : '', img: o.img, icon: o.icon, tint: o.tint })),
+      subtotal: Math.round(gross), discount: Math.round(gross - totals.net), svc: totals.svc, svcLabel: 'Service ' + svcRate + ' %',
+      tax: totals.tax, taxLabel: 'TVA ' + String(window.KZ_LOCALE.vat).replace('.', ',') + ' %', total: totals.total, items: itemCount,
+      lastId: selectedUid || order[order.length - 1].uid, pointsEarned: cfdLoyal ? Math.floor(totals.total / 1000) : 0,
+    });
+  }, [cfdHub, order, totals, activeTable, charging, billState, cfdLoyal, selectedUid, orderLabel]);
+  const cfdAccept = (ev) => {
+    if (ev.type === 'loyaltyPhone') setCfdLoyal({ phone: ev.value, points: 120 });
+    if (ev.type === 'tip') setOrder((cur) => [...cur.filter((o) => o.id !== 'tip'), { uid: 'tip' + Date.now(), id: 'tip', name: 'Tip', price: ev.value, priceOverride: null, qty: 1, discPct: 0,
+      station: 'none', tags: [], notes: '', fired: true, icon: 'heart-outline', tint: { bg: '#fdeef0', fg: '#d4607a' } }]);
+  };
+
   /* ---- coursing ---- */
   const courseNums = useMemo(() => {
     const set = new Set(order.map((o) => o.course || 1));
@@ -148,7 +177,7 @@ function Register() {
     setCharging(false);
     const tid = activeTable;
     recordSale({ total: totals.total, table: orderLabel, server: owner || me.name, method: tender || 'cash', items: itemCount });
-    setOrder([]); setSelectedUid(null); setEditing(false); setActiveCourse(1);
+    setOrder([]); setSelectedUid(null); setEditing(false); setActiveCourse(1); setCfdLoyal(null);
     setOrderNo((n) => window.KZ_TICKET.next(n));
     if (flags.tables && tid) {
       if (activeTicketsFor(tid).length) { setClearWarn(tid); return; }
@@ -210,6 +239,7 @@ function Register() {
             unitWord={verticalCfg.unitWord} courseNums={courseNums} courseName={courseName}
             onSelect={selectLine} onStep={stepQty} onRemove={removeLine} onFire={fireCourse} onVoid={(l) => { if (!locked) setVoidFor(l); }} />
 
+          {cfdHub && <div className="cfs-inrow"><CfdDot /></div>}
           <OrderTotals totals={totals} svcRate={svcRate} />
           {billState === 'changed' && (
             <div className="rk-bill chg"><ion-icon name="alert-circle-outline"></ion-icon><span><b>Bill changed</b> since it was printed. Reprint it before taking payment.</span></div>
@@ -281,6 +311,7 @@ function Register() {
         </div>
       </div>
 
+      {cfdHub && <CfdSuggest onAccept={cfdAccept} describe={cfdDescribe(money)} />}
       {charging && <ChargeSheet total={totals.total} orderNo={orderNo} onDone={finishOrder} onClose={() => setCharging(false)} />}
       {splitting && <SplitSheet order={order} guests={guests} onClose={() => setSplitting(false)} />}
       {noteFor && <NoteSheet line={noteFor} onSave={saveNote} onClose={() => setNoteFor(null)} />}

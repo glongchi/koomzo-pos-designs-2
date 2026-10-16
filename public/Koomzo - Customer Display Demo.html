@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Customer Display Demo</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{background:#e9ebf0;font-family:var(--kz-font-sans);color:var(--kz-ink);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.bar{flex:none;display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.mk{width:32px;height:32px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;color:#fff;font-size:17px}
+.bar b{font:700 15px var(--kz-font-sans)}
+.bar .sp{flex:1}
+.seg{display:flex;gap:3px;background:var(--kz-surface-2);border-radius:999px;padding:3px}
+.seg button{height:34px;padding:0 13px;border:none;border-radius:999px;background:none;font:600 12.5px var(--kz-font-sans);color:var(--kz-muted-2);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.seg button.on{background:#fff;color:var(--kz-ink);box-shadow:var(--kz-shadow-sm)}
+.k{font:700 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3)}
+.stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;padding:14px}
+@media (max-width:900px){.stage{grid-template-columns:1fr;grid-template-rows:60vh 60vh;overflow-y:auto}}
+.pane{min-height:0;display:flex;flex-direction:column;gap:6px}
+.pane__h{display:flex;align-items:center;gap:8px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.pane__h ion-icon{font-size:16px;color:var(--kz-primary)}
+.reg{flex:1;min-height:0;border:1px solid var(--kz-border);border-radius:14px;overflow:hidden;background:#fff}
+.reg iframe{width:100%;height:100%;border:0;display:block}
+.dev{flex:1;min-height:0;display:grid;place-items:center;overflow:hidden;position:relative}
+.dev__frame{position:absolute;left:50%;top:50%;transform-origin:center;border-radius:22px;background:#141826;padding:12px;box-shadow:0 18px 40px rgba(20,24,38,.25)}
+.dev__frame iframe{border:0;border-radius:12px;display:block;background:#fff}
+.tip{font:400 12px/1.5 var(--kz-font-sans);color:var(--kz-muted)}
+</style>
+</head>
+<body>
+<div class="bar">
+<div class="mk"><ion-icon name="tv-outline"></ion-icon></div><b>Customer display — demo</b>
+<span class="sp"></span>
+<span class="k">Register</span>
+<div class="seg" id="mod"><button data-v="restaurant" class="on"><ion-icon name="restaurant-outline"></ion-icon>Restaurant &amp; Bar</button><button data-v="retail"><ion-icon name="storefront-outline"></ion-icon>Retail Flex</button></div>
+<span class="k">Display</span>
+<div class="seg" id="lay"><button data-v="landscape" class="on">Rear screen 15"</button><button data-v="portrait">Tablet 8"</button><button data-v="small">Terminal 5"</button></div>
+<a href="Koomzo - Customer Display Plan.html">Plan</a>
+</div>
+<div class="stage">
+<div class="pane"><div class="pane__h"><ion-icon name="person-outline"></ion-icon>Staff register — ring something up, then Pay</div><div class="reg"><iframe id="reg" title="Register"></iframe></div></div>
+<div class="pane"><div class="pane__h"><ion-icon name="people-outline"></ion-icon>Customer display <span class="tip">· built-in screen, no pairing</span></div><div class="dev" id="dev"><div class="dev__frame" id="frame"><iframe id="cfd" title="Customer display"></iframe></div></div></div>
+</div>
+<script>
+const SIZES = { landscape: [1280, 800], portrait: [800, 1280], small: [400, 720] };
+const REG = { restaurant: ['Koomzo POS - Restaurant & Bar.html', 'rk-R1'], retail: ['Koomzo POS - Retail Flex.html', 'rx-C1'] };
+let mod = localStorage.getItem('kz:cfd:demo:mod') || 'restaurant', lay = localStorage.getItem('kz:cfd:demo:lay') || 'landscape';
+const reg = document.getElementById('reg'), cfd = document.getElementById('cfd'), frame = document.getElementById('frame'), dev = document.getElementById('dev');
+function fit() { const [w, h] = SIZES[lay]; cfd.style.width = w + 'px'; cfd.style.height = h + 'px';
+  const r = dev.getBoundingClientRect(); const k = Math.min((r.width - 20) / (w + 24), (r.height - 20) / (h + 24), 1);
+  frame.style.transform = 'translate(-50%,-50%) scale(' + k + ')'; }
+function load() {
+  document.querySelectorAll('#mod button').forEach((b) => b.classList.toggle('on', b.dataset.v === mod));
+  document.querySelectorAll('#lay button').forEach((b) => b.classList.toggle('on', b.dataset.v === lay));
+  if (reg.dataset.mod !== mod) { reg.src = REG[mod][0]; reg.dataset.mod = mod; }
+  cfd.src = 'Koomzo Customer Display.html?reg=' + REG[mod][1] + '&builtin=1&layout=' + lay;
+  fit();
+}
+document.getElementById('mod').onclick = (e) => { const b = e.target.closest('button'); if (!b) return; mod = b.dataset.v; localStorage.setItem('kz:cfd:demo:mod', mod); load(); };
+document.getElementById('lay').onclick = (e) => { const b = e.target.closest('button'); if (!b) return; lay = b.dataset.v; localStorage.setItem('kz:cfd:demo:lay', lay); load(); };
+window.addEventListener('resize', fit);
+load();
+</script>
+</body>
+</html>

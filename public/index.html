@@ -44,6 +44,7 @@ const { useState, useMemo } = React;
 
 const SCREENS = [
   {"g":"Workspace","i":"grid-outline","f":"Koomzo - Control Centre.html","n":"Control Centre","d":"Module hub and capability switches"},
+  {"g":"Workspace","i":"albums-outline","f":"Koomzo - Template Library.html","n":"Template Library","d":"Sample menus and floor plans (Koomzo staff)"},
   {"g":"Workspace","i":"log-in-outline","f":"Koomzo - Login.html","n":"Login","d":"Phone + password, EN/FR"},
   {"g":"Workspace","i":"person-add-outline","f":"Koomzo - Signup & Platform Pitch.html","n":"Signup","d":"Create a workspace"},
   {"g":"Workspace","i":"play-circle-outline","f":"Koomzo - Introduction Walkthrough.html","n":"Introduction Walkthrough","d":"Eight-screen product tour"},
@@ -54,7 +55,9 @@ const SCREENS = [
   {"g":"Selling","i":"card-outline","f":"Koomzo POS.html","n":"Point of Sale","d":"The register board"},
   {"g":"Selling","i":"storefront-outline","f":"Koomzo POS - Retail.html","n":"Retail","d":"Retail register"},
   {"g":"Selling","i":"swap-horizontal-outline","f":"Koomzo POS - Retail Flex.html","n":"Retail Flex","d":"Sales, inventory, ops"},
-  {"g":"Selling","i":"restaurant-outline","f":"Koomzo POS - Restaurant & Bar.html","n":"Restaurant & Bar","d":"Floor, register, kitchen, kiosk, server banking"},
+  {"g":"Selling","i":"restaurant-outline","f":"Koomzo POS - Restaurant & Bar.html","n":"Restaurant & Bar","d":"Floor, register, kitchen, kiosk, menu + CSV, templates"},
+  {"g":"Selling","i":"tv-outline","f":"Koomzo Customer Display.html","n":"Customer Display","d":"Customer-facing screen (pair with a register)"},
+  {"g":"Selling","i":"play-outline","f":"Koomzo - Customer Display Demo.html","n":"Customer Display Demo","d":"Register and display side by side"},
   {"g":"Selling","i":"basket-outline","f":"Koomzo Grocery - Till, Dates & Shelf.html","n":"Grocery","d":"Till, dates and shelf"},
   {"g":"Selling","i":"pricetag-outline","f":"Koomzo POS - Products.html","n":"Products","d":"Catalogue"},
   {"g":"Selling","i":"pricetags-outline","f":"Koomzo POS - Products v2.html","n":"Products v2","d":"Catalogue, revised"},
@@ -98,6 +101,9 @@ const SCREENS = [
   {"g":"User guide","i":"reader-outline","f":"Koomzo User Guide - Salon.html","n":"Salon (EN)","d":"Module guide"},
   {"g":"User guide","i":"reader-outline","f":"Koomzo User Guide - Signage.html","n":"Signage (EN)","d":"Module guide"},
   {"g":"Plans — latest","i":"document-outline","f":"Koomzo Restaurant - Production Gap Spec.md","n":"Restaurant - Production Gap Spec","d":"Plan · Markdown"},
+  {"g":"Plans — latest","i":"document-outline","f":"Koomzo - Templates, Photos & Customer Display - Production Gap Spec.md","n":"Templates, Photos & Customer Display - Production Gap Spec","d":"Plan · Markdown (T1–T4, C1–C11)"},
+  {"g":"Plans — latest","i":"document-text-outline","f":"Koomzo - Template Library Plan.html","n":"Template Library Plan","d":"Plan · page, with cross-check"},
+  {"g":"Plans — latest","i":"document-text-outline","f":"Koomzo - Customer Display Plan.html","n":"Customer Display Plan","d":"Plan · page, with cross-check"},
   {"g":"Plans — latest","i":"document-outline","f":"Koomzo Restaurant - Service Scenario Plan.md","n":"Restaurant - Service Scenario Plan","d":"Plan · Markdown"},
   {"g":"Plans — latest","i":"document-outline","f":"Koomzo Restaurant - Server Banking and Ardoise Plan.md","n":"Restaurant - Server Banking and Ardoise Plan","d":"Plan · Markdown"},
   {"g":"Plans — latest","i":"document-outline","f":"Koomzo Hotel - Booking Form Corrections Plan.md","n":"Hotel - Booking Form Corrections Plan","d":"Plan · Markdown"},

@@ -67,7 +67,6 @@ function App() {
 
   useEffect(() => { setCfg(cfgFrom(preset)); setCat('all'); setQ(''); setOrder([]); setSelUid(null); setFlow(null); setExtra([]); setBizCats(null); }, [preset.id]);
   useEffect(() => { if (modules[view] === false) setView('register'); }, [modules, view]);
-  useEffect(() => { if (view === 'inventory' && stockTier === 'off') setView('register'); }, [stockTier, view]);
 
   const dirty = useMemo(() => JSON.stringify(cfg) !== JSON.stringify(cfgFrom(preset)), [cfg, preset]);
   const F = cfg.features;
@@ -183,21 +182,53 @@ function App() {
     tickets: ['Open tickets', held.length + ' on hold'],
     sales: ['Sales', 'Transaction history'],
     categories: ['Categories', 'Catalogue structure & tiles'],
-    inventory: ['Stock', stockTier === 'off' ? 'Not enabled' : 'On hand at Caisse 1'],
+    inventory: stockTier === 'off' ? ['Products', 'Names and prices · stock not tracked'] : ['Stock', 'On hand at Caisse 1'],
     returns: ['Returns & exchange', 'Receipt lookup'], customers: ['Customers', 'Loyalty members'],
     shift: ['Shift & cash drawer', 'Caisse 1 · Anita Ndongo'], setup: ['Setup', 'Profile & capabilities'],
   };
   const stepMeta = flow ? { all: flow.steps.map((k) => STEP_LABEL[k]), now: STEP_LABEL[flow.steps[flow.i]] } : null;
   const cur = flow ? flow.steps[flow.i] : null;
 
+  /* ---- customer display (CFD plan D7): variants, weight, customer; Rx names hidden for Pharmacy ---- */
+  const cfdHub = useMemo(() => (window.cfdAttachFor ? window.cfdAttachFor('retail') : null), []);
+  const [cfdMsg, setCfdMsg] = useState(null);
+  useEffect(() => {
+    if (!cfdHub) return;
+    const set = window.KZ_CFD.settings('rx-C1'), en = set.lang === 'en';
+    const rxHide = set.rxPrivacy == null ? preset.id === 'pharmacy' : set.rxPrivacy;
+    if (!order.length) { cfdHub.setOrder(null); return; }
+    cfdHub.setOrder({
+      no: orderNo, context: en ? 'Your purchase' : 'Vos achats',
+      customer: customer ? { first: customer.name.split(' ')[0], points: customer.points } : null, customerPhone: customer ? customer.phone : '',
+      lines: order.map((o) => {
+        const p = catalog.items.find((x) => x.id === o.id);
+        const hide = !!o.rx && rxHide;
+        const detail = hide ? '' : [o.variant, o.mods, o.weighed ? money(o.price) + ' / ' + (o.unit || 'kg') : ''].filter(Boolean).join(' · ');
+        return { id: o.uid, name: hide ? (en ? 'Prescription item' : 'Article sur ordonnance') : o.id === 'tip' ? (en ? 'Tip' : 'Pourboire') : o.name, detail,
+          qty: o.qty, unitLabel: o.weighed ? (o.unit || 'kg') : '', unit: o.price, amount: Math.round(o.price * o.qty * (1 - o.disc / 100)), disc: o.disc ? '−' + o.disc + ' %' : '',
+          img: p && p.img, icon: o.id === 'tip' ? 'heart-outline' : p && p.icon, tint: p && p.tint };
+      }),
+      subtotal: totals.gross, discount: totals.discount, tax: totals.tax, taxLabel: window.KZ_LOCALE.taxLabel(preset.zeroRated), total: totals.total, items: count,
+      lastId: selUid || order[order.length - 1].uid, pointsEarned: customer ? Math.floor(totals.total / 1000) : 0, notice: cur === 'age' ? 'id' : '',
+    });
+  }, [cfdHub, order, totals, customer, selUid, cur, preset, orderNo]);
+  const cfdAccept = (ev) => {
+    if (ev.type === 'loyaltyPhone') {
+      const d = String(ev.value).replace(/\D/g, '').slice(-8);
+      const c = window.RX_CUSTOMERS.find((x) => x.phone.replace(/\D/g, '').endsWith(d));
+      if (c) setCustomer(c); else { setCfdMsg('No loyalty member with ' + window.KZ_CFD.maskPhone(ev.value) + ' — add them in Customers.'); setTimeout(() => setCfdMsg(null), 5000); }
+    }
+    if (ev.type === 'tip') setOrder((cur) => [...cur.filter((o) => o.id !== 'tip'), { uid: 'u' + UID++, id: 'tip', name: 'Tip', price: ev.value, qty: 1, disc: 0 }]);
+  };
+
   return (
     <div className={'stage ' + (device === 'desktop' ? 'full' : device)}>
       <div className="rt-wrap">
       <div className={'rt' + (t.density === 'compact' ? ' compact' : '')}>
         <Rail view={view} onView={setView} held={held.length}
-          modules={{ ...modules, inventory: stockOn }} />
+          modules={modules} labels={stockOn ? null : { inventory: { label: 'Products', icon: 'pricetags-outline' } }} />
         <div className="main">
-          <TopBar profile={preset} modified={dirty} title={titles[view][0]} sub={titles[view][1]} onProfile={() => setView('setup')} />
+          <TopBar extra={cfdHub ? <CfdDot /> : null} profile={preset} modified={dirty} title={titles[view][0]} sub={titles[view][1]} onProfile={() => setView('setup')} />
 
           {view === 'register' && (
             <div className={boardCls}>
@@ -306,11 +337,13 @@ function App() {
               ticketNo: orderNo, locId: window.RX_LOC,
               actor: { kind: 'register', label: 'Caisse 1' },
               customer: customer && customer.name,
-              lines: order.map((o) => ({ id: o.id, qty: o.qty, lot: o.lot || null, serial: o.serial || null })),
+              lines: order.filter((o) => o.id !== 'tip').map((o) => ({ id: o.id, qty: o.qty, lot: o.lot || null, serial: o.serial || null })),
             });
             setStockToast(window.KZ_SALES.negativeCopy(res.negatives));
           }}
           onDone={() => { setSheet(null); reset(); }} />}
+        {cfdHub && <CfdSuggest onAccept={cfdAccept} describe={cfdDescribe(money)} />}
+        {cfdMsg && <div className="stocktoast" onClick={() => setCfdMsg(null)}><ion-icon name="information-circle-outline"></ion-icon><span>{cfdMsg}</span></div>}
         {stockToast && (
           <div className="stocktoast" onClick={() => setStockToast(null)}>
             <ion-icon name="alert-circle-outline"></ion-icon>

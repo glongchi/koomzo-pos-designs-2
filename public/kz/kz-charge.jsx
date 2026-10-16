@@ -26,8 +26,10 @@ function useCharge(total, opts) {
   const mode = T.modeFor(tender);
   const change = Math.max(0, cash - take);
   const busy = phase === P.PENDING || phase === P.REQUESTED;
+  const cfdChange = React.useRef(0);
 
   const commit = (extra) => {
+    if (tender === 'cash') cfdChange.current = change;
     const list = T.capture(tenders, Object.assign({ id: tender, amount: take, phase: P.OK }, extra || {}));
     setTenders(list);
     /* decision 20.2 — persisted the moment the money is taken, not at the end */
@@ -56,6 +58,15 @@ function useCharge(total, opts) {
   }, [phase]);
 
   React.useEffect(() => { if (phase === P.PENDING && left <= 0) setPhase(P.EXPIRED); }, [left, phase]);
+
+  /* customer display: the payment phase mirrors this sheet; paid → thank-you (plan D3) */
+  React.useEffect(() => {
+    const hub = window.KZ_CFD && window.KZ_CFD.hub; if (!hub) return;
+    if (paid) { hub.done({ change: cfdChange.current, total: total }); return; }
+    hub.setPay({ due: total, paid: total - balance, remaining: balance, method: tender, methodLabel: T.label(tender), state: phase,
+      left: left, tendered: tender === 'cash' ? cash : 0, change: tender === 'cash' ? change : 0, share: part || 0 });
+  }, [paid, total, balance, tender, phase, left, cash, change, part]);
+  React.useEffect(() => () => { const hub = window.KZ_CFD && window.KZ_CFD.hub; if (hub && hub.last && hub.last.phase === 'pay') hub.setPay(null); }, []);
 
   return {
     T: T, P: P, tender: tender,

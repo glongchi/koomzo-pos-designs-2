@@ -274,7 +274,7 @@ window.money = (n) => (n < 0 ? '−' : '') + window.KZ_LOCALE.short(Math.abs(n))
 /* ---- screens the rail can carry. Register and Setup are never optional. ---- */
 window.RX_MODULES = [
   { key:'sales',     name:'Sales history',  desc:'Past transactions, receipts, reprints.', icon:'receipt-outline' },
-  { key:'inventory', name:'Stock',          desc:'Follows the Stock control setting above.', icon:'cube-outline', bound:'stock' },
+  { key:'inventory', name:'Stock',          desc:'Follows the Stock control setting above. Off: a Products list with names and prices, no quantities.', icon:'cube-outline', bound:'stock' },
   { key:'tickets',   name:'Open tickets',   desc:'Park a sale and come back to it. Needs a second customer waiting.', icon:'pause-outline' },
   { key:'returns',   name:'Returns',        desc:'Refunds against a receipt. Off where returns are not accepted.', icon:'refresh-outline' },
   { key:'customers', name:'Customers',      desc:'Named accounts, loyalty, notes. Hides the Add customer row on the ticket too.', icon:'people-outline' },

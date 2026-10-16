@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Koomzo — Template Library Plan (Menus & Floor Plans)</title>
+<link rel="icon" type="image/png" href="pos/koomzo-favicon.png" />
+<link rel="stylesheet" href="pos/colors_and_type.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--kz-bg);font-family:var(--kz-font-sans);color:var(--kz-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-shade)}
+.sp{flex:1}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 14px;border-right:1px solid var(--kz-border);background:#fff}
+@media (max-width:900px){.side{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--kz-border)}}
+.side__mark{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.side__mark .ic{width:30px;height:30px;border-radius:9px;background:var(--kz-primary);display:grid;place-items:center;flex:none}
+.side__mark .ic ion-icon{color:#fff;font-size:16px}
+.side__mark b{font:700 14px var(--kz-font-sans);letter-spacing:-.01em}
+.side__v{font:500 11px var(--kz-font-num);color:var(--kz-muted-3);margin:0 0 16px 39px}
+.side__g{font:700 10px var(--kz-font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kz-muted-3);margin:16px 0 6px 10px}
+.side a.nv{display:flex;align-items:center;gap:9px;min-height:34px;padding:6px 10px;border-radius:9px;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.side a.nv ion-icon{font-size:15px;color:var(--kz-muted-3);flex:none}
+.side a.nv:hover{background:var(--kz-surface-2);color:var(--kz-ink)}
+.side a.nv.on{background:var(--kz-primary-wash);color:var(--kz-primary)}
+.side a.nv.on ion-icon{color:var(--kz-primary)}
+.doc{padding:34px 34px 110px;max-width:1080px}
+@media (max-width:640px){.doc{padding:24px 18px 70px}}
+.doc h1{margin:0 0 6px;font:700 27px var(--kz-font-sans);letter-spacing:-.025em;text-wrap:balance}
+.eb{font:700 10.5px var(--kz-font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--kz-primary);margin:0 0 8px}
+.lede{margin:0 0 22px;font:400 14.5px/1.68 var(--kz-font-sans);color:var(--kz-muted);max-width:72ch;text-wrap:pretty}
+h2{margin:44px 0 4px;font:700 19px var(--kz-font-sans);letter-spacing:-.02em;scroll-margin-top:22px}
+h3{margin:26px 0 8px;font:700 15px var(--kz-font-sans)}
+.sub{margin:0 0 14px;font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-muted);max-width:74ch;text-wrap:pretty}
+p{font:400 14px/1.7 var(--kz-font-sans);color:var(--kz-ink-2);max-width:74ch;text-wrap:pretty}
+.mono{font:600 11.5px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:5px;padding:1px 6px;color:var(--kz-ink-2);white-space:nowrap}
+.card{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:16px 18px}
+.card h4{margin:0 0 4px;font:700 14px var(--kz-font-sans);display:flex;align-items:center;gap:8px}
+.card h4 ion-icon{color:var(--kz-primary);font-size:16px}
+.card p{margin:0;font-size:13px;line-height:1.65}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.tblwrap{overflow-x:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--kz-border);font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-ink-2);vertical-align:top}
+th{background:var(--kz-surface-2);font:600 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700;color:var(--kz-ink)}
+td .y{color:var(--kz-success);font-weight:700}td .n{color:var(--kz-muted-3)}
+.chg{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);margin-bottom:11px;overflow:hidden}
+.chg__h{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--kz-surface-2);border-bottom:1px solid var(--kz-border);flex-wrap:wrap}
+.chg__h .num{width:26px;height:26px;border-radius:7px;background:var(--kz-primary);color:#fff;display:grid;place-items:center;font:700 11px var(--kz-font-num);flex:none}
+.chg__h b{font:700 13.5px var(--kz-font-sans)}
+.chg__b{padding:13px 16px}
+.chg__b p{margin:0 0 9px;font-size:13.5px}
+.chg__b p:last-child{margin-bottom:0}
+.sev{font:700 9.5px var(--kz-font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--kz-radius-pill)}
+.sev.bug{background:var(--kz-discount-wash);color:#b8401f}
+.sev.gap{background:var(--kz-warning-wash);color:#8a6414}
+.sev.new{background:var(--kz-info-wash);color:#2a63b8}
+.sev.ok{background:var(--kz-success-wash);color:#1f7a45}
+.sev.done{background:var(--kz-success-wash);color:#1f7a45}
+.done-ic{width:20px;height:20px;border-radius:999px;background:var(--kz-success);display:grid;place-items:center;flex:none}
+.done-ic ion-icon{font-size:12px;color:#fff}
+.banner{display:flex;gap:12px;background:var(--kz-success-wash);border:1px solid #bfe3cd;border-radius:var(--kz-radius);padding:15px 17px;margin-bottom:16px}
+.banner ion-icon{color:#1f7a45;font-size:19px;flex:none;margin-top:1px}
+.banner p{margin:0;font-size:13.5px;line-height:1.62}
+.dev{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:4px 18px;margin-bottom:12px}
+.dev__r{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--kz-border)}
+.dev__r:last-child{border-bottom:none}
+.dev__r ion-icon{color:var(--kz-warning);font-size:16px;flex:none;margin-top:2px}
+.dev__r div{font:400 13px/1.62 var(--kz-font-sans);color:var(--kz-ink-2)}
+.dev__r b{color:var(--kz-ink)}
+.files{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.files span{font:600 11px var(--kz-font-num);background:var(--kz-surface-2);border:1px solid var(--kz-border);border-radius:6px;padding:3px 8px;color:var(--kz-ink-2)}
+.ba{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--kz-border);border:1px solid var(--kz-border);border-radius:var(--kz-radius);overflow:hidden;margin-top:4px}
+.ba>div{background:#fff;padding:11px 13px}
+.ba .t{font:700 9.5px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-muted-3);margin-bottom:6px}
+.ba code{display:block;font:500 11.5px/1.7 var(--kz-font-num);color:var(--kz-ink-2);white-space:pre-wrap;word-break:break-word}
+.ba .bad code{color:#b8401f}
+.ba .good code{color:#1f7a45}
+.note{display:flex;gap:10px;background:var(--kz-primary-wash);border:1px solid var(--kz-primary-tint);border-radius:var(--kz-radius);padding:13px 15px;margin-bottom:12px}
+.note ion-icon{color:var(--kz-primary);font-size:17px;flex:none;margin-top:1px}
+.note p{margin:0;font-size:13px;line-height:1.62}
+.note.warn{background:var(--kz-warning-wash);border-color:#e8d6a8}
+.note.warn ion-icon{color:#8a6414}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.links a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
+.links a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+
+.dec td:first-child{white-space:nowrap;font:700 12px var(--kz-font-num);color:var(--kz-primary)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:6px 0 14px}
+.flow>div{background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius);padding:12px 13px}
+.flow .k{font:700 10px var(--kz-font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--kz-primary);margin-bottom:4px}
+.flow b{display:block;font:700 13px var(--kz-font-sans);margin-bottom:3px}
+.flow span{font:400 12.5px/1.55 var(--kz-font-sans);color:var(--kz-muted)}
+.chk{list-style:none;padding:0;margin:0 0 12px;background:#fff;border:1px solid var(--kz-border);border-radius:var(--kz-radius)}
+.chk li{display:flex;gap:10px;padding:10px 14px;border-bottom:1px solid var(--kz-border);font:400 13px/1.55 var(--kz-font-sans);color:var(--kz-ink-2)}
+.chk li:last-child{border-bottom:none}
+.chk li code{font:700 11px var(--kz-font-num);color:var(--kz-muted-3);min-width:34px}
+.chk li .st{margin-left:auto;flex:none}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side">
+<div class="side__mark"><div class="ic"><ion-icon name="copy"></ion-icon></div><b>koomzo · POS</b></div>
+<p class="side__v">Template Library · plan v1 · Oct 2026</p>
+<div class="side__g">Why</div>
+<a class="nv" href="#goal"><ion-icon name="flag-outline"></ion-icon>Goal</a>
+<a class="nv" href="#decisions"><ion-icon name="git-branch-outline"></ion-icon>Decisions to validate</a>
+<div class="side__g">Design</div>
+<a class="nv" href="#model"><ion-icon name="cube-outline"></ion-icon>Data model</a>
+<a class="nv" href="#owner"><ion-icon name="shield-outline"></ion-icon>Platform owner screens</a>
+<a class="nv" href="#tenant"><ion-icon name="storefront-outline"></ion-icon>Customer onboarding</a>
+<a class="nv" href="#mobile"><ion-icon name="phone-portrait-outline"></ion-icon>Mobile behaviour</a>
+<a class="nv" href="#seed"><ion-icon name="library-outline"></ion-icon>Starter library</a>
+<div class="side__g">Delivery</div>
+<a class="nv" href="#work"><ion-icon name="list-outline"></ion-icon>Work items</a>
+<a class="nv" href="#prod"><ion-icon name="construct-outline"></ion-icon>Production tasks</a>
+<a class="nv" href="#accept"><ion-icon name="checkmark-done-outline"></ion-icon>Acceptance checklist</a>
+<a class="nv" href="#out"><ion-icon name="remove-circle-outline"></ion-icon>Out of scope</a>
+<a class="nv" href="#verify"><ion-icon name="shield-checkmark-outline"></ion-icon>Cross-check</a>
+</nav>
+<main class="doc">
+<p class="eb">Plan · validated and built</p>
+<h1>Template Library — sample menus and floor plans</h1>
+<p class="lede">Koomzo staff build ready-made menus and floor plans for each kind of venue — maquis, bar, snack, hotel restaurant… A new customer picks one during setup, gets their own copy, and edits it. Fewer empty screens on day one, and faster onboarding.</p>
+<div class="banner"><ion-icon name="checkmark-done-circle"></ion-icon><p><b>Validated 15 Oct 2026 — all proposed answers accepted (D1–D8), full starter library.</b> Built and checked against the acceptance list — see <a href="#verify">Cross-check</a>. Try it: <a href="Koomzo - Template Library.html">Template Library</a> (also in Control Centre → Templates) and <a href="Koomzo POS - Restaurant &amp; Bar.html">Restaurant</a> → Setup → Menu / Floor plan → Templates.</p></div>
+
+<h2 id="goal">Goal</h2>
+<div class="g2">
+<div class="card"><h4><ion-icon name="shield-outline"></ion-icon>Platform owner (Koomzo staff)</h4><p>Creates, edits, previews and publishes templates in the <b>Control Centre</b>. Uses the same Menu and Floor plan editors customers use, plus CSV import. No code changes needed to add a template.</p></div>
+<div class="card"><h4><ion-icon name="storefront-outline"></ion-icon>New customer (tenant)</h4><p>During onboarding, or any time from Setup, picks a template that fits the venue. Sees a preview, picks <i>Replace</i> or <i>Add to mine</i>, and gets a copy they fully own.</p></div>
+</div>
+
+<h2 id="decisions">Decisions to validate</h2>
+<p class="sub">Proposed answers in bold. Change any of them in your reply.</p>
+<div class="tblwrap"><table class="dec"><thead><tr><th>#</th><th>Question</th><th>Proposed</th><th>Why</th></tr></thead><tbody>
+<tr><td>D1</td><td>Copy or link?</td><td><b>Copy.</b> The customer gets their own copy; later template changes never reach existing customers.</td><td>Customers change prices and dishes on day one. A link would overwrite their edits or block template updates.</td></tr>
+<tr><td>D2</td><td>One library for menus and floor plans, or two?</td><td><b>One Templates screen, two kinds</b> (Menu, Floor plan) shown as tabs. Optional <b>bundle</b> pairing: a menu template can suggest a floor template ("Maquis menu" + "Maquis layout").</td><td>One place to manage. Bundles help onboarding: one choice sets up both.</td></tr>
+<tr><td>D3</td><td>Template lifecycle</td><td><b>Draft → Published → Archived</b>, with a version number. Only Published templates are shown to customers. Publishing again creates the next version.</td><td>Staff can work on a template without customers seeing it half-done. Archived templates stay readable for audit.</td></tr>
+<tr><td>D4</td><td>Prices in a menu template</td><td><b>Copy the sample prices, marked "Check price"</b> on each dish until the customer edits or confirms it. The marking disappears in one tap with <i>Confirm all prices</i>.</td><td>A price is the thing most likely to be wrong for a given city. A marking catches it without blocking sales.</td></tr>
+<tr><td>D5</td><td>Who sees which template</td><td><b>Filtered by venue type and country/currency</b>; the customer can switch to "Show all".</td><td>A Douala maquis should not see a Paris brasserie first. Currency must match the tenant's currency.</td></tr>
+<tr><td>D6</td><td>Applying to an account that already has data</td><td><b>Two modes:</b> <i>Replace</i> (floor: only when no table is open; menu: open orders keep their lines) and <i>Add to mine</i> (menu: merged by dish name; floor: areas added alongside).</td><td>Matches the CSV import already built, so the behaviour is the same everywhere.</td></tr>
+<tr><td>D7</td><td>Language</td><td><b>One template per language</b> (FR / EN tag). No automatic translation.</td><td>Dish names are local ("Ndolé", "Poulet DG"); translating them is wrong more often than right.</td></tr>
+<tr><td>D8</td><td>Track usage</td><td><b>Yes:</b> each copy records template id + version + date. The Control Centre shows "Used by N customers".</td><td>Shows which templates work; supports later "a new version is available" notices without auto-updating (D1).</td></tr>
+</tbody></table></div>
+
+<h2 id="model">Data model</h2>
+<p class="sub">Shared by both kinds. <span class="mono">content</span> uses exactly the shape the Restaurant module already stores, so applying a template is a plain copy.</p>
+<div class="ba"><div><div class="t">Template</div><code>{ id, kind: 'menu' | 'floor',
+  name, description, venueTypes: ['maquis','bar',…],
+  locale: 'fr' | 'en', currency: 'XAF',
+  status: 'draft' | 'published' | 'archived',
+  version, publishedAt, updatedBy, updatedAt,
+  pairWith: templateId | null,        // D2 bundle
+  content }</code></div>
+<div><div class="t">content by kind</div><code>menu:  { categories: [{id,label,icon}],
+         items: [{cat,name,desc,price,
+                  station,tags,icon,tint}] }
+floor: { areas: [{label,icon,
+                  tables:[{label,seats,shape,x,y}]}],
+         rules?: { voidRule, printKitchen } }</code></div>
+<div><div class="t">Copy record (on the tenant)</div><code>{ templateId, version, kind,
+  appliedAt, mode: 'replace' | 'add',
+  appliedBy }
+dish.priceCheck = true   // D4, until edited</code></div></div>
+<div class="note warn" style="margin-top:12px"><ion-icon name="cloud-outline"></ion-icon><p><b>Prototype storage:</b> templates live in a shared <span class="mono">kz:tpl</span> store that both the Control Centre and the Restaurant module read. In production this becomes a platform-level collection (read-only to tenants, write for the Template editor role).</p></div>
+
+<h2 id="owner">Platform owner screens (Control Centre)</h2>
+<div class="flow">
+<div><div class="k">1 · Library</div><b>Control Centre → Templates</b><span>Menu / Floor plan tabs. Cards: name, venue types, language, status, version, dish or table count, "Used by N". Filters: kind, venue type, status, language. Search.</span></div>
+<div><div class="k">2 · Create</div><b>New template</b><span>From blank, <i>Duplicate</i> an existing one, or <i>Import CSV</i> (menu; same format as the Restaurant import).</span></div>
+<div><div class="k">3 · Edit</div><b>Same editors as customers</b><span>The Menu editor and Floor plan editor already in Restaurant Setup, bound to the template rather than to a venue. Plus a details panel: name, description, venue types, language, paired template.</span></div>
+<div><div class="k">4 · Preview</div><b>See what the customer sees</b><span>Shows the register tiles (menu) or the floor plan exactly as they'll look after copying.</span></div>
+<div><div class="k">5 · Publish</div><b>Publish v2</b><span>Checks: at least one category and dish / one area and table; every dish has a price and a station. Draft edits never touch the live version until published.</span></div>
+<div><div class="k">6 · Retire</div><b>Archive</b><span>Hidden from customers, kept for audit. Existing customer copies are untouched (D1).</span></div>
+</div>
+
+<h2 id="tenant">Customer onboarding</h2>
+<div class="flow">
+<div><div class="k">Entry A</div><b>Empty state</b><span>Setup → Menu with no dishes, or Floor plan with no tables, shows "Start from a template" as the main action, with blank as the second option.</span></div>
+<div><div class="k">Entry B</div><b>Any time</b><span>A <i>Templates</i> button next to Import CSV (menu) and next to <i>Start from a layout</i> (floor plan; the built-in layouts become the first published floor templates).</span></div>
+<div><div class="k">Pick</div><b>Gallery</b><span>Filtered by venue type + currency (D5). Card: name, 3 sample dishes or a mini floor plan, counts. "Pairs with…" chip offers the bundle.</span></div>
+<div><div class="k">Preview</div><b>Before anything changes</b><span>Full list of categories and dishes / areas and tables. Shows what happens to existing data: "Adds 28 dishes, updates 2", "Replaces 2 areas".</span></div>
+<div><div class="k">Apply</div><b>Replace or Add to mine</b><span>D6 rules. One undo, available until the next edit.</span></div>
+<div><div class="k">After</div><b>Make it yours</b><span>Banner: "28 dishes have sample prices — check them". The <i>Check price</i> filter lists them; <i>Confirm all prices</i> clears the markings.</span></div>
+</div>
+
+<h2 id="mobile">Mobile behaviour</h2>
+<div class="g2">
+<div class="card"><h4><ion-icon name="phone-portrait-outline"></ion-icon>Phone</h4><p>Gallery as a single column of cards; preview as a full-screen sheet with a sticky <i>Use this template</i> bar. Floor preview shows areas as a list with table counts (as the floor editor does now). Every target ≥ 44 px.</p></div>
+<div class="card"><h4><ion-icon name="tablet-landscape-outline"></ion-icon>Tablet / laptop</h4><p>Gallery grid (2–3 columns) with preview in a side panel. Control Centre editor: list on the left, editor on the right, details panel collapsible.</p></div>
+</div>
+
+<h2 id="seed">Starter library (shipped with v1)</h2>
+<div class="tblwrap"><table><thead><tr><th>Template</th><th>Kind</th><th>Content</th><th>Pairs with</th></tr></thead><tbody>
+<tr><td><b>Maquis camerounais</b></td><td>Menu · FR</td><td>Entrées, Plats, Grillades, Accompagnements, Boissons — about 30 dishes, stations Grill / Sauce Pot / Bar</td><td>Maquis layout</td></tr>
+<tr><td><b>Bar / lounge</b></td><td>Menu · FR</td><td>Bières, Vins, Cocktails, Spiritueux, Snacks</td><td>Bar layout</td></tr>
+<tr><td><b>Snack / fast food</b></td><td>Menu · FR</td><td>Burgers, Shawarma, Frites, Boissons — Fryer / Grill / Counter</td><td>Snack layout</td></tr>
+<tr><td><b>Hotel restaurant</b></td><td>Menu · EN</td><td>Breakfast, Starters, Mains, Desserts, Drinks</td><td>Hotel layout</td></tr>
+<tr><td><b>Maquis · Restaurant · Bar · Hotel · Snack · Counter only</b></td><td>Floor</td><td>The 6 built-in layouts, moved into the library unchanged</td><td>—</td></tr>
+</tbody></table></div>
+
+<h2 id="work">Work items</h2>
+<div class="chg"><div class="chg__h"><span class="num">1</span><b>Shared template store</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>kz/kz-templates.js (new)</span></div><p>Read/write templates and copy records; seed the starter library on first load; versioning (draft copy vs published snapshot).</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">2</span><b>Editors become data-bound</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>restaurant/menu-setup.jsx</span><span>restaurant/floor-setup.jsx</span></div><p>Menu editor and Floor editor take <span class="mono">value</span> + <span class="mono">onChange</span> instead of reading the venue directly, so the Control Centre can reuse them on a template. Restaurant Setup keeps working exactly as today.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">3</span><b>Control Centre → Templates</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>Koomzo - Control Centre.html</span><span>kz/kz-templates-admin.jsx (new)</span><span>kz/kz-templates.css (new)</span></div><p>Library, filters, create / duplicate / CSV import, editor with details panel, preview, publish with checks, archive, "Used by N".</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">4</span><b>Customer gallery + apply</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>restaurant/template-pick.jsx (new)</span><span>restaurant/menu-setup.jsx</span><span>restaurant/floor-setup.jsx</span></div><p>Empty-state entry, Templates button, gallery, preview with impact summary, Replace / Add to mine, undo, bundle offer.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">5</span><b>"Check price" marking</b><span class="sp"></span><span class="sev n">e</span></div><div class="chg__b"><div class="files"><span>restaurant/menu-setup.jsx</span><span>restaurant/store.jsx</span></div><p>Flag on copied dishes, a filter, a banner and <i>Confirm all prices</i>; editing a price clears its flag.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">6</span><b>Guides</b><span class="sp"></span><span class="sev g">a</span></div><div class="chg__b"><div class="files"><span>Koomzo Guide utilisateur - Restaurant.html</span><span>Koomzo User Guide - Restaurant.html</span></div><p>Restaurant guide (FR + EN): "Start from a template" in Setup steps and the Menu / Floor sections. Hub guide: a short platform-owner page.</p></div></div>
+<h3 id="prod">Production tasks (target app)</h3>
+<p class="sub">Could not be built in the prototype. Specified for <span class="mono">koomzoapps</span> in <a href="Koomzo - Templates, Photos &amp; Customer Display - Production Gap Spec.md">Production Gap Spec</a>.</p>
+<div class="chg"><div class="chg__h"><span class="num">7</span><b>Templates on the platform backend</b><span class="sp"></span><span class="sev gap">Target app</span></div><div class="chg__b"><p><b>T1</b> <span class="mono">pf_template</span>, immutable <span class="mono">pf_template_version</span>, private drafts, <span class="mono">template_editor</span> role, server-side publish checks, offline cache of published versions.</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">8</span><b>Copy records and undo</b><span class="sp"></span><span class="sev gap">Target app</span></div><div class="chg__b"><p><b>T2</b> real tenant / location on every copy record (closes A10). <b>T3</b> undo stored as an inverse op group so it survives a reload (A12 note).</p></div></div>
+<div class="chg"><div class="chg__h"><span class="num">9</span><b>Dish photos through the CDN</b><span class="sp"></span><span class="sev gap">Target app</span></div><div class="chg__b"><p><b>T4</b> <span class="mono">/v1/media</span> upload, WebP sizes, re-hosting of pasted links, offline outbox for files; templates reference media by id.</p></div></div>
+
+<h2 id="accept">Acceptance checklist</h2>
+<p class="sub">After building, I check every line against the result and mark it Pass or Fail, with notes.</p>
+<ul class="chk">
+<li><code>A1</code>Control Centre has a Templates screen with Menu and Floor plan tabs, filters and search.</li>
+<li><code>A2</code>Staff can create from blank, duplicate, and import a menu from CSV.</li>
+<li><code>A3</code>Template editing reuses the Restaurant Menu and Floor editors; Restaurant Setup behaves as before.</li>
+<li><code>A4</code>Draft → Published → Archived works; publishing bumps the version; publish is blocked with a clear reason when checks fail.</li>
+<li><code>A5</code>Only published templates appear to customers, filtered by venue type and currency, with "Show all".</li>
+<li><code>A6</code>Empty Menu / Floor plan screens offer "Start from a template" first.</li>
+<li><code>A7</code>Preview states the impact before applying; Replace and Add to mine follow D6; floor Replace is refused while a table is open.</li>
+<li><code>A8</code>Applied content is a copy: editing the template later does not change the customer; editing the customer copy does not change the template.</li>
+<li><code>A9</code>Copied dishes carry "Check price" until edited or confirmed; the banner count is correct.</li>
+<li><code>A10</code>Copy record is saved; "Used by N" updates in the Control Centre.</li>
+<li><code>A11</code>Bundle: picking a paired menu offers the matching floor plan, and the reverse.</li>
+<li><code>A12</code>Undo restores the state from just before applying.</li>
+<li><code>A13</code>Phone layout: single-column gallery, full-screen preview, sticky action, targets ≥ 44 px.</li>
+<li><code>A14</code>Starter library present: 4 menus + 6 floor plans.</li>
+<li><code>A15</code>No console errors on the Control Centre or Restaurant & Bar pages.</li>
+</ul>
+
+<h2 id="out">Out of scope (v1)</h2>
+<div class="dev">
+<div class="dev__r"><ion-icon name="remove-circle-outline"></ion-icon><div><b>Pushing template updates</b> to existing customers. D8 records enough to add a "new version available" notice later.</div></div>
+<div class="dev__r"><ion-icon name="remove-circle-outline"></ion-icon><div><b>Customer-made templates</b> (a chain sharing one menu across branches) — a natural v2 on the same model.</div></div>
+<div class="dev__r"><ion-icon name="remove-circle-outline"></ion-icon><div><b>Product photos</b> in templates — tiles use icon + colour until there's media storage.</div></div>
+<div class="dev__r"><ion-icon name="remove-circle-outline"></ion-icon><div><b>Retail Flex catalogues</b> — the same model fits, but only after Restaurant is validated.</div></div>
+</div>
+
+<h2 id="verify">Cross-check against the plan</h2>
+<p class="sub">Every acceptance line checked in the running prototype on 15 Oct 2026.</p>
+<div class="tblwrap"><table><thead><tr><th>#</th><th>Result</th><th>What was checked</th></tr></thead><tbody>
+<tr><td><b>A1</b></td><td><span class="sev ok">Pass</span></td><td>Templates tab in Control Centre (embeds the library) and a full-screen page. Menu / Floor plan tabs with counts, search, status / venue / language filters.</td></tr>
+<tr><td><b>A2</b></td><td><span class="sev ok">Pass</span></td><td>New template → Blank or Copy of any template. CSV import is available inside the menu editor (same format as the Restaurant import).</td></tr>
+<tr><td><b>A3</b></td><td><span class="sev gap">Pass · method changed</span></td><td>Same MenuSetup and FloorEditor components. Instead of rewriting them to take value/onChange props, the library wraps them in a template-scoped data context, so the Restaurant code path is untouched. Same result, less risk.</td></tr>
+<tr><td><b>A4</b></td><td><span class="sev ok">Pass</span></td><td>Draft → Published vN → Archived. Edits to a published template show “unpublished changes” with Discard. Publish lists blocking reasons (venue type, category, dish, price, station, missing category; floor: a table or Counter only).</td></tr>
+<tr><td><b>A5</b></td><td><span class="sev ok">Pass</span></td><td>Customers see published templates only (live snapshot, never the draft), filtered by their venue type and XAF currency; Show all removes the filter.</td></tr>
+<tr><td><b>A6</b></td><td><span class="sev ok">Pass</span></td><td>Empty menu and empty floor plan both lead with “Start from a template”. The new-venue floor banner opens templates too.</td></tr>
+<tr><td><b>A7</b></td><td><span class="sev ok">Pass</span></td><td>Impact sentence before applying (adds / updates by name / new categories; floor: archives N areas, adds M). Floor Replace is disabled while tables are in service.</td></tr>
+<tr><td><b>A8</b></td><td><span class="sev ok">Pass</span></td><td>Content is deep-copied on apply and on publish; a customer copy and the template share nothing.</td></tr>
+<tr><td><b>A9</b></td><td><span class="sev ok">Pass</span></td><td>Copied dishes carry “Check price”; banner with live count, Show them filter, Confirm all prices. Saving a dish clears its label.</td></tr>
+<tr><td><b>A10</b></td><td><span class="sev gap">Pass · prototype → T2</span></td><td>Copy record (template, version, mode, tenant, user, time) saved; cards and editor show “Used by N” and the latest copies. Tenant name is fixed in the prototype.</td></tr>
+<tr><td><b>A11</b></td><td><span class="sev ok">Pass</span></td><td>After applying, the confirmation offers the paired template and opens its picker on the other tab — menu → floor and floor → menu.</td></tr>
+<tr><td><b>A12</b></td><td><span class="sev ok">Pass</span></td><td>One Undo restores the previous menu + categories, or floor plan + service rules. It ends at the next edit and does not survive a reload — persistent undo is <b>T3</b>.</td></tr>
+<tr><td><b>A13</b></td><td><span class="sev ok">Pass</span></td><td>≤ 760 px: picker is full-screen, single-column gallery, preview with back button and sticky 48 px actions; chips grow to 44 px on phones. Library grid goes to one column; editor stacks details above.</td></tr>
+<tr><td><b>A14</b></td><td><span class="sev ok">Pass</span></td><td>4 menus (Maquis camerounais 31 dishes FR, Bar / lounge 20 FR, Snack 16 FR, Hotel restaurant 20 EN) + 6 floor plans (the built-in layouts, unchanged), paired where they match.</td></tr>
+<tr><td><b>A15</b></td><td><span class="sev ok">Pass</span></td><td>No console errors on Template Library, Control Centre or Restaurant & Bar.</td></tr>
+</tbody></table></div>
+<h3>Delivered files</h3>
+<div class="files"><span>kz/kz-templates.js</span><span>kz/kz-templates-admin.jsx</span><span>kz/kz-templates.css</span><span>Koomzo - Template Library.html</span><span>restaurant/template-pick.jsx</span><span>restaurant/menu-setup.jsx</span><span>restaurant/floor-setup.jsx</span><span>restaurant/store.jsx</span><span>Koomzo - Control Centre.html</span><span>Restaurant &amp; hub guides (FR + EN)</span></div>
+<div class="dev">
+<div class="dev__r"><ion-icon name="information-circle-outline"></ion-icon><div><b>Built-in layouts</b> — the old “Start from a layout” sheet is replaced by the template picker; the six layouts now live in the library (per-area table counts are still adjustable in the preview).</div></div>
+<div class="dev__r"><ion-icon name="arrow-forward-circle-outline"></ion-icon><div><b>Storage → T1.</b> Browser storage in the prototype; platform collections with the Template editor role in the target app — see the <a href="Koomzo - Templates, Photos &amp; Customer Display - Production Gap Spec.md">production spec</a>.</div></div>
+</div>
+</main>
+</div>
+</body>
+</html>

@@ -101,9 +101,37 @@ function InventoryView({ profile, catalog, stock, onCount, onShow, mode, onMode,
   };
   const open = openId && catalog.items.find((p) => p.id === openId);
 
+  if (adding) return <NewProductForm catalog={catalog} mode={mode} onCancel={() => setAdding(false)}
+    onSave={(p, s) => { onCreate && onCreate(p, s); setAdding(false); }} />;
+
   if (mode === 'off') return (
     <div className="view">
-      <div className="view__head"><div><h2>Stock</h2><p>Not switched on for this business</p></div></div>
+      <div className="view__head">
+        <div><h2>Products</h2><p>{catalog.items.length} products · stock not tracked</p></div>
+        <div className="sp"></div>
+        {onCats && <button className="btn" onClick={onCats}><ion-icon name="albums-outline"></ion-icon>Categories</button>}
+        <button className="btn primary" onClick={() => setAdding(true)}><ion-icon name="add-outline"></ion-icon>New product</button>
+      </div>
+      <div className="fbar">
+        <div className="field"><ion-icon name="search-outline"></ion-icon>
+          <input placeholder="Search or scan" value={q} onChange={(e) => setQ(e.target.value)} /></div>
+      </div>
+      <div className="itbl" style={{ marginBottom: 16 }}>
+        {rows.map((p) => (
+          <div className="itrow" key={p.id} style={{ gridTemplateColumns: 'minmax(160px,2fr) 132px 96px', cursor: 'default' }}>
+            <div className="itcell">
+              <div className="itav" style={{ background: p.tint.bg, color: p.tint.fg }}><ion-icon name={p.icon}></ion-icon></div>
+              <div style={{ minWidth: 0 }}>
+                <div className="itnm">{p.name}</div>
+                <div className="itsub"><span>{p.sku}</span><span className="sep">·</span><span style={{ fontFamily: 'var(--kz-font-sans)' }}>{p.sub}</span></div>
+              </div>
+            </div>
+            <div className="r itsub">{(catalog.cats.find((c) => c.id === p.cat) || {}).label}</div>
+            <div className="r itnum">{money(p.price)}</div>
+          </div>
+        ))}
+        {!rows.length && <EmptyState icon="search-outline" title="No match" sub="Try another name or SKU, or add it as a new product." />}
+      </div>
       <div className="card" style={{ maxWidth: 620 }}>
         <div className="card__t">This register sells from a fixed product list</div>
         <div className="card__s" style={{ lineHeight: 1.6, marginTop: 8 }}>
@@ -117,9 +145,6 @@ function InventoryView({ profile, catalog, stock, onCount, onShow, mode, onMode,
       </div>
     </div>
   );
-
-  if (adding) return <NewProductForm catalog={catalog} mode={mode} onCancel={() => setAdding(false)}
-    onSave={(p, s) => { onCreate && onCreate(p, s); setAdding(false); }} />;
 
   return (
     <div className="view">

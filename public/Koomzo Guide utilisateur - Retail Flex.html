@@ -39,6 +39,8 @@
 <a class="sub" href="#x-returns">Retours</a>
 <a class="sub" href="#x-customers">Clients</a>
 <a class="sub" href="#x-shift">Caisse et tiroir</a>
+<a class="sub" href="#x-products">Ajouter un produit</a>
+<a class="sub" href="#x-cfd">Écran client</a>
 <a class="sub" href="#x-setup">Configuration</a>
 <a href="#rx-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · En cas de problème</a>
 <a href="#rx-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Aller plus loin</a>
@@ -102,7 +104,7 @@
 <ol class="steps">
 <li><div><b>Premiers pas</b><span>Compte, établissement et personnel — voir <a data-page="hub" href="Koomzo Guide utilisateur.html#p1">P1</a>. Les caissiers ont le rôle <i>Personnel</i> : pas d'accès à la configuration.</span></div></li>
 <li><div><b>Choisissez un profil</b><span>Configuration → Profil d'activité (Business profile). Prenez le type le plus proche ; tout reste modifiable.</span></div></li>
-<li><div><b>Ajoutez vos articles</b><span>Nom, prix, code-barres s'il y en a, catégorie. Des variantes si besoin — taille, dosage, teinte. Le stock est dans le module <a data-page="hub" href="Koomzo Guide utilisateur.html#modules">Stock</a>.</span></div></li>
+<li><div><b>Ajoutez vos articles</b><span>Produits → <strong>Nouveau produit</strong> : nom, prix, catégorie, puis Enregistrer. Le module Stock n'est pas nécessaire — sans lui, la barre affiche <i>Produits</i> et ne demande aucune quantité. Pas à pas : <a href="#x-products">Ajouter un produit</a>.</span></div></li>
 <li><div><b>Taxes</b><span>TVA 19,25 % par défaut ; les produits de base et les médicaments peuvent être à taux zéro.</span></div></li>
 <li><div><b>Paiements</b><span>Espèces activées ; ajoutez MTN MoMo et Orange Money avec vos numéros marchands.</span></div></li>
 <li><div><b>Matériel</b><span>Un lecteur de code-barres Bluetooth ou USB et une imprimante à tickets. Une balance pour les produits pesés. <span class="soon"><ion-icon name="time-outline"></ion-icon>Balances — bientôt</span></span></div></li>
@@ -187,6 +189,33 @@
 <li><span><b>Rapport X</b> — les chiffres à cet instant, sans clôturer.</span></li>
 <li><span><b>Clôturer</b> — comptez le tiroir ; le rapport Z montre l'écart.</span></li>
 </ol>
+
+<h3 id="x-products">Ajouter un produit <span class="tier lite">Lite</span></h3>
+<p class="sub">Pour une petite boutique sans module Stock : une liste de produits et leurs prix, rien d'autre à tenir.</p>
+<div class="shot"><img src="guide/img/retail-products.jpg" alt="Écran Produits, stock non suivi" /><span class="pin" style="left:7.5%;top:33%">1</span><span class="pin" style="left:12%;top:28.7%">2</span><span class="pin" style="left:71%;top:12%">3</span><span class="pin" style="left:88%;top:12%">4</span><span class="pin" style="left:93%;top:36%">5</span></div><ol class="callouts"><li><span><b>Produits</b> — remplace Stock dans la barre quand le stock est désactivé.</span></li><li><span><b>Chercher ou scanner</b> un article existant avant d'en créer un.</span></li><li><span><b>Catégories</b> — les puces de la caisse.</span></li><li><span><b>Nouveau produit</b> — ouvre le formulaire.</span></li><li><span><b>Prix</b> — seule colonne à tenir ; touchez une ligne pour la modifier.</span></li></ol><div class="shot"><img src="guide/img/retail-product-new.jpg" alt="Formulaire Nouveau produit" /><span class="pin" style="left:11.8%;top:36%">1</span><span class="pin" style="left:34.5%;top:69%">2</span><span class="pin" style="left:11.8%;top:92%">3</span><span class="pin" style="left:75%;top:50%">4</span><span class="pin" style="left:89%;top:12%">5</span></div><ol class="callouts"><li><span><b>Nom</b> — obligatoire.</span></li><li><span><b>Référence et code-barres</b> — facultatifs ; scannez pour remplir.</span></li><li><span><b>Catégorie</b> — la puce sous laquelle il apparaît.</span></li><li><span><b>Aperçu</b> — la tuile telle que le caissier la verra.</span></li><li><span><b>Enregistrer</b> — actif dès que nom et prix sont remplis.</span></li></ol>
+
+<ol class="steps">
+<li><div><b>Ouvrez Produits</b><span>Barre latérale → <i>Produits</i> (icône étiquette). Stock désactivé, l'écran affiche <i>Produits · stock non suivi</i> avec la liste de vos articles.</span></div></li>
+<li><div><b>Créez d'abord vos catégories</b><span>Bouton <strong>Catégories</strong> en haut. Une catégorie par puce de la caisse — Boissons, Épicerie, Hygiène… dans l'ordre où la boutique vend.</span></div></li>
+<li><div><b>Nouveau produit</b><span>Bouton violet en haut à droite. Un seul formulaire.</span></div></li>
+<li><div><b>Nom et prix</b><span>Les deux seuls champs obligatoires. Code-barres et référence si l'article en a ; le coût est facultatif mais donne la marge.</span></div></li>
+<li><div><b>Catégorie</b><span>Touchez la puce sous laquelle il apparaîtra en caisse.</span></div></li>
+<li><div><b>Vendu au poids ?</b><span>Activez-le et choisissez l'unité (kg, g, l) ; le prix devient un prix au kilo.</span></div></li>
+<li><div><b>Visuel</b><span>Une icône et une couleur, ou une photo. L'aperçu montre la tuile telle qu'en caisse.</span></div></li>
+<li><div><b>Enregistrer le produit</b><span>Il est en caisse immédiatement. Recommencez pour le suivant ; au-delà de quelques dizaines, importez un tableur.</span></div></li>
+</ol>
+<div class="card"><h4><ion-icon name="cube-outline"></ion-icon>Et si je veux suivre le stock plus tard ?</h4><p>Sur l'écran Produits, <b>Activer Lite</b>. Vos produits restent ; chacun reçoit une quantité et un interrupteur « visible en caisse ».</p></div>
+
+<h3 id="x-cfd">Écran client <span class="tier lite">Lite</span></h3>
+<p class="sub">Un écran tourné vers le client — l'écran arrière d'une caisse tout-en-un, une tablette ou un terminal de paiement Android — affiche chaque ligne au fur et à mesure, le total et comment payer.</p>
+<ol class="steps">
+<li><div><b>Associez-le</b><span>Configuration → <strong>Customer display</strong> affiche un code à 4 chiffres. Sur la tablette ou le terminal, ouvrez <i>Koomzo Customer Display</i> et saisissez le code. Sur une caisse tout-en-un avec écran arrière, touchez plutôt <strong>Open on second screen</strong> — sans code.</span></div></li>
+<li><div><b>Vérifiez</b><span><strong>Show test screen</strong> affiche une commande d'exemple pendant 8 secondes. La caisse indique <i>Display</i> en vert quand l'écran est connecté.</span></div></li>
+<li><div><b>Choisissez ce que le client peut toucher</b><span>Numéro de fidélité, choix du reçu (WhatsApp, SMS, imprimé, aucun) et pourboire — chacun a son propre interrupteur. Ce que le client touche arrive sur votre caisse comme une suggestion : <i>Accept</i> ou <i>Ignore</i>. Rien n'est appliqué tout seul.</span></div></li>
+<li><div><b>Réglez l'écran d'accueil</b><span>Une phrase d'accueil et jusqu'à 3 visuels promo, affichés quand personne n'est servi. Choisissez le français ou l'anglais pour l'écran — vos propres écrans ne changent pas.</span></div></li>
+</ol>
+<div class="card"><h4><ion-icon name="shield-checkmark-outline"></ion-icon>Ce que le client ne voit jamais</h4><p>Les coûts, notes cuisine, motifs d'annulation, noms et PIN du personnel, autres tables ou tickets en attente, numéros de téléphone complets et — en pharmacie — le nom des médicaments sur ordonnance (affiché « Article sur ordonnance »). Pendant un contrôle d’âge, l’écran indique seulement que la pièce d’identité est vérifiée. Une ligne retirée s'affiche barrée un instant, puis disparaît. Si l'écran perd la caisse pendant 5 secondes, il grise le total et affiche <i>Reconnexion…</i> plutôt qu'un ancien montant.</p></div>
+
 
 <h3 id="x-setup">Configuration <span class="tier lite">Lite</span></h3>
 <div class="shot"><img src="guide/img/retail-setup.jpg" alt="Profils d'activité" /><span class="pin" style="left:26%;top:30.2%">1</span><span class="pin" style="left:45.5%;top:38.9%">2</span><span class="pin" style="left:94%;top:96%">3</span></div>

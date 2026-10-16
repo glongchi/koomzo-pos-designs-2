@@ -101,7 +101,16 @@ function SuiteProvider({ tweaks, setTweak, children }) {
     if (!saved || !saved.some((t) => Date.now() - t.firedAt < 12 * 3600000)) return SEED_TABLES();
     return rkLoad('tables', SEED_TABLES);
   });
-  const [orders, setOrders] = useState(() => rkLoad('orders', {}));
+  /* line uids must be unique per order; older saved orders may repeat one (uid counter used to reset on reload) */
+  const [orders, setOrders] = useState(() => {
+    const saved = rkLoad('orders', {});
+    Object.keys(saved).forEach((k) => {
+      const lines = saved[k] && saved[k].lines; if (!Array.isArray(lines)) return;
+      const seen = new Set();
+      saved[k] = { ...saved[k], lines: lines.map((l, i) => { if (!l || !l.uid || !seen.has(l.uid)) { l && seen.add(l.uid); return l; } const nu = l.uid + '-' + i; seen.add(nu); return { ...l, uid: nu }; }) };
+    });
+    return saved;
+  });
   const [floorsAll, setFloorsRaw] = useState(() => rkLoad('floors', () => window.RK_FLOORS));
   /* G5 — archive, don't delete: screens see only live areas and tables; history still resolves labels */
   const floors = useMemo(() => activeFloors(floorsAll), [floorsAll]);
@@ -114,7 +123,7 @@ function SuiteProvider({ tweaks, setTweak, children }) {
 
   /* the floor plan is venue config; every screen reads window.RK_FLOORS (live only) */
   window.RK_FLOORS = floors; window.RK_FLOORS_ALL = floorsAll;
-  const setFloors = useCallback((f) => setFloorsRaw((cur) => { const n = typeof f === 'function' ? f(cur) : f; window.RK_FLOORS_ALL = n; window.RK_FLOORS = activeFloors(n); return n; }), []);
+  const setFloors = useCallback((f) => { setTplUndo((u) => (u && u.kind === 'floor' ? null : u)); setFloorsRaw((cur) => { const n = typeof f === 'function' ? f(cur) : f; window.RK_FLOORS_ALL = n; window.RK_FLOORS = activeFloors(n); return n; }); }, []);
   const setRules = useCallback((patch) => setRulesRaw((cur) => ({ ...cur, ...patch })), []);
 
   const [me, setMe] = useState(() => rkLoad('me', RK_STAFF[0].id));
@@ -126,7 +135,16 @@ function SuiteProvider({ tweaks, setTweak, children }) {
   const [prints, setPrints] = useState(() => rkLoad('prints', []));
   const [sales, setSales] = useState(seedSales);
   const [day, setDay] = useState(() => { const d = rkLoad('day', {}); return d.closedAt && Date.now() - d.closedAt > 12 * 3600000 ? {} : d; });
-  const [setupTab, setSetupTab] = useState('floor');
+  const [setupTab, setSetupTab] = useState('menu');
+  const [menus, setMenus] = useState(() => rkLoad('menus', () => window.RK_MENU));
+  const [cats, setCats] = useState(() => rkLoad('cats', () => Object.fromEntries(Object.entries(window.RK_VERTICALS).map(([k, v]) => [k, v.categories]))));
+  useEffect(() => { window.RK_MENU = menus; rkSave('menus', menus); }, [menus]);
+  useEffect(() => { rkSave('cats', cats); }, [cats]);
+  const [tplUndo, setTplUndo] = useState(null);   // last template applied — one undo, until the next edit
+  const [tplOpen, setTplOpen] = useState(null);   // { kind, id } — open the template picker (bundle offer)
+  const clearUndo = (k) => setTplUndo((u) => (u && u.kind === k ? null : u));
+  const setMenu = useCallback((fn) => { clearUndo('menu'); setMenus((cur) => ({ ...cur, [vertical]: typeof fn === 'function' ? fn(cur[vertical] || []) : fn })); }, [vertical]);
+  const setCategories = useCallback((fn) => { clearUndo('menu'); setCats((cur) => ({ ...cur, [vertical]: typeof fn === 'function' ? fn(cur[vertical] || []) : fn })); }, [vertical]);
   useEffect(() => { rkSave('me', me); }, [me]);
   useEffect(() => { rkSave('prints', prints); }, [prints]);
   useEffect(() => { rkSave('day', day); }, [day]);
@@ -386,8 +404,8 @@ function SuiteProvider({ tweaks, setTweak, children }) {
     me: meObj, setMe, staff: RK_STAFF, ownerOf, canAct, takeOver, setOrderMeta, printBill,
     prints, queuePrint, sales, recordSale, day, closeDay, reopenDay, setupTab, setSetupTab,
     now, counts, tweaks, setTweak,
-    verticalCfg: window.RK_VERTICALS[vertical],
-    menu: window.RK_MENU[vertical],
+    verticalCfg: { ...window.RK_VERTICALS[vertical], categories: cats[vertical] || window.RK_VERTICALS[vertical].categories },
+    menu: menus[vertical] || [], setMenu, setCategories, tplUndo, setTplUndo, tplOpen, setTplOpen,
   };
   return <SuiteContext.Provider value={value}>{children}</SuiteContext.Provider>;
 }

@@ -10,6 +10,8 @@ Its files are `restaurant/store.jsx`, `service.jsx`, `floor-setup.jsx`,
 - `Koomzo - Recipe and Depletion Model.html`
 - `Koomzo - Batch 1 Close-out Rulings.md` (R1–R8)
 
+**See also:** `Koomzo - Templates, Photos & Customer Display - Production Gap Spec.md` — T1–T4 (template library, dish photos) and C1–C11 (customer display) for Restaurant and Retail Flex.
+
 This spec covers only what the prototype **could not** build because it has no real
 backend, device APIs or hardware. Anything the prototype already does is the
 reference for UI and rules. Port it as it is; don't redesign it.
@@ -244,6 +246,7 @@ per-layout sizing are all done.
 | 7 | G7 local network | 1 | L |
 | 8 | G8 kiosk device features | 7 for the role | S |
 | — | G6 server banking, ardoise | Own batch | L |
+| — | T1–T4 templates and photos, C1–C11 customer display | 1, 7 | See the companion spec |
 
 ## Open decisions
 

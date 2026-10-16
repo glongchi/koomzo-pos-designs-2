@@ -43,6 +43,9 @@ koomzo-pos-web/
 
 | Document | Module |
 |---|---|
+| `Koomzo - Templates, Photos & Customer Display - Production Gap Spec.md` | Template library, dish photos, customer display: production tasks T1–T4, C1–C11 |
+| `Koomzo - Template Library Plan.html` | Platform: sample menu / floor plan templates — plan + cross-check |
+| `Koomzo - Customer Display Plan.html` | Restaurant & Retail Flex: customer-facing display — plan + cross-check |
 | `Koomzo Restaurant - Production Gap Spec.md` | Restaurant & Bar: gaps to production (G1–G6) |
 | `Koomzo Restaurant - Service Scenario Plan.md` | Restaurant & Bar: service scenarios |
 | `Koomzo Restaurant - Server Banking and Ardoise Plan.md` | Restaurant & Bar: server banking and the ardoise (tab) |
@@ -57,6 +60,7 @@ The rest of the specs (functional spec, register, inventory, signage, MRP, progr
 ## Notes
 
 - React, ReactDOM, Babel and Ionicons load from CDNs, so the first load needs network access. To run fully offline, vendor those four scripts into `public/` and update the `<script src>` tags.
-- Data comes from in-memory fixtures (`*-data.js`). Only language and a few UI preferences persist, in `localStorage`.
+- Data comes from in-memory fixtures (`*-data.js`). Language, UI preferences, the Restaurant menu, templates (`kz:tpl:*`) and customer-display settings (`kz:cfd:*`) persist in `localStorage`.
+- Customer display: open `Koomzo - Customer Display Demo.html`, or open a register and `Koomzo Customer Display.html` in two tabs of the **same browser** and pair with the code from Setup → Customer display.
 - To move to a bundled production setup, point Vite at the same `.jsx` files. They share state through `window` assignments rather than ES module imports, so that port means adding `import`/`export` to each file.
 - The user guide pages link to each other under project names. `public/guide/guide.js` also handles the short published names (`index.html`, `fr.html`, `hotel.html`, `fr-hotel.html` …).

@@ -107,12 +107,15 @@ function PresetSheet({ onClose }) {
 
 /* drag-and-drop editor on tablet/desktop; list editor on phone */
 function FloorEditor() {
-  const { floors, floorsAll, setFloors, tableStatusFor, rules, setRules } = useSuite();
+  const S = useSuite();
+  const { floors, floorsAll, setFloors, tableStatusFor, rules, setRules, tplMode } = S;
   const narrow = useNarrow(680);
   const [showArch, setShowArch] = useState(false);
   const [areaId, setAreaId] = useState(floors[0]?.id);
   const [selId, setSelId] = useState(null);
   const [presets, setPresets] = useState(false);
+  useEffect(() => { if (!tplMode && S.tplOpen && S.tplOpen.kind === 'floor') { setPresets({ id: S.tplOpen.id }); S.setTplOpen(null); } }, [S.tplOpen]);
+  useEffect(() => { if (!floors.some((f) => f.id === areaId) && floors[0]) setAreaId(floors[0].id); }, [floors, areaId]);
   const canvasRef = useRef(null);
   const drag = useRef(null);
   const area = floors.find((f) => f.id === areaId) || floors[0];
@@ -160,10 +163,11 @@ function FloorEditor() {
     return (
       <div className="fs-empty">
         <ion-icon name="grid-outline"></ion-icon>
-        <h3>No floor plan yet</h3>
-        <p>Start from a common layout, or add your first area.</p>
-        <div className="fs-btns"><button className="rk-btn pri" onClick={() => setPresets(true)}><ion-icon name="sparkles-outline"></ion-icon>Start from a layout</button><button className="rk-btn" onClick={addArea}><ion-icon name="add"></ion-icon>Add area</button></div>
-        {presets && <PresetSheet onClose={() => setPresets(false)} />}
+        {!tplMode && <TplAppliedBar kind="floor" />}
+        <h3>{tplMode ? 'This template has no areas yet' : 'No floor plan yet'}</h3>
+        <p>{tplMode ? 'Add an area, then add tables and drag them into place.' : 'Start from a Koomzo sample layout, or add your first area.'}</p>
+        <div className="fs-btns">{!tplMode && <button className="rk-btn pri" onClick={() => setPresets({})}><ion-icon name="albums-outline"></ion-icon>Start from a template</button>}<button className={'rk-btn' + (tplMode ? ' pri' : '')} onClick={addArea}><ion-icon name="add"></ion-icon>Add area</button></div>
+        {presets && <TemplatePicker kind="floor" preselect={presets.id} onClose={() => setPresets(false)} />}
       </div>
     );
   }
@@ -171,11 +175,12 @@ function FloorEditor() {
 
   return (
     <div className="fs">
-      {!rules.floorSetupDone && (
+      {!tplMode && <TplAppliedBar kind="floor" />}
+      {!tplMode && !rules.floorSetupDone && (
         <div className="fs-onb">
           <ion-icon name="sparkles-outline"></ion-icon>
-          <div><b>Setting up a new venue?</b><span>Start from a common layout — Maquis (Salle + Terrasse) is the usual choice — then adjust.</span></div>
-          <button className="rk-btn pri" onClick={() => setPresets(true)}>Choose a layout</button>
+          <div><b>Setting up a new venue?</b><span>Start from a Koomzo sample layout — Maquis (Salle + Terrasse) is the usual choice — then adjust.</span></div>
+          <button className="rk-btn pri" onClick={() => setPresets({})}>Choose a template</button>
           <button className="rk-btn" onClick={() => setRules({ floorSetupDone: true })}>Keep this plan</button>
         </div>
       )}
@@ -184,7 +189,7 @@ function FloorEditor() {
           {floors.map((f) => <button key={f.id} className={f.id === area.id ? 'on' : ''} onClick={() => { setAreaId(f.id); setSelId(null); }}><ion-icon name={f.icon || AREA_ICON(f)}></ion-icon>{f.label}<em>{f.tables.length}</em></button>)}
           <button onClick={addArea}><ion-icon name="add"></ion-icon>Area</button>
         </div>
-        <button className="rk-btn" onClick={() => setPresets(true)}><ion-icon name="sparkles-outline"></ion-icon>Start from a layout</button>
+        {!tplMode && <button className="rk-btn" onClick={() => setPresets({})}><ion-icon name="albums-outline"></ion-icon>Templates</button>}
       </div>
 
       <div className={'fs-main' + (narrow ? ' narrow' : '')}>
@@ -267,7 +272,7 @@ function FloorEditor() {
           )}
         </div>
       </div>
-      {presets && <PresetSheet onClose={() => setPresets(false)} />}
+      {presets && <TemplatePicker kind="floor" preselect={presets.id} onClose={() => setPresets(false)} />}
     </div>
   );
 }
@@ -349,16 +354,18 @@ function RestaurantSetup() {
       <div className="sbar">
         <span className="sbar__title">Setup</span>
         <div className="svc-chips" style={{ marginLeft: 8 }}>
-          {[['floor', 'Floor plan', 'grid-outline'], ['rules', 'Service rules', 'shield-checkmark-outline'], ['printing', 'Printing', 'print-outline'], ['modules', 'Modules', 'apps-outline']].map(([v, l, ic]) => (
+          {[['menu', 'Menu', 'book-outline'], ['floor', 'Floor plan', 'grid-outline'], ['rules', 'Service rules', 'shield-checkmark-outline'], ['printing', 'Printing', 'print-outline'], ['modules', 'Modules', 'apps-outline']].concat(window.cfdAttachFor && window.cfdAttachFor('restaurant') ? [['display', 'Customer display', 'tv-outline']] : []).map(([v, l, ic]) => (
             <button key={v} className={tab === v ? 'on' : ''} onClick={() => setTab(v)}><ion-icon name={ic}></ion-icon>{l}</button>
           ))}
         </div>
       </div>
       <div className="screen__bd" style={{ padding: tab === 'floor' ? 0 : 22, overflowY: 'auto', flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        {tab === 'menu' && <MenuSetup />}
         {tab === 'floor' && <FloorEditor />}
         {tab === 'rules' && <ServiceRules />}
         {tab === 'printing' && <PrintFeed />}
         {tab === 'modules' && <ModuleSetup mid="restaurant" />}
+        {tab === 'display' && <CfdSetup registerId="rk-R1" module="restaurant" />}
       </div>
     </div>
   );

@@ -70,6 +70,7 @@ C('prepare','Prepare & send','Route a line to the counter that makes it — one 
       C('customers','Customers','Named accounts, loyalty, notes.','people-outline','mid','starter','reference'),
       C('shift','Shift & drawer','Float, count, Z-report.','cash-outline','full','standard','money',{ roles:['owner','manager'] }),
       C('discounts','Manager discounts','Approval above a threshold.','pricetag-outline','full','standard',null,{ roles:['owner','manager'] }),
+      C('cfd','Customer display','A second screen facing the customer: live bill, payment, thank you.','tv-outline','lite','free',null,{ devices:['desktop','tablet'] }),
       C('multilane','Multi-lane','More than one register on one site.','tablet-landscape-outline','full','standard',null,{ devices:['desktop','tablet'] }),
     ] },
 
@@ -118,6 +119,7 @@ C('prepare','Prepare & send','Route a line to the counter that makes it — one 
       C('allday','All-day view','Aggregated quantities across tickets.','albums-outline','full','standard'),
       C('kiosk','Self-serve kiosk','Customer orders without a server.','tablet-portrait-outline','full','standard',null,{ devices:['tablet'] }),
       C('tabs','Bar tabs','Open a tab against a card.','wine-outline','full','standard','money',{ roles:['owner','manager'] }),
+      C('cfd','Customer display','A second screen facing the customer: live bill, payment, thank you.','tv-outline','lite','free',null,{ devices:['desktop','tablet'] }),
       C('roomcharge','Charge to room','Post a bill to a hotel guest folio instead of taking payment.','bed-outline','mid','starter','money'),
     ] },
 

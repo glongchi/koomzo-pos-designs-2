@@ -38,6 +38,8 @@
 <a class="sub" href="#s-floor">Floor</a>
 <a class="sub" href="#s-kitchen">Kitchen screen</a>
 <a class="sub" href="#s-kiosk">Kiosk</a>
+<a class="sub" href="#s-menu">Menu</a>
+<a class="sub" href="#s-cfd">Customer display</a>
 <a class="sub" href="#s-setup">Setup</a>
 <a href="#rk-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · When something goes wrong</a>
 <a href="#rk-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Go further</a>
@@ -83,8 +85,8 @@
 <p class="sub">About an hour, once. Do it before your first service.</p>
 <ol class="steps">
 <li><div><b>Getting started</b><span>Account, location and staff — see <a data-page="hub" href="Koomzo User Guide.html#p1">P1</a>.</span></div></li>
-<li><div><b>Choose a layout</b><span>Setup → Floor plan → <i>Start from a layout</i>. Maquis (Salle + Terrasse) is the usual choice. Set the number of tables in each area.</span></div></li>
-<li><div><b>Add your menu</b><span>Categories (Starters, Mains, Grills, Drinks…), each dish with its price and the station that prepares it — grill, sauce pot, bar.</span></div></li>
+<li><div><b>Choose a layout</b><span>Setup → Floor plan → <i>Start from a template</i>. Maquis (Salle + Terrasse) is the usual choice. Set the number of tables in each area before you apply.</span></div></li>
+<li><div><b>Add your menu</b><span>Setup → <strong>Menu</strong> → <i>Start from a template</i> for a ready-made menu you then edit — or create your categories, then each dish with its price and the station that prepares it — grill, sauce pot, bar. Step by step: <a href="#s-menu">Menu</a>.</span></div></li>
 <li><div><b>Choose payments</b><span>Cash is on. Add MTN MoMo and Orange Money with your merchant numbers.</span></div></li>
 <li><div><b>Choose your devices</b><span>One device to start. Add phones, a kitchen screen and a kiosk later — <a data-page="hub" href="Koomzo User Guide.html#p4">P4</a>.</span></div></li>
 <li><div><b>Do a test order</b><span>Seat a table, order, send, mark it ready, pay and clear. Then you're ready to open.</span></div></li>
@@ -165,11 +167,39 @@
 </ol>
 <p class="sub">After 90 seconds without a touch, the kiosk empties the basket and returns to the welcome screen.</p>
 
+<h3 id="s-menu">Menu <span class="tier lite">Lite</span></h3>
+<p class="sub">Setup → Menu. Categories on the left, that category's dishes on the right. What you save appears straight away on the register, the kiosk and the kitchen screen.</p>
+<div class="shot"><img src="guide/img/menu.jpg" alt="Menu: categories and dishes" /><span class="pin" style="left:14.4%;top:3.3%">1</span><span class="pin" style="left:9%;top:25%">2</span><span class="pin" style="left:7.6%;top:51.7%">3</span><span class="pin" style="left:77%;top:8%">4</span><span class="pin" style="left:72%;top:17%">5</span></div><ol class="callouts"><li><span><b>Menu</b> — first tab in Setup.</span></li><li><span><b>Selected category</b> — move up, move down, rename. The order is the order of the register chips.</span></li><li><span><b>New category</b> — type the name, Enter.</span></li><li><span><b>New dish</b> — in the category shown.</span></li><li><span><b>Station</b> — where the dish goes. Tap a row to edit it.</span></li></ol>
+<div class="shot"><img src="guide/img/menu-dish.jpg" alt="Dish form" /><span class="pin" style="left:24%;top:24.2%">1</span><span class="pin" style="left:24%;top:32.8%">2</span><span class="pin" style="left:24%;top:41.3%">3</span><span class="pin" style="left:24%;top:49.2%">4</span><span class="pin" style="left:24%;top:56.4%">5</span><span class="pin" style="left:24%;top:66.1%">6</span><span class="pin" style="left:72.5%;top:86.7%">7</span></div><ol class="callouts"><li><span><b>Name</b> — required.</span></li><li><span><b>Short description</b> — the second line on the tile.</span></li><li><span><b>Price</b> in FCFA — required.</span></li><li><span><b>Category</b> — change it here to move the dish.</span></li><li><span><b>Prepared at</b> — grill, fryer, sauce pot, bar… Counter = no kitchen ticket.</span></li><li><span><b>Tags</b> — vegetarian, spicy, allergens; shown in the kitchen and on the kiosk.</span></li><li><span><b>Save</b> — active once name and price are filled.</span></li></ol>
+<ol class="steps">
+<li><div><b>Open the menu</b><span>Side rail → <i>Setup</i> (bottom) → <strong>Menu</strong> tab.</span></div></li>
+<li><div><b>Your categories</b><span>Keep the ones you use, rename them, or <strong>New category</strong>: Starters, Mains, Grills, Drinks… Reorder with the arrows.</span></div></li>
+<li><div><b>Pick a category</b><span>Tap it on the left; its dishes show on the right.</span></div></li>
+<li><div><b>New dish</b><span>Name, short description, price.</span></div></li>
+<li><div><b>The station</b><span>Who makes it: <i>Grill</i> for braised fish, <i>Sauce Pot</i> for ndolé, <i>Bar</i> for drinks. With no kitchen screen, each station gets its own printed ticket.</span></div></li>
+<li><div><b>Photo, tags and tile</b><span>Optional. <strong>Photo</strong>: paste an https:// link to the image on your CDN, or <i>Upload photo</i> from the phone or computer. It shows on the register, the kiosk and the dish list. Without a photo — or if the link stops working — the tile falls back to its icon and colour.</span></div></li>
+<li><div><b>Save dish</b><span>It's on the register straight away. To fix a price, tap the row; <strong>Remove</strong> takes it off the menu.</span></div></li>
+</ol>
+
+<div class="card"><h4><ion-icon name="albums-outline"></ion-icon>Start from a Koomzo template</h4><p><strong>Templates</strong> (under the categories, or the first button on an empty menu) opens sample menus for your kind of venue — Maquis, Bar, Snack, Hotel. Tap one to see every dish and price, then <i>Use this template</i>. If you already have dishes, choose <i>Add to mine</i> (same-name dishes are updated) or <i>Replace</i>. You get your own copy: Koomzo never changes it afterwards. Sample prices carry a <b>Check price</b> label until you edit the dish or tap <i>Confirm all prices</i>. Changed your mind? <i>Undo</i> works until your next edit. The same button on the Floor plan opens sample layouts, and a menu offers its matching layout.</p></div>
+<div class="card"><h4><ion-icon name="cloud-upload-outline"></ion-icon>The whole menu at once: CSV file</h4><p>Under the categories, <strong>CSV template</strong> downloads a file ready to fill in Excel or Google Sheets: one row per dish, columns <i>category, name, description, price, station, tags, image</i> (image is an optional https:// photo link). Category, name and price are required; unknown categories are created. Then <strong>Import CSV</strong>: Koomzo shows the dishes added, updated and any rows skipped with their row number, before applying. <i>Add and update</i> keeps the rest of the menu; <i>Replace whole menu</i> clears it. <strong>Export current menu</strong> saves today's menu in the same format.</p></div>
+
+<h3 id="s-cfd">Customer display <span class="tier lite">Lite</span></h3>
+<p class="sub">A screen turned towards the customer — the rear screen of an all-in-one POS, a tablet, or an Android payment terminal — shows each line as you ring it up, the total, and how to pay.</p>
+<ol class="steps">
+<li><div><b>Pair it</b><span>Setup → <strong>Customer display</strong> shows a 4-digit code. On the tablet or terminal, open <i>Koomzo Customer Display</i> and type the code. On an all-in-one POS with a built-in rear screen, tap <strong>Open on second screen</strong> instead — no code.</span></div></li>
+<li><div><b>Check it</b><span><strong>Show test screen</strong> puts a sample order on the display for 8 seconds. The register shows <i>Display</i> in green when it is connected.</span></div></li>
+<li><div><b>Choose what customers can tap</b><span>Loyalty number, receipt choice (WhatsApp, SMS, printed, none) and tipping — each has its own switch. Whatever the customer taps arrives on your register as a suggestion: <i>Accept</i> or <i>Ignore</i>. Nothing is applied on its own.</span></div></li>
+<li><div><b>Set the welcome screen</b><span>A welcome line and up to 3 promo slides, shown when no one is being served. Pick French or English for the display — it doesn't change your own screens.</span></div></li>
+</ol>
+<div class="card"><h4><ion-icon name="shield-checkmark-outline"></ion-icon>What the customer never sees</h4><p>Costs, kitchen notes, void reasons, staff names and PINs, other tables or held tickets, full phone numbers. A removed line shows struck through for a moment, then goes. If the display loses the register for 5 seconds it greys the total and shows <i>Reconnecting…</i> rather than an old amount.</p></div>
+<div class="note"><ion-icon name="restaurant-outline"></ion-icon><p><b>Tables:</b> a counter till moves between tables all evening, so a table’s bill appears on the display only when you open <i>Print bill</i> or <i>Pay</i> for it. Counter, takeaway and tab orders show while you ring them up. Change it in Setup → Customer display → <i>Table orders</i>.</p></div>
+
 <h3 id="s-setup">Setup <span class="tier lite">Lite</span></h3>
 <div class="shot"><img src="guide/img/setup-floor.jpg" alt="Floor plan editor" /><span class="pin" style="left:13%;top:10.5%">1</span><span class="pin" style="left:92%;top:10.5%">2</span><span class="pin" style="left:40%;top:50%">3</span><span class="pin" style="left:89%;top:47%">4</span></div>
 <ol class="callouts">
 <li><span><b>Areas</b> — add, rename, reorder. <span class="tier mid">Mid</span></span></li>
-<li><span><b>Start from a layout</b> — the presets from Part 1, with the number of tables.</span></li>
+<li><span><b>Templates</b> — Koomzo sample layouts, with the number of tables per area.</span></li>
 <li><span><b>Drag tables</b> into place on a tablet. On a phone, edit them as a list.</span></li>
 <li><span><b>Add a table</b> — square, round, long or a bar stool. Set its label and seats.</span></li>
 </ol>

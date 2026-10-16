@@ -462,7 +462,7 @@ function SetupView({ profileId, cfg, preset, dirty, onPreset, onToggle, onSet, o
                       <div className="trow2__d">{m.desc}</div>
                     </div>
                     <div className="sp" style={{ flex: 1 }}></div>
-                    {bound ? <span className="badge">{stockMode === 'off' ? 'Hidden' : stockMode}</span>
+                    {bound ? <span className="badge">{stockMode === 'off' ? 'Products only' : stockMode}</span>
                       : <button className={'sw2' + (on ? ' on' : '')} onClick={() => onModule(m.key)} aria-pressed={on}></button>}
                   </div>
                 );
@@ -511,6 +511,7 @@ function SetupView({ profileId, cfg, preset, dirty, onPreset, onToggle, onSet, o
                 A scan that resolves to a specific variant skips the variant step — which is how one register serves a scan lane and a boutique.</div>
             </div>
           </div>
+          {window.cfdAttachFor && window.cfdAttachFor('retail') && <CfdSetup registerId="rx-C1" module="retail" rxDefault={profileId === 'pharmacy'} />}
         </div>
       </div>
     </div>

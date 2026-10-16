@@ -39,6 +39,8 @@
 <a class="sub" href="#x-returns">Returns</a>
 <a class="sub" href="#x-customers">Customers</a>
 <a class="sub" href="#x-shift">Shift &amp; drawer</a>
+<a class="sub" href="#x-products">Add a product</a>
+<a class="sub" href="#x-cfd">Customer display</a>
 <a class="sub" href="#x-setup">Setup</a>
 <a href="#rx-help"><ion-icon name="help-buoy-outline"></ion-icon>5 · When something goes wrong</a>
 <a href="#rx-more"><ion-icon name="trending-up-outline"></ion-icon>6 · Go further</a>
@@ -101,7 +103,7 @@
 <ol class="steps">
 <li><div><b>Getting started</b><span>Account, location and staff — see <a data-page="hub" href="Koomzo User Guide.html#p1">P1</a>. Cashiers get the <i>Staff</i> role: no Setup.</span></div></li>
 <li><div><b>Choose a preset</b><span>Setup → Business profile. Pick the closest shop type; you can change any setting afterwards.</span></div></li>
-<li><div><b>Add your items</b><span>Name, price, barcode if any, category. Variants where you need them — size, strength, shade. Stock is in <a data-page="hub" href="Koomzo User Guide.html#modules">Inventory</a>.</span></div></li>
+<li><div><b>Add your items</b><span>Products → <strong>New product</strong>: name, price, category, then Save. You don't need the Inventory module — without it the rail shows <i>Products</i> and never asks for quantities. Step by step: <a href="#x-products">Add a product</a>.</span></div></li>
 <li><div><b>Taxes</b><span>VAT 19.25 % by default; basic foods and medicines can be zero-rated.</span></div></li>
 <li><div><b>Payments</b><span>Cash on; add MTN MoMo and Orange Money with your merchant numbers.</span></div></li>
 <li><div><b>Hardware</b><span>A Bluetooth or USB barcode scanner and a receipt printer. A scale for weighed goods. <span class="soon"><ion-icon name="time-outline"></ion-icon>Scales — available soon</span></span></div></li>
@@ -186,6 +188,33 @@
 <li><span><b>X report</b> — the figures so far, without closing.</span></li>
 <li><span><b>Close shift</b> — count the drawer; the Z report shows any difference.</span></li>
 </ol>
+
+<h3 id="x-products">Add a product <span class="tier lite">Lite</span></h3>
+<p class="sub">For a small shop with no Inventory module: a list of products and prices, nothing else to keep up.</p>
+<div class="shot"><img src="guide/img/retail-products.jpg" alt="Products screen, stock not tracked" /><span class="pin" style="left:7.5%;top:33%">1</span><span class="pin" style="left:12%;top:28.7%">2</span><span class="pin" style="left:71%;top:12%">3</span><span class="pin" style="left:88%;top:12%">4</span><span class="pin" style="left:93%;top:36%">5</span></div><ol class="callouts"><li><span><b>Products</b> — replaces Stock in the rail when stock is off.</span></li><li><span><b>Search or scan</b> for an existing item before creating one.</span></li><li><span><b>Categories</b> — the chips on the register.</span></li><li><span><b>New product</b> — opens the form.</span></li><li><span><b>Price</b> — the only column to keep up; tap a row to edit.</span></li></ol><div class="shot"><img src="guide/img/retail-product-new.jpg" alt="New product form" /><span class="pin" style="left:11.8%;top:36%">1</span><span class="pin" style="left:34.5%;top:69%">2</span><span class="pin" style="left:11.8%;top:92%">3</span><span class="pin" style="left:75%;top:50%">4</span><span class="pin" style="left:89%;top:12%">5</span></div><ol class="callouts"><li><span><b>Name</b> — required.</span></li><li><span><b>SKU and barcode</b> — optional; scan to fill.</span></li><li><span><b>Category</b> — the chip it appears under.</span></li><li><span><b>Preview</b> — the tile as the cashier will see it.</span></li><li><span><b>Save</b> — active once name and price are filled.</span></li></ol>
+
+<ol class="steps">
+<li><div><b>Open Products</b><span>Side rail → <i>Products</i> (tag icon). With stock off, the screen reads <i>Products · stock not tracked</i> and lists your items.</span></div></li>
+<li><div><b>Create your categories first</b><span><strong>Categories</strong> button at the top. One category per chip on the register — Drinks, Groceries, Toiletries… in the order the shop sells.</span></div></li>
+<li><div><b>New product</b><span>Purple button, top right. One form.</span></div></li>
+<li><div><b>Name and price</b><span>The only required fields. Barcode and SKU if the item has them; cost is optional but gives you margin.</span></div></li>
+<li><div><b>Category</b><span>Tap the chip it should appear under on the register.</span></div></li>
+<li><div><b>Sold by weight?</b><span>Switch it on and pick the unit (kg, g, l); the price becomes a per-unit price.</span></div></li>
+<li><div><b>Artwork</b><span>An icon and colour, or a photo. The preview shows the tile as the register will.</span></div></li>
+<li><div><b>Save product</b><span>It's on the register straight away. Repeat for the next; past a few dozen, import a spreadsheet.</span></div></li>
+</ol>
+<div class="card"><h4><ion-icon name="cube-outline"></ion-icon>What if I want stock later?</h4><p>On the Products screen, <b>Enable Lite</b>. Your products stay; each gets a quantity and a "show in POS" switch.</p></div>
+
+<h3 id="x-cfd">Customer display <span class="tier lite">Lite</span></h3>
+<p class="sub">A screen turned towards the customer — the rear screen of an all-in-one POS, a tablet, or an Android payment terminal — shows each line as you ring it up, the total, and how to pay.</p>
+<ol class="steps">
+<li><div><b>Pair it</b><span>Setup → <strong>Customer display</strong> shows a 4-digit code. On the tablet or terminal, open <i>Koomzo Customer Display</i> and type the code. On an all-in-one POS with a built-in rear screen, tap <strong>Open on second screen</strong> instead — no code.</span></div></li>
+<li><div><b>Check it</b><span><strong>Show test screen</strong> puts a sample order on the display for 8 seconds. The register shows <i>Display</i> in green when it is connected.</span></div></li>
+<li><div><b>Choose what customers can tap</b><span>Loyalty number, receipt choice (WhatsApp, SMS, printed, none) and tipping — each has its own switch. Whatever the customer taps arrives on your register as a suggestion: <i>Accept</i> or <i>Ignore</i>. Nothing is applied on its own.</span></div></li>
+<li><div><b>Set the welcome screen</b><span>A welcome line and up to 3 promo slides, shown when no one is being served. Pick French or English for the display — it doesn't change your own screens.</span></div></li>
+</ol>
+<div class="card"><h4><ion-icon name="shield-checkmark-outline"></ion-icon>What the customer never sees</h4><p>Costs, kitchen notes, void reasons, staff names and PINs, other tables or held tickets, full phone numbers, and — for pharmacies — prescription drug names (shown as “Prescription item”). During an age check the display says only that ID is being checked. A removed line shows struck through for a moment, then goes. If the display loses the register for 5 seconds it greys the total and shows <i>Reconnecting…</i> rather than an old amount.</p></div>
+
 
 <h3 id="x-setup">Setup <span class="tier lite">Lite</span></h3>
 <div class="shot"><img src="guide/img/retail-setup.jpg" alt="Business profile presets" /><span class="pin" style="left:26%;top:30.2%">1</span><span class="pin" style="left:45.5%;top:38.9%">2</span><span class="pin" style="left:94%;top:96%">3</span></div>

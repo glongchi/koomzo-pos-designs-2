@@ -8,7 +8,7 @@ const RX_NAV = [
   { id:'setup', icon:'options-outline', label:'Setup' },
 ];
 
-function Rail({ view, onView, held, badges, modules }) {
+function Rail({ view, onView, held, badges, modules, labels }) {
   /* A badge counts work waiting today on that screen — never a total, gone at zero. */
   const items = RX_NAV.filter((n) => n.id === 'register' || n.id === 'setup' || !modules || modules[n.id] !== false);
   const b = Object.assign({ tickets: held || 0 }, badges || {});
@@ -17,7 +17,7 @@ function Rail({ view, onView, held, badges, modules }) {
       <div className="rail__mark"><ion-icon name="storefront-outline"></ion-icon></div>
       {items.map((n) => (
         <button key={n.id} className={view === n.id ? 'on' : ''} onClick={() => onView(n.id)} title={n.label}>
-          <ion-icon name={n.icon}></ion-icon><span>{n.label}</span>
+          <ion-icon name={(labels && labels[n.id] && labels[n.id].icon) || n.icon}></ion-icon><span>{(labels && labels[n.id] && labels[n.id].label) || n.label}</span>
           {b[n.id] > 0 && <i className="dot">{b[n.id] > 99 ? '99+' : b[n.id]}</i>}
         </button>
       ))}
@@ -26,10 +26,11 @@ function Rail({ view, onView, held, badges, modules }) {
   );
 }
 
-function TopBar({ profile, title, sub, modified, onProfile }) {
+function TopBar({ profile, title, sub, modified, onProfile, extra }) {
   return (
     <header className="top">
       <div className="top__title">{title}<small>{sub}</small></div>
+      {extra}
       <button className="profchip" onClick={onProfile}>
         <ion-icon name={profile.icon}></ion-icon><span className="pname">{profile.name}</span>{modified && <span className="mchip pri"><ion-icon name="create-outline"></ion-icon>Modified</span>}
         <ion-icon name="chevron-down-outline" style={{ fontSize: 14, color: 'var(--kz-muted-3)' }}></ion-icon>

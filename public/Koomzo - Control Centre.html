@@ -56,6 +56,7 @@ a{color:var(--kz-primary);text-decoration:none}a:hover{color:var(--kz-primary-sh
 .cclinks{display:flex;flex-wrap:wrap;gap:8px}
 .cclinks a{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:9px;border:1px solid var(--kz-border-strong);background:#fff;font:600 12.5px var(--kz-font-sans);color:var(--kz-ink-2)}
 .cclinks a:hover{border-color:var(--kz-primary-tint);color:var(--kz-primary)}
+.cctpl{width:100%;height:calc(100vh - 120px);min-height:640px;border:1px solid var(--kz-border);border-radius:var(--kz-radius-lg);background:var(--kz-bg);display:block}
 </style>
 </head>
 <body>
@@ -119,6 +120,7 @@ function App() {
         <button className={tab === 'profile' ? 'on' : ''} onClick={() => setTab('profile')}><ion-icon name="clipboard-outline"></ion-icon>Business profile</button>
         <button className={tab === 'preview' ? 'on' : ''} onClick={() => setTab('preview')}><ion-icon name="eye-outline"></ion-icon>Navigation preview</button>
         <button className={tab === 'log' ? 'on' : ''} onClick={() => setTab('log')}><ion-icon name="time-outline"></ion-icon>Change log</button>
+        <button className={tab === 'templates' ? 'on' : ''} onClick={() => setTab('templates')}><ion-icon name="albums-outline"></ion-icon>Templates</button>
       </div>
 
       {tab === 'modules' && <>
@@ -143,6 +145,12 @@ function App() {
         <NavPreview />
         <div className="ccnote" style={{ marginTop: 16 }}><ion-icon name="eye-outline"></ion-icon>
           <span>Change the role or the device above and this preview reflows. A capability may be on for the business but irrelevant on this device — the kitchen display never appears on a phone, and Setup itself is read-only there.</span></div>
+      </>}
+
+      {tab === 'templates' && <>
+        <div className="ccnote" style={{ marginBottom: 12 }}><ion-icon name="albums-outline"></ion-icon>
+          <span>Sample <b>menus</b> and <b>floor plans</b> new customers copy during setup. Drafts stay private until published; a customer's copy is theirs — publishing a new version never changes it. <a href="Koomzo - Template Library.html" target="_blank">Open full screen</a></span></div>
+        <iframe className="cctpl" src="Koomzo - Template Library.html?embed=1" title="Template Library"></iframe>
       </>}
 
       {tab === 'log' && (

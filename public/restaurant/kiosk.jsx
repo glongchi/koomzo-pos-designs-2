@@ -75,9 +75,7 @@ function KioskItemSheet({ p, onClose, onAdd }) {
   return (
     <div className="scrim" onClick={onClose}>
       <div className="sheet" onClick={(e) => e.stopPropagation()}>
-        <div className="kitem__art" style={{ background: p.tint.bg }}>
-          <ion-icon name={p.icon} style={{ color: p.tint.fg }}></ion-icon>
-        </div>
+        <DishArt p={p} className="kitem__art" />
         <div className="sheet__pad">
           <h3 className="sheet__title">{p.name}</h3>
           <p className="sheet__sub">{p.desc}</p>
@@ -113,11 +111,10 @@ function KioskItemSheet({ p, onClose, onAdd }) {
 function KioskTile({ p, qty, onAdd }) {
   return (
     <button className="ktile" onClick={() => onAdd(p)}>
-      <div className="ktile__art" style={{ background: p.tint.bg }}>
-        <ion-icon name={p.icon} style={{ color: p.tint.fg }}></ion-icon>
+      <DishArt p={p} className="ktile__art">
         {p.tags && p.tags.length > 0 && <span className="ktile__tags"><TagChips tags={p.tags.slice(0, 3)} /></span>}
         {qty > 0 && <span className="ktile__badge" key={qty}>{qty}</span>}
-      </div>
+      </DishArt>
       <div className="ktile__meta">
         <div className="ktile__name">{p.name}</div>
         <div className="ktile__desc">{p.desc}</div>
@@ -244,7 +241,7 @@ function Kiosk() {
     setCart((cur) => {
       const ex = cur.find((c) => c.id === p.id && (c.notes || '') === (notes || ''));
       return ex ? cur.map((c) => c === ex ? { ...c, qty: c.qty + qty } : c)
-        : [...cur, { uid: 'k' + (KUID++), id: p.id, name: p.name, price: p.price, qty, notes: notes || '', station: p.station, tags: p.tags, icon: p.icon, tint: p.tint }];
+        : [...cur, { uid: 'k' + (KUID++), id: p.id, name: p.name, price: p.price, qty, notes: notes || '', station: p.station, tags: p.tags, img: p.img, icon: p.icon, tint: p.tint }];
     });
     setDetail(null);
   };
@@ -333,7 +330,7 @@ function Kiosk() {
               <div className="kdrawer__list">
                 {cart.map((c) => (
                   <div key={c.uid} className="kcartline">
-                    <div className="kcartline__art" style={{ background: c.tint.bg }}><ion-icon name={c.icon} style={{ color: c.tint.fg }}></ion-icon></div>
+                    <DishArt p={c} className="kcartline__art" />
                     <div className="kcartline__body">
                       <div className="kcartline__name">{c.name}</div>
                       <div className="kcartline__price">{money(c.price)} each</div>
